@@ -23,6 +23,11 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
       } catch (error) {
         yield DriverHomeError("Failed to select destination");
       }
+    } else if (event is NavigateToLocationSelection) {
+      // This is where you handle the event
+      // No need to yield anything if you're just navigating
+      yield NavigateToLocationSelectionState(); // This triggers the listener in the UI
     }
   }
+
 }

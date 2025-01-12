@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/color/color_theme.dart';
 
 class appBar extends StatelessWidget implements PreferredSizeWidget {
   final String heading;
@@ -21,7 +22,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFFEC8825), Color(0xFF434143)],
+                colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColorDark],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -35,7 +36,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: IconButton(
-                        icon: Icon(Icons.arrow_back, color: Colors.white),
+                        icon: Icon(Icons.arrow_back, color: ThemeColors.buttonTextColor),
                         onPressed: () {
                           Navigator.pop(context);
                         },
@@ -50,7 +51,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                       child: Text(
                         heading,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: ThemeColors.buttonTextColor,
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),

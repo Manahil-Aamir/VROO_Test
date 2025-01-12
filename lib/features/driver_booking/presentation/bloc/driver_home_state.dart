@@ -27,3 +27,5 @@ class DriverHomeError extends DriverHomeState {
   @override
   List<Object> get props => [message];
 }
+
+class NavigateToLocationSelectionState extends DriverHomeState {}

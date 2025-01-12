@@ -24,3 +24,5 @@ class SelectDestinationPoint extends DriverHomeEvent {
   @override
   List<Object> get props => [pointType, location];
 }
+
+class NavigateToLocationSelection extends DriverHomeEvent {}
