@@ -1,3 +1,24 @@
+// import 'package:flutter/material.dart';
+
+// class LocationSelectionScreen extends StatelessWidget {
+//   final String role;
+
+//   const LocationSelectionScreen({required this.role, super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text("Location Selection - $role"),
+//       ),
+//       body: Center(
+//         child: Text("This is the Location Selection Screen for $role."),
+//       ),
+//     );
+//   }
+// }
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vroo_test/shared/widgets/Appbar.dart';
@@ -8,7 +29,7 @@ import '../../../../shared/widgets/location_input_field.dart';
 class LocationSelectionScreen extends StatelessWidget {
   final String role;
 
-  const LocationSelectionScreen({required this.role});
+  const LocationSelectionScreen({required this.role, super.key});
 
   @override
   Widget build(BuildContext context) {

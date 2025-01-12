@@ -1,33 +1,26 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../domain/usecases/get_driver_current_location.dart';
 import 'driver_home_event.dart';
 import 'driver_home_state.dart';
 
 class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
-  DriverHomeBloc() : super(DriverHomeInitial());
+  final GetDriverCurrentLocation getDriverCurrentLocation;
 
-  @override
-  Stream<DriverHomeState> mapEventToState(DriverHomeEvent event) async* {
-    if (event is SelectStartingPoint) {
-      yield DriverHomeLoading();
-      try {
-        // Handle starting point logic (if needed)
-        yield DriverHomePointSelected(event.pointType, event.location);
-      } catch (error) {
-        yield DriverHomeError("Failed to select starting point");
-      }
-    } else if (event is SelectDestinationPoint) {
-      yield DriverHomeLoading();
-      try {
-        // Handle destination point logic (if needed)
-        yield DriverHomePointSelected(event.pointType, event.location);
-      } catch (error) {
-        yield DriverHomeError("Failed to select destination");
-      }
-    } else if (event is NavigateToLocationSelection) {
-      // This is where you handle the event
-      // No need to yield anything if you're just navigating
-      yield NavigateToLocationSelectionState(); // This triggers the listener in the UI
-    }
+  DriverHomeBloc(this.getDriverCurrentLocation) : super(DriverHomeInitial()) {
+    on<LoadDriverCurrentLocation>(_onLoadDriverCurrentLocation);
   }
 
+  Future<void> _onLoadDriverCurrentLocation(
+    LoadDriverCurrentLocation event,
+    Emitter<DriverHomeState> emit,
+  ) async {
+    emit(DriverHomeLoading());
+    try {
+      final LatLng location = await getDriverCurrentLocation.execute();
+      emit(DriverHomeLoaded(location));
+    } catch (e) {
+      emit(DriverHomeError('Failed to load location'));
+    }
+  }
 }

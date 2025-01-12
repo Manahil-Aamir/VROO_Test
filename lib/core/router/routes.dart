@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:vroo_test/ui.dart';
-
 import '../../features/driver_booking/presentation/pages/driver_home_screen.dart';
 import '../../features/driver_booking/presentation/pages/location_selection_screen.dart';
 
 class Routes {
-  static const String ui = '/ui ';
+  static const String ui = '/ui';
   static const String driverHome = '/driver_home';
   static const String locationSelection = '/location_selection';
 
@@ -14,9 +12,12 @@ class Routes {
       case driverHome:
         return MaterialPageRoute(builder: (_) => DriverHomeScreen());
       case locationSelection:
-        return MaterialPageRoute(builder: (_) => LocationSelectionScreen(role: 'driver',));
+        final role = settings.arguments as String? ?? 'driver'; // Default to 'driver'
+        return MaterialPageRoute(
+          builder: (_) => LocationSelectionScreen(role: role),
+        );
       default:
-        return MaterialPageRoute(builder: (_) => const SimpleUI());
+        return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text("Unknown Route"))));
     }
   }
 }

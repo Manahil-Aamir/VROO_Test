@@ -38,9 +38,9 @@ class App extends StatelessWidget {
                     child: widget,
                   );
                 },
-//                initialRoute: Routes.driverHome,
-                initialRoute: Routes.locationSelection,
+                initialRoute: Routes.driverHome,
                 onGenerateRoute: Routes().generateRoute,
+                navigatorKey: _navigatorKey, // Add navigatorKey here
               );
             },
           );
@@ -49,3 +49,7 @@ class App extends StatelessWidget {
     );
   }
 }
+
+// Add this global key at the top of your file
+final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+BuildContext? get navigationContext => _navigatorKey.currentContext;
