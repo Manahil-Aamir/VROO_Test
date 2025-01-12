@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -26,22 +25,3 @@ class DriverHomeDependencyInjection {
     ];
   }
 }
-
-
-class RiderHomeDependencyInjection {
-  static List<SingleChildWidget> init() {
-    // Set up the location repository and use case
-    final locationRepository = DriverLocationRepositoryImpl(MockDriverLocationDataSource());
-    final getDriverCurrentLocation = GetDriverCurrentLocation(locationRepository);
-
-    // Return the list of providers
-    return [
-      Provider<DriverLocationRepository>(create: (_) => locationRepository),
-      Provider<GetDriverCurrentLocation>(create: (_) => getDriverCurrentLocation),
-      BlocProvider<DriverHomeBloc>(
-          create: (_) => DriverHomeBloc(getDriverCurrentLocation)),
-      Provider<Navigation>(create: (_) => Navigation()), // Add Navigation provider
-    ];
-  }
-}
-

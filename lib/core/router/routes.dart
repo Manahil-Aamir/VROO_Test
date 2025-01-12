@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../features/driver_booking/presentation/pages/driver_home_screen.dart';
 import '../../features/driver_booking/presentation/pages/location_selection_screen.dart';
+import '../../features/driver_booking/presentation/pages/d1.dart';
 
 class Routes {
   static const String ui = '/ui';
   static const String driverHome = '/driver_home';
   static const String locationSelection = '/location_selection';
+  static const String d1 = '/d1';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -16,8 +18,11 @@ class Routes {
         return MaterialPageRoute(
           builder: (_) => LocationSelectionScreen(role: role),
         );
+      case d1:
+        return MaterialPageRoute(builder: (_) => const D1Screen());
       default:
-        return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text("Unknown Route"))));
+        return MaterialPageRoute(builder: (_) => Scaffold(appBar: AppBar(title: Text("Error")),body: const Center(child: Text("Unknown Route"))));
+    
     }
   }
 }

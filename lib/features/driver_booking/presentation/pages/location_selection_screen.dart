@@ -1,30 +1,11 @@
-// import 'package:flutter/material.dart';
-
-// class LocationSelectionScreen extends StatelessWidget {
-//   final String role;
-
-//   const LocationSelectionScreen({required this.role, super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Location Selection - $role"),
-//       ),
-//       body: Center(
-//         child: Text("This is the Location Selection Screen for $role."),
-//       ),
-//     );
-//   }
-// }
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vroo_test/shared/widgets/Appbar.dart';
-import '../../../../shared/widgets/recent_place_item.dart';
+import '../../../../shared/widgets/Appbar.dart';
+import '../../dependency_injection/location_selection_di.dart';
 import '../bloc/location_selection_bloc.dart';
 import '../../../../shared/widgets/location_input_field.dart';
+import '../../../../shared/widgets/gradientButton.dart';
+import '../bloc/location_selection_event.dart';
 
 class LocationSelectionScreen extends StatelessWidget {
   final String role;
@@ -35,40 +16,123 @@ class LocationSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(heading: "Select Location"),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            BlocProvider(
-              create: (_) => LocationSelectionBloc(),
-              child: LocationInputField(
-                label: 'From where would you go?',
-                onPlaceSelected: (placeId, description) {
-                  print('From Location Selected: $description ($placeId)');
-                  // Save this location to your state or logic
-                },
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus(); // Close keyboard and suggestions
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              BlocProvider(
+                create: (_) => LocationSelectionBloc(
+                  DependencyInjector.fetchSuggestionsUseCase,
+                ),
+                child: LocationInputField(
+                  label: 'From where would you go?',
+                  onPlaceSelected: (placeId, description) {
+                    print('From Location Selected: $description ($placeId)');
+                  },
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            BlocProvider(
-              create: (_) => LocationSelectionBloc(),
-              child: LocationInputField(
-                label: 'Where would you go?',
-                onPlaceSelected: (placeId, description) {
-                  print('To Location Selected: $description ($placeId)');
-                  // Save this location to your state or logic
-                },
+              const SizedBox(height: 10),
+              BlocProvider(
+                create: (_) => LocationSelectionBloc(
+                  DependencyInjector.fetchSuggestionsUseCase,
+                ),
+                child: LocationInputField(
+                  label: 'Where would you go?',
+                  onPlaceSelected: (placeId, description) {
+                    print('To Location Selected: $description ($placeId)');
+                  },
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            const RecentPlaceItem(
-              title: 'Office',
-              address: '2972 Westheimer Rd.',
-              distance: '2.7km'
-            ),
-          ],
+              const Spacer(),
+              GradientButton(
+                onTap: () {
+                  Navigator.of(context).pushNamed('/d1');
+                },
+                text: 'Next',
+              ),
+              const SizedBox(height: 60),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+
+
+// class LocationSelectionScreen extends StatelessWidget {
+//   final String role;
+
+//   const LocationSelectionScreen({required this.role, super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // Declare FocusNodes for both input fields
+//     final focusNode1 = FocusNode();
+//     final focusNode2 = FocusNode();
+
+//     return Scaffold(
+//       appBar: appBar(heading: "Select Location"),
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Column(
+//           children: [
+//             // First input field
+//             GestureDetector(
+//               onTap: () {
+//                 focusNode1.requestFocus(); // Focus first input
+//                 focusNode2.unfocus(); // Unfocus second input
+//               },
+//               child: BlocProvider(
+//                 create: (_) => LocationSelectionBloc(
+//                   DependencyInjector.fetchSuggestionsUseCase,
+//                 ),
+//                 child: LocationInputField(
+//                   label: 'From where would you go?',
+//                   focusNode: focusNode1,
+//                   onPlaceSelected: (placeId, description) {
+//                     print('From Location Selected: $description ($placeId)');
+//                   },
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 10),
+//             // Second input field
+//             GestureDetector(
+//               onTap: () {
+//                 focusNode2.requestFocus(); // Focus second input
+//                 focusNode1.unfocus(); // Unfocus first input
+//               },
+//               child: BlocProvider(
+//                 create: (_) => LocationSelectionBloc(
+//                   DependencyInjector.fetchSuggestionsUseCase,
+//                 ),
+//                 child: LocationInputField(
+//                   label: 'Where would you go?',
+//                   focusNode: focusNode2,
+//                   onPlaceSelected: (placeId, description) {
+//                     print('To Location Selected: $description ($placeId)');
+//                   },
+//                 ),
+//               ),
+//             ),
+//             const Spacer(),
+//             GradientButton(
+//               onTap: () {
+//                 Navigator.of(context).pushNamed('/d1');
+//               },
+//               text: 'Next',
+//             ),
+//             SizedBox(height: 60),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
