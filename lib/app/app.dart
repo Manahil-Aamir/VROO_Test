@@ -38,7 +38,7 @@ class App extends StatelessWidget {
                     child: widget,
                   );
                 },
-                initialRoute: Routes.ui,
+                initialRoute: Routes.riderhome,
                 onGenerateRoute: Routes().generateRoute,
               );
             },
