@@ -19,7 +19,19 @@ class Routes {
           builder: (_) => LocationSelectionScreen(role: role),
         );
       case d1:
-        return MaterialPageRoute(builder: (_) => const D1Screen());
+        final args = settings.arguments as Map<String, dynamic>;
+        final toPlaceID = args['topaceid'] as String;
+        final fromPlaceID = args['fromplaceid'] as String;
+        final toDescription = args['todescription'] as String;
+        final fromDescription = args['fromdescription'] as String;
+        return MaterialPageRoute(
+          builder: (_) => D1Screen(
+            toPlaceID: toPlaceID,
+            fromPlaceID: fromPlaceID,
+            toDescription: toDescription,
+            fromDescription: fromDescription,
+          ),
+        );
       default:
         return MaterialPageRoute(builder: (_) => Scaffold(appBar: AppBar(title: Text("Error")),body: const Center(child: Text("Unknown Route"))));
     

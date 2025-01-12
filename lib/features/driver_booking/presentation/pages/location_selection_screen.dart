@@ -9,8 +9,12 @@ import '../bloc/location_selection_event.dart';
 
 class LocationSelectionScreen extends StatelessWidget {
   final String role;
+    String? fromPlaceId;
+    String? fromDescription;
+    String? toPlaceId;
+    String? toDescription;
 
-  const LocationSelectionScreen({required this.role, super.key});
+  LocationSelectionScreen({required this.role, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +35,8 @@ class LocationSelectionScreen extends StatelessWidget {
                 child: LocationInputField(
                   label: 'From where would you go?',
                   onPlaceSelected: (placeId, description) {
+                    fromPlaceId = placeId;
+                    fromDescription = description;
                     print('From Location Selected: $description ($placeId)');
                   },
                 ),
@@ -44,14 +50,31 @@ class LocationSelectionScreen extends StatelessWidget {
                   label: 'Where would you go?',
                   onPlaceSelected: (placeId, description) {
                     print('To Location Selected: $description ($placeId)');
+                    toPlaceId = placeId;
+                    toDescription = description;
                   },
                 ),
               ),
               const Spacer(),
               GradientButton(
                 onTap: () {
-                  Navigator.of(context).pushNamed('/d1');
-                },
+                  if (fromPlaceId != null && toPlaceId != null) {
+                    Navigator.of(context).pushNamed(
+                      '/d1',
+                      arguments: {
+                      'fromPlaceId': fromPlaceId,
+                      'fromDescription': fromDescription,
+                      'toPlaceId': toPlaceId,
+                      'toDescription': toDescription,
+                      },
+                    );
+                } else {
+                  // Optionally show a message if the user hasn't selected both locations
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Please select both locations!')),
+                  );
+                }
+              },
                 text: 'Next',
               ),
               const SizedBox(height: 60),
