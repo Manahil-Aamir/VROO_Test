@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/theme/color/color_theme.dart';
+import 'bottom_shape_clipper.dart';
 
 class appBar extends StatelessWidget implements PreferredSizeWidget {
   final String heading;
 
-  appBar({
-    Key? key,
+  const appBar({
+    super.key,
     required this.heading,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(120.0),
+      preferredSize: Size.fromHeight(120.h),
       child: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -22,29 +24,35 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColorDark],
+                colors: [
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColorDark,
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
             child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                 child: Row(
                   children: [
                     // Back button
                     Align(
                       alignment: Alignment.centerLeft,
                       child: IconButton(
-                        icon: Icon(Icons.arrow_back, color: ThemeColors.buttonTextColor),
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: ThemeColors.buttonTextColor,
+                        ),
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        iconSize: 30.0,
+                        iconSize: 30.r,
                       ),
                     ),
                     // Spacer to push the heading to the center
-                    SizedBox(width: 50,),
+                    SizedBox(width: 50.w),
                     // Heading
                     Align(
                       alignment: Alignment.center,
@@ -52,7 +60,8 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                         heading,
                         style: TextStyle(
                           color: ThemeColors.buttonTextColor,
-                          fontSize: 30,
+                          fontSize: 27.sp,
+                          fontFamily: 'Comfortaa',
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -70,24 +79,8 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(120.0);
+  Size get preferredSize => Size.fromHeight(120.h); // Responsive height
 }
 
-class BottomShapeClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0, 0);
-    path.lineTo(0, size.height - 40); // Lower the start of the curve
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 40); // Adjust the curve
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
 
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
-  }
-}
+

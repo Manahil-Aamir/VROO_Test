@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/Appbar.dart';
-import '../../../../shared/widgets/gradientButton.dart';
+import '../../../../shared/widgets/gradient_button.dart';
 import '../../../../shared/widgets/location_selection_input.dart';
 import '../../dependency_injection/location_selection_di.dart';
 import '../../domain/usecases/fetch_suggestions_usecase.dart';
