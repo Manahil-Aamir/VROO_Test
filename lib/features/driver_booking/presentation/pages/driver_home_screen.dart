@@ -6,8 +6,8 @@ import '../../../../shared/widgets/bottomNav.dart';
 import '../../../../shared/widgets/location_selection_button_widget.dart';
 import '../../../../shared/widgets/top_bar_widget.dart';
 import '../../dependency_injection/driver_home_di.dart';
-import '../bloc/driver_home_bloc.dart';
-import '../bloc/driver_home_state.dart';
+import '../bloc/bloc/driver_home_bloc.dart';
+import '../bloc/state/driver_home_state.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});

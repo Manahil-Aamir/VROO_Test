@@ -18,10 +18,31 @@ class D1Screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('D1 Screen')),
-      body: const Center(
-        child: Text(
-          'Welcome to D1 Screen',
-          style: TextStyle(fontSize: 24),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'To Place ID: $toPlaceID',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'From Place ID: $fromPlaceID',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'To Description: $toDescription',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'From Description: $fromDescription',
+              style: TextStyle(fontSize: 18),
+            ),
+          ],
         ),
       ),
     );

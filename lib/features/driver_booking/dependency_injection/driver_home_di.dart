@@ -6,7 +6,7 @@ import '../data/data_source/driver_home_data_source.dart';
 import '../data/repository/driver_home_repository.dart';
 import '../domain/repository/driver_home_repository.dart';
 import '../domain/usecases/get_driver_current_location.dart';
-import '../presentation/bloc/driver_home_bloc.dart';
+import '../presentation/bloc/bloc/driver_home_bloc.dart';
 
 class DriverHomeDependencyInjection {
   static List<SingleChildWidget> init() {

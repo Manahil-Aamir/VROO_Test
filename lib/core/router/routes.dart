@@ -20,10 +20,10 @@ class Routes {
         );
       case d1:
         final args = settings.arguments as Map<String, dynamic>;
-        final toPlaceID = args['topaceid'] as String;
-        final fromPlaceID = args['fromplaceid'] as String;
-        final toDescription = args['todescription'] as String;
-        final fromDescription = args['fromdescription'] as String;
+        final toPlaceID = args['toPlaceID'] as String;
+        final fromPlaceID = args['fromPlaceID'] as String;
+        final toDescription = args['toDescription'] as String;
+        final fromDescription = args['fromDescription'] as String;
         return MaterialPageRoute(
           builder: (_) => D1Screen(
             toPlaceID: toPlaceID,

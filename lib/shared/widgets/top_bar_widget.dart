@@ -37,7 +37,7 @@ class TopBarWidget extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                'Rider',
+                'Driver',
                 style: AppFonts.headlineTextStyle.copyWith(
                     color: ThemeColors.scaffoldBackgroundColor,
                     fontStyle: FontStyle.italic,

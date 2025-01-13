@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_places_flutter/model/prediction.dart';
-import '../../domain/usecases/fetch_suggestions_usecase.dart';
-import 'location_selection_event.dart';
-import 'location_selection_state.dart';
+import '../../../domain/usecases/fetch_suggestions_usecase.dart';
+import '../event/location_selection_event.dart';
+import '../state/location_selection_state.dart';
 
 class LocationSelectionBloc extends Bloc<LocationSelectionEvent, LocationSelectionState> {
   final FetchSuggestionsUseCase fetchSuggestionsUseCase;
