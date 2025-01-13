@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../../domain/usecases/home_usecase.dart';
-import '../event/home_event.dart';
-import '../state/home_state.dart';
+import '../../../domain/usecases/rider_home_usecase.dart';
+import '../event/rider_home_event.dart';
+import '../state/rider_home_state.dart';
 
 class RiderHomeBloc extends Bloc<RiderHomeEvent, RiderHomeState> {
   final GetCurrentLocation getCurrentLocation;

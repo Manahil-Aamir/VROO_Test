@@ -1,5 +1,5 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-abstract class LocationRepository {
+abstract class RiderHomeRepository {
   Future<LatLng> getCurrentLocation();
 }

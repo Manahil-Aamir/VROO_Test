@@ -39,6 +39,8 @@ dependencies:
   flutter_bloc: ^8.1.6
   google_maps_flutter: ^2.10.0
   provider: ^6.1.2
+  http: ^1.2.2
+  google_places_flutter: ^2.0.9
 
 dev_dependencies:
   flutter_test:
@@ -117,5 +119,8 @@ flutter:
         - asset: assets/fonts/Roboto-SemiBoldItalic.ttf
         - asset: assets/fonts/Roboto-Thin.ttf
         - asset: assets/fonts/Roboto-ThinItalic.ttf
+    - family: Comfortaa
+      fonts:
+        - asset: assets/fonts/Comfortaa-Bold.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../../../shared/widgets/bottomnavbar.dart';
-import '../../di/home_di.dart';
-import '../bloc/bloc/home_bloc.dart';
-import '../bloc/state/home_state.dart';
+import '../../dependancy_injection/rider_home_di.dart';
+import '../bloc/bloc/rider_home_bloc.dart';
+import '../bloc/state/rider_home_state.dart';
 import '../widgets/locationselection.dart';
 import '../widgets/topbarwidget.dart';
 

@@ -1,25 +1,24 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:vroo_test/features/rider_journey/presentation/bloc/bloc/home_bloc.dart';
-
+import 'package:vroo_test/features/rider_journey/presentation/bloc/bloc/rider_home_bloc.dart';
 import '../../../core/router/navigation.dart';
-import '../data/data_source/home_data_source.dart';
-import '../data/repository/home_data_repository.dart';
-import '../domain/repository/home_domain_repository.dart';
-import '../domain/usecases/home_usecase.dart';
+import '../data/data_source/rider_home_data_source.dart';
+import '../data/repository/rider_home_data_repository.dart';
+import '../domain/repository/rider_home_domain_repository.dart';
+import '../domain/usecases/rider_home_usecase.dart';
 
 class RiderHomeDependencyInjection {
   static List<SingleChildWidget> init() {
     // Set up the location repository and use case
-    final locationRepository = LocationRepositoryImpl(MockLocationDataSource());
+    final locationRepository =
+        RiderHomeRepositoryImpl(MockLocationDataSource());
     final getCurrentLocation = GetCurrentLocation(locationRepository);
     final navigationProvider = Navigation();
 
     // Return the list of providers
     return [
-      Provider<LocationRepository>(create: (_) => locationRepository),
+      Provider<RiderHomeRepository>(create: (_) => locationRepository),
       Provider<GetCurrentLocation>(create: (_) => getCurrentLocation),
       Provider<Navigation>(create: (_) => navigationProvider),
       BlocProvider<RiderHomeBloc>(

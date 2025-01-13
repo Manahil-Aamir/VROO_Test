@@ -1,10 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'routes.dart';
 
 class Navigation extends Cubit<String> {
-  Navigation() : super(Routes.riderhome);
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
-  void navigateTo(String routeName) {
-    emit(routeName);
+  Navigation() : super(Routes.ui);
+
+  void navigateTo(String routeName, {Object? arguments}) {
+    navigatorKey.currentState?.pushNamed(routeName, arguments: arguments);
+  }
+
+  void goBack() {
+    navigatorKey.currentState?.pop();
   }
 }
