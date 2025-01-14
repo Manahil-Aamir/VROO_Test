@@ -20,19 +20,107 @@ class LocationSelectionScreen extends StatelessWidget {
 
   LocationSelectionScreen({required this.role, super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: LocationDependencyInjection.init(),
-      child: Scaffold(
-        appBar: appBar(heading: "Select Location"),
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus(); // Close keyboard and suggestions
-          },
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
+//   @override
+//   Widget build(BuildContext context) {
+//     return MultiProvider(
+//       providers: LocationDependencyInjection.init(),
+//       child: Scaffold(
+//         appBar: appBar(heading: "Select Location"),
+//         body: GestureDetector(
+//           onTap: () {
+//             FocusScope.of(context).unfocus(); // Close keyboard and suggestions
+//           },
+//           child: Padding(
+//             padding: EdgeInsets.all(16.0),
+//             child: Column(
+//               children: [
+//                 BlocProvider(
+//                   create: (context) => LocationSelectionBloc(
+//                     context.read<FetchSuggestionsUseCase>(),
+//                   ),
+//                   child: LocationInputField(
+//                     label: 'From where would you go?',
+//                     onPlaceSelected: (placeId, description) {
+//                       fromPlaceId = placeId;
+//                       fromDescription = description;
+//                       print('From Location Selected: $description ($placeId)');
+//                     },
+//                   ),
+//                 ),
+//                 SizedBox(height: 10.h),
+//                 BlocProvider(
+//                   create: (context) => LocationSelectionBloc(
+//                     context.read<FetchSuggestionsUseCase>(),
+//                   ),
+//                   child: LocationInputField(
+//                     label: 'Where would you go?',
+//                     onPlaceSelected: (placeId, description) {
+//                       toPlaceId = placeId;
+//                       toDescription = description;
+//                       print('To Location Selected: $description ($placeId)');
+//                     },
+//                   ),
+//                 ),
+//                 const Spacer(),
+//                 GradientButton(
+//                   onTap: () {
+//                     if (fromPlaceId != null && toPlaceId != null) {
+//                       context.read<Navigation>().navigateTo(
+//                         Routes.routeDisplayPage,
+//                         arguments: {
+//                           'toPlaceID': toPlaceId,
+//                           'fromPlaceID': fromPlaceId,
+//                           'toDescription': toDescription,
+//                           'fromDescription': fromDescription,
+//                         }
+//                       );
+//                       // Navigator.pushNamed(
+//                       //   context,
+//                       //   Routes.d1,
+//                       //   arguments: {
+//                       //     'toPlaceID': toPlaceId,
+//                       //     'fromPlaceID': fromPlaceId,
+//                       //     'toDescription': toDescription,
+//                       //     'fromDescription': fromDescription,
+//                       //   },
+//                       // );
+//                     } else {
+//                       // Optionally show a message if the user hasn't selected both locations
+//                       ScaffoldMessenger.of(context).showSnackBar(
+//                         const SnackBar(
+//                           content: Text('Please select both locations!'),
+//                         ),
+//                       );
+//                     }
+//                   },
+//                   text: 'Next',
+//                 ),
+//                 SizedBox(height: 60.h),
+//               ],
+//             ),
+          
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
+@override
+Widget build(BuildContext context) {
+  return MultiProvider(
+    providers: LocationDependencyInjection.init(),
+    builder: (context, child) => Scaffold(
+      appBar: appBar(heading: "Select Location"),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
               children: [
                 BlocProvider(
                   create: (context) => LocationSelectionBloc(
@@ -66,12 +154,12 @@ class LocationSelectionScreen extends StatelessWidget {
                   onTap: () {
                     if (fromPlaceId != null && toPlaceId != null) {
                       context.read<Navigation>().navigateTo(
-                        Routes.d1,
+                        Routes.routeDisplayPage,
                         arguments: {
                           'toPlaceID': toPlaceId,
                           'fromPlaceID': fromPlaceId,
-                          'toDescription': toDescription,
-                          'fromDescription': fromDescription,
+                          // 'toDescription': toDescription,
+                          // 'fromDescription': fromDescription,
                         }
                       );
                       // Navigator.pushNamed(
@@ -98,10 +186,11 @@ class LocationSelectionScreen extends StatelessWidget {
                 SizedBox(height: 60.h),
               ],
             ),
-          ),
+          
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
+}

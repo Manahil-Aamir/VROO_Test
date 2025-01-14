@@ -22,7 +22,8 @@ class LocationDependencyInjection {
       Provider<LocationDataSource>(create: (_) => locationDataSource),
       Provider<LocationRepository>(create: (_) => locationRepository),
       Provider<FetchSuggestionsUseCase>(create: (_) => fetchSuggestionsUseCase),
-      Provider<Navigation>(create: (_) => navigationProvider),
+      //Provider<Navigation>(create: (_) => navigationProvider),
+      Provider<Navigation>(create: (_) => Navigation()), // Add Navigation provider
       BlocProvider<LocationSelectionBloc>(
         create: (_) => LocationSelectionBloc(fetchSuggestionsUseCase),
       ),

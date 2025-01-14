@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import '../../features/driver_booking/presentation/pages/driver_home_screen.dart';
 import '../../features/driver_booking/presentation/pages/location_selection_screen.dart';
 import '../../features/driver_booking/presentation/pages/d1.dart';
+import '../../features/driver_booking/presentation/pages/route_display_page.dart';
 
 class Routes {
   static const String ui = '/ui';
   static const String driverHome = '/driver_home';
   static const String locationSelection = '/location_selection';
   static const String d1 = '/d1';
+  static const String routeDisplayPage = '/route_display_page';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -17,6 +19,20 @@ class Routes {
         final role = settings.arguments as String? ?? 'driver'; // Default to 'driver'
         return MaterialPageRoute(
           builder: (_) => LocationSelectionScreen(role: role),
+        );
+      case routeDisplayPage:
+        final args = settings.arguments as Map<String, dynamic>? ?? {};
+        final toPlaceID = args['toPlaceID'] as String? ?? 'ChIJ9SEZ0Lw4sz4RhAdTxTaH2V8';
+        final fromPlaceID = args['fromPlaceID'] as String? ?? 'ChIJOyUu0UQ-sz4RzFgD4rLU7PI';
+        final toDescription = args['toDescription'] as String? ?? 'IBA, University Rd, University Of Karachi, Karachi, Pakistan';
+        final fromDescription = args['fromDescription'] as String? ?? 'Adenwala Apartments، Britto Road, Soldier Bazaar Garden East, Karachi, Pakistan';
+        return MaterialPageRoute(
+          builder: (_) => RouteDisplayPage(
+            toPlaceDesc: toDescription,
+            fromPlaceDesc: fromDescription,
+            toPlaceId: toPlaceID,
+            fromPlaceId: fromPlaceID,
+          ),
         );
       case d1:
         final args = settings.arguments as Map<String, dynamic>;
