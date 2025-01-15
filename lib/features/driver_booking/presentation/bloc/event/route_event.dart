@@ -6,3 +6,19 @@ class FetchRoutesEvent extends RouteEvent {
 
   FetchRoutesEvent(this.fromPlaceId, this.toPlaceId);
 }
+
+// abstract class RouteMapEvent {}
+
+// class InitializeMapEvent extends RouteMapEvent {
+//   final List<dynamic> routeData;
+
+//   InitializeMapEvent(this.routeData);
+// }
+
+// class SelectRouteEvent extends RouteMapEvent {
+//   final dynamic route;
+
+//   SelectRouteEvent(this.route);
+// }
+
+// class SaveRouteEvent extends RouteMapEvent {}

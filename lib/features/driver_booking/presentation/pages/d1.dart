@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class D1Screen extends StatelessWidget {
   final String toPlaceID;
   final String fromPlaceID;
   final String toDescription;
   final String fromDescription;
+  final List<dynamic> selectedRouteCoords;
 
-  const D1Screen({
+  D1Screen({
     super.key,
     required this.toPlaceID,
     required this.fromPlaceID,
     required this.toDescription,
     required this.fromDescription,
-  });
+    required this.selectedRouteCoords,
+  })  : sourceCoord = LatLng(selectedRouteCoords.first[0], selectedRouteCoords.first[1]),
+        destinationCoord = LatLng(selectedRouteCoords.last[0], selectedRouteCoords.last[1]);
+
+  final LatLng sourceCoord;
+  final LatLng destinationCoord;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +47,16 @@ class D1Screen extends StatelessWidget {
             SizedBox(height: 8),
             Text(
               'From Description: $fromDescription',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Source Coordinate: $sourceCoord',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Destination Coordinate: $destinationCoord',
               style: TextStyle(fontSize: 18),
             ),
           ],

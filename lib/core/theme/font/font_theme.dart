@@ -32,7 +32,7 @@ class AppFonts {
   // headlines font size
   static double get headline1TextSize => 28.sp;
   static double get headline2TextSize => 24.sp;
-  static double get headline3TextSize => 28.sp;
+  static double get headline3TextSize => 20.sp;
   static double get headline4TextSize => 18.sp;
   static double get headline5TextSize => 16.sp;
   static double get headline6TextSize => 14.sp;

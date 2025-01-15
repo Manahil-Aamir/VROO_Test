@@ -40,12 +40,14 @@ class Routes {
         final fromPlaceID = args['fromPlaceID'] as String;
         final toDescription = args['toDescription'] as String;
         final fromDescription = args['fromDescription'] as String;
+        final selectedRouteCoords = args['selectedRouteCoords'] as List<dynamic>;
         return MaterialPageRoute(
           builder: (_) => D1Screen(
             toPlaceID: toPlaceID,
             fromPlaceID: fromPlaceID,
             toDescription: toDescription,
             fromDescription: fromDescription,
+            selectedRouteCoords: selectedRouteCoords,
           ),
         );
       default:

@@ -13,7 +13,7 @@ class AppTheme {
       primaryColorLight: ThemeColors.primaryColorLight,
       primaryColorDark: ThemeColors.primaryColorDark,
       scaffoldBackgroundColor: ThemeColors.scaffoldBackgroundColor,
-
+      
       //Canvas Color
       canvasColor: ThemeColors.canvasColor,
 

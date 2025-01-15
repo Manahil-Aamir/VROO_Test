@@ -158,8 +158,8 @@ Widget build(BuildContext context) {
                         arguments: {
                           'toPlaceID': toPlaceId,
                           'fromPlaceID': fromPlaceId,
-                          // 'toDescription': toDescription,
-                          // 'fromDescription': fromDescription,
+                          'toDescription': toDescription,
+                          'fromDescription': fromDescription,
                         }
                       );
                       // Navigator.pushNamed(
