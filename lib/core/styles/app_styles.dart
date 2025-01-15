@@ -9,7 +9,7 @@ class AppStyles {
         labelLarge: AppFonts.buttonTextStyle
             .copyWith(fontSize: AppFonts.buttonTextSize),
         bodyLarge: (AppFonts.bodyTextStyle).copyWith(
-            fontWeight: FontWeight.bold, fontSize: AppFonts.body1TextSize),
+            fontWeight: FontWeight.w500, fontSize: AppFonts.body1TextSize),
         bodyMedium:
             (AppFonts.bodyTextStyle).copyWith(fontSize: AppFonts.body2TextSize),
         displayLarge: (AppFonts.headlineTextStyle).copyWith(
