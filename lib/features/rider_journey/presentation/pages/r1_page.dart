@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:vroo_test/features/rider_journey/dependancy_injection/r1_di.dart';
+import 'package:vroo_test/shared/widgets/recurring_row.dart';
 import 'package:vroo_test/shared/widgets/to_and_fro.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/utils/validators/input_ride_validator.dart';
@@ -10,6 +11,7 @@ import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/date_picker.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../../../../shared/widgets/input_field.dart';
+import '../../../../shared/widgets/recurrence_dialog.dart';
 import '../../../../shared/widgets/time_picker.dart';
 import '../../domain/model/schedule_model.dart';
 import '../bloc/bloc/r1_bloc.dart';
@@ -48,6 +50,7 @@ class _R1PageState extends State<R1Page> {
   bool _timeError3 = false;
   bool _minMaxTimeError = false;
   bool _maxArrivalTimeError = false;
+  final bool _isDialogOpen = false;
 
   void _validateFields() {
     setState(() {
@@ -74,7 +77,7 @@ class _R1PageState extends State<R1Page> {
         date: selectedDate!,
         minTime: selectedMinTime!,
         maxTime: selectedMaxTime!,
-        recurrence: isRecurring ? recurrence : 'One Time',
+        recurrenceType: isRecurring ? recurrence : 'One Time',
       );
 
       context.read<R1Bloc>().add(SaveScheduleEvent(schedule));
@@ -82,6 +85,10 @@ class _R1PageState extends State<R1Page> {
         'role': 'rider',
       });
     }
+  }
+
+  void onRecurringTap(BuildContext context) {
+    showRecurrenceDialog(context);
   }
 
   @override
@@ -108,7 +115,7 @@ class _R1PageState extends State<R1Page> {
                             fromDescription: widget.fromDescription,
                             toDescription: widget.toDescription,
                           ),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 12.h),
                           CustomDatePicker(
                             labelText: 'Select Date',
                             selectedDate: selectedDate,
@@ -121,7 +128,7 @@ class _R1PageState extends State<R1Page> {
                             errorText:
                                 _dateError ? 'Please select a date' : null,
                           ),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 12.h),
                           CustomTimePicker(
                             labelText: 'Min Pick up Time',
                             selectedTime: selectedMinTime,
@@ -134,7 +141,7 @@ class _R1PageState extends State<R1Page> {
                             errorText:
                                 _timeError ? 'Please select a time' : null,
                           ),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 12.h),
                           CustomTimePicker(
                             labelText: 'Max Pick up Time',
                             selectedTime: selectedMaxTime,
@@ -147,7 +154,7 @@ class _R1PageState extends State<R1Page> {
                             errorText:
                                 _timeError2 ? 'Please select a time' : null,
                           ),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 12.h),
                           CustomTimePicker(
                             labelText: 'Max Arrival Time',
                             selectedTime: maxArrivalTime,
@@ -160,7 +167,10 @@ class _R1PageState extends State<R1Page> {
                             errorText:
                                 _timeError3 ? 'Please select a time' : null,
                           ),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 12.h),
+                          RecurringRow(
+                              onRecurringTap: () => onRecurringTap(context)),
+                          SizedBox(height: 12.h),
                           GradientButton(
                             onTap: _validateFields,
                             text: 'Next',

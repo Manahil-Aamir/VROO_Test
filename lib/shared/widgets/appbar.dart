@@ -13,6 +13,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return PreferredSize(
       preferredSize: Size.fromHeight(120.h),
       child: AppBar(
@@ -58,11 +59,8 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                       alignment: Alignment.center,
                       child: Text(
                         heading,
-                        style: TextStyle(
-                          color: ThemeColors.buttonTextColor,
-                          fontSize: 27.sp,
-                          fontFamily: 'Comfortaa',
-                          fontWeight: FontWeight.bold,
+                        style: theme.textTheme.headlineLarge?.copyWith(
+                          color: theme.scaffoldBackgroundColor,
                         ),
                       ),
                     ),

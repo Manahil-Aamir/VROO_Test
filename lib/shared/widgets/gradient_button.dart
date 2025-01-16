@@ -13,6 +13,7 @@ class GradientButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -31,11 +32,8 @@ class GradientButton extends StatelessWidget {
         child: Center(
           child: Text(
             text,
-            style: TextStyle(
-              fontSize: 20,
-              fontFamily: 'Montserrat',
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).scaffoldBackgroundColor, // Text color
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.scaffoldBackgroundColor,
             ),
           ),
         ),

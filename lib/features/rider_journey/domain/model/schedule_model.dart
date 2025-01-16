@@ -6,7 +6,9 @@ class Schedule {
   final DateTime date;
   final TimeOfDay minTime;
   final TimeOfDay maxTime;
-  final String recurrence;
+  final String recurrenceType;
+  final List<String>? selectedDays;
+  final DateTime? endDate;
 
   Schedule({
     required this.fromDescription,
@@ -14,7 +16,9 @@ class Schedule {
     required this.date,
     required this.minTime,
     required this.maxTime,
-    required this.recurrence,
+    required this.recurrenceType,
+    this.selectedDays,
+    this.endDate,
   });
 
   Map<String, dynamic> toMap() {
@@ -22,9 +26,13 @@ class Schedule {
       'fromDescription': fromDescription,
       'toDescription': toDescription,
       'date': date.toIso8601String(),
-      'minTime': '${minTime.hour}:${minTime.minute}',
-      'maxTime': '${maxTime.hour}:${maxTime.minute}',
-      'recurrence': recurrence,
+      'minTime':
+          '${minTime.hour.toString().padLeft(2, '0')}:${minTime.minute.toString().padLeft(2, '0')}',
+      'maxTime':
+          '${maxTime.hour.toString().padLeft(2, '0')}:${maxTime.minute.toString().padLeft(2, '0')}',
+      'recurrenceType': recurrenceType,
+      'selectedDays': selectedDays,
+      'endDate': endDate?.toIso8601String(),
     };
   }
 }

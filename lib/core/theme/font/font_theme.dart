@@ -14,19 +14,19 @@ class AppFonts {
 
   static double get appBarTitleSize => 18.sp;
 
-  static double get headline1TextSize => 28.sp;
+  static double get headline1TextSize => 27.sp;
   static double get headline2TextSize => 24.sp;
 
   static double get body1TextSize => 16.sp;
   static double get body2TextSize => 17.sp;
-  static double get body3TextSize => 12.sp;
+  static double get body3TextSize => 14.sp;
 
   static double get headline3TextSize => 28.sp;
   static double get headline4TextSize => 18.sp;
   static double get headline5TextSize => 16.sp;
   static double get headline6TextSize => 14.sp;
 
-  static double get buttonTextSize => 16.sp;
+  static double get buttonTextSize => 20.sp;
   static double get captionTextSize => 12.sp;
   static double get chipTextSize => 10.sp;
 }
