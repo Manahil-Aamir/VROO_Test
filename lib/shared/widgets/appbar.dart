@@ -26,8 +26,8 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColorDark,
+                  theme.primaryColor,
+                  theme.primaryColor.withOpacity(0.5),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,

@@ -26,7 +26,7 @@ class AppFonts {
   static double get headline5TextSize => 16.sp;
   static double get headline6TextSize => 14.sp;
 
-  static double get buttonTextSize => 20.sp;
+  static double get buttonTextSize => 22.sp;
   static double get captionTextSize => 12.sp;
   static double get chipTextSize => 10.sp;
 }

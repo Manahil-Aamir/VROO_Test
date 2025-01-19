@@ -21,8 +21,8 @@ class GradientButton extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Theme.of(context).primaryColorDark,
-              Theme.of(context).primaryColor,
+              theme.primaryColor,
+              theme.primaryColor.withOpacity(0.5),
             ],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
@@ -33,7 +33,7 @@ class GradientButton extends StatelessWidget {
           child: Text(
             text,
             style: theme.textTheme.labelLarge?.copyWith(
-              color: theme.scaffoldBackgroundColor,
+              color: theme.primaryColorDark,
             ),
           ),
         ),

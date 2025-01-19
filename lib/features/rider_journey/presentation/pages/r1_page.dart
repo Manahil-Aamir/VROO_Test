@@ -44,27 +44,30 @@ class _R1PageState extends State<R1Page> {
   bool isRecurring = false;
   String recurrence = 'One Time';
 
-  bool _dateError = false;
-  bool _timeError = false;
-  bool _timeError2 = false;
-  bool _timeError3 = false;
-  bool _minMaxTimeError = false;
-  bool _maxArrivalTimeError = false;
+  final bool _dateError = false;
+  final bool _timeError = false;
+  final bool _timeError2 = false;
+  final bool _timeError3 = false;
+  final bool _minMaxTimeError = false;
+  final bool _maxArrivalTimeError = false;
   final bool _isDialogOpen = false;
 
   void _validateFields() {
-    setState(() {
-      _dateError = InputRideValidator.validateDate(selectedDate) != null;
-      _timeError = InputRideValidator.validateTime(selectedMinTime) != null;
-      _timeError2 = InputRideValidator.validateTime(selectedMaxTime) != null;
-      _timeError3 = InputRideValidator.validateTime(maxArrivalTime) != null;
-      _minMaxTimeError = InputRideValidator.validateMinMaxTime(
-              selectedMinTime, selectedMaxTime) !=
-          null;
-      _maxArrivalTimeError = InputRideValidator.validateMaxArrivalTime(
-              selectedMaxTime, maxArrivalTime) !=
-          null;
-    });
+    context.read<R1Bloc>().add(ShowErrorEvent(
+          dateError: InputRideValidator.validateDate(selectedDate) != null,
+          minTimeError:
+              InputRideValidator.validateTime(selectedMinTime) != null,
+          maxTimeError:
+              InputRideValidator.validateTime(selectedMaxTime) != null,
+          arrivalTimeError:
+              InputRideValidator.validateTime(maxArrivalTime) != null,
+          minMaxTimeError: InputRideValidator.validateMinMaxTime(
+                  selectedMinTime, selectedMaxTime) !=
+              null,
+          maxArrivalTimeError: InputRideValidator.validateMaxArrivalTime(
+                  selectedMaxTime, maxArrivalTime) !=
+              null,
+        ));
 
     if (!_dateError &&
         !_timeError &&
@@ -100,86 +103,104 @@ class _R1PageState extends State<R1Page> {
           children: [
             BlocBuilder<R1Bloc, R1State>(
               builder: (context, state) {
-                return Scaffold(
-                  appBar: CustomAppBar(
-                    highlightedCircles: 1,
-                    totalCircles: 3,
-                  ),
-                  body: Padding(
-                    padding: EdgeInsets.all(16.0.w),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ToAndFroWidget(
-                            fromDescription: widget.fromDescription,
-                            toDescription: widget.toDescription,
-                          ),
-                          SizedBox(height: 12.h),
-                          CustomDatePicker(
-                            labelText: 'Select Date',
-                            selectedDate: selectedDate,
-                            onDateSelected: (pickedDate) {
-                              setState(() {
-                                selectedDate = pickedDate;
-                                _dateError = false;
-                              });
-                            },
-                            errorText:
-                                _dateError ? 'Please select a date' : null,
-                          ),
-                          SizedBox(height: 12.h),
-                          CustomTimePicker(
-                            labelText: 'Min Pick up Time',
-                            selectedTime: selectedMinTime,
-                            onTimeSelected: (pickedTime) {
-                              setState(() {
-                                selectedMinTime = pickedTime;
-                                _timeError = false;
-                              });
-                            },
-                            errorText:
-                                _timeError ? 'Please select a time' : null,
-                          ),
-                          SizedBox(height: 12.h),
-                          CustomTimePicker(
-                            labelText: 'Max Pick up Time',
-                            selectedTime: selectedMaxTime,
-                            onTimeSelected: (pickedTime) {
-                              setState(() {
-                                selectedMaxTime = pickedTime;
-                                _timeError2 = false;
-                              });
-                            },
-                            errorText:
-                                _timeError2 ? 'Please select a time' : null,
-                          ),
-                          SizedBox(height: 12.h),
-                          CustomTimePicker(
-                            labelText: 'Max Arrival Time',
-                            selectedTime: maxArrivalTime,
-                            onTimeSelected: (pickedTime) {
-                              setState(() {
-                                maxArrivalTime = pickedTime;
-                                _timeError2 = false;
-                              });
-                            },
-                            errorText:
-                                _timeError3 ? 'Please select a time' : null,
-                          ),
-                          SizedBox(height: 12.h),
-                          RecurringRow(
-                              onRecurringTap: () => onRecurringTap(context)),
-                          SizedBox(height: 12.h),
-                          GradientButton(
-                            onTap: _validateFields,
-                            text: 'Next',
-                          ),
-                        ],
+                if (state is ScheduleInputState) {
+                  final bloc = context.read<R1Bloc>();
+
+                  return Scaffold(
+                    appBar: CustomAppBar(
+                      highlightedCircles: 1,
+                      totalCircles: 3,
+                    ),
+                    body: Padding(
+                      padding: EdgeInsets.all(16.0.w),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ToAndFroWidget(
+                              fromDescription: widget.fromDescription,
+                              toDescription: widget.toDescription,
+                            ),
+                            SizedBox(height: 12.h),
+                            CustomDatePicker(
+                              labelText: 'Select Date',
+                              selectedDate: state.selectedDate,
+                              onDateSelected: (pickedDate) {
+                                bloc.add(SelectDateEvent(pickedDate));
+                              },
+                              errorText: state.dateError
+                                  ? 'Please select a date'
+                                  : null,
+                            ),
+                            SizedBox(height: 12.h),
+                            CustomTimePicker(
+                              labelText: 'Min Pick up Time',
+                              selectedTime: state.minPickUpTime,
+                              onTimeSelected: (pickedTime) {
+                                bloc.add(SelectTimeEvent(
+                                    pickedTime, "minPickUpTime"));
+                              },
+                              errorText: state.minTimeError
+                                  ? 'Please select a time'
+                                  : null,
+                            ),
+                            SizedBox(height: 12.h),
+                            CustomTimePicker(
+                              labelText: 'Max Pick up Time',
+                              selectedTime: state.maxPickUpTime,
+                              onTimeSelected: (pickedTime) {
+                                bloc.add(SelectTimeEvent(
+                                    pickedTime, "maxPickUpTime"));
+                              },
+                              errorText: state.maxTimeError
+                                  ? 'Please select a time'
+                                  : null,
+                            ),
+                            SizedBox(height: 12.h),
+                            CustomTimePicker(
+                              labelText: 'Max Arrival Time',
+                              selectedTime: state.maxArrivalTime,
+                              onTimeSelected: (pickedTime) {
+                                bloc.add(SelectTimeEvent(
+                                    pickedTime, "maxArrivalTime"));
+                              },
+                              errorText: state.arrivalTimeError
+                                  ? 'Please select a time'
+                                  : null,
+                            ),
+                            SizedBox(height: 12.h),
+                            RecurringRow(
+                                onRecurringTap: () => onRecurringTap(context)),
+                            SizedBox(height: 12.h),
+                            GradientButton(
+                              onTap: () {
+                                // Trigger field validation through the Bloc.
+                                bloc.add(ShowErrorEvent(
+                                  dateError: state.selectedDate == null,
+                                  minTimeError: state.minPickUpTime == null,
+                                  maxTimeError: state.maxPickUpTime == null,
+                                  arrivalTimeError:
+                                      state.maxArrivalTime == null,
+                                ));
+
+                                // Proceed only if all fields are valid.
+                                if (state.selectedDate != null &&
+                                    state.minPickUpTime != null &&
+                                    state.maxPickUpTime != null &&
+                                    state.maxArrivalTime != null) {
+                                  _validateFields(); // Navigate to the next step.
+                                }
+                              },
+                              text: 'Next',
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
+                  );
+                }
+
+                return Center(child: CircularProgressIndicator());
               },
             ),
           ],

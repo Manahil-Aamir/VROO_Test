@@ -15,6 +15,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return PreferredSize(
       preferredSize: const Size.fromHeight(120.0),
       child: ClipPath(
@@ -23,7 +24,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           height: 420.h,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFFEC8825), Color(0xFF434143)],
+              colors: [
+                theme.primaryColor,
+                theme.primaryColor.withOpacity(0.5),
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -38,8 +42,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   // Back button
                   IconButton(
                     icon: Icon(Icons.arrow_back,
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        size: 30.r),
+                        color: Theme.of(context).primaryColorDark, size: 30.r),
                     onPressed: () => Navigator.pop(context),
                   ),
                   // Circles and separators
@@ -52,11 +55,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                             Container(
                               decoration: BoxDecoration(
                                 color: Theme.of(context)
-                                    .scaffoldBackgroundColor, // Background color of the border
+                                    .primaryColorDark, // Background color of the border
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: Theme.of(context)
-                                      .scaffoldBackgroundColor, // Border color
+                                      .primaryColorDark, // Border color
                                   width: 3.0.w, // Border width
                                 ),
                               ),
@@ -71,7 +74,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                               Container(
                                 width: 20.w,
                                 height: 5.h,
-                                color: Colors.white,
+                                color: theme.primaryColorDark,
                               ),
                           ],
                         );
@@ -80,7 +83,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   // Home button
                   IconButton(
-                    icon: Icon(Icons.home, color: Colors.white, size: 30.r),
+                    icon: Icon(Icons.home,
+                        color: theme.primaryColorDark, size: 30.r),
                     onPressed: () {
                       // Navigate to home or perform other actions
                     },
