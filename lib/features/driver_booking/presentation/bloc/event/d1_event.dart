@@ -21,7 +21,7 @@ class SelectDateEvent extends D1Event {
 
 class SelectTimeEvent extends D1Event {
   final TimeOfDay selectedTime;
-  final String field; // e.g., "minPickUpTime", "maxPickUpTime", or "maxArrivalTime"
+  final String field; // e.g., "time" or "maxArrivalTime"
 
   SelectTimeEvent(this.selectedTime, this.field);
 }

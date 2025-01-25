@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/router/navigation.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/date_picker.dart';
 import '../../../../shared/widgets/gradient_button.dart';
@@ -41,8 +42,7 @@ class D1Page extends StatefulWidget {
 
 class _D1PageState extends State<D1Page> {
   DateTime? selectedDate;
-  TimeOfDay? selectedMinTime;
-  TimeOfDay? selectedMaxTime;
+  TimeOfDay? selectedTime;
   TimeOfDay? maxArrivalTime;
   bool isRecurring = false;
   String recurrence = 'One Time';
@@ -72,11 +72,40 @@ class _D1PageState extends State<D1Page> {
         );
 
         context.read<D1Bloc>().add(SaveScheduleEvent(schedule));
-        context
-            .read<Navigation>()
-            .navigateTo('/d2', arguments: {
-          'role': 'driver',
-        });
+        Navigator.pushNamed(
+          context,
+          Routes.d2,
+          arguments: {
+            'toPlaceID': widget.toPlaceId,
+            'fromPlaceID': widget.fromPlaceId,
+            'toDescription': widget.toDescription,
+            'fromDescription': widget.fromDescription,
+            'selectedRouteCoords': widget.selectedRouteCoords,
+            'selectedDate': state.selectedDate!.toIso8601String(),
+            'selectedTime': state.selectedTime.toString(),
+            // 'selectedTime': '${state.selectedTime!.hour}:${state.selectedTime!.minute}',
+            // 'maxArrivalTime': '${state.maxArrivalTime!.hour}:${state.maxArrivalTime!.minute}',
+            'maxArrivalTime': state.maxArrivalTime!.toString(),
+            'isRecurring': isRecurring,
+            'recurrence': recurrence,
+          },
+        );
+        // context.read<Navigation>().navigateTo(
+        //   '/d2',
+        //   arguments: {
+        //     'toPlaceID': widget.toPlaceId,
+        //     'fromPlaceID': widget.fromPlaceId,
+        //     'toDescription': widget.toDescription,
+        //     'fromDescription': widget.fromDescription,
+        //     'selectedRouteCoords': widget.selectedRouteCoords,
+        //     'selectedDate': state.selectedDate!.toIso8601String(),
+        //     'selectedTime': '${state.selectedTime!.hour}:${state.selectedTime!.minute}',
+        //     'maxArrivalTime': '${state.maxArrivalTime!.hour}:${state.maxArrivalTime!.minute}',
+        //     'isRecurring': isRecurring,
+        //     'recurrence': recurrence,
+        //   },
+        // );
+      
       } else {
         // Show an error message if any field is null
         ScaffoldMessenger.of(context).showSnackBar(
@@ -163,12 +192,13 @@ class _D1PageState extends State<D1Page> {
                             selectedTime: state.selectedTime,
                             onTimeSelected: (departureTime) {
                               bloc.add(
-                                  SelectTimeEvent(departureTime, "departureTime"));
+                                  SelectTimeEvent(departureTime, "time"));
                             },
                             errorText: state.timeError
                                 ? 'Please select departure time'
                                 : null,
                           ),
+                          
                           SizedBox(height: 12.h),
                           CustomTimePicker(
                             labelText: 'Max Arrival Time',

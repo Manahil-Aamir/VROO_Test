@@ -38,10 +38,10 @@ class D1Bloc extends Bloc<D1Event, D1State> {
         print(
             "Selected time for ${event.field}: ${event.selectedTime}"); // Debugging line
         switch (event.field) {
-          case "minPickUpTime":
+          case "time":
             emit(currentState.copyWith(
                 selectedTime: event.selectedTime,
-                minTimeError: false)); // Update minPickUpTime and clear error
+                timeError: false)); // Update PickUpTime and clear error
             break;
           case "maxArrivalTime":
             emit(currentState.copyWith(
@@ -60,8 +60,8 @@ class D1Bloc extends Bloc<D1Event, D1State> {
         emit(currentState.copyWith(
           dateError: event.dateError ??
               currentState.dateError, // Update dateError with new value
-          minTimeError: event.timeError ??
-              currentState.timeError, // Update minTimeError
+          timeError: event.timeError ??
+              currentState.timeError, // Update timeError
           arrivalTimeError: event.maxArrivalTimeError ??
               currentState.arrivalTimeError, // Update arrivalTimeError
         ));

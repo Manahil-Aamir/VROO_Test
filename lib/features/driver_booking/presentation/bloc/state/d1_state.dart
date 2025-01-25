@@ -49,7 +49,7 @@ class ScheduleInputState extends D1State {
     TimeOfDay? selectedTime,
     TimeOfDay? maxArrivalTime,
     bool? dateError,
-    bool? minTimeError,
+    bool? timeError,
     bool? arrivalTimeError,
   }) {
     return ScheduleInputState(
@@ -57,7 +57,7 @@ class ScheduleInputState extends D1State {
       selectedTime: selectedTime ?? this.selectedTime,
       maxArrivalTime: maxArrivalTime ?? this.maxArrivalTime,
       dateError: dateError ?? this.dateError,
-      timeError: minTimeError ?? this.timeError,
+      timeError: timeError ?? this.timeError,
       arrivalTimeError: arrivalTimeError ?? this.arrivalTimeError,
     );
   }
