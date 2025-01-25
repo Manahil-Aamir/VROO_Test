@@ -75,12 +75,12 @@ class RouteMapScreen extends StatelessWidget {
                           right: 100,
                           child: GradientButton(
                             onTap: () {
-                              //get selected route coords
-                              final selectedRouteCoords = state.selectedRoute['coords'];                         
-                              //final sourceCoord = LatLng(selectedRouteCoords.first[0], selectedRouteCoords.first[1]);
-                              //final destinationCoord = LatLng(selectedRouteCoords.last[0], selectedRouteCoords.last[1]);
-                              // Navigate to the next screen
-                              context.read<Navigation>().navigateTo(
+                              // Get the selected route coordinates
+                              final selectedRouteCoords = state.selectedRoute['coords'];
+
+                              // Navigate to the D1 screen with the required arguments and the singleton bloc
+                              Navigator.pushNamed(
+                                context,
                                 Routes.d1,
                                 arguments: {
                                   'toPlaceID': toPlaceId,
@@ -88,8 +88,10 @@ class RouteMapScreen extends StatelessWidget {
                                   'toDescription': toPlaceDesc,
                                   'fromDescription': fromPlaceDesc,
                                   'selectedRouteCoords': selectedRouteCoords,
-                                }
-                              );                            
+                                  'distance': state.selectedRoute['distance'], 
+                                  'duration': state.selectedRoute['duration'], 
+                                },
+                              );
                             },
                             text: 'Select Route',
                           ),
