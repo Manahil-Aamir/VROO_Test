@@ -20,6 +20,14 @@ class ScheduleError extends R1State {
   ScheduleError(this.error);
 }
 
+class ScheduleLoading extends R1State {}
+
+class ScheduleLoaded extends R1State {
+  final Schedule loadedSchedule;
+
+  ScheduleLoaded(this.loadedSchedule);
+}
+
 class ScheduleInputState extends R1State {
   final DateTime? selectedDate;
   final TimeOfDay? minPickUpTime;

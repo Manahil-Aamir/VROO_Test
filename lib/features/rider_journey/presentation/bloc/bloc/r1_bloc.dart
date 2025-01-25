@@ -4,14 +4,16 @@ import '../event/r1_event.dart';
 import '../state/r1_state.dart';
 
 class R1Bloc extends Bloc<R1Event, R1State> {
-  final SaveScheduleUseCase useCase;
+  final SaveScheduleUseCase saveScheduleUseCase;
+  final LoadScheduleUseCase loadScheduleUseCase;
 
-  R1Bloc(this.useCase) : super(ScheduleInputState()) {
+  R1Bloc(this.saveScheduleUseCase, this.loadScheduleUseCase)
+      : super(ScheduleInitial()) {
     // Ensure we start with ScheduleInputState
     on<SaveScheduleEvent>((event, emit) async {
       emit(ScheduleSaving());
       try {
-        await useCase.execute(event.schedule);
+        await saveScheduleUseCase.execute(event.schedule);
         emit(ScheduleSaved(
             event.schedule)); // Emit saved state with the schedule
       } catch (e) {
@@ -71,6 +73,48 @@ class R1Bloc extends Bloc<R1Event, R1State> {
               currentState.arrivalTimeError, // Update arrivalTimeError
         ));
       }
+    });
+
+    // Handling loading event
+    on<LoadScheduleEvent>((event, emit) async {
+      emit(ScheduleLoading());
+      try {
+        final schedule = await loadScheduleUseCase.execute();
+        if (schedule != null) {
+          // Emit ScheduleInputState with the loaded schedule
+          emit(ScheduleInputState(
+            selectedDate: schedule.date,
+            minPickUpTime: schedule.minTime,
+            maxPickUpTime: schedule.maxTime,
+            maxArrivalTime: schedule.arrivalTime,
+            dateError: false,
+            minTimeError: false,
+            maxTimeError: false,
+            arrivalTimeError: false,
+          ));
+        } else {
+          // Emit ScheduleInputState with default values if no schedule is loaded
+          emit(ScheduleInputState());
+        }
+      } catch (e) {
+        emit(ScheduleError(e.toString()));
+      }
+    });
+
+    on<UpdateScheduleEvent>((event, emit) {
+      final currentState = state;
+      if (currentState is ScheduleInputState) {
+        emit(currentState.copyWith(
+          selectedDate: event.selectedDate ?? currentState.selectedDate,
+          minPickUpTime: event.minPickUpTime ?? currentState.minPickUpTime,
+          maxPickUpTime: event.maxPickUpTime ?? currentState.maxPickUpTime,
+          maxArrivalTime: event.maxArrivalTime ?? currentState.maxArrivalTime,
+        ));
+      }
+    });
+
+    on<ResetStateEvent>((event, emit) {
+      emit(ScheduleInitial());
     });
   }
 }

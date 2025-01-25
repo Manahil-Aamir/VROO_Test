@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vroo_test/features/rider_journey/presentation/pages/rider_home_page.dart';
 import 'package:vroo_test/ui.dart';
 
+import '../../features/rider_journey/dependancy_injection/r1_di.dart';
 import '../../features/rider_journey/presentation/pages/location_selection_screen.dart';
 import '../../features/rider_journey/presentation/pages/r1_page.dart';
 
@@ -27,11 +29,14 @@ class Routes {
       case r1Page:
         final arguments = settings.arguments as Map<String, String?>;
         return MaterialPageRoute(
-          builder: (_) => R1Page(
-            fromDescription: arguments['fromDescription'] ?? '',
-            toDescription: arguments['toDescription'] ?? '',
-            fromPlaceId: arguments['fromPlaceId'] ?? '',
-            toPlaceId: arguments['toPlaceId'] ?? '',
+          builder: (_) => MultiProvider(
+            providers: R1DependencyInjection.init(),
+            child: R1Page(
+              fromDescription: arguments['fromDescription'] ?? '',
+              toDescription: arguments['toDescription'] ?? '',
+              fromPlaceId: arguments['fromPlaceId'] ?? '',
+              toPlaceId: arguments['toPlaceId'] ?? '',
+            ),
           ),
         );
       default:

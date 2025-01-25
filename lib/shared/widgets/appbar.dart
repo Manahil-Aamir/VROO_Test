@@ -44,7 +44,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                       child: IconButton(
                         icon: Icon(
                           Icons.arrow_back,
-                          color: ThemeColors.buttonTextColor,
+                          color: theme.primaryColorDark,
                         ),
                         onPressed: () {
                           Navigator.pop(context);
@@ -60,7 +60,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                       child: Text(
                         heading,
                         style: theme.textTheme.headlineLarge?.copyWith(
-                          color: theme.scaffoldBackgroundColor,
+                          color: theme.primaryColorDark,
                         ),
                       ),
                     ),

@@ -10,4 +10,9 @@ class R1RepositoryImpl implements R1Repository {
   Future<void> saveSchedule(Map<String, dynamic> scheduleData) {
     return dataSource.saveSchedule(scheduleData);
   }
+
+  @override
+  Future<Map<String, dynamic>?> loadSchedule() {
+    return dataSource.loadSchedule();
+  }
 }

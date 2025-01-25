@@ -10,3 +10,17 @@ class SaveScheduleUseCase {
     return repository.saveSchedule(schedule.toMap());
   }
 }
+
+class LoadScheduleUseCase {
+  final R1Repository repository;
+
+  LoadScheduleUseCase(this.repository);
+
+  Future<Schedule?> execute() async {
+    final scheduleData = await repository.loadSchedule();
+    if (scheduleData != null) {
+      return Schedule.fromMap(scheduleData);
+    }
+    return null;
+  }
+}

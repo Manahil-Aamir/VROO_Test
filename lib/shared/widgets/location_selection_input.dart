@@ -57,6 +57,8 @@ class _LocationInputFieldState extends State<LocationInputField> {
             TextField(
               controller: _controller,
               focusNode: _focusNode,
+              cursorColor:
+                  Theme.of(context).primaryColor, // Set cursor color here
               style: AppFonts.bodyTextStyle.copyWith(
                 fontWeight: FontWeight.w500,
                 fontSize: AppFonts.body2TextSize,

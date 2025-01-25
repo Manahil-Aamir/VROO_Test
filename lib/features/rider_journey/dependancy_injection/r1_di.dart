@@ -14,6 +14,7 @@ class R1DependencyInjection {
     final scheduleDataSource = R1DataSource();
     final scheduleRepository = R1RepositoryImpl(scheduleDataSource);
     final saveScheduleUseCase = SaveScheduleUseCase(scheduleRepository);
+    final loadScheduleUseCase = LoadScheduleUseCase(scheduleRepository);
     final navigationProvider = Navigation();
 
     // Return the list of providers
@@ -21,8 +22,10 @@ class R1DependencyInjection {
       Provider<R1DataSource>(create: (_) => scheduleDataSource),
       Provider<R1Repository>(create: (_) => scheduleRepository),
       Provider<SaveScheduleUseCase>(create: (_) => saveScheduleUseCase),
+      Provider<LoadScheduleUseCase>(create: (_) => loadScheduleUseCase),
       Provider<Navigation>(create: (_) => navigationProvider),
-      BlocProvider<R1Bloc>(create: (_) => R1Bloc(saveScheduleUseCase)),
+      BlocProvider<R1Bloc>(
+          create: (_) => R1Bloc(saveScheduleUseCase, loadScheduleUseCase)),
     ];
   }
 }

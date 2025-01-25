@@ -10,6 +10,10 @@ class SaveScheduleEvent extends R1Event {
   SaveScheduleEvent(this.schedule);
 }
 
+class LoadScheduleEvent extends R1Event {
+  LoadScheduleEvent();
+}
+
 class SelectDateEvent extends R1Event {
   final DateTime selectedDate;
 
@@ -40,4 +44,25 @@ class ShowErrorEvent extends R1Event {
     this.minMaxTimeError,
     this.maxArrivalTimeError,
   });
+}
+
+class UpdateScheduleEvent extends R1Event {
+  final DateTime? selectedDate;
+  final TimeOfDay? minPickUpTime;
+  final TimeOfDay? maxPickUpTime;
+  final TimeOfDay? maxArrivalTime;
+
+  UpdateScheduleEvent({
+    this.selectedDate,
+    this.minPickUpTime,
+    this.maxPickUpTime,
+    this.maxArrivalTime,
+  });
+
+  List<Object?> get props =>
+      [selectedDate, minPickUpTime, maxPickUpTime, maxArrivalTime];
+}
+
+class ResetStateEvent extends R1Event {
+  List<Object?> get props => [];
 }
