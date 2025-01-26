@@ -6,6 +6,8 @@ import '../../../../core/router/navigation.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../core/theme/font/font_theme.dart';
 import '../../core/router/routes.dart';
+import '../../features/driver_booking/presentation/bloc/bloc/driver_home_bloc.dart';
+import '../../features/driver_booking/presentation/bloc/event/driver_home_event.dart';
 
 class LocationSelectionButtonsWidget extends StatelessWidget {
   const LocationSelectionButtonsWidget({super.key});
@@ -27,6 +29,7 @@ class LocationSelectionButtonsWidget extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
+                context.read<DriverHomeBloc>().add(ClearSharedPreferencesEvent());
                 context
                     .read<Navigation>()
                     .navigateTo(Routes.locationSelection, arguments: 'driver');
@@ -39,8 +42,7 @@ class LocationSelectionButtonsWidget extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.search,
-                        color: ThemeColors.scaffoldBackgroundColor),
+                    Icon(Icons.search, color: ThemeColors.scaffoldBackgroundColor),
                     SizedBox(width: 10.w),
                     Text('Starting Point',
                         style: AppFonts.bodyTextStyle.copyWith(
@@ -54,6 +56,8 @@ class LocationSelectionButtonsWidget extends StatelessWidget {
             SizedBox(height: 10.h),
             GestureDetector(
               onTap: () {
+                // Trigger the event to clear SharedPreferences
+                context.read<DriverHomeBloc>().add(ClearSharedPreferencesEvent());
                 context
                     .read<Navigation>()
                     .navigateTo(Routes.locationSelection, arguments: 'driver');
@@ -66,8 +70,7 @@ class LocationSelectionButtonsWidget extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.search,
-                        color: ThemeColors.scaffoldBackgroundColor),
+                    Icon(Icons.search, color: ThemeColors.scaffoldBackgroundColor),
                     SizedBox(width: 10.w),
                     Text('Destination',
                         style: AppFonts.bodyTextStyle.copyWith(

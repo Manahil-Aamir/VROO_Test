@@ -83,29 +83,11 @@ class _D1PageState extends State<D1Page> {
             'selectedRouteCoords': widget.selectedRouteCoords,
             'selectedDate': state.selectedDate!.toIso8601String(),
             'selectedTime': state.selectedTime.toString(),
-            // 'selectedTime': '${state.selectedTime!.hour}:${state.selectedTime!.minute}',
-            // 'maxArrivalTime': '${state.maxArrivalTime!.hour}:${state.maxArrivalTime!.minute}',
             'maxArrivalTime': state.maxArrivalTime!.toString(),
             'isRecurring': isRecurring,
             'recurrence': recurrence,
           },
         );
-        // context.read<Navigation>().navigateTo(
-        //   '/d2',
-        //   arguments: {
-        //     'toPlaceID': widget.toPlaceId,
-        //     'fromPlaceID': widget.fromPlaceId,
-        //     'toDescription': widget.toDescription,
-        //     'fromDescription': widget.fromDescription,
-        //     'selectedRouteCoords': widget.selectedRouteCoords,
-        //     'selectedDate': state.selectedDate!.toIso8601String(),
-        //     'selectedTime': '${state.selectedTime!.hour}:${state.selectedTime!.minute}',
-        //     'maxArrivalTime': '${state.maxArrivalTime!.hour}:${state.maxArrivalTime!.minute}',
-        //     'isRecurring': isRecurring,
-        //     'recurrence': recurrence,
-        //   },
-        // );
-      
       } else {
         // Show an error message if any field is null
         ScaffoldMessenger.of(context).showSnackBar(

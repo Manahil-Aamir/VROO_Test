@@ -15,4 +15,11 @@ class D1RepositoryImpl implements D1Repository {
   Future<Map<String, dynamic>?> loadSchedule() {
     return dataSource.loadSchedule();
   }
+
+  @override
+  Future<void> clearScheduleData() async {
+    await dataSource.clearScheduleData(); // Delegate to the data source
+  }
 }
+
+
