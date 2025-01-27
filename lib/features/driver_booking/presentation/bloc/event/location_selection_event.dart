@@ -1,25 +1,17 @@
 import 'package:equatable/equatable.dart';
 
 abstract class LocationSelectionEvent extends Equatable {
+  const LocationSelectionEvent();
+
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
 class FetchSuggestions extends LocationSelectionEvent {
   final String input;
 
-  FetchSuggestions(this.input);
+  const FetchSuggestions(this.input);
 
   @override
-  List<Object?> get props => [input];
-}
-
-class SelectLocation extends LocationSelectionEvent {
-  final String placeId;
-  final String description;
-
-  SelectLocation(this.placeId, this.description);
-
-  @override
-  List<Object?> get props => [placeId, description];
+  List<Object> get props => [input];
 }
