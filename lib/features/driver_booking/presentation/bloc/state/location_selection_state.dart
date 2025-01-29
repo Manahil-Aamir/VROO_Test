@@ -13,12 +13,12 @@ class LocationSelectionInitial extends LocationSelectionState {}
 class LocationSelectionLoading extends LocationSelectionState {}
 
 class LocationSelectionLoaded extends LocationSelectionState {
-  final List<Prediction> suggestions;
+  final List<Prediction> predictions;
 
-  const LocationSelectionLoaded(this.suggestions);
+  const LocationSelectionLoaded(this.predictions);
 
   @override
-  List<Object> get props => [suggestions];
+  List<Object> get props => [predictions];
 }
 
 class LocationSelectionError extends LocationSelectionState {

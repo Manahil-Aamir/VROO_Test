@@ -9,11 +9,13 @@ import '../../features/driver_booking/presentation/bloc/state/location_selection
 class LocationInputField extends StatefulWidget {
   final String label;
   final Function(String placeId, String description) onPlaceSelected;
+  final String? initialValue;
 
   const LocationInputField({
     super.key,
     required this.label,
     required this.onPlaceSelected,
+    this.initialValue,
   });
 
   @override
@@ -28,10 +30,9 @@ class _LocationInputFieldState extends State<LocationInputField> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _controller = TextEditingController(text: widget.initialValue);
     _focusNode = FocusNode();
 
-    // Listen to focus changes
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
         setState(() {
@@ -76,14 +77,6 @@ class _LocationInputFieldState extends State<LocationInputField> {
                   borderRadius: BorderRadius.circular(10.r),
                   borderSide: BorderSide(color: Theme.of(context).primaryColor),
                 ),
-                // suffixIcon: state is LocationSelectionLoading
-                //     ? Padding(
-                //         padding: EdgeInsets.all(8.0),
-                //         child: CircularProgressIndicator(
-                //           color: Theme.of(context).primaryColor,
-                //         ),
-                //       )
-                //     : null,
               ),
               onChanged: (value) {
                 setState(() {
@@ -92,8 +85,7 @@ class _LocationInputFieldState extends State<LocationInputField> {
                 bloc.add(FetchSuggestions(value));
               },
             ),
-            if (_showSuggestions)
-              _buildSuggestionsList(state),
+            if (_showSuggestions) _buildSuggestionsList(state),
           ],
         );
       },
@@ -101,45 +93,46 @@ class _LocationInputFieldState extends State<LocationInputField> {
   }
 
   Widget _buildSuggestionsList(LocationSelectionState state) {
-    if (state is LocationSelectionLoading) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: CircularProgressIndicator(
-            color: Theme.of(context).primaryColor,
-          ),
+  if (state is LocationSelectionLoading) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: CircularProgressIndicator(
+          color: Theme.of(context).primaryColor,
         ),
-      );
-    } else if (state is LocationSelectionLoaded && state.suggestions.isNotEmpty) {
-      return ListView.builder(
-        shrinkWrap: true,
-        itemCount: state.suggestions.length,
-        itemBuilder: (context, index) {
-          final suggestion = state.suggestions[index];
-          return ListTile(
-            leading: Icon(Icons.place, color: Theme.of(context).primaryColor),
-            title: Text(suggestion.description),
-            onTap: () {
-              _controller.text = suggestion.description;
-              widget.onPlaceSelected(suggestion.placeId, suggestion.description);
-              setState(() {
-                _showSuggestions = false;
-              });
-              context.read<LocationSelectionBloc>().add(FetchSuggestions(''));
-            },
-          );
-        },
-      );
-    } else if (state is LocationSelectionError) {
-      return Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Text(
-          state.message,
-          style: TextStyle(color: Colors.red),
-        ),
-      );
-    } else {
-      return SizedBox.shrink(); // Hide the list when no suggestions are available
-    }
+      ),
+    );
+  } else if (state is LocationSelectionLoaded && state.predictions.isNotEmpty) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: state.predictions.length,
+      itemBuilder: (context, index) {
+        final suggestion = state.predictions[index];
+        return ListTile(
+          leading: Icon(Icons.place, color: Theme.of(context).primaryColor),
+          title: Text(suggestion.description),
+          onTap: () {
+            _controller.text = suggestion.description;
+            widget.onPlaceSelected(suggestion.placeId, suggestion.description);
+            setState(() {
+              _showSuggestions = false;
+            });
+            context.read<LocationSelectionBloc>().add(FetchSuggestions(''));
+          },
+        );
+      },
+    );
+  } else if (state is LocationSelectionError) {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Text(
+        state.message,
+        style: TextStyle(color: Colors.red),
+      ),
+    );
+  } else {
+    return SizedBox.shrink();
   }
+}
+
 }
