@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../domain/entity/schedule_model.dart';
+import 'package:vroo_test/features/driver_booking/data/model/schedule_model.dart';
 
 abstract class D1State {}
 
@@ -8,7 +8,7 @@ class ScheduleInitial extends D1State {}
 class ScheduleSaving extends D1State {}
 
 class ScheduleSaved extends D1State {
-  final Schedule savedSchedule;
+  final ScheduleModel savedSchedule;
 
   ScheduleSaved(this.savedSchedule);
 }
@@ -22,7 +22,7 @@ class ScheduleError extends D1State {
 class ScheduleLoading extends D1State {}
 
 class ScheduleLoaded extends D1State {
-  final Schedule loadedSchedule;
+  final ScheduleModel loadedSchedule;
 
   ScheduleLoaded(this.loadedSchedule);
 }

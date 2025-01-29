@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:vroo_test/features/driver_booking/data/model/schedule_model.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
@@ -11,7 +12,6 @@ import '../../../../shared/widgets/recurrence_dialog.dart';
 import '../../../../shared/widgets/recurring_row.dart';
 import '../../../../shared/widgets/time_picker.dart';
 import '../../../../shared/widgets/to_and_fro.dart';
-import '../../domain/entity/schedule_model.dart';
 import '../bloc/bloc/d1_bloc.dart';
 import '../bloc/event/d1_event.dart';
 import '../bloc/state/d1_state.dart';
@@ -46,7 +46,7 @@ class _D1PageState extends State<D1Page> {
   TimeOfDay? maxArrivalTime;
   bool isRecurring = false;
   String recurrence = 'One Time';
-  Schedule? schedule;
+  ScheduleModel? schedule;
 
   void _validateFields() {
     final state = context.read<D1Bloc>().state;
@@ -62,7 +62,7 @@ class _D1PageState extends State<D1Page> {
       if (state.selectedDate != null &&
           state.selectedTime != null &&
           state.maxArrivalTime != null) {
-        final schedule = Schedule(
+        final schedule = ScheduleModel(
           fromDescription: widget.fromDescription,
           toDescription: widget.toDescription,
           date: state.selectedDate!,
