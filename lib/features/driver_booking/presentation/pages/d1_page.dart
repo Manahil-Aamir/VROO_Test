@@ -81,6 +81,8 @@ class _D1PageState extends State<D1Page> {
             'toDescription': widget.toDescription,
             'fromDescription': widget.fromDescription,
             'selectedRouteCoords': widget.selectedRouteCoords,
+            'distance': widget.distance,
+            'duration': widget.duration,
             'selectedDate': state.selectedDate!.toIso8601String(),
             'selectedTime': state.selectedTime.toString(),
             'maxArrivalTime': state.maxArrivalTime!.toString(),
@@ -103,18 +105,6 @@ class _D1PageState extends State<D1Page> {
   void onRecurringTap(BuildContext context) {
     showRecurrenceDialog(context);
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (_isInitialLoad) {
-  //       context.read<D1Bloc>().add(LoadScheduleEvent());
-  //       _isInitialLoad = false;
-  //     }
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {

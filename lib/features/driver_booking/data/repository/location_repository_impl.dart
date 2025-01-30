@@ -1,7 +1,6 @@
 import '../../domain/entity/prediction.dart';
 import '../../domain/repository/location_repository.dart';
 import '../data_source/location_data_source.dart';
-import '../data_source/location_local_data_source.dart';
 import '../model/prediction_model.dart';
 
 class LocationRepositoryImpl implements LocationRepository {

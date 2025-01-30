@@ -38,7 +38,7 @@ class App extends StatelessWidget {
                     child: widget,
                   );
                 },
-                initialRoute: Routes.driverHome,
+                initialRoute: Routes.d1,
                 onGenerateRoute: Routes().generateRoute,
                 navigatorKey: _navigatorKey, // Add navigatorKey here
               );
