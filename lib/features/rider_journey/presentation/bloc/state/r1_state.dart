@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/entity/schedule_model.dart';
+import '../../../domain/entity/schedule_entity.dart';
 
 abstract class R1State {}
 
@@ -9,7 +9,7 @@ class ScheduleInitial extends R1State {}
 class ScheduleSaving extends R1State {}
 
 class ScheduleSaved extends R1State {
-  final Schedule savedSchedule;
+  final ScheduleEntity savedSchedule;
 
   ScheduleSaved(this.savedSchedule);
 }
@@ -23,7 +23,7 @@ class ScheduleError extends R1State {
 class ScheduleLoading extends R1State {}
 
 class ScheduleLoaded extends R1State {
-  final Schedule loadedSchedule;
+  final ScheduleEntity loadedSchedule;
 
   ScheduleLoaded(this.loadedSchedule);
 }

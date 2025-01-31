@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vroo_test/features/rider_journey/presentation/bloc/bloc/rider_home_bloc.dart';
 
 import '../../../../core/router/navigation.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../core/theme/font/font_theme.dart';
+import '../bloc/event/rider_home_event.dart';
 
 class LocationSelectionButtonsWidget extends StatelessWidget {
   const LocationSelectionButtonsWidget({super.key});
@@ -27,6 +29,9 @@ class LocationSelectionButtonsWidget extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
+                context
+                    .read<RiderHomeBloc>()
+                    .add(ClearSharedPreferencesEvent());
                 context.read<Navigation>().navigateTo(Routes.ui);
                 print('hi');
               },
@@ -53,6 +58,9 @@ class LocationSelectionButtonsWidget extends StatelessWidget {
             SizedBox(height: 10.h),
             GestureDetector(
               onTap: () {
+                context
+                    .read<RiderHomeBloc>()
+                    .add(ClearSharedPreferencesEvent());
                 context
                     .read<Navigation>()
                     .navigateTo('/location_selection', arguments: {

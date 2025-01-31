@@ -31,6 +31,9 @@ class InputRideValidator {
     if (minTimeInMinutes >= maxTimeInMinutes) {
       return 'Minimum time must be less than maximum time.';
     }
+    if (maxTimeInMinutes - minTimeInMinutes < 15) {
+      return 'Maximum time must be at least 15 minutes greater than minimum time.';
+    }
     return null;
   }
 

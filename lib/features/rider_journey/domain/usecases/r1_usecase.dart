@@ -1,4 +1,4 @@
-import '../entity/schedule_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import '../repository/r1_repository.dart';
 
 class SaveScheduleUseCase {
@@ -6,7 +6,7 @@ class SaveScheduleUseCase {
 
   SaveScheduleUseCase(this.repository);
 
-  Future<void> execute(Schedule schedule) {
+  Future<void> execute(ScheduleModel schedule) {
     return repository.saveSchedule(schedule.toMap());
   }
 }
@@ -16,10 +16,10 @@ class LoadScheduleUseCase {
 
   LoadScheduleUseCase(this.repository);
 
-  Future<Schedule?> execute() async {
+  Future<ScheduleModel?> execute() async {
     final scheduleData = await repository.loadSchedule();
     if (scheduleData != null) {
-      return Schedule.fromMap(scheduleData);
+      return ScheduleModel.fromMap(scheduleData);
     }
     return null;
   }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 
-import '../../../domain/entity/schedule_model.dart';
+import '../../../domain/entity/schedule_entity.dart';
 
 abstract class R1Event {}
 
 class SaveScheduleEvent extends R1Event {
-  final Schedule schedule;
+  final ScheduleModel schedule;
 
   SaveScheduleEvent(this.schedule);
 }

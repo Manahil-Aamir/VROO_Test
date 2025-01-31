@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 
 class R1DataSource {
   Future<void> saveSchedule(Map<String, dynamic> scheduleData) async {

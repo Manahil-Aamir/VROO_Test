@@ -1,26 +1,17 @@
 import 'package:flutter/material.dart';
+import '../../domain/entity/schedule_entity.dart';
 
-class Schedule {
-  final String fromDescription;
-  final String toDescription;
-  final DateTime date;
-  final TimeOfDay minTime;
-  final TimeOfDay maxTime;
-  final TimeOfDay arrivalTime;
-  final String recurrenceType;
-  final List<String>? selectedDays;
-  final DateTime? endDate;
-
-  Schedule({
-    required this.fromDescription,
-    required this.toDescription,
-    required this.date,
-    required this.minTime,
-    required this.maxTime,
-    required this.arrivalTime,
-    required this.recurrenceType,
-    this.selectedDays,
-    this.endDate,
+class ScheduleModel extends ScheduleEntity {
+  ScheduleModel({
+    required super.fromDescription,
+    required super.toDescription,
+    required super.date,
+    required super.minTime,
+    required super.maxTime,
+    required super.arrivalTime,
+    required super.recurrenceType,
+    super.selectedDays,
+    super.endDate,
   });
 
   Map<String, dynamic> toMap() {
@@ -40,8 +31,8 @@ class Schedule {
     };
   }
 
-  factory Schedule.fromMap(Map<String, dynamic> map) {
-    return Schedule(
+  factory ScheduleModel.fromMap(Map<String, dynamic> map) {
+    return ScheduleModel(
       fromDescription: map['fromDescription'],
       toDescription: map['toDescription'],
       date: DateTime.parse(map['date']),

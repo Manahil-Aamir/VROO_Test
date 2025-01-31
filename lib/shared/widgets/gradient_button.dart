@@ -28,6 +28,13 @@ class GradientButton extends StatelessWidget {
             end: Alignment.centerRight,
           ),
           borderRadius: BorderRadius.circular(8.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              offset: Offset(0, 4),
+              blurRadius: 4,
+            ),
+          ],
         ),
         child: Center(
           child: Text(

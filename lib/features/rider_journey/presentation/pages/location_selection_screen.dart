@@ -54,6 +54,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return MultiProvider(
       providers: LocationSelectionDependencyInjection
           .init(), // Assuming this provides all necessary dependencies
@@ -113,7 +114,8 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
+                          backgroundColor: theme.indicatorColor,
                           content: Text('Please select both locations!'),
                         ),
                       );
