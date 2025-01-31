@@ -1,5 +1,7 @@
-import 'package:google_places_flutter/model/prediction.dart';
+import '../entity/prediction_entity.dart';
 
 abstract class LocationRepository {
-  Future<List<Prediction>> fetchSuggestions(String input);
+  Future<List<Location>> fetchSuggestions(String input);
+  Future<void> saveSelectedLocation(Location prediction);
+  Future<Location?> getSelectedLocation();
 }

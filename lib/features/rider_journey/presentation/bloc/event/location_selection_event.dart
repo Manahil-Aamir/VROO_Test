@@ -1,25 +1,29 @@
 import 'package:equatable/equatable.dart';
+import '../../../domain/entity/prediction_entity.dart';
 
 abstract class LocationSelectionEvent extends Equatable {
-  @override
-  List<Object?> get props => [];
+  const LocationSelectionEvent();
 }
 
 class FetchSuggestions extends LocationSelectionEvent {
   final String input;
 
-  FetchSuggestions(this.input);
+  const FetchSuggestions(this.input);
 
   @override
-  List<Object?> get props => [input];
+  List<Object> get props => [input];
 }
 
-class SelectLocation extends LocationSelectionEvent {
-  final String placeId;
-  final String description;
+class SaveSelectedLocation extends LocationSelectionEvent {
+  final Location prediction;
 
-  SelectLocation(this.placeId, this.description);
+  const SaveSelectedLocation(this.prediction);
 
   @override
-  List<Object?> get props => [placeId, description];
+  List<Object> get props => [prediction];
+}
+
+class GetSelectedLocation extends LocationSelectionEvent {
+  @override
+  List<Object> get props => [];
 }

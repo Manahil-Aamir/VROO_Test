@@ -1,4 +1,4 @@
-import '../model/schedule_model.dart';
+import '../entity/schedule_model.dart';
 import '../repository/r1_repository.dart';
 
 class SaveScheduleUseCase {

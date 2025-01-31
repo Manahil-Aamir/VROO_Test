@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../domain/model/schedule_model.dart';
+import '../../../domain/entity/schedule_model.dart';
 
 abstract class R1Event {}
 

@@ -1,4 +1,5 @@
 import 'package:google_places_flutter/model/prediction.dart';
+import 'package:vroo_test/features/rider_journey/domain/entity/prediction_entity.dart';
 import '../repository/location_repository.dart';
 
 class FetchSuggestionsUseCase {
@@ -6,7 +7,7 @@ class FetchSuggestionsUseCase {
 
   FetchSuggestionsUseCase(this.repository);
 
-  Future<List<Prediction>> call(String input) {
+  Future<List<Location>> execute(String input) {
     return repository.fetchSuggestions(input);
   }
 }
