@@ -17,11 +17,9 @@ class DriverHomeScreen extends StatefulWidget {
 }
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
-  late GoogleMapController _mapController;
 
-  void _onMapCreated(GoogleMapController controller) {
-    _mapController = controller;
-  }
+  // void _onMapCreated(GoogleMapController controller) {
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             BlocBuilder<DriverHomeBloc, DriverHomeState>(
               builder: (context, state) {
                 return GoogleMap(
-                  onMapCreated: _onMapCreated,
+                  // onMapCreated: _onMapCreated,
                   initialCameraPosition: CameraPosition(
                     target: const LatLng(24.941875, 67.114297),
                     zoom: 15,

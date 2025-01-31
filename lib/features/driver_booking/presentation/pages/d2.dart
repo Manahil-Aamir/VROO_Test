@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vroo_test/shared/widgets/custom_app_bar.dart';
 import '../../../../core/router/routes.dart';
+import '../../../../core/theme/color/color_theme.dart';
+import '../../../../core/theme/font/font_theme.dart';
 import '../../domain/entity/car.dart';
 import '../../domain/entity/driver_schedule2_entity.dart';
 import '../bloc/bloc/car_bloc.dart';
@@ -81,10 +83,7 @@ class _D2PageState extends State<D2Page> {
         ),
       ],
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Vehicle Preferences'),
-          centerTitle: true,
-        ),
+        appBar: CustomAppBar(),
         body: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
@@ -97,6 +96,7 @@ class _D2PageState extends State<D2Page> {
               _buildGenderToggle(),
               const Spacer(),
               _buildNextButton(),
+              SizedBox(height: 70.h),
             ],
           ),
         ),
@@ -105,96 +105,271 @@ class _D2PageState extends State<D2Page> {
   }
 
   Widget _buildCarSelection() {
-    return BlocBuilder<CarBloc, CarState>(
-      builder: (context, carState) {
-        return BlocBuilder<CarPreferencesBloc, CarPreferencesState>(
-          builder: (context, prefState) {
-            if (carState is CarLoading || prefState is CarPreferencesLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            
-            if (carState is CarError) {
-              return Text('Error loading cars: ${carState.message}');
-            }
-
-            if (carState is CarLoaded) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Select Vehicle:'),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: DropdownButtonFormField<String>(
-                          value: _selectedCarId,
-                          items: carState.cars.map((car) {
-                            return DropdownMenuItem<String>(
-                              value: car.numberPlate,
-                              child: Text('${car.company} ${car.model}'),
-                            );
-                          }).toList(),
-                          onChanged: (value) => _updateCarPreference(value),
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.w),
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.w),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.directions_car, color: ThemeColors.primaryColor, size: 24.w),
+                SizedBox(width: 8.w),
+                Text(
+                  'Select Vehicle',
+                  style: AppFonts.headlineTextStyle.copyWith(
+                    fontSize: AppFonts.headline6TextSize,
+                    color: ThemeColors.headlinesTextColorTwo,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+            BlocBuilder<CarBloc, CarState>(
+              builder: (context, carState) {
+                return BlocBuilder<CarPreferencesBloc, CarPreferencesState>(
+                  builder: (context, prefState) {
+                    if (carState is CarLoading || prefState is CarPreferencesLoading) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: ThemeColors.progressIndicatorColor,
+                        ),
+                      );
+                    }
+                    if (carState is CarError) {
+                      print('Error loading cars: ${carState.message}');
+                      return Text(
+                        'Please try again later',
+                        style: AppFonts.bodyTextStyle.copyWith(
+                          color: ThemeColors.accentColor,
+                          fontSize: AppFonts.body2TextSize,
+                        ),
+                      );
+                    }
+                    if (carState is CarLoaded) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12.w),
+                                border: Border.all(
+                                  color: ThemeColors.primaryColorLight.withOpacity(0.3),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                value: _selectedCarId,
+                                dropdownColor: ThemeColors.canvasColor,
+                                menuMaxHeight: 300.h,
+                                style: AppFonts.bodyTextStyle.copyWith(
+                                  fontSize: AppFonts.body1TextSize,
+                                  color: ThemeColors.headlinesTextColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                borderRadius: BorderRadius.circular(12.w),
+                                elevation: 6,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.transparent,
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                                  hintText: 'Choose your vehicle',
+                                  hintStyle: AppFonts.bodyTextStyle.copyWith(
+                                    color: ThemeColors.hintTextColor,
+                                  ),
+                                ),
+                                selectedItemBuilder: (BuildContext context) {
+                                  return carState.cars.map<Widget>((CarEntity car) {
+                                    return Text('${car.company} ${car.model}');
+                                  }).toList();
+                                },
+                                items: carState.cars.map((car) {
+                                  return DropdownMenuItem<String>(
+                                    value: car.numberPlate,
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.directions_car, color: ThemeColors.primaryColor),
+                                        SizedBox(width: 12.w),
+                                        Text('${car.company} ${car.model}'),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (value) => _updateCarPreference(value),
+                                icon: Icon(Icons.arrow_drop_down, color: ThemeColors.primaryColor),
+                              ),
+                            
                             ),
                           ),
-                        ),
-                      ),
-                      SizedBox(width: 10.w),
-                      _buildAddCarButton(),
-                    ],
-                  ),
-                ],
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        );
-      },
+                          SizedBox(width: 12.w),
+                          _buildAddCarButton(),
+                        ],
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildAddCarButton() {
     return Container(
-      width: 40.w,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8.w),
+        gradient: LinearGradient(
+          colors: [
+            ThemeColors.primaryColorLight,
+            ThemeColors.primaryColor,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12.w),
+        boxShadow: [
+          BoxShadow(
+            color: ThemeColors.primaryColor.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: IconButton(
-        icon: const Icon(Icons.add),
-        onPressed: _showAddCarModal,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12.w),
+          onTap: _showAddCarModal,
+          child: Container(
+            width: 48.w,
+            height: 48.w,
+            padding: EdgeInsets.all(12.w),
+            child: Icon(Icons.add, color: Colors.white, size: 24.w),
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildSeatsControl() {
-    return Row(
-      children: [
-        const Text('Available Seats:'),
-        IconButton(
-          icon: const Icon(Icons.remove),
-          onPressed: () => _updateSeats(_availableSeats - 1),
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.w),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.event_seat, color: ThemeColors.primaryColor, size: 24.w),
+                SizedBox(width: 8.w),
+                Text(
+                  'Available Seats',
+                  style: AppFonts.headlineTextStyle.copyWith(
+                    fontSize: AppFonts.headline6TextSize,
+                    color: ThemeColors.headlinesTextColorTwo,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+            Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      ThemeColors.primaryColorLight,
+                      ThemeColors.primaryColor,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12.w),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.remove, color: Colors.white),
+                      iconSize: 28.w,
+                      onPressed: () => _updateSeats(_availableSeats - 1),
+                    ),
+                    Container(
+                      width: 80.w,
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.w),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '$_availableSeats',
+                          style: AppFonts.headlineTextStyle.copyWith(
+                            fontSize: AppFonts.headline3TextSize,
+                            color: ThemeColors.primaryColorDark,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.add, color: Colors.white),
+                      iconSize: 28.w,
+                      onPressed: () => _updateSeats(_availableSeats + 1),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-        Text('$_availableSeats'),
-        IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: () => _updateSeats(_availableSeats + 1),
-        ),
-      ],
+      ),
     );
   }
 
   Widget _buildGenderToggle() {
-    return Row(
-      children: [
-        const Text('Same Gender Only:'),
-        Switch(
-          value: _sameGenderOnly,
-          onChanged: (value) => _updateGenderPreference(value),
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.w),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.people_alt, color: ThemeColors.primaryColor, size: 24.w),
+                SizedBox(width: 12.w),
+                Text(
+                  'Same Gender Only',
+                  style: AppFonts.bodyTextStyle.copyWith(
+                    fontSize: AppFonts.body1TextSize,
+                    color: ThemeColors.headlinesTextColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            Switch.adaptive(
+              value: _sameGenderOnly,
+              onChanged: (value) => _updateGenderPreference(value),
+              activeColor: Colors.white,
+              activeTrackColor: ThemeColors.primaryColor,
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 

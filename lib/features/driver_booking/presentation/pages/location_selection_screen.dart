@@ -9,8 +9,6 @@ import '../../../../shared/widgets/Appbar.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../../../../shared/widgets/location_selection_input.dart';
 import '../../dependency_injection/location_selection_di.dart';
-import '../../presentation/bloc/event/location_selection_event.dart';
-import '../../presentation/bloc/state/location_selection_state.dart';
 
 class LocationSelectionScreen extends StatefulWidget {
   final String role;
