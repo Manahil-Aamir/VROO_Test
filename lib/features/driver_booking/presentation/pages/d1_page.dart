@@ -135,7 +135,6 @@ class _D1PageState extends State<D1Page> {
                 return Scaffold(
                   appBar: CustomAppBar(
                     highlightedCircles: 1,
-                    totalCircles: 3,
                   ),
                   body: Padding(
                     padding: EdgeInsets.all(16.0.w),

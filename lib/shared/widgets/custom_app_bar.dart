@@ -6,12 +6,11 @@ import 'bottom_shape_clipper.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int highlightedCircles;
-  final int totalCircles;
+  final int totalCircles = 3;
 
   const CustomAppBar({
     super.key,
-    this.highlightedCircles = 2, // Default highlighted circles
-    this.totalCircles = 4, // Default total circles
+    this.highlightedCircles = 0, // Default highlighted circles
   });
 
   @override
