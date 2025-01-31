@@ -110,6 +110,7 @@ class _D2PageState extends State<D2Page> {
 
   Widget _buildCarSelection() {
     return Card(
+      color: ThemeColors.canvasColor,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.w),
@@ -265,6 +266,7 @@ class _D2PageState extends State<D2Page> {
 
   Widget _buildSeatsControl() {
     return Card(
+      color: ThemeColors.canvasColor,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.w),
@@ -344,6 +346,7 @@ class _D2PageState extends State<D2Page> {
 
   Widget _buildGenderToggle() {
     return Card(
+      color: ThemeColors.canvasColor,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.w),
@@ -388,6 +391,7 @@ class _D2PageState extends State<D2Page> {
 
   Widget _buildPaymentMethod() {
     return Card(
+      color: ThemeColors.canvasColor,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.w),
