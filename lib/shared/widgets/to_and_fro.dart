@@ -37,7 +37,7 @@ class ToAndFroWidget extends StatelessWidget {
                         EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
                     child: Row(
                       children: [
-                        Icon(Icons.location_on, color: theme.primaryColorLight),
+                        Icon(Icons.location_on, color: theme.primaryColor),
                         SizedBox(width: 8.w),
                         Expanded(
                           child: Text(

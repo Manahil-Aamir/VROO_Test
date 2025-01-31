@@ -51,6 +51,8 @@ class _D2PageState extends State<D2Page> {
   String? _selectedCarId;
   int _availableSeats = 2;
   bool _sameGenderOnly = false;
+  String _selectedPaymentMethod = 'cash'; 
+
 
   @override
   void initState() {
@@ -94,6 +96,8 @@ class _D2PageState extends State<D2Page> {
               _buildSeatsControl(),
               SizedBox(height: 20.h),
               _buildGenderToggle(),
+              SizedBox(height: 20.h),
+              _buildPaymentMethod(),
               const Spacer(),
               _buildNextButton(),
               SizedBox(height: 70.h),
@@ -121,10 +125,10 @@ class _D2PageState extends State<D2Page> {
                 SizedBox(width: 8.w),
                 Text(
                   'Select Vehicle',
-                  style: AppFonts.headlineTextStyle.copyWith(
-                    fontSize: AppFonts.headline6TextSize,
-                    color: ThemeColors.headlinesTextColorTwo,
-                    fontWeight: FontWeight.w600,
+                  style: AppFonts.bodyTextStyle.copyWith(
+                    fontSize: AppFonts.body1TextSize,
+                    color: ThemeColors.headlinesTextColor,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
@@ -229,8 +233,9 @@ class _D2PageState extends State<D2Page> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            ThemeColors.primaryColorLight,
-            ThemeColors.primaryColor,
+            ThemeColors.primaryColor.withOpacity(0.7),
+            // ThemeColors.primaryColor,
+            ThemeColors.primaryColor.withOpacity(0.7),
           ],
         ),
         borderRadius: BorderRadius.circular(12.w),
@@ -275,10 +280,10 @@ class _D2PageState extends State<D2Page> {
                 SizedBox(width: 8.w),
                 Text(
                   'Available Seats',
-                  style: AppFonts.headlineTextStyle.copyWith(
-                    fontSize: AppFonts.headline6TextSize,
-                    color: ThemeColors.headlinesTextColorTwo,
-                    fontWeight: FontWeight.w600,
+                  style: AppFonts.bodyTextStyle.copyWith(
+                    fontSize: AppFonts.body1TextSize,
+                    color: ThemeColors.headlinesTextColor,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
@@ -289,8 +294,9 @@ class _D2PageState extends State<D2Page> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      ThemeColors.primaryColorLight,
-                      ThemeColors.primaryColor,
+                      ThemeColors.primaryColorDark.withOpacity(0.75),
+                      ThemeColors.primaryColor.withOpacity(0.8),
+                      ThemeColors.primaryColorDark.withOpacity(0.75),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(12.w),
@@ -380,11 +386,97 @@ class _D2PageState extends State<D2Page> {
     );
   }
 
+  Widget _buildPaymentMethod() {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.w),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.payment, color: ThemeColors.primaryColor, size: 24.w),
+                SizedBox(width: 8.w),
+                Text(
+                  'Payment Method',
+                  style: AppFonts.bodyTextStyle.copyWith(
+                    fontSize: AppFonts.body1TextSize,
+                    color: ThemeColors.headlinesTextColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildPaymentOption(
+                    title: 'Cash',
+                    isSelected: _selectedPaymentMethod == 'cash',
+                    onTap: () => _updatePayment('cash'),
+                  ),
+                ),
+                SizedBox(width: 16.w),
+                Expanded(
+                  child: _buildPaymentOption(
+                    title: 'Free',
+                    isSelected: _selectedPaymentMethod == 'free',
+                    onTap: () => _updatePayment('free'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentOption({
+    required String title,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12.w),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+        decoration: BoxDecoration(
+          color: isSelected ? ThemeColors.primaryColor.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(12.w),
+          border: Border.all(
+            color: isSelected ? ThemeColors.primaryColor : ThemeColors.primaryColorLight.withOpacity(0.3),
+            width: 1.5,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: AppFonts.bodyTextStyle.copyWith(
+              color: ThemeColors.headlinesTextColor,
+              // color: isSelected ? ThemeColors.primaryColor : ThemeColors.headlinesTextColor,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
   void _updateLocalState(CarPreferencesEntity preferences) {
     setState(() {
       _selectedCarId = preferences.selectedCar;
       _availableSeats = preferences.availableSeats;
       _sameGenderOnly = preferences.sameGenderOnly;
+      _selectedPaymentMethod = preferences.payment; 
     });
   }
 
@@ -395,6 +487,20 @@ class _D2PageState extends State<D2Page> {
           selectedCar: carId,
           availableSeats: _availableSeats,
           sameGenderOnly: _sameGenderOnly,
+          payment: _selectedPaymentMethod,
+        ),
+      ),
+    );
+  }
+
+  void _updatePayment(String option) {
+    context.read<CarPreferencesBloc>().add(
+      SaveCarPreferencesEvent(
+        CarPreferencesEntity(
+          selectedCar: _selectedCarId,
+          availableSeats: _availableSeats,
+          sameGenderOnly: _sameGenderOnly,
+          payment: option,
         ),
       ),
     );
@@ -408,6 +514,7 @@ class _D2PageState extends State<D2Page> {
           selectedCar: _selectedCarId,
           availableSeats: newValue,
           sameGenderOnly: _sameGenderOnly,
+          payment: _selectedPaymentMethod,
         ),
       ),
     );
@@ -420,6 +527,7 @@ class _D2PageState extends State<D2Page> {
           selectedCar: _selectedCarId,
           availableSeats: _availableSeats,
           sameGenderOnly: value,
+          payment: _selectedPaymentMethod,
         ),
       ),
     );
@@ -430,6 +538,7 @@ class _D2PageState extends State<D2Page> {
       selectedCar: _selectedCarId,
       availableSeats: _availableSeats,
       sameGenderOnly: _sameGenderOnly,
+      payment: _selectedPaymentMethod,
     );
 
     context.read<CarPreferencesBloc>().add(

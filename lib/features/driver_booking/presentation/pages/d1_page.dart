@@ -188,7 +188,7 @@ class _D1PageState extends State<D1Page> {
                               showRecurrenceDialog(context);
                             },
                           ),
-                          SizedBox(height: 12.h),
+                          SizedBox(height: 100.h),
                           GradientButton(
                             onTap: () {
                               _validateFields();

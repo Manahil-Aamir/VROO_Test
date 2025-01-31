@@ -2,11 +2,13 @@ class CarPreferencesEntity {
   String? selectedCar;
   int availableSeats;
   bool sameGenderOnly;
+  String payment; 
 
   CarPreferencesEntity({
     this.selectedCar,
     required this.availableSeats,
     required this.sameGenderOnly,
+    required this.payment,
   });
 
   Map<String, dynamic> toMap() {
@@ -14,6 +16,7 @@ class CarPreferencesEntity {
       'selectedCar': selectedCar,
       'availableSeats': availableSeats,
       'sameGenderOnly': sameGenderOnly,
+      'payment': payment,
     };
   }
 
@@ -22,6 +25,7 @@ class CarPreferencesEntity {
       selectedCar: map['selectedCar'],
       availableSeats: map['availableSeats'] ?? 2,
       sameGenderOnly: map['sameGenderOnly'] ?? false,
+      payment: map['payment'] ?? 'Cash',
     );
   }
 }

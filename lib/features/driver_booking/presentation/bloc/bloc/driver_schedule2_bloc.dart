@@ -26,6 +26,7 @@ class CarPreferencesBloc extends Bloc<CarPreferencesEvent, CarPreferencesState> 
           : CarPreferencesLoaded(CarPreferencesEntity(
               availableSeats: 2,
               sameGenderOnly: false,
+              payment: 'cash',
             )));
     } catch (e) {
       emit(CarPreferencesError(e.toString()));

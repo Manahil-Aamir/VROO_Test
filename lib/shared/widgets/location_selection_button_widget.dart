@@ -29,7 +29,7 @@ class LocationSelectionButtonsWidget extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                context.read<DriverHomeBloc>().add(ClearSharedPreferencesEvent());
+                // context.read<DriverHomeBloc>().add(ClearSharedPreferencesEvent());
                 context
                     .read<Navigation>()
                     .navigateTo(Routes.locationSelection, arguments: 'driver');
@@ -57,7 +57,7 @@ class LocationSelectionButtonsWidget extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 // Trigger the event to clear SharedPreferences
-                context.read<DriverHomeBloc>().add(ClearSharedPreferencesEvent());
+                // context.read<DriverHomeBloc>().add(ClearSharedPreferencesEvent());
                 context
                     .read<Navigation>()
                     .navigateTo(Routes.locationSelection, arguments: 'driver');

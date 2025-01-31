@@ -14,18 +14,20 @@ class GradientButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      
       onTap: onTap,
       child: Container(
         height: 50.h,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Theme.of(context).primaryColorDark,
-              Theme.of(context).primaryColor,
-            ],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
+          // gradient: LinearGradient(
+          //   colors: [
+          //     Theme.of(context).primaryColorDark,
+          //     Theme.of(context).primaryColor,
+          //   ],
+          //   begin: Alignment.centerLeft,
+          //   end: Alignment.centerRight,
+          // ),
+          color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: Center(

@@ -12,7 +12,7 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
   DriverHomeBloc(this.getDriverCurrentLocation, this.d1DataSource)
       : super(DriverHomeInitial()) {
     on<LoadDriverCurrentLocation>(_onLoadDriverCurrentLocation);
-    on<ClearSharedPreferencesEvent>(_onClearSharedPreferences);
+    // on<ClearSharedPreferencesEvent>(_onClearSharedPreferences);
   }
 
   Future<void> _onLoadDriverCurrentLocation(
@@ -28,10 +28,10 @@ class DriverHomeBloc extends Bloc<DriverHomeEvent, DriverHomeState> {
     }
   }
 
-  Future<void> _onClearSharedPreferences(
-    ClearSharedPreferencesEvent event,
-    Emitter<DriverHomeState> emit,
-  ) async {
-    await d1DataSource.clearScheduleData(); // Clear SharedPreferences
-  }
+  // Future<void> _onClearSharedPreferences(
+  //   ClearSharedPreferencesEvent event,
+  //   Emitter<DriverHomeState> emit,
+  // ) async {
+  //   await d1DataSource.clearScheduleData(); // Clear SharedPreferences
+  // }
 }
