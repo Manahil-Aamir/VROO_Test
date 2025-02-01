@@ -13,7 +13,6 @@ import '../../../../shared/widgets/date_picker.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../../../../shared/widgets/recurrence_dialog.dart';
 import '../../../../shared/widgets/time_picker.dart';
-import '../../domain/entity/schedule_entity.dart';
 import '../bloc/bloc/r1_bloc.dart';
 import '../bloc/event/r1_event.dart';
 import '../bloc/state/r1_state.dart';
