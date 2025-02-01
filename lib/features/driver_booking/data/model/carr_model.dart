@@ -4,6 +4,7 @@ class Car {
   final String color;
   final String numberPlate;
   final double mileage;
+  final bool isVerified;
 
   Car({
     required this.company,
@@ -11,6 +12,7 @@ class Car {
     required this.color,
     required this.numberPlate,
     required this.mileage,
+    required this.isVerified,
   });
 
   factory Car.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class Car {
       color: json['color'],
       numberPlate: json['numberPlate'],
       mileage: json['mileage'],
+      isVerified: json['isVerified'],
     );
   }
 }

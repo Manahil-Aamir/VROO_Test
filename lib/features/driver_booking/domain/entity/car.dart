@@ -4,6 +4,7 @@ class CarEntity {
   final String color;
   final String numberPlate;
   final double mileage;
+  final bool isVerified;
 
   CarEntity({
     required this.company,
@@ -11,5 +12,6 @@ class CarEntity {
     required this.color,
     required this.numberPlate,
     required this.mileage,
+    required this.isVerified,
   });
 }

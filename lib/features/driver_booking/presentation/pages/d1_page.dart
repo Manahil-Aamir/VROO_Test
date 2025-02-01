@@ -137,16 +137,17 @@ class _D1PageState extends State<D1Page> {
                     highlightedCircles: 1,
                   ),
                   body: Padding(
-                    padding: EdgeInsets.all(16.0.w),
+                    padding: EdgeInsets.all(12.0.w),
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          SizedBox(height: 10.h),
                           ToAndFroWidget(
                             fromDescription: widget.fromDescription,
                             toDescription: widget.toDescription,
                           ),
-                          SizedBox(height: 12.h),
+                          SizedBox(height: 30.h),
                           CustomDatePicker(
                             labelText: 'Select Date',
                             selectedDate: state.selectedDate,
@@ -187,7 +188,7 @@ class _D1PageState extends State<D1Page> {
                               showRecurrenceDialog(context);
                             },
                           ),
-                          SizedBox(height: 100.h),
+                          SizedBox(height: 15.h),
                           GradientButton(
                             onTap: () {
                               _validateFields();

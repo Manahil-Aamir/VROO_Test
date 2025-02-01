@@ -15,6 +15,7 @@ class GetCarsUseCase {
       color: car.color,
       numberPlate: car.numberPlate,
       mileage: car.mileage,
+      isVerified: car.isVerified,
     )).toList();
   }
 }
@@ -31,6 +32,7 @@ class AddCarUseCase {
       color: car.color,
       numberPlate: car.numberPlate,
       mileage: car.mileage,
+      isVerified: false,
     ));
   }
 }

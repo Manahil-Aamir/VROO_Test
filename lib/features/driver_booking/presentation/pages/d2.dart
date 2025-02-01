@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/shared/widgets/custom_app_bar.dart';
@@ -85,13 +86,33 @@ class _D2PageState extends State<D2Page> {
         ),
       ],
       child: Scaffold(
-        appBar: CustomAppBar(),
+        appBar: CustomAppBar(highlightedCircles: 2),
         body: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildCarSelection(),
+              BlocBuilder<CarBloc, CarState>(
+                builder: (context, state) {
+                  if (state is CarLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor, // Use theme primary color
+                      ),
+                    );
+                  } else if (state is CarError) {
+                    return Center(
+                      child: Text(
+                        "Error loading cars: ${state.message}",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    );
+                  } else if (state is CarLoaded) {
+                    return _buildCarSelection();
+                  }
+                  return Container(); // Default empty state
+                },
+              ),
               SizedBox(height: 20.h),
               _buildSeatsControl(),
               SizedBox(height: 20.h),
@@ -110,7 +131,7 @@ class _D2PageState extends State<D2Page> {
 
   Widget _buildCarSelection() {
     return Card(
-      color: ThemeColors.canvasColor,
+      color: ThemeColors.backgroundColor,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.w),
@@ -139,7 +160,7 @@ class _D2PageState extends State<D2Page> {
               builder: (context, carState) {
                 return BlocBuilder<CarPreferencesBloc, CarPreferencesState>(
                   builder: (context, prefState) {
-                    if (carState is CarLoading || prefState is CarPreferencesLoading) {
+                    if (carState is CarInitial || carState is CarLoading || prefState is CarPreferencesInitial || prefState is CarPreferencesLoading) {
                       return Center(
                         child: CircularProgressIndicator(
                           color: ThemeColors.progressIndicatorColor,
@@ -266,7 +287,7 @@ class _D2PageState extends State<D2Page> {
 
   Widget _buildSeatsControl() {
     return Card(
-      color: ThemeColors.canvasColor,
+      color: ThemeColors.backgroundColor,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.w),
@@ -346,7 +367,7 @@ class _D2PageState extends State<D2Page> {
 
   Widget _buildGenderToggle() {
     return Card(
-      color: ThemeColors.canvasColor,
+      color: ThemeColors.backgroundColor,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.w),
@@ -391,7 +412,7 @@ class _D2PageState extends State<D2Page> {
 
   Widget _buildPaymentMethod() {
     return Card(
-      color: ThemeColors.canvasColor,
+      color: ThemeColors.backgroundColor,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.w),
@@ -559,7 +580,7 @@ class _D2PageState extends State<D2Page> {
     );
   }
 
-  void _showAddCarModal() {
+  _showAddCarModal() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -593,7 +614,12 @@ class _D2PageState extends State<D2Page> {
                 _buildCarInputField(carModelController, 'Car Model'),
                 _buildCarInputField(carColorController, 'Car Color'),
                 _buildCarInputField(carNumberPlateController, 'Car Number Plate'),
-                _buildCarInputField(carMileageController, 'Car Mileage'),
+                _buildCarInputField(
+                  carMileageController,
+                  'Car Mileage',
+                  keyboardType: TextInputType.number, 
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly], 
+                ),
                 const SizedBox(height: 16),
                 SizedBox(
                   height: 50,
@@ -605,7 +631,8 @@ class _D2PageState extends State<D2Page> {
                         model: carModelController.text,
                         color: carColorController.text,
                         numberPlate: carNumberPlateController.text,
-                        mileage: double.tryParse(carMileageController.text) ?? 0,
+                        mileage: double.tryParse(carMileageController.text) ?? 0.0,
+                        isVerified: false,
                       );
                       BlocProvider.of<CarBloc>(context).add(AddCar(car));
                       Navigator.pop(context);
@@ -621,11 +648,19 @@ class _D2PageState extends State<D2Page> {
     );
   }
 
-  Widget _buildCarInputField(TextEditingController controller, String label) {
+
+  Widget _buildCarInputField(
+    TextEditingController controller, 
+    String label, {
+    TextInputType keyboardType = TextInputType.text,
+    List<TextInputFormatter>? inputFormatters,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: controller,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
         style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           labelText: label,
@@ -644,4 +679,5 @@ class _D2PageState extends State<D2Page> {
       ),
     );
   }
+
 }
