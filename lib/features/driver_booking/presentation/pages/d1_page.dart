@@ -114,6 +114,8 @@ class _D1PageState extends State<D1Page> {
             builder: (context, state) {
               if (state is ScheduleSaved) {
                 context.read<D1Bloc>().add(ResetStateEvent());
+                      return const Center(child: CircularProgressIndicator());
+
               }
               if (state is ScheduleInitial) {
                 context.read<D1Bloc>().add(LoadScheduleEvent());
@@ -206,7 +208,9 @@ class _D1PageState extends State<D1Page> {
                 );
               } else {
                 return Center(
-                    child: Text('Unexpected state: ${state.runtimeType}'));
+                  child: CircularProgressIndicator(color: Theme.of(context).primaryColor),
+                  // child: Text('Unexpected state: ${state.runtimeType}')
+                );
               }
             },
           )
