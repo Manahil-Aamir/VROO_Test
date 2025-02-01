@@ -17,13 +17,13 @@ class AppFonts {
   static double get headline1TextSize => 27.sp;
   static double get headline2TextSize => 24.sp;
 
-  static double get body1TextSize => 16.sp;
+  static double get body1TextSize => 17.sp;
   static double get body2TextSize => 17.sp;
   static double get body3TextSize => 14.sp;
 
   static double get headline3TextSize => 28.sp;
   static double get headline4TextSize => 18.sp;
-  static double get headline5TextSize => 16.sp;
+  static double get headline5TextSize => 19.sp;
   static double get headline6TextSize => 14.sp;
 
   static double get buttonTextSize => 22.sp;

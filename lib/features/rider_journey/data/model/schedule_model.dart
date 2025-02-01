@@ -32,23 +32,24 @@ class ScheduleModel extends ScheduleEntity {
   }
 
   factory ScheduleModel.fromMap(Map<String, dynamic> map) {
+    print('Schedule Map: $map');
     return ScheduleModel(
-      fromDescription: map['fromDescription'],
-      toDescription: map['toDescription'],
-      date: DateTime.parse(map['date']),
+      fromDescription: map['fromDescription'] ?? '',
+      toDescription: map['toDescription'] ?? '',
+      date: DateTime.parse(map['date'] ?? DateTime.now().toIso8601String()),
       minTime: TimeOfDay(
-        hour: int.parse(map['minTime'].split(':')[0]),
-        minute: int.parse(map['minTime'].split(':')[1]),
+        hour: int.parse((map['minTime'] ?? '00:00').split(':')[0]),
+        minute: int.parse((map['minTime'] ?? '00:00').split(':')[1]),
       ),
       maxTime: TimeOfDay(
-        hour: int.parse(map['maxTime'].split(':')[0]),
-        minute: int.parse(map['maxTime'].split(':')[1]),
+        hour: int.parse((map['maxTime'] ?? '00:00').split(':')[0]),
+        minute: int.parse((map['maxTime'] ?? '00:00').split(':')[1]),
       ),
       arrivalTime: TimeOfDay(
-        hour: int.parse(map['arrivalTime'].split(':')[0]),
-        minute: int.parse(map['arrivalTime'].split(':')[1]),
+        hour: int.parse((map['arrivalTime'] ?? '00:00').split(':')[0]),
+        minute: int.parse((map['arrivalTime'] ?? '00:00').split(':')[1]),
       ),
-      recurrenceType: map['recurrenceType'],
+      recurrenceType: map['recurrenceType'] ?? '',
       selectedDays: List<String>.from(map['selectedDays'] ?? []),
       endDate: map['endDate'] != null ? DateTime.parse(map['endDate']) : null,
     );

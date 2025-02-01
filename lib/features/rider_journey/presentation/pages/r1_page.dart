@@ -104,10 +104,11 @@ class _R1PageState extends State<R1Page> {
         arrivalTime: state.maxArrivalTime!,
         recurrenceType: isRecurring ? recurrence : 'One Time',
       );
-
+      print('r1 description');
+      print(widget.toDescription);
       context.read<R1Bloc>().add(SaveScheduleEvent(schedule));
-      context.read<Navigation>().navigateTo('/location_selection', arguments: {
-        'role': 'rider',
+      context.read<Navigation>().navigateTo('/r2_page', arguments: {
+        'schedule': schedule,
       });
     }
   }
