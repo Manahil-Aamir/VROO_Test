@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import '../../../core/router/navigation.dart';
 import '../data/data_source/car_data_source.dart';
 import '../data/data_source/driver_schedule2_datasource.dart';
 import '../data/repository/car_repository_impl.dart';
@@ -10,10 +11,11 @@ import '../domain/repository/driver_schedule2_repository.dart';
 import '../domain/usecases/car_usecase.dart';
 import '../domain/usecases/driver_schedule2_usecase.dart';
 import '../presentation/bloc/bloc/car_bloc.dart';
-import '../presentation/bloc/bloc/driver_schedule2_bloc.dart';
+import '../presentation/bloc/bloc/d2_bloc.dart';
 
 class D2DependencyInjection {
   static List<SingleChildWidget> init() {
+    final navigationProvider = Navigation();
     // Car Preferences Dependencies
     final d2DataSource = D2DataSource();
     final d2Repository = D2RepositoryImpl(d2DataSource);
@@ -32,6 +34,7 @@ class D2DependencyInjection {
       Provider<D2Repository>(create: (_) => d2Repository),
       Provider<SaveCarPreferencesUseCase>(create: (_) => savePrefsUseCase),
       Provider<LoadCarPreferencesUseCase>(create: (_) => loadPrefsUseCase),
+      Provider<Navigation>(create: (_) => navigationProvider),
       BlocProvider<CarPreferencesBloc>(
         create: (_) => CarPreferencesBloc(savePrefsUseCase, loadPrefsUseCase),
       ),

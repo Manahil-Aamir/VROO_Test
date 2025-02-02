@@ -17,8 +17,8 @@ class D1DataSource {
     return null;
   }
 
-  // Future<void> clearScheduleData() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.remove('scheduleData'); 
-  // }
+  Future<void> clearScheduleData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('scheduleData'); 
+  }
 }

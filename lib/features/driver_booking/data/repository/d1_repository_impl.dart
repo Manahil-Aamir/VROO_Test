@@ -16,10 +16,10 @@ class D1RepositoryImpl implements D1Repository {
     return dataSource.loadSchedule();
   }
 
-  // @override
-  // Future<void> clearScheduleData() async {
-  //   await dataSource.clearScheduleData(); // Delegate to the data source
-  // }
+  @override
+  Future<void> clearScheduleData() async {
+    await dataSource.clearScheduleData(); // Delegate to the data source
+  }
 }
 
 

@@ -9,4 +9,4 @@ abstract class DriverHomeEvent extends Equatable {
 
 class LoadDriverCurrentLocation extends DriverHomeEvent {}
 
-// class ClearSharedPreferencesEvent extends DriverHomeEvent {}
+class ClearSharedPreferencesEvent extends DriverHomeEvent {}

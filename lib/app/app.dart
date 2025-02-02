@@ -40,7 +40,7 @@ class App extends StatelessWidget {
                 },
                 initialRoute: Routes.d1,
                 onGenerateRoute: Routes().generateRoute,
-                navigatorKey: _navigatorKey, // Add navigatorKey here
+                navigatorKey: _navigatorKey, 
               );
             },
           );

@@ -1,0 +1,126 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vroo_test/shared/widgets/gradient_button.dart';
+import '../../../../../../core/theme/color/color_theme.dart';
+import '../../../../domain/entity/car.dart';
+
+class AddCarModal extends StatefulWidget {
+  final Function(CarEntity) onCarAdded;
+
+  const AddCarModal({Key? key, required this.onCarAdded}) : super(key: key);
+
+  @override
+  _AddCarModalState createState() => _AddCarModalState();
+}
+
+class _AddCarModalState extends State<AddCarModal> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _companyController = TextEditingController();
+  final TextEditingController _modelController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
+  final TextEditingController _plateController = TextEditingController();
+  final TextEditingController _mileageController = TextEditingController();
+
+  @override
+  void dispose() {
+    _companyController.dispose();
+    _modelController.dispose();
+    _colorController.dispose();
+    _plateController.dispose();
+    _mileageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        left: 16.w,
+        right: 16.w,
+        top: 16.w,
+      ),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Add New Vehicle',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: ThemeColors.buttonTextColor,
+                  ),
+            ),
+            SizedBox(height: 24.h),
+            _buildCarInputField(_companyController, 'Company Name'),
+            _buildCarInputField(_modelController, 'Model'),
+            _buildCarInputField(_colorController, 'Color'),
+            _buildCarInputField(_plateController, 'License Plate'),
+            _buildCarInputField(
+              _mileageController,
+              'Mileage',
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ),
+            SizedBox(height: 24.h),
+            GradientButton(onTap: _handleSubmit, text: "Add Car"),
+            SizedBox(height: 16.h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCarInputField(
+    TextEditingController controller,
+    String label, {
+    TextInputType keyboardType = TextInputType.text,
+    List<TextInputFormatter>? inputFormatters,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: ThemeColors.buttonTextColor,
+            ),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: ThemeColors.cardColor,
+              ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(color: ThemeColors.dividerColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: const BorderSide(
+              color: ThemeColors.primaryColor,
+              width: 2.0,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handleSubmit() {
+    if (_formKey.currentState?.validate() ?? false) {
+      final newCar = CarEntity(
+        company: _companyController.text,
+        model: _modelController.text,
+        color: _colorController.text,
+        numberPlate: _plateController.text,
+        mileage: double.tryParse(_mileageController.text) ?? 0.0,
+        isVerified: false,
+      );
+
+      widget.onCarAdded(newCar);
+      Navigator.pop(context);
+    }
+  }
+}

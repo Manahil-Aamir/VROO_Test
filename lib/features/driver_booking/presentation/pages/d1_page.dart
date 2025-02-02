@@ -82,11 +82,10 @@ class _D1PageState extends State<D1Page> {
             'selectedRouteCoords': widget.selectedRouteCoords,
             'distance': widget.distance,
             'duration': widget.duration,
-            'selectedDate': state.selectedDate!.toIso8601String(),
-            'selectedTime': state.selectedTime.toString(),
-            'maxArrivalTime': state.maxArrivalTime!.toString(),
-            'isRecurring': isRecurring,
-            'recurrence': recurrence,
+            'selectedDate': state.selectedDate,
+            'selectedTime': state.selectedTime,
+            'maxArrivalTime': state.maxArrivalTime,
+            'recurrence': isRecurring ? recurrence : 'One Time',
           },
         );
       } else {

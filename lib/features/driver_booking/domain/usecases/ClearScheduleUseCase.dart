@@ -1,11 +1,11 @@
-// import '../repository/d1_repository.dart';
+import '../repository/d1_repository.dart';
 
-// class ClearScheduleDataUseCase {
-//   final D1Repository repository;
+class ClearScheduleDataUseCase {
+  final D1Repository repository;
 
-//   ClearScheduleDataUseCase(this.repository);
+  ClearScheduleDataUseCase(this.repository);
 
-//   Future<void> execute() {
-//     return repository.clearScheduleData();
-//   }
-// }
+  Future<void> execute() {
+    return repository.clearScheduleData();
+  }
+}

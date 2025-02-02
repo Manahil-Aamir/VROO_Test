@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entity/driver_schedule2_entity.dart';
 import '../../../domain/usecases/driver_schedule2_usecase.dart';
-import '../event/driver_schedule2_event.dart';
-import '../state/driver_schedule2_state.dart';
+import '../event/d2_event.dart';
+import '../state/d2_state.dart';
 
 class CarPreferencesBloc extends Bloc<CarPreferencesEvent, CarPreferencesState> {
   final SaveCarPreferencesUseCase saveUseCase;
