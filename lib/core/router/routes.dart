@@ -4,7 +4,6 @@ import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart'
 import 'package:vroo_test/features/rider_journey/domain/entity/schedule_entity.dart';
 import 'package:vroo_test/features/rider_journey/presentation/pages/rider_home_page.dart';
 import 'package:vroo_test/ui.dart';
-
 import '../../features/rider_journey/dependancy_injection/r1_di.dart';
 import '../../features/rider_journey/dependancy_injection/r2_di.dart';
 import '../../features/rider_journey/presentation/pages/location_selection_screen.dart';
