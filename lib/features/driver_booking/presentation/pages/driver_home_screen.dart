@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -18,9 +19,6 @@ class DriverHomeScreen extends StatefulWidget {
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
-  // void _onMapCreated(GoogleMapController controller) {
-  // }
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -30,7 +28,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           children: [
             BlocBuilder<DriverHomeBloc, DriverHomeState>(
               builder: (context, state) {
-                return GoogleMap(
+                return //const NativeGoogleMap();
+                GoogleMap(
                   // onMapCreated: _onMapCreated,
                   initialCameraPosition: CameraPosition(
                     target: const LatLng(24.941875, 67.114297),
