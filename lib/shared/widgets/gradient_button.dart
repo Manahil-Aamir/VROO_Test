@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GradientButton extends StatelessWidget {
@@ -13,31 +14,34 @@ class GradientButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
-      
       onTap: onTap,
       child: Container(
         height: 50.h,
         decoration: BoxDecoration(
-          // gradient: LinearGradient(
-          //   colors: [
-          //     Theme.of(context).primaryColorDark,
-          //     Theme.of(context).primaryColor,
-          //   ],
-          //   begin: Alignment.centerLeft,
-          //   end: Alignment.centerRight,
-          // ),
-          color: Theme.of(context).primaryColor,
+          gradient: LinearGradient(
+            colors: [
+              theme.primaryColor,
+              theme.primaryColor.withOpacity(0.5),
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
           borderRadius: BorderRadius.circular(8.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              offset: Offset(0, 4),
+              blurRadius: 4,
+            ),
+          ],
         ),
         child: Center(
           child: Text(
             text,
-            style: TextStyle(
-              fontSize: 20,
-              fontFamily: 'Montserrat',
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).scaffoldBackgroundColor, // Text color
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.primaryColorDark,
             ),
           ),
         ),

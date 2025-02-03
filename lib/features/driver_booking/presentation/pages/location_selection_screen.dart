@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:provider/provider.dart';  // Add provider import
+import 'package:provider/provider.dart'; // Add provider import
 import '../../../../core/router/navigation.dart';
 import '../../../../core/router/routes.dart';
-import '../../../../shared/widgets/Appbar.dart';
+import '../../../../shared/widgets/appbar.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../../../../shared/widgets/location_selection_input.dart';
 import '../../dependency_injection/location_selection_di.dart';
@@ -55,7 +55,8 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: LocationSelectionDependencyInjection.init(), // Assuming this provides all necessary dependencies
+      providers: LocationSelectionDependencyInjection
+          .init(), // Assuming this provides all necessary dependencies
       builder: (context, child) => Scaffold(
         appBar: appBar(heading: "Select Location"), // Custom AppBar
         body: GestureDetector(

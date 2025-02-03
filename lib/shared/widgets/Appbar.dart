@@ -13,6 +13,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return PreferredSize(
       preferredSize: Size.fromHeight(120.h),
       child: AppBar(
@@ -25,8 +26,8 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColorDark,
+                  theme.primaryColor,
+                  theme.primaryColor.withOpacity(0.5),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -43,7 +44,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                       child: IconButton(
                         icon: Icon(
                           Icons.arrow_back,
-                          color: ThemeColors.buttonTextColor,
+                          color: theme.primaryColorDark,
                         ),
                         onPressed: () {
                           Navigator.pop(context);
@@ -58,11 +59,8 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                       alignment: Alignment.center,
                       child: Text(
                         heading,
-                        style: TextStyle(
-                          color: ThemeColors.buttonTextColor,
-                          fontSize: 27.sp,
-                          fontFamily: 'Comfortaa',
-                          fontWeight: FontWeight.bold,
+                        style: theme.textTheme.headlineLarge?.copyWith(
+                          color: theme.primaryColorDark,
                         ),
                       ),
                     ),
@@ -81,6 +79,3 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(120.h); // Responsive height
 }
-
-
-

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../shared/widgets/Appbar.dart';
+import '../../../../shared/widgets/appbar.dart';
 import '../../dependency_injection/route_di.dart';
 import '../bloc/bloc/route_bloc.dart';
 import '../bloc/event/route_event.dart';
@@ -20,12 +20,12 @@ class RouteDisplayPage extends StatelessWidget {
     required this.toPlaceId,
     required this.fromPlaceDesc,
     required this.toPlaceDesc,
-    Key? key, 
-  }) : super(key: key) { 
-    print('From Place ID: $fromPlaceId'); 
-    print('To Place ID: $toPlaceId'); 
-    print('From Place Description: $fromPlaceDesc'); 
-    print('To Place Description: $toPlaceDesc'); 
+    super.key,
+  }) {
+    print('From Place ID: $fromPlaceId');
+    print('To Place ID: $toPlaceId');
+    print('From Place Description: $fromPlaceDesc');
+    print('To Place Description: $toPlaceDesc');
   }
 
   @override
@@ -33,11 +33,13 @@ class RouteDisplayPage extends StatelessWidget {
     return MultiProvider(
       providers: RouteDependencyInjection.init(),
       builder: (context, child) => Scaffold(
-        appBar: appBar(heading:'Select Route'),
+        appBar: appBar(heading: 'Select Route'),
         body: BlocBuilder<RouteBloc, RouteState>(
           builder: (context, state) {
             if (state is RouteInitial) {
-              context.read<RouteBloc>().add(FetchRoutesEvent(fromPlaceId, toPlaceId));
+              context
+                  .read<RouteBloc>()
+                  .add(FetchRoutesEvent(fromPlaceId, toPlaceId));
               return const Center(child: CircularProgressIndicator());
             } else if (state is RouteLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -45,8 +47,8 @@ class RouteDisplayPage extends StatelessWidget {
               print('Route Data: $state.routeData');
               return RouteMapScreen(
                 routeData: state.routeData['route_data'],
-                fromPlaceDesc: fromPlaceDesc, 
-                toPlaceDesc: toPlaceDesc,     
+                fromPlaceDesc: fromPlaceDesc,
+                toPlaceDesc: toPlaceDesc,
                 fromPlaceId: fromPlaceId,
                 toPlaceId: toPlaceId,
               );
