@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../../shared/widgets/location_selection_button_widget.dart';
@@ -28,16 +27,15 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           children: [
             BlocBuilder<DriverHomeBloc, DriverHomeState>(
               builder: (context, state) {
-                return //const NativeGoogleMap();
-                GoogleMap(
-                  // onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(
-                    target: const LatLng(24.941875, 67.114297),
-                    zoom: 15,
-                  ),
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: false,
-                );
+                return const NativeGoogleMap();
+                // GoogleMap(
+                //   initialCameraPosition: CameraPosition(
+                //     target: const LatLng(24.941875, 67.114297),
+                //     zoom: 15,
+                //   ),
+                //   myLocationEnabled: true,
+                //   myLocationButtonEnabled: false,
+                // );
               },
             ),
             const TopBarWidget(),
@@ -51,6 +49,19 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           },
         ),
       ),
+    );
+  }
+}
+
+// Widget to embed the native Android Google Map
+class NativeGoogleMap extends StatelessWidget {
+  const NativeGoogleMap({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return const AndroidView(
+      viewType: 'native_google_map',
+      layoutDirection: TextDirection.ltr,
+      creationParamsCodec: StandardMessageCodec(),
     );
   }
 }
