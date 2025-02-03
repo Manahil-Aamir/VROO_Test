@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:vroo_test/features/driver_booking/data/model/schedule_model.dart';
 import '../../../../core/router/routes.dart';
+import '../../../../core/utils/validators/input_ride_validator.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/date_picker.dart';
 import '../../../../shared/widgets/gradient_button.dart';
@@ -48,14 +49,36 @@ class _D1PageState extends State<D1Page> {
   ScheduleModel? schedule;
 
   void _validateFields() {
+    final theme = Theme.of(context);
     final state = context.read<D1Bloc>().state;
     if (state is ScheduleInputState) {
       // Check for null values and add errors if necessary
+
+      final dateErrorMsg = InputRideValidator.validateDate(state.selectedDate);
+      final timeErrorMsg = InputRideValidator.validateTime(state.selectedTime);
+      final maxArrivalTimeErrorMsg = InputRideValidator.validateMaxArrivalTime(
+          state.selectedTime, state.maxArrivalTime);
+
       context.read<D1Bloc>().add(ShowErrorEvent(
-            dateError: state.selectedDate == null,
-            timeError: state.selectedTime == null,
-            maxArrivalTimeError: state.maxArrivalTime == null,
+            dateError: dateErrorMsg != null,
+            timeError: timeErrorMsg != null,
+            maxArrivalTimeError: maxArrivalTimeErrorMsg != null,
           ));
+
+      if (dateErrorMsg != null ||
+          timeErrorMsg != null ||
+          maxArrivalTimeErrorMsg != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(dateErrorMsg ??
+                timeErrorMsg ??
+                maxArrivalTimeErrorMsg ??
+                'Please fill in all fields.'),
+            backgroundColor: theme.indicatorColor,
+          ),
+        );
+        return; // Stop further execution if validation fails
+      }
 
       // Proceed only if all fields are valid
       if (state.selectedDate != null &&
@@ -93,7 +116,7 @@ class _D1PageState extends State<D1Page> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Please fill in all fields.'),
-            backgroundColor: Colors.red,
+            backgroundColor: theme.indicatorColor,
           ),
         );
       }
@@ -113,8 +136,7 @@ class _D1PageState extends State<D1Page> {
             builder: (context, state) {
               if (state is ScheduleSaved) {
                 context.read<D1Bloc>().add(ResetStateEvent());
-                      return const Center(child: CircularProgressIndicator());
-
+                return const Center(child: CircularProgressIndicator());
               }
               if (state is ScheduleInitial) {
                 context.read<D1Bloc>().add(LoadScheduleEvent());
@@ -163,14 +185,12 @@ class _D1PageState extends State<D1Page> {
                             labelText: 'Departure Time',
                             selectedTime: state.selectedTime,
                             onTimeSelected: (departureTime) {
-                              bloc.add(
-                                  SelectTimeEvent(departureTime, "time"));
+                              bloc.add(SelectTimeEvent(departureTime, "time"));
                             },
                             errorText: state.timeError
                                 ? 'Please select departure time'
                                 : null,
                           ),
-                          
                           SizedBox(height: 12.h),
                           CustomTimePicker(
                             labelText: 'Max Arrival Time',
@@ -207,7 +227,8 @@ class _D1PageState extends State<D1Page> {
                 );
               } else {
                 return Center(
-                  child: CircularProgressIndicator(color: Theme.of(context).primaryColor),
+                  child: CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor),
                   // child: Text('Unexpected state: ${state.runtimeType}')
                 );
               }
