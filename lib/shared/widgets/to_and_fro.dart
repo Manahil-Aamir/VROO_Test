@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/theme/color/color_theme.dart';
@@ -20,7 +17,7 @@ class ToAndFroWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+      padding: const EdgeInsets.fromLTRB(5,0,5,0),
       child: Container(
         decoration: BoxDecoration(
           color: ThemeColors.backgroundColor,
@@ -38,10 +35,12 @@ class ToAndFroWidget extends StatelessWidget {
           padding: EdgeInsets.all(16.w),
           child: Column(
             children: [
-              _buildLocationCard(context,
-                  icon: Icons.near_me_rounded,
-                  description: fromDescription,
-                  text: 'From'),
+              _buildLocationCard(
+                context,
+                icon: Icons.near_me_rounded,
+                description: fromDescription,
+                text: 'From'
+              ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.h),
                 child: _buildConnectionLine(context),
@@ -61,28 +60,28 @@ class ToAndFroWidget extends StatelessWidget {
 
   Widget _buildConnectionLine(BuildContext context) {
     return Row(
-      children: [
-        SizedBox(width: 30.w),
-        Expanded(
-          child: Container(
-            height: 2.h,
-            color: ThemeColors.primaryColor.withOpacity(0.5),
-          ),
-        ),
-        SvgPicture.asset(
-          'assets/images/down-arrow.svg',
-          width: 30.r,
-          height: 40.r,
-        ),
-        Expanded(
-          child: Container(
-            height: 2.h,
-            color: ThemeColors.primaryColor.withOpacity(0.5),
-          ),
-        ),
-        SizedBox(width: 30.w),
-      ],
-    );
+              children: [
+                SizedBox(width: 30.w),
+                Expanded(
+                  child: Container(
+                    height: 2.h,
+                    color: ThemeColors.primaryColor.withOpacity(0.5),
+                  ),
+                ),
+                SvgPicture.asset(
+                  'assets/images/down-arrow.svg',
+                  width: 30.r,
+                  height: 40.r,
+                ),
+                Expanded(
+                  child: Container(
+                    height: 2.h,
+                    color: ThemeColors.primaryColor.withOpacity(0.5),
+                  ),
+                ),
+                SizedBox(width: 30.w),
+              ],
+            );
   }
 
   Widget _buildLocationCard(
@@ -108,10 +107,9 @@ class ToAndFroWidget extends StatelessWidget {
             height: 40.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(colors: [
-                ThemeColors.primaryColor,
-                ThemeColors.primaryColorDark,
-              ]),
+              gradient: LinearGradient(
+                colors: [ThemeColors.primaryColor, ThemeColors.primaryColorDark,]
+              ),
             ),
             child: Icon(
               icon,
