@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:provider/provider.dart'; // Add provider import
+import 'package:provider/provider.dart'; 
 import '../../../../core/router/navigation.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/appbar.dart';
@@ -54,79 +54,89 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return MultiProvider(
-      providers: LocationSelectionDependencyInjection
-          .init(), // Assuming this provides all necessary dependencies
+      providers: LocationSelectionDependencyInjection.init(),
       builder: (context, child) => Scaffold(
-        appBar: appBar(heading: "Select Location"), // Custom AppBar
-        body: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                LocationInputField(
-                  label: 'From where would you go?',
-                  initialValue: fromDescription,
-                  onPlaceSelected: (placeId, description) {
-                    setState(() {
-                      fromPlaceId = placeId;
-                      fromDescription = description;
-                    });
-                    _saveSelectedLocation(
-                      keyId: 'fromPlaceId',
-                      keyDesc: 'fromDescription',
-                      placeId: placeId,
-                      description: description,
-                    );
-                  },
-                ),
-                SizedBox(height: 10.h),
-                LocationInputField(
-                  label: 'Where would you go?',
-                  initialValue: toDescription,
-                  onPlaceSelected: (placeId, description) {
-                    setState(() {
-                      toPlaceId = placeId;
-                      toDescription = description;
-                    });
-                    _saveSelectedLocation(
-                      keyId: 'toPlaceId',
-                      keyDesc: 'toDescription',
-                      placeId: placeId,
-                      description: description,
-                    );
-                  },
-                ),
-                const Spacer(),
-                GradientButton(
-                  onTap: () {
-                    if (fromPlaceId != null && toPlaceId != null) {
-                      context.read<Navigation>().navigateTo(
-                        Routes.routeDisplayPage,
-                        arguments: {
-                          'toPlaceID': toPlaceId,
-                          'fromPlaceID': fromPlaceId,
-                          'toDescription': toDescription,
-                          'fromDescription': fromDescription,
+        appBar: appBar(heading: "Select Location"),
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(16.0),
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: Column(
+                    children: [
+                      LocationInputField(
+                        label: 'From where would you go?',
+                        initialValue: fromDescription,
+                        onPlaceSelected: (placeId, description) {
+                          setState(() {
+                            fromPlaceId = placeId;
+                            fromDescription = description;
+                          });
+                          _saveSelectedLocation(
+                            keyId: 'fromPlaceId',
+                            keyDesc: 'fromDescription',
+                            placeId: placeId,
+                            description: description,
+                          );
                         },
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please select both locations!'),
-                        ),
-                      );
-                    }
-                  },
-                  text: 'Next',
+                      ),
+                      SizedBox(height: 10.h),
+                      LocationInputField(
+                        label: 'Where would you go?',
+                        initialValue: toDescription,
+                        onPlaceSelected: (placeId, description) {
+                          setState(() {
+                            toPlaceId = placeId;
+                            toDescription = description;
+                          });
+                          _saveSelectedLocation(
+                            keyId: 'toPlaceId',
+                            keyDesc: 'toDescription',
+                            placeId: placeId,
+                            description: description,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 60.h),
-              ],
+              ),
             ),
-          ),
+            Padding(
+              padding: EdgeInsets.all(16.h),
+              child: GradientButton(
+                onTap: () {
+                  if (fromPlaceId != null && toPlaceId != null) {
+                    context.read<Navigation>().navigateTo(
+                      Routes.d1,
+                      arguments: {
+                        'toPlaceId': toPlaceId,
+                        'fromPlaceId': fromPlaceId,
+                        'toDescription': toDescription,
+                        'fromDescription': fromDescription,
+                      },
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: theme.indicatorColor,
+                        content: Text('Please select both locations!'),
+                      ),
+                    );
+                  }
+                },
+                text: 'Next',
+              ),
+            ),
+            SizedBox(height: 60.h),
+          ],
         ),
       ),
     );
   }
+
 }
