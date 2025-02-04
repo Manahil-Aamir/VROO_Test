@@ -16,23 +16,31 @@ class PreferenceSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      children: [
-        Text(
-          label,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            color: theme.primaryColorDark,
-          ),
+    return Card(
+      color: theme.scaffoldBackgroundColor,
+      shadowColor: theme.primaryColorLight,
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Text(
+              label,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: theme.primaryColorDark,
+              ),
+            ),
+            Spacer(),
+            Switch(
+              inactiveThumbColor: theme.scaffoldBackgroundColor,
+              inactiveTrackColor: theme.primaryColorDark,
+              activeColor: theme.primaryColor,
+              value: value,
+              onChanged: onChanged,
+            ),
+          ],
         ),
-        SizedBox(width: 50.w),
-        Switch(
-          inactiveThumbColor: theme.scaffoldBackgroundColor,
-          inactiveTrackColor: theme.primaryColorDark,
-          activeColor: theme.primaryColor,
-          value: value,
-          onChanged: onChanged,
-        ),
-      ],
+      ),
     );
   }
 }

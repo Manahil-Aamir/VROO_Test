@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vroo_test/features/rider_journey/data/model/preferences_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
+import 'package:vroo_test/features/rider_journey/dependancy_injection/rider_home_di.dart';
 import 'package:vroo_test/features/rider_journey/domain/entity/schedule_entity.dart';
 import 'package:vroo_test/features/rider_journey/presentation/pages/rider_home_page.dart';
 import 'package:vroo_test/ui.dart';
 import '../../features/rider_journey/dependancy_injection/r1_di.dart';
 import '../../features/rider_journey/dependancy_injection/r2_di.dart';
+import '../../features/rider_journey/dependancy_injection/r3_di.dart';
 import '../../features/rider_journey/presentation/pages/location_selection_screen.dart';
 import '../../features/rider_journey/presentation/pages/r1_page.dart';
 import '../../features/rider_journey/presentation/pages/r2_page.dart';
+import '../../features/rider_journey/presentation/pages/r3_page.dart';
 
 class Routes {
   static const String ui = '/ui';
@@ -16,13 +20,17 @@ class Routes {
   static const String locationSelection = '/location_selection';
   static const String r1Page = '/r1_page';
   static const String r2Page = '/r2_page';
+  static const String r3Page = '/r3_page';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case ui:
         return MaterialPageRoute(builder: (_) => const SimpleUI());
       case riderhome:
-        return MaterialPageRoute(builder: (_) => const RiderHomeScreen());
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: RiderHomeDependencyInjection.init(),
+                child: const RiderHomeScreen()));
       case locationSelection:
         final arguments = settings.arguments as Map<String, String?>;
         final role = arguments['role'] ??
@@ -50,6 +58,19 @@ class Routes {
           builder: (_) => MultiProvider(
             providers: R2DependencyInjection.init(),
             child: R2Page(schedule: arguments['schedule'] as ScheduleModel),
+          ),
+        );
+      case r3Page:
+        final arguments = settings.arguments as Map<String, dynamic>;
+
+        final preferences = arguments['preference'] as PreferencesModel?;
+        return MaterialPageRoute(
+          builder: (_) => MultiProvider(
+            providers: R3DependancyInjection.init(),
+            child: R3Page(
+              schedule: arguments['schedule'] as ScheduleModel,
+              preferences: arguments['preferences'] as PreferencesModel,
+            ),
           ),
         );
       default:

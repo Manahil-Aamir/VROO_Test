@@ -5,6 +5,8 @@ class ScheduleModel extends ScheduleEntity {
   ScheduleModel({
     required super.fromDescription,
     required super.toDescription,
+    required super.toPlaceId,
+    required super.fromPlaceId,
     required super.date,
     required super.minTime,
     required super.maxTime,
@@ -18,6 +20,8 @@ class ScheduleModel extends ScheduleEntity {
     return {
       'fromDescription': fromDescription,
       'toDescription': toDescription,
+      'toPlaceId': toPlaceId,
+      'fromPlaceId': fromPlaceId,
       'date': date.toIso8601String(),
       'minTime':
           '${minTime.hour.toString().padLeft(2, '0')}:${minTime.minute.toString().padLeft(2, '0')}',
@@ -36,6 +40,8 @@ class ScheduleModel extends ScheduleEntity {
     return ScheduleModel(
       fromDescription: map['fromDescription'] ?? '',
       toDescription: map['toDescription'] ?? '',
+      toPlaceId: map['toPlaceId'] ?? '',
+      fromPlaceId: map['fromPlaceId'] ?? '',
       date: DateTime.parse(map['date'] ?? DateTime.now().toIso8601String()),
       minTime: TimeOfDay(
         hour: int.parse((map['minTime'] ?? '00:00').split(':')[0]),

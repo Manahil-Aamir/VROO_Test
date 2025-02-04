@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../shared/widgets/bottomnavbar.dart';
 import '../../dependancy_injection/rider_home_di.dart';
 import '../bloc/bloc/rider_home_bloc.dart';
+import '../bloc/event/rider_home_event.dart';
 import '../bloc/state/rider_home_state.dart';
 import '../widgets/locationselection.dart';
 import '../widgets/topbarwidget.dart';
@@ -18,27 +19,30 @@ class RiderHomeScreen extends StatefulWidget {
 
 class _RiderHomeScreenState extends State<RiderHomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    context.read<RiderHomeBloc>().add(ClearSharedPreferencesEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: RiderHomeDependencyInjection.init(),
-      child: Scaffold(
-        body: Stack(
-          children: [
-            BlocBuilder<RiderHomeBloc, RiderHomeState>(
-              builder: (context, state) {
-                return const NativeGoogleMap(); // Replaced GoogleMap with NativeGoogleMap
-              },
-            ),
-            const TopBarWidget(),
-            const LocationSelectionButtonsWidget(),
-          ],
-        ),
-        bottomNavigationBar: CustomBottomNavBar(
-          selectedIndex: 0,
-          onTap: (index) {
-            // Handle bottom navigation tap
-          },
-        ),
+    return Scaffold(
+      body: Stack(
+        children: [
+          BlocBuilder<RiderHomeBloc, RiderHomeState>(
+            builder: (context, state) {
+              return const NativeGoogleMap(); // Replaced GoogleMap with NativeGoogleMap
+            },
+          ),
+          const TopBarWidget(),
+          const LocationSelectionButtonsWidget(),
+        ],
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: 0,
+        onTap: (index) {
+          // Handle bottom navigation tap
+        },
       ),
     );
   }

@@ -64,10 +64,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 ),
                               ),
                               child: CircleAvatar(
-                                radius: 20.r,
+                                radius: 15.r,
                                 backgroundColor: index < highlightedCircles
                                     ? Theme.of(context).primaryColor
-                                    : Theme.of(context).primaryColorLight,
+                                    : Theme.of(context).scaffoldBackgroundColor,
                               ),
                             ),
                             if (index < totalCircles - 1)

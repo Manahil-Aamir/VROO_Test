@@ -103,6 +103,8 @@ class _R1PageState extends State<R1Page> {
         maxTime: state.maxPickUpTime!,
         arrivalTime: state.maxArrivalTime!,
         recurrenceType: isRecurring ? recurrence : 'One Time',
+        toPlaceId: widget.toPlaceId,
+        fromPlaceId: widget.fromPlaceId,
       );
       print('r1 description');
       print(widget.toDescription);
@@ -131,6 +133,10 @@ class _R1PageState extends State<R1Page> {
 
   @override
   Widget build(BuildContext context) {
+    print('From Description: ${widget.fromDescription}');
+    print('To Description: ${widget.toDescription}');
+    print('To Place ID: ${widget.toPlaceId}');
+    print('From Place ID: ${widget.fromPlaceId}');
     return Scaffold(
       body: Stack(
         children: [
@@ -138,9 +144,13 @@ class _R1PageState extends State<R1Page> {
             builder: (context, state) {
               if (state is ScheduleSaved) {
                 context.read<R1Bloc>().add(ResetStateEvent());
+                return Center(child: CircularProgressIndicator());
               }
               if (state is ScheduleInitial) {
                 context.read<R1Bloc>().add(LoadScheduleEvent());
+              }
+              if (state is ScheduleSaving) {
+                return Center(child: CircularProgressIndicator());
               }
               if (state is ScheduleLoading) {
                 return Center(child: CircularProgressIndicator());

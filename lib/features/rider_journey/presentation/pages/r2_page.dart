@@ -80,6 +80,7 @@ class _R2PageState extends State<R2Page> {
                                   .add(TogglePreferenceEvent('sameGender'));
                             },
                           ),
+                          SizedBox(height: 20.h),
                           PreferenceSwitch(
                             label: "Prefer Walk",
                             value: state.walk ?? false,
@@ -90,6 +91,8 @@ class _R2PageState extends State<R2Page> {
                           SizedBox(height: 50.h),
                           GradientButton(
                             onTap: () {
+                              print(state.sameGender);
+                              print(state.walk);
                               final preference = PreferencesModel(
                                 sameGender: state.sameGender ?? false,
                                 walk: state.walk ?? false,
@@ -98,12 +101,13 @@ class _R2PageState extends State<R2Page> {
                                   .read<R2Bloc>()
                                   .add(SavePreferenceEvent(preference));
                               print('description');
-                              print(widget.schedule.fromDescription);
-                              context.read<Navigation>().navigateTo(
-                                  '/location_selection',
-                                  arguments: {
-                                    'role': 'rider',
-                                  });
+                              print(preference.walk);
+                              context
+                                  .read<Navigation>()
+                                  .navigateTo('/r3_page', arguments: {
+                                'schedule': widget.schedule,
+                                'preferences': preference,
+                              });
                             },
                             text: 'Next',
                           ),
@@ -117,8 +121,7 @@ class _R2PageState extends State<R2Page> {
                   child: Text('Error loading preference'),
                 );
               } else {
-                return Center(
-                    child: Text('Unexpected state: ${state.runtimeType}'));
+                return Center(child: Text('Unexpected state: $state'));
               }
             },
           )

@@ -60,16 +60,19 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
           .init(), // Assuming this provides all necessary dependencies
       builder: (context, child) => Scaffold(
         appBar: appBar(heading: "Select Location"), // Custom AppBar
-        body: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(16.0),
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
             child: Column(
               children: [
                 LocationInputField(
                   label: 'From where would you go?',
                   initialValue: fromDescription,
                   onPlaceSelected: (placeId, description) {
+                    print('from');
+                    print(placeId);
+                    print(description);
                     setState(() {
                       fromPlaceId = placeId;
                       fromDescription = description;
@@ -99,15 +102,18 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     );
                   },
                 ),
-                const Spacer(),
+                SizedBox(height: 40.h),
                 GradientButton(
                   onTap: () {
                     if (fromPlaceId != null && toPlaceId != null) {
+                      print('to');
+                      print(toPlaceId);
+                      print(toDescription);
                       context.read<Navigation>().navigateTo(
                         Routes.r1Page,
                         arguments: {
-                          'toPlaceID': toPlaceId,
-                          'fromPlaceID': fromPlaceId,
+                          'toPlaceId': toPlaceId,
+                          'fromPlaceId': fromPlaceId,
                           'toDescription': toDescription,
                           'fromDescription': fromDescription,
                         },
