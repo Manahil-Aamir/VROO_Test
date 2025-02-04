@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/theme/color/color_theme.dart';
@@ -31,7 +31,7 @@ class ActiveRideCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildDriverInfo(textTheme),
-                _buildDateTime(textTheme),
+                _buildDateTime(textTheme, ride, context),
               ],
             ),
             SizedBox(height: 12.h),
@@ -131,6 +131,7 @@ class ActiveRideCard extends StatelessWidget {
   }
 
   Widget _buildCarDetails(TextTheme textTheme, ActiveRideEntity ride) {
+    print(ride.totalSeats);
     return Row(
       children: [
         Icon(Icons.directions_car, color: ThemeColors.primaryColor, size: 34.r),
@@ -156,9 +157,15 @@ class ActiveRideCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 10.w),
-                //for (var i = 0; i < ride.; i++)
-                Icon(Icons.event_seat, color: ThemeColors.primaryColor.withOpacity(0.7), size: 18.r),
-              ],
+                for (var i = 0; i < ride.totalSeats; i++)
+                  Icon(
+                    Icons.event_seat,
+                    color: i < (ride.totalSeats - ride.passengers.length) 
+                        ? ThemeColors.primaryColor.withOpacity(0.6) // Available seat
+                        : ThemeColors.backgroundColor, // Taken seat
+                    size: 20.r,
+                  ),
+                ],
             ),
           ],
         ),
@@ -166,12 +173,12 @@ class ActiveRideCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDateTime(TextTheme textTheme) {
+  Widget _buildDateTime(TextTheme textTheme, ActiveRideEntity ride, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          '24/09/2024',
+          DateFormat('dd/MM/yyyy').format(ride.date),
           style: textTheme.bodySmall?.copyWith(
             color: ThemeColors.buttonTextColor,
             fontWeight: FontWeight.w500,
@@ -184,7 +191,7 @@ class ActiveRideCard extends StatelessWidget {
             Icon(Icons.access_time, color: ThemeColors.primaryColor, size: 16.r),
             SizedBox(width: 6.w),
             Text(
-              '08:00 am',
+              MaterialLocalizations.of(context).formatTimeOfDay(ride.time), 
               style: textTheme.bodySmall?.copyWith(
                 color: ThemeColors.buttonTextColor,
                 fontWeight: FontWeight.w500,
@@ -196,4 +203,5 @@ class ActiveRideCard extends StatelessWidget {
       ],
     );
   }
+
 }

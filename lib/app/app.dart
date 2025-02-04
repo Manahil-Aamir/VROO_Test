@@ -39,7 +39,7 @@ class App extends StatelessWidget {
                     child: widget,
                   );
                 },
-                initialRoute: Routes.booking_confirm,
+                initialRoute: Routes.activeRides,
                 onGenerateRoute: Routes().generateRoute,
               );
             },

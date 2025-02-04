@@ -21,6 +21,7 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
     super.initState();
     // Dispatch the event ONCE when the screen initializes
     context.read<ActiveRidesBloc>().add(FetchActiveRides('Driver 91'));
+    // context.read<ActiveRidesBloc>().add(FetchActiveRides('hritika_1001'));
   }
 
   @override
