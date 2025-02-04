@@ -20,7 +20,7 @@ class AppStyles {
         displayLarge: (AppFonts.headlineTextStyle).copyWith(
             fontSize: AppFonts.headline1TextSize, fontWeight: FontWeight.w700),
         displayMedium: (AppFonts.headlineTextStyle).copyWith(
-            fontSize: AppFonts.headline5TextSize, fontWeight: FontWeight.w500),
+            fontSize: AppFonts.headline2TextSize, fontWeight: FontWeight.w500),
         displaySmall: (AppFonts.headlineTextStyle).copyWith(
             fontSize: AppFonts.headline3TextSize, fontWeight: FontWeight.w500),
         headlineLarge: AppFonts.headlineTextStyle.copyWith(

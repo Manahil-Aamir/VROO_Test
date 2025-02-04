@@ -106,8 +106,11 @@ class _R3PageState extends State<R3Page> {
             );
             context
                 .read<Navigation>()
-                .navigateTo('/location_selection', arguments: {
-              'role': 'rider',
+                .navigateTo('/booking_confirm', arguments: {
+              'rideRequestId': rideRequestId,
+              'matchingRides': matchingRides,
+              'minPickupTime': widget.schedule.minTime,
+              'maxPickupTime': widget.schedule.maxTime,
             });
           } else if (state is RideRequestFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
