@@ -7,6 +7,7 @@ import '../../../../shared/widgets/location_selection_button_widget.dart';
 import '../../../../shared/widgets/top_bar_widget.dart';
 import '../../dependency_injection/driver_home_di.dart';
 import '../bloc/bloc/driver_home_bloc.dart';
+import '../bloc/event/driver_home_event.dart';
 import '../bloc/state/driver_home_state.dart';
 
 class DriverHomeScreen extends StatefulWidget {
@@ -17,34 +18,23 @@ class DriverHomeScreen extends StatefulWidget {
 }
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
-
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: DriverHomeDependencyInjection.init(),
-      child: Scaffold(
-        body: Stack(
-          children: [
-            BlocBuilder<DriverHomeBloc, DriverHomeState>(
-              builder: (context, state) {
-                return const NativeGoogleMap();
-                // GoogleMap(
-                //   initialCameraPosition: CameraPosition(
-                //     target: const LatLng(24.941875, 67.114297),
-                //     zoom: 15,
-                //   ),
-                //   myLocationEnabled: true,
-                //   myLocationButtonEnabled: false,
-                // );
-              },
-            ),
-            const TopBarWidget(),
-            const LocationSelectionButtonsWidget(),
-          ],
-        ),
-        bottomNavigationBar: CustomBottomNavBar(
-          selectedIndex: 0,
-        ),
+    context.read<DriverHomeBloc>().add(ClearSharedPreferencesEvent());
+    return Scaffold(
+      body: Stack(
+        children: [
+          BlocBuilder<DriverHomeBloc, DriverHomeState>(
+            builder: (context, state) {
+              return const NativeGoogleMap(); // Replaced GoogleMap with NativeGoogleMap
+            },
+          ),
+          const TopBarWidget(),
+          const LocationSelectionButtonsWidget(),
+        ],
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: 0,
       ),
     );
   }
@@ -53,6 +43,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 // Widget to embed the native Android Google Map
 class NativeGoogleMap extends StatelessWidget {
   const NativeGoogleMap({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const AndroidView(

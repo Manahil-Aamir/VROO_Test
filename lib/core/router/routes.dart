@@ -5,6 +5,7 @@ import '../../features/driver_booking/dependency_injection/active_rides_di.dart'
 import '../../features/driver_booking/dependency_injection/d1_di.dart';
 import '../../features/driver_booking/dependency_injection/d2_di.dart';
 import '../../features/driver_booking/dependency_injection/d3_di.dart';
+import '../../features/driver_booking/dependency_injection/driver_home_di.dart';
 import '../../features/driver_booking/domain/entity/car.dart';
 import '../../features/driver_booking/presentation/pages/active_rides_screen.dart';
 import '../../features/driver_booking/presentation/pages/d1_page.dart';
@@ -27,7 +28,10 @@ class Routes {
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case driverHome:
-        return MaterialPageRoute(builder: (_) => DriverHomeScreen());
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: DriverHomeDependencyInjection.init(),
+                child: const DriverHomeScreen()));
       case locationSelection:
         final role = settings.arguments as String? ?? 'driver'; // Default to 'driver'
         return MaterialPageRoute(

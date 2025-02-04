@@ -1,5 +1,5 @@
 import '../entity/driver_schedule2_entity.dart';
-import '../repository/driver_schedule2_repository.dart';
+import '../repository/d2_repository.dart';
 
 class SaveCarPreferencesUseCase {
   final D2Repository repository;

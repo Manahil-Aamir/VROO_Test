@@ -1,5 +1,5 @@
-import '../../domain/repository/driver_schedule2_repository.dart';
-import '../data_source/driver_schedule2_datasource.dart';
+import '../../domain/repository/d2_repository.dart';
+import '../data_source/d2_datasource.dart';
 
 class D2RepositoryImpl implements D2Repository {
   final D2DataSource dataSource;
@@ -14,6 +14,6 @@ class D2RepositoryImpl implements D2Repository {
   Future<Map<String, dynamic>?> loadCarPreferences() =>
       dataSource.loadCarPreferences();
 
-  @override
-  Future<void> clearCarPreferences() => dataSource.clearCarPreferences();
+  // @override
+  // Future<void> clearCarPreferences() => dataSource.clearCarPreferences();
 }

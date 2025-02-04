@@ -13,8 +13,8 @@ class D2DataSource {
     return preferencesString != null ? jsonDecode(preferencesString) : null;
   }
 
-  Future<void> clearCarPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('carPreferences');
-  }
+  // Future<void> clearCarPreferences() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.remove('carPreferences');
+  // }
 }
