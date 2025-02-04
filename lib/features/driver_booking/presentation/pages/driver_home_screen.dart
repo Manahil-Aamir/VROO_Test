@@ -44,9 +44,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         ),
         bottomNavigationBar: CustomBottomNavBar(
           selectedIndex: 0,
-          onTap: (index) {
-            // Handle bottom navigation tap
-          },
         ),
       ),
     );

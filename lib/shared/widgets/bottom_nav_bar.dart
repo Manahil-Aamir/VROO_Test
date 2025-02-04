@@ -2,17 +2,40 @@ import 'package:flutter/material.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int selectedIndex;
-  final Function(int) onTap;
 
-  CustomBottomNavBar({required this.selectedIndex, required this.onTap});
+  CustomBottomNavBar({required this.selectedIndex});
+
+  void _onItemTapped(BuildContext context, int index) {
+    String route;
+    switch (index) {
+      case 0:
+        route = '/driver_home'; // Driver's home
+        break;
+      case 1:
+        route = '/active_ride_page'; // Active requests
+        break;
+      case 2:
+        route = '/chat';
+        break;
+      case 3:
+        route = '/profile';
+        break;
+      default:
+        return;
+    }
+
+    if (selectedIndex != index) {
+      Navigator.pushReplacementNamed(context, route);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: selectedIndex,
-      onTap: onTap,
-      selectedItemColor: Theme.of(context).primaryColor, // Use theme's primary color
-      unselectedItemColor: Theme.of(context).unselectedWidgetColor, // Use unselected color from theme
+      onTap: (index) => _onItemTapped(context, index),
+      selectedItemColor: Theme.of(context).primaryColor,
+      unselectedItemColor: Theme.of(context).unselectedWidgetColor,
       showUnselectedLabels: true,
       iconSize: 24,
       type: BottomNavigationBarType.fixed,
@@ -22,8 +45,8 @@ class CustomBottomNavBar extends StatelessWidget {
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.request_page),
-          label: 'Request',
+          icon: Icon(Icons.list),
+          label: 'Requests',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.chat),
@@ -37,42 +60,3 @@ class CustomBottomNavBar extends StatelessWidget {
     );
   }
 }
-
-
-// class CustomBottomNavBar extends StatelessWidget {
-//   final int selectedIndex;
-//   final Function(int) onTap;
-
-//   CustomBottomNavBar({required this.selectedIndex, required this.onTap});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BottomNavigationBar(
-//       currentIndex: selectedIndex, 
-//       onTap: onTap, 
-//       selectedItemColor: Color(0xFFFFEC8825), 
-//       unselectedItemColor: Colors.black, 
-//       showUnselectedLabels: true, 
-//       iconSize: 24, 
-//       type: BottomNavigationBarType.fixed,  
-//       items: const [
-//         BottomNavigationBarItem(
-//           icon: Icon(Icons.home),
-//           label: 'Home',
-//         ),
-//         BottomNavigationBarItem(
-//           icon: Icon(Icons.request_page),
-//           label: 'Request',
-//         ),
-//         BottomNavigationBarItem(
-//           icon: Icon(Icons.chat),
-//           label: 'Chat',
-//         ),
-//         BottomNavigationBarItem(
-//           icon: Icon(Icons.person),
-//           label: 'Profile',
-//         ),
-//       ],
-//     );
-//   }
-// }
