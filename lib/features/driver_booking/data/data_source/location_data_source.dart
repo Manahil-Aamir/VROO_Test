@@ -10,7 +10,8 @@ class LocationDataSource {
   LocationDataSource(this.client, {required this.apiKey});
 
   Future<List<PredictionModel>> fetchSuggestions(String input) async {
-    final url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$apiKey&language=en';
+    final url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$apiKey&language=en&components=country:pk';
+
     final response = await client.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

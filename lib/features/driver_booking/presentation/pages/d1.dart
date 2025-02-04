@@ -1,493 +1,258 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:vroo_test/features/driver_booking/data/model/schedule_model.dart';
+import '../../../../core/router/navigation.dart';
+import '../../../../core/router/routes.dart';
+import '../../../../core/utils/validators/input_ride_validator.dart';
+import '../../../../shared/widgets/custom_app_bar.dart';
+import '../../../../shared/widgets/date_picker.dart';
+import '../../../../shared/widgets/gradient_button.dart';
+import '../../../../shared/widgets/recurrence_dialog.dart';
+import '../../../../shared/widgets/recurring_row.dart';
+import '../../../../shared/widgets/time_picker.dart';
+import '../../../../shared/widgets/to_and_fro.dart';
+import '../bloc/bloc/d1_bloc.dart';
+import '../bloc/event/d1_event.dart';
+import '../bloc/state/d1_state.dart';
 
-class D1Screen extends StatelessWidget {
-  final String toPlaceID;
-  final String fromPlaceID;
-  final String toDescription;
+class D1Page extends StatefulWidget {
   final String fromDescription;
+  final String toDescription;
+  final String fromPlaceId;
+  final String toPlaceId;
   final List<dynamic> selectedRouteCoords;
+  final String distance;
+  final String duration;
 
-  D1Screen({
+  const D1Page({
     super.key,
-    required this.toPlaceID,
-    required this.fromPlaceID,
-    required this.toDescription,
     required this.fromDescription,
+    required this.toDescription,
+    required this.fromPlaceId,
+    required this.toPlaceId,
     required this.selectedRouteCoords,
-  })  : sourceCoord = LatLng(selectedRouteCoords.first[0], selectedRouteCoords.first[1]),
-        destinationCoord = LatLng(selectedRouteCoords.last[0], selectedRouteCoords.last[1]);
+    required this.distance,
+    required this.duration,
+  });
 
-  final LatLng sourceCoord;
-  final LatLng destinationCoord;
+  @override
+  _D1PageState createState() => _D1PageState();
+}
+
+class _D1PageState extends State<D1Page> {
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
+  TimeOfDay? maxArrivalTime;
+  bool isRecurring = false;
+  String recurrence = 'One Time';
+  ScheduleModel? schedule;
+
+  void _validateFields() {
+    final theme = Theme.of(context);
+    final state = context.read<D1Bloc>().state;
+    if (state is ScheduleInputState) {
+      // Check for null values and add errors if necessary
+
+      final dateErrorMsg = InputRideValidator.validateDate(state.selectedDate);
+      final timeErrorMsg = InputRideValidator.validateTime(state.selectedTime);
+      final maxArrivalTimeErrorMsg = InputRideValidator.validateMaxArrivalTime(
+          state.selectedTime, state.maxArrivalTime);
+
+      context.read<D1Bloc>().add(ShowErrorEvent(
+            dateError: dateErrorMsg != null,
+            timeError: timeErrorMsg != null,
+            maxArrivalTimeError: maxArrivalTimeErrorMsg != null,
+          ));
+
+      if (dateErrorMsg != null ||
+          timeErrorMsg != null ||
+          maxArrivalTimeErrorMsg != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(dateErrorMsg ??
+                timeErrorMsg ??
+                maxArrivalTimeErrorMsg ??
+                'Please fill in all fields.'),
+            backgroundColor: theme.indicatorColor,
+          ),
+        );
+        return; // Stop further execution if validation fails
+      }
+
+      // Proceed only if all fields are valid
+      if (state.selectedDate != null &&
+          state.selectedTime != null &&
+          state.maxArrivalTime != null) {
+        final schedule = ScheduleModel(
+          fromDescription: widget.fromDescription,
+          toDescription: widget.toDescription,
+          date: state.selectedDate!,
+          time: state.selectedTime!,
+          maxArrivalTime: state.maxArrivalTime!,
+          recurrenceType: isRecurring ? recurrence : 'One Time',
+        );
+
+        context.read<D1Bloc>().add(SaveScheduleEvent(schedule));
+        context.read<Navigation>().navigateTo(
+          Routes.d2,
+          arguments: {
+            'toPlaceID': widget.toPlaceId,
+            'fromPlaceID': widget.fromPlaceId,
+            'toDescription': widget.toDescription,
+            'fromDescription': widget.fromDescription,
+            'selectedRouteCoords': widget.selectedRouteCoords,
+            'distance': widget.distance,
+            'duration': widget.duration,
+            'selectedDate': state.selectedDate,
+            'selectedTime': state.selectedTime,
+            'maxArrivalTime': state.maxArrivalTime,
+            'recurrence': isRecurring ? recurrence : 'One Time',
+          },
+        );
+        // Navigator.pushNamed(
+        //   context,
+        //   Routes.d2,
+        //   arguments: {
+        //     'toPlaceID': widget.toPlaceId,
+        //     'fromPlaceID': widget.fromPlaceId,
+        //     'toDescription': widget.toDescription,
+        //     'fromDescription': widget.fromDescription,
+        //     'selectedRouteCoords': widget.selectedRouteCoords,
+        //     'distance': widget.distance,
+        //     'duration': widget.duration,
+        //     'selectedDate': state.selectedDate,
+        //     'selectedTime': state.selectedTime,
+        //     'maxArrivalTime': state.maxArrivalTime,
+        //     'recurrence': isRecurring ? recurrence : 'One Time',
+        //   },
+        // );
+      } else {
+        // Show an error message if any field is null
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please fill in all fields.'),
+            backgroundColor: theme.indicatorColor,
+          ),
+        );
+      }
+    }
+  }
+
+  void onRecurringTap(BuildContext context) {
+    showRecurrenceDialog(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('D1 Screen')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'To Place ID: $toPlaceID',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'From Place ID: $fromPlaceID',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'To Description: $toDescription',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'From Description: $fromDescription',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Source Coordinate: $sourceCoord',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Destination Coordinate: $destinationCoord',
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
+      body: Stack(
+        children: [
+          BlocBuilder<D1Bloc, D1State>(
+            builder: (context, state) {
+              if (state is ScheduleSaved) {
+                context.read<D1Bloc>().add(ResetStateEvent());
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is ScheduleInitial) {
+                context.read<D1Bloc>().add(LoadScheduleEvent());
+              }
+              if (state is ScheduleLoading) {
+                return Center(child: CircularProgressIndicator());
+              } else if (state is ScheduleLoaded) {
+                // Transition to ScheduleInputState with the loaded schedule
+                final schedule = state.loadedSchedule;
+                context.read<D1Bloc>().add(UpdateScheduleEvent(
+                      selectedDate: schedule.date,
+                      selectedTime: schedule.time,
+                      maxArrivalTime: schedule.maxArrivalTime,
+                    ));
+                return Center(child: CircularProgressIndicator());
+              } else if (state is ScheduleInputState) {
+                final bloc = context.read<D1Bloc>();
+
+                return Scaffold(
+                  appBar: CustomAppBar(
+                    highlightedCircles: 1,
+                  ),
+                  body: Padding(
+                    padding: EdgeInsets.all(12.0.w),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 10.h),
+                          ToAndFroWidget(
+                            fromDescription: widget.fromDescription,
+                            toDescription: widget.toDescription,
+                          ),
+                          SizedBox(height: 30.h),
+                          CustomDatePicker(
+                            labelText: 'Select Date',
+                            selectedDate: state.selectedDate,
+                            onDateSelected: (pickedDate) {
+                              bloc.add(SelectDateEvent(pickedDate));
+                            },
+                            errorText:
+                                state.dateError ? 'Please select a date' : null,
+                          ),
+                          SizedBox(height: 12.h),
+                          CustomTimePicker(
+                            labelText: 'Departure Time',
+                            selectedTime: state.selectedTime,
+                            onTimeSelected: (departureTime) {
+                              bloc.add(SelectTimeEvent(departureTime, "time"));
+                            },
+                            errorText: state.timeError
+                                ? 'Please select departure time'
+                                : null,
+                          ),
+                          SizedBox(height: 12.h),
+                          CustomTimePicker(
+                            labelText: 'Max Arrival Time',
+                            selectedTime: state.maxArrivalTime,
+                            onTimeSelected: (departureTime) {
+                              bloc.add(SelectTimeEvent(
+                                  departureTime, "maxArrivalTime"));
+                            },
+                            errorText: state.arrivalTimeError
+                                ? 'Please select a time'
+                                : null,
+                          ),
+                          SizedBox(height: 12.h),
+                          RecurringRow(
+                            onRecurringTap: () {
+                              showRecurrenceDialog(context);
+                            },
+                          ),
+                          SizedBox(height: 15.h),
+                          GradientButton(
+                            onTap: () {
+                              _validateFields();
+                            },
+                            text: 'Next',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              } else if (state is ScheduleError) {
+                return Center(
+                  child: Text('Error loading schedule'),
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor),
+                  // child: Text('Unexpected state: ${state.runtimeType}')
+                );
+              }
+            },
+          )
+        ],
       ),
     );
   }
 }
-
-
-  
-  // Widget _buildCarSelection() {
-  //   return Card(
-  //     color: ThemeColors.backgroundColor,
-  //     elevation: 4,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(16.w),
-  //     ),
-  //     child: Padding(
-  //       padding: EdgeInsets.all(16.w),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Row(
-  //             children: [
-  //               Icon(Icons.directions_car, color: ThemeColors.primaryColor, size: 24.w),
-  //               SizedBox(width: 8.w),
-  //               Text(
-  //                 'Select Vehicle',
-  //                 style: AppFonts.bodyTextStyle.copyWith(
-  //                   fontSize: AppFonts.body1TextSize,
-  //                   color: ThemeColors.headlinesTextColor,
-  //                   fontWeight: FontWeight.w500,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //           SizedBox(height: 16.h),
-  //           BlocBuilder<CarBloc, CarState>(
-  //             builder: (context, carState) {
-  //               return BlocBuilder<CarPreferencesBloc, CarPreferencesState>(
-  //                 builder: (context, prefState) {
-  //                   if (carState is CarInitial || carState is CarLoading || prefState is CarPreferencesInitial || prefState is CarPreferencesLoading) {
-  //                     return Center(
-  //                       child: CircularProgressIndicator(
-  //                         color: ThemeColors.progressIndicatorColor,
-  //                       ),
-  //                     );
-  //                   }
-  //                   if (carState is CarError) {
-  //                     print('Error loading cars: ${carState.message}');
-  //                     return Text(
-  //                       'Please try again later',
-  //                       style: AppFonts.bodyTextStyle.copyWith(
-  //                         color: ThemeColors.accentColor,
-  //                         fontSize: AppFonts.body2TextSize,
-  //                       ),
-  //                     );
-  //                   }
-  //                   if (carState is CarLoaded) {
-  //                     return Row(
-  //                       children: [
-  //                         Expanded(
-  //                           child: Container(
-  //                             decoration: BoxDecoration(
-  //                               borderRadius: BorderRadius.circular(12.w),
-  //                               border: Border.all(
-  //                                 color: ThemeColors.primaryColorLight.withOpacity(0.3),
-  //                                 width: 1.5,
-  //                               ),
-  //                             ),
-  //                             child: DropdownButtonFormField<String>(
-  //                               isExpanded: true,
-  //                               value: _selectedCarId,
-  //                               dropdownColor: ThemeColors.canvasColor,
-  //                               menuMaxHeight: 300.h,
-  //                               style: AppFonts.bodyTextStyle.copyWith(
-  //                                 fontSize: AppFonts.body1TextSize,
-  //                                 color: ThemeColors.headlinesTextColor,
-  //                                 fontWeight: FontWeight.w500,
-  //                               ),
-  //                               borderRadius: BorderRadius.circular(12.w),
-  //                               elevation: 6,
-  //                               decoration: InputDecoration(
-  //                                 filled: true,
-  //                                 fillColor: Colors.transparent,
-  //                                 border: InputBorder.none,
-  //                                 contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-  //                                 hintText: 'Choose your vehicle',
-  //                                 hintStyle: AppFonts.bodyTextStyle.copyWith(
-  //                                   color: ThemeColors.hintTextColor,
-  //                                 ),
-  //                               ),
-  //                               selectedItemBuilder: (BuildContext context) {
-  //                                 return carState.cars.map<Widget>((CarEntity car) {
-  //                                   return Text('${car.company} ${car.model}');
-  //                                 }).toList();
-  //                               },
-  //                               items: carState.cars.map((car) {
-  //                                 return DropdownMenuItem<String>(
-  //                                   value: car.numberPlate,
-  //                                   child: Row(
-  //                                     children: [
-  //                                       Icon(Icons.directions_car, color: ThemeColors.primaryColor),
-  //                                       SizedBox(width: 12.w),
-  //                                       Text('${car.company} ${car.model}'),
-  //                                     ],
-  //                                   ),
-  //                                 );
-  //                               }).toList(),
-  //                               onChanged: (value) => _updateCarPreference(value),
-  //                               icon: Icon(Icons.arrow_drop_down, color: ThemeColors.primaryColor),
-  //                             ),    
-  //                           ),
-  //                         ),
-  //                         SizedBox(width: 12.w),
-  //                         _buildAddCarButton(),
-  //                       ],
-  //                     );
-  //                   }
-  //                   return const SizedBox.shrink();
-  //                 },
-  //               );
-  //             },
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildAddCarButton() {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       gradient: LinearGradient(
-  //         colors: [
-  //           ThemeColors.primaryColor.withOpacity(0.7),
-  //           // ThemeColors.primaryColor,
-  //           ThemeColors.primaryColor.withOpacity(0.7),
-  //         ],
-  //       ),
-  //       borderRadius: BorderRadius.circular(12.w),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: ThemeColors.primaryColor.withOpacity(0.2),
-  //           blurRadius: 8,
-  //           offset: const Offset(0, 4),
-  //         ),
-  //       ],
-  //     ),
-  //     child: Material(
-  //       color: Colors.transparent,
-  //       child: InkWell(
-  //         borderRadius: BorderRadius.circular(12.w),
-  //         onTap: _showAddCarModal,
-  //         child: Container(
-  //           width: 48.w,
-  //           height: 48.w,
-  //           padding: EdgeInsets.all(12.w),
-  //           child: Icon(Icons.add, color: Colors.white, size: 24.w),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildPaymentMethod() {
-  //   return Card(
-  //     color: ThemeColors.backgroundColor,
-  //     elevation: 4,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(16.w),
-  //     ),
-  //     child: Padding(
-  //       padding: EdgeInsets.all(16.w),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Row(
-  //             children: [
-  //               Icon(Icons.payment, color: ThemeColors.primaryColor, size: 24.w),
-  //               SizedBox(width: 8.w),
-  //               Text(
-  //                 'Payment Method',
-  //                 style: AppFonts.bodyTextStyle.copyWith(
-  //                   fontSize: AppFonts.body1TextSize,
-  //                   color: ThemeColors.headlinesTextColor,
-  //                   fontWeight: FontWeight.w500,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //           SizedBox(height: 16.h),
-  //           Row(
-  //             children: [
-  //               Expanded(
-  //                 child: _buildPaymentOption(
-  //                   title: 'Cash',
-  //                   isSelected: _selectedPaymentMethod == 'cash',
-  //                   onTap: () => _updatePayment('cash'),
-  //                 ),
-  //               ),
-  //               SizedBox(width: 16.w),
-  //               Expanded(
-  //                 child: _buildPaymentOption(
-  //                   title: 'Free',
-  //                   isSelected: _selectedPaymentMethod == 'free',
-  //                   onTap: () => _updatePayment('free'),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildPaymentOption({
-  //   required String title,
-  //   required bool isSelected,
-  //   required VoidCallback onTap,
-  // }) {
-  //   return InkWell(
-  //     onTap: onTap,
-  //     borderRadius: BorderRadius.circular(12.w),
-  //     child: Container(
-  //       padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
-  //       decoration: BoxDecoration(
-  //         color: isSelected ? ThemeColors.primaryColor.withOpacity(0.1) : Colors.transparent,
-  //         borderRadius: BorderRadius.circular(12.w),
-  //         border: Border.all(
-  //           color: isSelected ? ThemeColors.primaryColor : ThemeColors.primaryColorLight.withOpacity(0.3),
-  //           width: 1.5,
-  //         ),
-  //       ),
-  //       child: Center(
-  //         child: Text(
-  //           title,
-  //           style: AppFonts.bodyTextStyle.copyWith(
-  //             color: ThemeColors.headlinesTextColor,
-  //             // color: isSelected ? ThemeColors.primaryColor : ThemeColors.headlinesTextColor,
-  //             fontWeight: FontWeight.w600,
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-
-
-
-  // _showAddCarModal() {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     backgroundColor: const Color(0xFF2C2C2C),
-  //     shape: const RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-  //     ),
-  //     builder: (context) {
-  //       final TextEditingController carCompanyController = TextEditingController();
-  //       final TextEditingController carModelController = TextEditingController();
-  //       final TextEditingController carColorController = TextEditingController();
-  //       final TextEditingController carNumberPlateController = TextEditingController();
-  //       final TextEditingController carMileageController = TextEditingController();
-  //       return SingleChildScrollView(
-  //         child: Padding(
-  //           padding: const EdgeInsets.all(16.0),
-  //           child: Column(
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               const Text(
-  //                 'Add Car',
-  //                 style: TextStyle(
-  //                   fontSize: 18,
-  //                   fontWeight: FontWeight.bold,
-  //                   color: Colors.white,
-  //                 ),
-  //               ),
-  //               const SizedBox(height: 16),
-  //               _buildCarInputField(carCompanyController, 'Car Company'),
-  //               _buildCarInputField(carModelController, 'Car Model'),
-  //               _buildCarInputField(carColorController, 'Car Color'),
-  //               _buildCarInputField(carNumberPlateController, 'Car Number Plate'),
-  //               _buildCarInputField(
-  //                 carMileageController,
-  //                 'Car Mileage',
-  //                 keyboardType: TextInputType.number, 
-  //                 inputFormatters: [FilteringTextInputFormatter.digitsOnly], 
-  //               ),
-  //               const SizedBox(height: 16),
-  //               SizedBox(
-  //                 height: 50,
-  //                 width: double.infinity,
-  //                 child: GradientButton(
-  //                   onTap: () {
-  //                     final car = CarEntity(
-  //                       company: carCompanyController.text,
-  //                       model: carModelController.text,
-  //                       color: carColorController.text,
-  //                       numberPlate: carNumberPlateController.text,
-  //                       mileage: double.tryParse(carMileageController.text) ?? 0.0,
-  //                       isVerified: false,
-  //                     );
-  //                     BlocProvider.of<CarBloc>(context).add(AddCar(car));
-  //                     Navigator.pop(context);
-  //                   },
-  //                   text: 'Add Car',
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Widget _buildCarInputField(
-  //   TextEditingController controller, 
-  //   String label, {
-  //   TextInputType keyboardType = TextInputType.text,
-  //   List<TextInputFormatter>? inputFormatters,
-  // }) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
-  //     child: TextFormField(
-  //       controller: controller,
-  //       keyboardType: keyboardType,
-  //       inputFormatters: inputFormatters,
-  //       style: const TextStyle(color: Colors.white),
-  //       decoration: InputDecoration(
-  //         labelText: label,
-  //         labelStyle: const TextStyle(color: Colors.white),
-  //         border: OutlineInputBorder(
-  //           borderRadius: BorderRadius.circular(8.0),
-  //         ),
-  //         focusedBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.circular(8.0),
-  //           borderSide: const BorderSide(
-  //             color: Color(0xFFEC8825),
-  //             width: 2.0,
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-// Widget _buildDetailCard({required String title, required List<Widget> details}) {
-  //   return Card(
-  //     color: ThemeColors.backgroundColor,
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(16.0),
-  //     ),
-  //     elevation: 4,
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(16.0),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Text(
-  //             title,
-  //             style: const TextStyle(
-  //               fontSize: 18,
-  //               fontWeight: FontWeight.bold,
-  //               color: Colors.grey,
-  //             ),
-  //           ),
-  //           const SizedBox(height: 8),
-  //           Column(children: details),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildDetailTile(IconData icon, String label, String value) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
-  //     child: Row(
-  //       children: [
-  //         Icon(icon, color: const Color(0xFFEC8825)),
-  //         const SizedBox(width: 16),
-  //         Expanded(
-  //           child: Text(
-  //             label,
-  //             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: Text(
-  //             value,
-  //             style: const TextStyle(fontSize: 16),
-  //             overflow: TextOverflow.ellipsis,
-  //             maxLines: 1,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildExpandableDetailTile(
-  //   BuildContext context, IconData icon, String label, String value) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
-  //     child: Row(
-  //       children: [
-  //         Icon(icon, color: const Color(0xFFEC8825)),
-  //         const SizedBox(width: 16),
-  //         Expanded(
-  //           child: Text(
-  //             label,
-  //             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-  //           ),
-  //         ),
-  //         Expanded(
-  //           child: GestureDetector(
-  //             onTap: () => _showDetailBottomSheet(context, label, value),
-  //             child: Text(
-  //               value,
-  //               style: const TextStyle(fontSize: 16),
-  //               overflow: TextOverflow.ellipsis,
-  //               maxLines: 1,
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }

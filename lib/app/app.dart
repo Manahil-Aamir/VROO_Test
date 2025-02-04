@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import '../core/router/navigation.dart';
 import '../core/router/routes.dart';
 import 'app_bloc.dart';
 import 'app_state.dart';
@@ -24,6 +24,7 @@ class App extends StatelessWidget {
             rebuildFactor: (old, data) => true,
             builder: (context, widget) {
               return MaterialApp(
+                navigatorKey: Navigation.navigatorKey,
                 title: "Your App Title",
                 theme: AppTheme.getThemeData(),
                 debugShowCheckedModeBanner: false,
@@ -38,9 +39,8 @@ class App extends StatelessWidget {
                     child: widget,
                   );
                 },
-                initialRoute: Routes.driverHome,
+                initialRoute: Routes.booking_confirm,
                 onGenerateRoute: Routes().generateRoute,
-                navigatorKey: _navigatorKey, 
               );
             },
           );
@@ -49,7 +49,3 @@ class App extends StatelessWidget {
     );
   }
 }
-
-// Add this global key at the top of your file
-final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-BuildContext? get navigationContext => _navigatorKey.currentContext;

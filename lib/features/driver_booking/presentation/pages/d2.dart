@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/shared/widgets/custom_app_bar.dart';
+import '../../../../core/router/navigation.dart';
 import '../../../../core/router/routes.dart';
 import '../../domain/entity/car.dart';
 import '../../domain/entity/driver_schedule2_entity.dart';
@@ -247,8 +248,7 @@ class _D2PageState extends State<D2Page> {
     print(widget.routeDistance);
     print(widget.routeDuration);
 
-    Navigator.pushNamed(
-      context,
+    context.read<Navigation>().navigateTo(
       Routes.d3,
       arguments: {
         'fromPlaceID': widget.fromPlaceId,
@@ -268,6 +268,28 @@ class _D2PageState extends State<D2Page> {
         'paymentOption': [_selectedPaymentMethod], // Corrected key
       },
     );
+
+    // Navigator.pushNamed(
+    //   context,
+    //   Routes.d3,
+    //   arguments: {
+    //     'fromPlaceID': widget.fromPlaceId,
+    //     'toPlaceID': widget.toPlaceId,
+    //     'fromDescription': widget.fromDescription,
+    //     'toDescription': widget.toDescription,
+    //     'routeCoords': widget.selectedRouteCoords, // Corrected key
+    //     'routeDistance': widget.routeDistance, // Corrected key
+    //     'routeDuration': widget.routeDuration, // Corrected key
+    //     'date': widget.date,
+    //     'time': widget.time,
+    //     'maxArrivalTime': widget.maxArrivalTime,
+    //     'recurrence': widget.recurrence, // Added missing parameter
+    //     'selectedCar': selectedCar,
+    //     'availableSeats': _availableSeats,
+    //     'sameGenderOnly': _sameGenderOnly, // Corrected key
+    //     'paymentOption': [_selectedPaymentMethod], // Corrected key
+    //   },
+    // );
   }
 
   void _showAddCarModal() {

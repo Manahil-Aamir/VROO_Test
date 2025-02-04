@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vroo_test/features/driver_booking/data/model/carr_model.dart';
 import '../../features/driver_booking/dependency_injection/active_rides_di.dart';
+import '../../features/driver_booking/dependency_injection/booking_di.dart';
 import '../../features/driver_booking/dependency_injection/d1_di.dart';
 import '../../features/driver_booking/dependency_injection/d2_di.dart';
 import '../../features/driver_booking/dependency_injection/d3_di.dart';
 import '../../features/driver_booking/dependency_injection/driver_home_di.dart';
 import '../../features/driver_booking/domain/entity/car.dart';
+import '../../features/driver_booking/presentation/pages/BookingConfirmation.dart';
 import '../../features/driver_booking/presentation/pages/active_rides_screen.dart';
-import '../../features/driver_booking/presentation/pages/d1_page.dart';
+import '../../features/driver_booking/presentation/pages/d1.dart';
 import '../../features/driver_booking/presentation/pages/d2.dart';
 import '../../features/driver_booking/presentation/pages/d3.dart';
 import '../../features/driver_booking/presentation/pages/driver_home_screen.dart';
@@ -19,11 +21,12 @@ class Routes {
   static const String ui = '/ui';
   static const String driverHome = '/driver_home';
   static const String locationSelection = '/location_selection';
+  static const String routeDisplayPage = '/route_display_page';
   static const String d1 = '/d1';
   static const String d2 = '/d2';
   static const String d3 = '/d3';
-  static const String routeDisplayPage = '/route_display_page';
   static const String activeRides = '/active_ride_page';
+  static const String booking_confirm = '/booking_confirm';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -155,6 +158,15 @@ class Routes {
             providers: ActiveRideDi.init(),
             child: ActiveRidesScreen(id: id)),
         );      
+      case '/booking_confirm':
+        return MaterialPageRoute(
+          builder: (_) => 
+           MultiProvider(
+            providers: BookingConfirmDependencyInjection.init(),
+            child: 
+            BookingConfirmationScreen(),
+          ),
+        );
       default:
         return MaterialPageRoute(builder: (_) => Scaffold(appBar: AppBar(title: Text("Error")),body: const Center(child: Text("Unknown Route"))));
     

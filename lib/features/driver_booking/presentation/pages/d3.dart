@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vroo_test/core/theme/color/color_theme.dart';
+import '../../../../core/router/navigation.dart';
+import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/error_dialog.dart';
 import '../../../../shared/widgets/gradient_button.dart';
@@ -58,12 +60,17 @@ Widget build(BuildContext context) {
   return BlocListener<RideBloc, RideState>(
     listener: (context, state) {
       if (state is RideSubmitted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BookingConfirmationScreen(),
-          ),
+        print('here');
+        context.read<Navigation>().navigateTo(
+          Routes.booking_confirm,
+            arguments: {},
         );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => BookingConfirmationScreen(),
+        //   ),
+        // );
       }
       if (state is RideSubmissionFailed) {
         ErrorDialog.show(context, state.error);
@@ -200,7 +207,7 @@ Widget build(BuildContext context) {
     );
 
     final rideRequest = RideRequest(
-      driverId: "current_user_id",
+      driverId: "hritika_1001",
       numOfSeats: availableSeats,
       car: selectedCar,
       coords: routeCoords,
