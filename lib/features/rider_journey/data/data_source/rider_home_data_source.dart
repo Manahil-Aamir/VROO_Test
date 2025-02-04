@@ -17,7 +17,14 @@ class MockLocationDataSource implements RiderHomeDataSource {
 
   @override
   Future<void> clearSharedPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    print('hello');
+    try {
+      print('hi');
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      print('SharedPreferences cleared successfully');
+    } catch (e) {
+      print('Failed to clear SharedPreferences: $e');
+    }
   }
 }

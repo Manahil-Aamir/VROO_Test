@@ -5,7 +5,7 @@ import 'package:vroo_test/features/rider_journey/presentation/bloc/bloc/rider_ho
 import '../../../core/router/navigation.dart';
 import '../data/data_source/rider_home_data_source.dart';
 import '../data/repository/rider_home_data_repository.dart';
-import '../domain/repository/rider_home_domain_repository.dart';
+import '../domain/repository/rider_home_repository.dart';
 import '../domain/usecases/clear_preferences_usecase.dart';
 import '../domain/usecases/rider_home_usecase.dart';
 

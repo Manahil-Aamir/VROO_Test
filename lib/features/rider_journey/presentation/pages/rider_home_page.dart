@@ -19,13 +19,8 @@ class RiderHomeScreen extends StatefulWidget {
 
 class _RiderHomeScreenState extends State<RiderHomeScreen> {
   @override
-  void initState() {
-    super.initState();
-    context.read<RiderHomeBloc>().add(ClearSharedPreferencesEvent());
-  }
-
-  @override
   Widget build(BuildContext context) {
+    context.read<RiderHomeBloc>().add(ClearSharedPreferencesEvent());
     return Scaffold(
       body: Stack(
         children: [

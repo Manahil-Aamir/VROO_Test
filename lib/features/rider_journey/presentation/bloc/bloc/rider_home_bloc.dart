@@ -34,6 +34,8 @@ class RiderHomeBloc extends Bloc<RiderHomeEvent, RiderHomeState> {
   ) async {
     try {
       await clearSharedPreferences.execute();
+      print('done');
+      await Future.delayed(Duration(milliseconds: 100));
     } catch (e) {
       emit(RiderHomeError('Failed to clear shared preferences'));
     }

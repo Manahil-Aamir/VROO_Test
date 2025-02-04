@@ -1,5 +1,5 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../domain/repository/rider_home_domain_repository.dart';
+import '../../domain/repository/rider_home_repository.dart';
 import '../data_source/rider_home_data_source.dart';
 
 class RiderHomeRepositoryImpl implements RiderHomeRepository {
@@ -13,7 +13,7 @@ class RiderHomeRepositoryImpl implements RiderHomeRepository {
   }
 
   @override
-  Future<void> clearSharedPreferences() {
-    return dataSource.clearSharedPreferences();
+  Future<void> clearSharedPreferences() async {
+    return await dataSource.clearSharedPreferences();
   }
 }
