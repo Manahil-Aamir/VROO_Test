@@ -19,7 +19,6 @@ class DriverHomeScreen extends StatefulWidget {
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
   @override
   Widget build(BuildContext context) {
-    context.read<DriverHomeBloc>().add(ClearSharedPreferencesEvent());
     return Scaffold(
       body: Stack(
         children: [

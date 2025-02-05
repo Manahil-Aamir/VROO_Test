@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vroo_test/features/rider_journey/presentation/bloc/event/rider_home_event.dart';
 
 import '../../../../core/router/navigation.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../core/theme/font/font_theme.dart';
+import '../bloc/bloc/rider_home_bloc.dart';
 
 class RiderLocationSelectionButtonsWidget extends StatelessWidget {
   const RiderLocationSelectionButtonsWidget({super.key});
@@ -27,6 +29,7 @@ class RiderLocationSelectionButtonsWidget extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
+                context.read<RiderHomeBloc>().add(ClearSharedPreferencesEvent());
                 context
                     .read<Navigation>()
                     .navigateTo('/location_selection', arguments: {

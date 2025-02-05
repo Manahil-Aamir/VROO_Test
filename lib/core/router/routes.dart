@@ -23,6 +23,8 @@ import '../../features/driver_requests/dependency_injection/active_rides_di.dart
 import '../../features/driver_requests/dependency_injection/rides_details_di.dart';
 import '../../features/driver_requests/presentation/pages/active_rides_screen.dart';
 import '../../features/driver_requests/presentation/pages/rides_details_screen.dart';
+import '../../features/matching/matching/dependency_injection/matching_di.dart';
+import '../../features/matching/matching/presentation/pages/matching_page.dart';
 import '../../features/rider_journey/dependancy_injection/r1_di.dart';
 import '../../features/rider_journey/dependancy_injection/r2_di.dart';
 import '../../features/rider_journey/dependancy_injection/r3_di.dart';
@@ -254,6 +256,23 @@ class Routes {
               preferences: arguments['preferences'] as PreferencesModel,
               rideRequestId: arguments['rideRequestId'] as String,
               matchingRides: arguments['matchingRides'] as List<dynamic>,
+              minPickupTime: arguments['minPickupTime'] as TimeOfDay,
+              maxPickupTime: arguments['maxPickupTime'] as TimeOfDay,
+              source: arguments['source'] as LatLng,
+              destination: arguments['destination'] as LatLng,
+            ),
+          ),
+        );
+        case '/matching_rides':
+        final arguments = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => MultiProvider(
+            providers: MatchingDependencyInjection.init(),
+            child: MatchingPage(
+              schedule: arguments['schedule'] as ScheduleModel,
+              preferences: arguments['preferences'] as PreferencesModel,
+              rideRequestId: arguments['rideRequestId'] as String,
+              initialMatchingRides: arguments['matchingRides'] as List<dynamic>,
               minPickupTime: arguments['minPickupTime'] as TimeOfDay,
               maxPickupTime: arguments['maxPickupTime'] as TimeOfDay,
               source: arguments['source'] as LatLng,

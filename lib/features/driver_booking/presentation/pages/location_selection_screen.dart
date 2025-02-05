@@ -110,6 +110,10 @@ class _DriverLocationSelectionScreenState extends State<DriverLocationSelectionS
               child: GradientButton(
                 onTap: () {
                   if (fromPlaceId != null && toPlaceId != null) {
+                    print('to place id: $toPlaceId');
+                    print('from place id : $fromPlaceId');
+                    print('from description: $fromDescription');
+                    print('to decsription: $toDescription');
                     context.read<Navigation>().navigateTo(
                       '/route_display_page',
                       arguments: {
