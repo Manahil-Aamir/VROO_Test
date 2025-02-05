@@ -144,50 +144,52 @@ class ActiveRideCard extends StatelessWidget {
   }
 
   Widget _buildCarDetails(TextTheme textTheme, ActiveRideEntity ride) {
-    print('ride total seats:');
-    print(ride.totalSeats);
-    print('passenger length');
-    print(ride.passengers.length);
-    return Row(
-      children: [
-        Icon(Icons.directions_car, color: ThemeColors.primaryColor, size: 34.r),
-        SizedBox(width: 10.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '${ride.car.company} ${ride.car.model}',
-              style: textTheme.bodyMedium?.copyWith(
-                color: ThemeColors.buttonTextColor,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.sp,
-              ),
+  print('ride total seats: ${ride.totalSeats}');
+  print('passenger length: ${ride.passengers.length}');
+
+  return Row(
+    children: [
+      Icon(Icons.directions_car, color: ThemeColors.primaryColor, size: 34.r),
+      SizedBox(width: 10.w),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${ride.car.company} ${ride.car.model}',
+            style: textTheme.bodyMedium?.copyWith(
+              color: ThemeColors.buttonTextColor,
+              fontWeight: FontWeight.w500,
+              fontSize: 16.sp,
             ),
-            Row(
-              children: [
-                Text(
-                  ride.car.numberPlate,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: ThemeColors.buttonTextColor,
-                    fontSize: 16.sp,
-                  ),
+          ),
+          Row(
+            children: [
+              Text(
+                ride.car.numberPlate,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: ThemeColors.buttonTextColor,
+                  fontSize: 16.sp,
                 ),
-                SizedBox(width: 10.w),
-                for (var i = 0; i < ride.totalSeats; i++)
-                  Icon(
-                    Icons.event_seat,
-                    color: i < (ride.totalSeats - ride.passengers.length) 
-                        ? ThemeColors.primaryColor.withOpacity(0.6) // Available seat
-                        : ThemeColors.backgroundColor, // Taken seat
-                    size: 20.r,
-                  ),
+              ),
+              SizedBox(width: 10.w),
+              // Seat icons using for loop
+              Row(
+                children: [
+                  for (int i = 0; i < ride.totalSeats; i++)
+                    Icon(
+                      Icons.event_seat,
+                      color: ThemeColors.primaryColor, // Same color for all seats
+                      size: 18.r,
+                    ),
                 ],
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  );
+}
 
   Widget _buildDateTime(TextTheme textTheme, ActiveRideEntity ride, BuildContext context) {
     return Column(
