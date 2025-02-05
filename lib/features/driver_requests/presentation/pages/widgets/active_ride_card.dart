@@ -144,7 +144,10 @@ class ActiveRideCard extends StatelessWidget {
   }
 
   Widget _buildCarDetails(TextTheme textTheme, ActiveRideEntity ride) {
+    print('ride total seats:');
     print(ride.totalSeats);
+    print('passenger length');
+    print(ride.passengers.length);
     return Row(
       children: [
         Icon(Icons.directions_car, color: ThemeColors.primaryColor, size: 34.r),

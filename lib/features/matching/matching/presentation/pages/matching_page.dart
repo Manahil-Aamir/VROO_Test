@@ -295,6 +295,8 @@ class _MatchingPageState extends State<MatchingPage> {
                                   ride['expectedArrivalTime']),
                               id: widget.rideRequestId,
                               carCompany: ride['car']['company'] ?? 'Unknown',
+                              rideId: ride['_id'],
+
                             );
                           } else {
                             return ListTile(
@@ -338,6 +340,7 @@ class _MatchingPageState extends State<MatchingPage> {
                                   ride['expectedArrivalTime']),
                               id: widget.rideRequestId,
                               carCompany: ride['car']['company'] ?? 'Unknown',
+                              rideId: ride['_id'],
                             );
                           } else {
                             return ListTile(

@@ -24,6 +24,7 @@ class MatchCard extends StatelessWidget {
   final String estimatedArrivalTime;
   final String id;
   final String carCompany;
+  final String rideId;
 
   const MatchCard({
     super.key,
@@ -39,6 +40,7 @@ class MatchCard extends StatelessWidget {
     required this.estimatedArrivalTime,
     required this.id,
     required this.carCompany,
+    required this.rideId,
   });
 
   @override
@@ -102,7 +104,7 @@ class MatchCard extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         final joinData = {
-                          "rideId": "6783f030ccc5c2aca910aa55",
+                          "rideId": rideId,
                           "rideRequestId": id,
                           "driverId": driverName,
                           "riderId": "new2"

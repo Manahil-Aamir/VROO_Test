@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
+import '../../dependency_injection/driver_home_di.dart';
 import 'widgets/driver_location_selection_button_widget.dart';
 import '../../../../shared/widgets/top_bar_widget.dart';
 import '../bloc/bloc/driver_home_bloc.dart';
@@ -19,20 +20,25 @@ class DriverHomeScreen extends StatefulWidget {
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          BlocBuilder<DriverHomeBloc, DriverHomeState>(
-            builder: (context, state) {
-              return const NativeGoogleMap(); // Replaced GoogleMap with NativeGoogleMap
-            },
-          ),
-          const TopBarWidget(),
-          const DriverLocationSelectionButtonsWidget(),
-        ],
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 0,
+    return MultiProvider(
+      providers: DriverHomeDependencyInjection.init(),
+      child: Scaffold(
+        body: Stack(
+          children: [
+            BlocBuilder<DriverHomeBloc, DriverHomeState>(
+              builder: (context, state) {
+                return const NativeGoogleMap(); // Replaced GoogleMap with NativeGoogleMap
+              },
+            ),
+            const TopBarWidget(
+              roleText: 'Driver',
+            ),
+            const DriverLocationSelectionButtonsWidget(),
+          ],
+        ),
+        bottomNavigationBar: CustomBottomNavBar(
+          selectedIndex: 0,
+        ),
       ),
     );
   }

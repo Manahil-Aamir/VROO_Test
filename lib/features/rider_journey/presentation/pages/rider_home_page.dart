@@ -7,7 +7,7 @@ import '../../dependancy_injection/rider_home_di.dart';
 import '../bloc/bloc/rider_home_bloc.dart';
 import '../bloc/state/rider_home_state.dart';
 import '../widgets/locationselection.dart';
-import '../widgets/topbarwidget.dart';
+import '../../../../shared/widgets/top_bar_widget.dart';
 
 class RiderHomeScreen extends StatefulWidget {
   const RiderHomeScreen({super.key});
@@ -29,7 +29,9 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                 return const NativeGoogleMap(); // Replaced GoogleMap with NativeGoogleMap
               },
             ),
-            const TopBarWidget(),
+            const TopBarWidget(
+              roleText: 'Rider',
+            ),
             const RiderLocationSelectionButtonsWidget(),
           ],
         ),

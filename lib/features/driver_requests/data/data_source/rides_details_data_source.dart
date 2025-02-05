@@ -55,9 +55,7 @@ class RideDetailsRemoteDataSource implements RideDetailsDataSource {
 Future<void> approveRideRequest(String rideRequestId, String rideId) async {
     final url = 'http://10.0.2.2:5000/rider/ride-request/join/$rideRequestId/approve';
     final response = await client.post(Uri.parse(url));
-    if (response.statusCode == 200) {
-      throw Exception('Approval success: ${response.body} - ${response.statusCode}');
-    } else {
+    if (response.statusCode != 200) {
       throw Exception('Approval failed: ${response.statusCode}');
     }
   }
