@@ -65,7 +65,7 @@ class BookingConfirmationScreen extends StatelessWidget {
               const ZigZagIconWidget(),
               SizedBox(height: 20.h),
               Text(
-                "Booking Confirmed",
+                "Ride Created",
                 style: theme.textTheme.displayMedium?.copyWith(
                   color: theme.primaryColorDark,
                 ),

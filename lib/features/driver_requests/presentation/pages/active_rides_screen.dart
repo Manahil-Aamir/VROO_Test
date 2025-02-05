@@ -19,7 +19,7 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ActiveRidesBloc>().add(FetchActiveRides('Driver 86'));
+    context.read<ActiveRidesBloc>().add(FetchActiveRides('hritika_1010'));
   }
 
   @override

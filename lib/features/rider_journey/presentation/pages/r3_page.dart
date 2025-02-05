@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:vroo_test/features/rider_journey/presentation/bloc/bloc/r3_bloc.dart';
@@ -127,7 +128,7 @@ class _R3PageState extends State<R3Page> {
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16.0.w),
                   child: Column(
                     children: [
                       DetailCard(
@@ -151,16 +152,16 @@ class _R3PageState extends State<R3Page> {
                           ),
                           DetailTile(
                             icon: Icons.access_time,
-                            label: 'Min Time',
+                            label: 'Pick Up Time',
                             value:
-                                '${widget.schedule.minTime.hour}:${widget.schedule.minTime.minute}',
+                              '${widget.schedule.minTime.hour}:${widget.schedule.minTime.minute == 0 ? '00' : widget.schedule.minTime.minute} - ${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute == 0 ? '00' : widget.schedule.maxTime.minute}',
                           ),
-                          DetailTile(
-                            icon: Icons.access_time,
-                            label: 'Max Time',
-                            value:
-                                '${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute}',
-                          ),
+                          // DetailTile(
+                          //   icon: Icons.access_time,
+                          //   label: 'Max Time',
+                          //   value:
+                          //       '${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute}',
+                          // ),
                           DetailTile(
                             icon: Icons.access_time,
                             label: 'Max Arrival Time',
@@ -168,14 +169,14 @@ class _R3PageState extends State<R3Page> {
                                 ? '${widget.schedule.arrivalTime.hour}:${widget.schedule.arrivalTime.minute}'
                                 : 'Not set',
                           ),
-                          DetailTile(
-                            icon: Icons.repeat,
-                            label: 'Recurrence',
-                            value: widget.schedule.recurrenceType,
-                          ),
+                          // DetailTile(
+                          //   icon: Icons.repeat,
+                          //   label: 'Recurrence',
+                          //   value: widget.schedule.recurrenceType,
+                          // ),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       DetailCard(
                         title: 'Preferences',
                         details: [
@@ -191,7 +192,7 @@ class _R3PageState extends State<R3Page> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
+                      SizedBox(height: 60.h),
                       GradientButton(
                         onTap: () {
                           // Ensure coordinates have been loaded.
