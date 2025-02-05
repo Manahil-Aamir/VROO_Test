@@ -47,6 +47,18 @@ class ShowErrorEvent extends R1Event {
   });
 }
 
+class UpdateRecurrenceEvent extends R1Event {
+  final String recurrenceType;
+  final Set<String> selectedDays;
+  final DateTime? endDate;
+
+  UpdateRecurrenceEvent({
+    required this.recurrenceType,
+    required this.selectedDays,
+    required this.endDate,
+  });
+}
+
 class UpdateScheduleEvent extends R1Event {
   final DateTime? selectedDate;
   final TimeOfDay? minPickUpTime;

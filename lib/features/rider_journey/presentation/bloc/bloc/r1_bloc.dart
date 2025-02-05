@@ -10,6 +10,7 @@ class R1Bloc extends Bloc<R1Event, R1State> {
   R1Bloc(this.saveScheduleUseCase, this.loadScheduleUseCase)
       : super(ScheduleInitial()) {
     // Ensure we start with ScheduleInputState
+
     on<SaveScheduleEvent>((event, emit) async {
       emit(ScheduleSaving());
       try {
@@ -20,6 +21,21 @@ class R1Bloc extends Bloc<R1Event, R1State> {
         emit(ScheduleError(e.toString())); // Handle errors
       }
     });
+
+    void onUpdateRecurrence(
+        UpdateRecurrenceEvent event, Emitter<R1State> emit) {
+      // We update the state only if the current state is ScheduleInputState
+      if (state is ScheduleInputState) {
+        final currentState = state as ScheduleInputState;
+        emit(currentState.copyWith(
+          recurrenceType: event.recurrenceType,
+          selectedDays: event.selectedDays,
+          endDate: event.endDate,
+        ));
+      }
+    }
+
+    on<UpdateRecurrenceEvent>(onUpdateRecurrence);
 
     // Handling date selection event
     on<SelectDateEvent>((event, emit) {

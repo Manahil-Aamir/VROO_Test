@@ -37,6 +37,9 @@ class ScheduleInputState extends R1State {
   final bool minTimeError;
   final bool maxTimeError;
   final bool arrivalTimeError;
+  final Set<String>? selectedDays;
+  final DateTime? endDate;
+  final String? recurrenceType;
 
   ScheduleInputState({
     this.selectedDate,
@@ -47,6 +50,9 @@ class ScheduleInputState extends R1State {
     this.minTimeError = false,
     this.maxTimeError = false,
     this.arrivalTimeError = false,
+    this.selectedDays,
+    this.endDate,
+    this.recurrenceType,
   });
 
   ScheduleInputState copyWith({
@@ -54,6 +60,9 @@ class ScheduleInputState extends R1State {
     TimeOfDay? minPickUpTime,
     TimeOfDay? maxPickUpTime,
     TimeOfDay? maxArrivalTime,
+    Set<String>? selectedDays,
+    String? recurrenceType,
+    DateTime? endDate,
     bool? dateError,
     bool? minTimeError,
     bool? maxTimeError,
@@ -64,6 +73,9 @@ class ScheduleInputState extends R1State {
       minPickUpTime: minPickUpTime ?? this.minPickUpTime,
       maxPickUpTime: maxPickUpTime ?? this.maxPickUpTime,
       maxArrivalTime: maxArrivalTime ?? this.maxArrivalTime,
+      selectedDays: selectedDays ?? this.selectedDays,
+      recurrenceType: recurrenceType ?? this.recurrenceType,
+      endDate: endDate ?? this.endDate,
       dateError: dateError ?? this.dateError,
       minTimeError: minTimeError ?? this.minTimeError,
       maxTimeError: maxTimeError ?? this.maxTimeError,

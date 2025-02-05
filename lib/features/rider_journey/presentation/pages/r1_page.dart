@@ -133,10 +133,10 @@ class _R1PageState extends State<R1Page> {
 
   @override
   Widget build(BuildContext context) {
-    print('From Description: ${widget.fromDescription}');
-    print('To Description: ${widget.toDescription}');
-    print('To Place ID: ${widget.toPlaceId}');
-    print('From Place ID: ${widget.fromPlaceId}');
+    print(widget.fromDescription);
+    print(widget.toDescription);
+    print(widget.toPlaceId);
+    print(widget.fromPlaceId);
     return Scaffold(
       body: Stack(
         children: [

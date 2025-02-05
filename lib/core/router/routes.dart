@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:vroo_test/features/matching/dependency_injection/matching_di.dart';
 import 'package:vroo_test/features/rider_journey/data/model/preferences_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import 'package:vroo_test/features/rider_journey/dependancy_injection/booking_confirm_di.dart';
@@ -7,6 +9,7 @@ import 'package:vroo_test/features/rider_journey/dependancy_injection/rider_home
 import 'package:vroo_test/features/rider_journey/domain/entity/schedule_entity.dart';
 import 'package:vroo_test/features/rider_journey/presentation/pages/rider_home_page.dart';
 import 'package:vroo_test/ui.dart';
+import '../../features/matching/presentation/pages/matching_page.dart';
 import '../../features/rider_journey/dependancy_injection/r1_di.dart';
 import '../../features/rider_journey/dependancy_injection/r2_di.dart';
 import '../../features/rider_journey/dependancy_injection/r3_di.dart';
@@ -24,6 +27,7 @@ class Routes {
   static const String r2Page = '/r2_page';
   static const String r3Page = '/r3_page';
   static const String bookingConfirm = '/booking_confirm';
+  static const String matching_rides = '/matching_rides';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -82,10 +86,32 @@ class Routes {
           builder: (_) => MultiProvider(
             providers: BookingConfirmDependencyInjection.init(),
             child: BookingConfirmationScreen(
+              schedule: arguments['schedule'] as ScheduleModel,
+              preferences: arguments['preferences'] as PreferencesModel,
               rideRequestId: arguments['rideRequestId'] as String,
               matchingRides: arguments['matchingRides'] as List<dynamic>,
               minPickupTime: arguments['minPickupTime'] as TimeOfDay,
               maxPickupTime: arguments['maxPickupTime'] as TimeOfDay,
+              source: arguments['source'] as LatLng,
+              destination: arguments['destination'] as LatLng,
+            ),
+          ),
+        );
+      case '/matching_rides':
+        final arguments = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => MultiProvider(
+            providers: MatchingDependencyInjection.init(),
+            child: MatchingPage(
+              schedule: arguments['schedule'] as ScheduleModel,
+              preferences: arguments['preferences'] as PreferencesModel,
+              rideRequestId: arguments['rideRequestId'] as String,
+              initialMatchingRides:
+                  (arguments['matchingRides'] as List<dynamic>?) ?? [],
+              minPickupTime: arguments['minPickupTime'] as TimeOfDay,
+              maxPickupTime: arguments['maxPickupTime'] as TimeOfDay,
+              source: arguments['source'] as LatLng,
+              destination: arguments['destination'] as LatLng,
             ),
           ),
         );

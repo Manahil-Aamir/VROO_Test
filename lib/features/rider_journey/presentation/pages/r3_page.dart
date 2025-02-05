@@ -111,6 +111,10 @@ class _R3PageState extends State<R3Page> {
               'matchingRides': matchingRides,
               'minPickupTime': widget.schedule.minTime,
               'maxPickupTime': widget.schedule.maxTime,
+              'schedule': widget.schedule,
+              'preferences': widget.preferences,
+              'source': sourceCoordinates,
+              'destination': destinationCoordinates,
             });
           } else if (state is RideRequestFailure) {
             ScaffoldMessenger.of(context).showSnackBar(

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import 'package:vroo_test/features/rider_journey/dependancy_injection/booking_confirm_di.dart';
 import 'package:vroo_test/shared/widgets/booking_confirm_button.dart';
 
 import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/zigzag.dart';
+import '../../data/model/preferences_model.dart';
 import '../bloc/bloc/booking_confirmation_bloc.dart';
 import '../bloc/state/booking_confirmation_state.dart';
 
@@ -15,6 +18,10 @@ class BookingConfirmationScreen extends StatelessWidget {
   final List<dynamic> matchingRides;
   final TimeOfDay minPickupTime;
   final TimeOfDay maxPickupTime;
+  final ScheduleModel schedule;
+  final PreferencesModel preferences;
+  final LatLng source;
+  final LatLng destination;
 
   const BookingConfirmationScreen({
     super.key,
@@ -22,6 +29,10 @@ class BookingConfirmationScreen extends StatelessWidget {
     required this.matchingRides,
     required this.minPickupTime,
     required this.maxPickupTime,
+    required this.schedule,
+    required this.preferences,
+    required this.source,
+    required this.destination,
   });
 
   @override
@@ -34,10 +45,15 @@ class BookingConfirmationScreen extends StatelessWidget {
     return BlocListener<BookingConfirmationBloc, BookingConfirmationState>(
       listener: (context, state) {
         if (state is BookingConfirmationSuccess) {
-          context
-              .read<Navigation>()
-              .navigateTo('/location_selection', arguments: {
-            'role': 'rider',
+          context.read<Navigation>().navigateTo('/matching_rides', arguments: {
+            'rideRequestId': rideRequestId,
+            'matchingRides': matchingRides,
+            'minPickupTime': minPickupTime,
+            'maxPickupTime': maxPickupTime,
+            'schedule': schedule,
+            'preferences': preferences,
+            'source': source,
+            'destination': destination,
           });
         }
       },
@@ -61,8 +77,15 @@ class BookingConfirmationScreen extends StatelessWidget {
                 onTap: () {
                   context
                       .read<Navigation>()
-                      .navigateTo('/location_selection', arguments: {
-                    'role': 'rider',
+                      .navigateTo('/matching_rides', arguments: {
+                    'rideRequestId': rideRequestId,
+                    'matchingRides': matchingRides,
+                    'minPickupTime': minPickupTime,
+                    'maxPickupTime': maxPickupTime,
+                    'schedule': schedule,
+                    'preferences': preferences,
+                    'source': source,
+                    'destination': destination,
                   });
                 },
               ),
