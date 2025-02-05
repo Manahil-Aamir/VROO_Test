@@ -12,7 +12,8 @@ class MatchingRepositoryImpl implements MatchingRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> requestRide(Map<String, dynamic> requestData) {
-    return remoteDataSource.sendRideRequest(requestData);
+  Future<List<dynamic>> requestRide(
+      String rideRequestId, Map<String, dynamic> requestData) {
+    return remoteDataSource.sendRideRequest(rideRequestId, requestData);
   }
 }

@@ -21,12 +21,13 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
     emit(RiderRequestLoading());
     try {
       // The UI sends all parameters needed in modifyData.
-      final updatedRides = await modifyRideUseCase.execute(event.modifyData);
-      // Assume that modifyData contains a 'timeWindow' key (of type int).
-      int newTimeWindow = event.modifyData['timeWindow'] as int;
+      final updatedRides =
+          await modifyRideUseCase.execute(event.id, event.modifyData);
+      print('updatinggg rides');
+      print(updatedRides);
       emit(RiderRequestLoaded(
         // timeWindow: newTimeWindow,
-        matchingRides: updatedRides['matchingRides'],
+        matchingRides: updatedRides,
       ));
     } catch (e) {
       emit(RiderRequestError(e.toString()));

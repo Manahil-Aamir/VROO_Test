@@ -21,13 +21,13 @@ class PreferenceSwitch extends StatelessWidget {
     return Card(
       color: theme.scaffoldBackgroundColor,
       shadowColor: theme.primaryColorLight,
-      elevation: 4,
+      elevation: 4.h,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0.h),
         child: Row(
           children: [
             if (icon != null) Icon(icon, color: theme.primaryColor),
-            if (icon != null) SizedBox(width: 8.0),
+            if (icon != null) SizedBox(width: 8.0.w),
             Text(
               label,
               style: theme.textTheme.headlineSmall?.copyWith(

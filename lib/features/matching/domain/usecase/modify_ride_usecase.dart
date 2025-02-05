@@ -5,7 +5,8 @@ class ModifyRideUseCase {
 
   ModifyRideUseCase(this.repository);
 
-  Future<Map<String, dynamic>> execute(Map<String, dynamic> requestData) {
-    return repository.requestRide(requestData);
+  Future<List<dynamic>> execute(
+      String rideRequestId, Map<String, dynamic> requestData) {
+    return repository.requestRide(rideRequestId, requestData);
   }
 }

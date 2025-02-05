@@ -10,7 +10,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     super.key,
     this.highlightedCircles = 2, // Default highlighted circles
-    this.totalCircles = 4, // Default total circles
+    this.totalCircles = 3, // Default total circles
   });
 
   @override

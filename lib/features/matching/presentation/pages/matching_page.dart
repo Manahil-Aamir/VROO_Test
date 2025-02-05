@@ -75,47 +75,33 @@ class _MatchingPageState extends State<MatchingPage> {
       setState(() {
         currentWindow = (currentWindow + adjustment).clamp(0, 60);
       });
+      final int totalMinutes =
+          widget.minPickupTime.minute + (currentWindow % 60);
+      final int extraHours = (widget.minPickupTime.hour +
+              (currentWindow ~/ 60) +
+              (totalMinutes ~/ 60)) %
+          24;
+      final int adjustedMinutes = totalMinutes % 60;
+
+      final adjustedMaxTime = TimeOfDay(
+        hour: extraHours,
+        minute: adjustedMinutes,
+      );
 
       final modifyData = {
-        "riderId": 'Noorrrrrr',
-        "source": {
-          "coords": [widget.source.latitude, widget.source.longitude],
-          "placeId": widget.schedule.fromPlaceId,
-          "address": widget.schedule.fromDescription,
-        },
-        "destination": {
-          "coords": [widget.destination.latitude, widget.destination.longitude],
-          "placeId": widget.schedule.toPlaceId,
-          "address": widget.schedule.toDescription,
-        },
-        // Produce a date string similar to Postman's working payload.
-        "date": DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(
-          DateTime(
-            widget.schedule.date.year,
-            widget.schedule.date.month,
-            widget.schedule.date.day,
-          ),
-        ),
         "pickupTimeRange": {
           "min": formatISO8601DateTime(
               widget.schedule.date, widget.schedule.minTime),
-          "max": formatISO8601DateTime(
-              widget.schedule.date, widget.schedule.maxTime),
+          "max": formatISO8601DateTime(widget.schedule.date, adjustedMaxTime),
         },
-        "maxArrivalTime": widget.schedule.arrivalTime, // Adjust as needed.
-        "preferences": {
-          "maleOnly": false,
-          "femaleOnly": true,
-          "canWalk": widget.preferences.walk,
-        },
-        "isRecurring": false,
       };
+
+      print(modifyData);
 
       print("Sending ModifyTimeWindowEvent with modifyData: $modifyData");
 
-      context
-          .read<MatchingBloc>()
-          .add(ModifyTimeWindowEvent(modifyData: modifyData));
+      context.read<MatchingBloc>().add(ModifyTimeWindowEvent(
+          id: widget.rideRequestId, modifyData: modifyData));
     } catch (e, stackTrace) {
       print('Error modifying time window: $e');
     }
@@ -206,6 +192,8 @@ class _MatchingPageState extends State<MatchingPage> {
                       state is RiderJoinLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is RiderRequestLoaded) {
+                    print('loadinggggggggggg');
+                    print(state.matchingRides);
                     return ListView.builder(
                       itemCount: state.matchingRides.length,
                       itemBuilder: (context, index) {

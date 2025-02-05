@@ -12,7 +12,8 @@ abstract class MatchingEvent extends Equatable {
 /// The [modifyData] map should contain the parameters needed by the use case (e.g. 'rideRequestId' and 'timeWindow').
 class ModifyTimeWindowEvent extends MatchingEvent {
   final Map<String, dynamic> modifyData;
-  const ModifyTimeWindowEvent({required this.modifyData});
+  final String id;
+  const ModifyTimeWindowEvent({required this.id, required this.modifyData});
 
   @override
   List<Object> get props => [modifyData];

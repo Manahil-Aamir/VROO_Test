@@ -36,17 +36,21 @@ class MatchingDataSource {
     }
   }
 
-  Future<Map<String, dynamic>> sendRideRequest(
-      Map<String, dynamic> requestData) async {
-    final url = Uri.parse('http://10.0.2.2:5000/rider/ride-request');
-    final response = await client.post(
+  Future<List<dynamic>> sendRideRequest(
+      String rideRequestId, Map<String, dynamic> requestData) async {
+    final url =
+        Uri.parse('http://10.0.2.2:5000/rider/ride-request/$rideRequestId');
+    final response = await client.patch(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(requestData),
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
+      print(response.body);
       final responseBody = jsonDecode(response.body);
+      print('matching update');
+      print(responseBody);
       return responseBody;
     } else {
       throw Exception("Failed to send ride request");

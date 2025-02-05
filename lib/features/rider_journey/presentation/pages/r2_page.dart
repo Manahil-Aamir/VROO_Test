@@ -41,11 +41,18 @@ class _R2PageState extends State<R2Page> {
             builder: (context, state) {
               print('val${widget.schedule.fromDescription}');
               if (state is PreferenceSaved) {
+                Center(child: CircularProgressIndicator());
                 context.read<R2Bloc>().add(ResetStateEvent());
                 Center(child: CircularProgressIndicator());
               }
 
               if (state is PreferenceInitial) {
+                Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).primaryColor),
+                  ),
+                );
                 context.read<R2Bloc>().add(LoadPreferenceEvent());
               }
               if (state is PreferenceLoading) {

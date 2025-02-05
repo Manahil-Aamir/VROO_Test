@@ -261,7 +261,7 @@ class _R3PageState extends State<R3Page> {
                             },
                             "isRecurring": false,
                           };
-
+                          print(rideData);
                           // Dispatch the ride request event.
                           context
                               .read<R3Bloc>()
