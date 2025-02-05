@@ -81,6 +81,7 @@ class _R2PageState extends State<R2Page> {
                                   .read<R2Bloc>()
                                   .add(TogglePreferenceEvent('sameGender'));
                             },
+                            icon: Icons.person,
                           ),
                           SizedBox(height: 20.h),
                           PreferenceSwitch(
@@ -89,6 +90,7 @@ class _R2PageState extends State<R2Page> {
                             onChanged: (value) {
                               bloc.add(TogglePreferenceEvent('walk'));
                             },
+                            icon: Icons.directions_walk,
                           ),
                           SizedBox(height: 50.h),
                           GradientButton(

@@ -5,12 +5,14 @@ class PreferenceSwitch extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
   final String label;
+  final IconData? icon;
 
   const PreferenceSwitch({
     super.key,
     required this.value,
     required this.onChanged,
     required this.label,
+    this.icon,
   });
 
   @override
@@ -24,6 +26,8 @@ class PreferenceSwitch extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
+            if (icon != null) Icon(icon, color: theme.primaryColor),
+            if (icon != null) SizedBox(width: 8.0),
             Text(
               label,
               style: theme.textTheme.headlineSmall?.copyWith(
