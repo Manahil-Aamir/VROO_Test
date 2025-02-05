@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../core/router/navigation.dart';
 import '../core/router/routes.dart';
 import 'app_bloc.dart';
@@ -40,7 +39,7 @@ class App extends StatelessWidget {
                     child: widget,
                   );
                 },
-                initialRoute: Routes.riderhome,
+                initialRoute: Routes.activeRides,
                 onGenerateRoute: Routes().generateRoute,
               );
             },

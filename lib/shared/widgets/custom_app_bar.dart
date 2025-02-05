@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'bottom_ship_clipper.dart';
+import 'bottom_shape_clipper.dart';
+
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int highlightedCircles;
-  final int totalCircles;
+  final int totalCircles = 3;
 
   const CustomAppBar({
     super.key,
-    this.highlightedCircles = 2, // Default highlighted circles
-    this.totalCircles = 4, // Default total circles
+    this.highlightedCircles = 0, // Default highlighted circles
   });
 
   @override
@@ -64,10 +64,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 ),
                               ),
                               child: CircleAvatar(
-                                radius: 15.r,
+                                radius: 18.r,
                                 backgroundColor: index < highlightedCircles
                                     ? Theme.of(context).primaryColor
-                                    : Theme.of(context).scaffoldBackgroundColor,
+                                    : Theme.of(context).canvasColor,
                               ),
                             ),
                             if (index < totalCircles - 1)

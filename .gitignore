@@ -12,6 +12,9 @@
 .swiftpm/
 migrate_working_dir/
 
+# Add this line to .gitignore
+.env
+
 # IntelliJ related
 *.iml
 *.ipr
