@@ -1,8 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vroo_test/features/rider_journey/presentation/bloc/event/r3_event.dart';
 import 'package:vroo_test/features/rider_journey/presentation/bloc/state/r3_state.dart';
-
 import '../../../domain/usecases/get_coordinates_usecase.dart';
 import '../../../domain/usecases/request_ride_usecase.dart';
 
@@ -23,7 +21,7 @@ class R3Bloc extends Bloc<R3Event, R3State> {
     try {
       final response = await requestRideUseCase(event.rideData);
       print(response);
-      emit(RideRequestSuccess(response as Map<String, dynamic>));
+      emit(RideRequestSuccess(response));
     } catch (e) {
       emit(RideRequestFailure(e.toString()));
     }

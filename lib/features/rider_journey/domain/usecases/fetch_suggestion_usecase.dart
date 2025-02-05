@@ -1,4 +1,3 @@
-import 'package:google_places_flutter/model/prediction.dart';
 import 'package:vroo_test/features/rider_journey/domain/entity/prediction_entity.dart';
 import '../repository/location_repository.dart';
 

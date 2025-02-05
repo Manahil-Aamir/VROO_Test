@@ -10,7 +10,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   MapBloc() : super(MapInitial()) {
     on<LoadRoutesEvent>((event, emit) {
       try {
-        final polylines = <Polyline>{};
+        // final polylines = <Polyline>{};
         final markers = <Marker>{};
         final polylineMap = <String, Polyline>{};
 

@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
-import 'package:vroo_test/features/rider_journey/dependancy_injection/booking_confirm_di.dart';
 import 'package:vroo_test/shared/widgets/booking_confirm_button.dart';
 
 import '../../../../core/router/navigation.dart';

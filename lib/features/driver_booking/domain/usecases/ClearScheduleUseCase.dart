@@ -10,8 +10,6 @@
 //   }
 // }
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../repository/driver_home_repository.dart';
 
 class ClearPreferencesUseCase {

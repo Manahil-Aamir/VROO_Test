@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'recurrence_dialog.dart';
-
 class RecurringRow extends StatefulWidget {
   final Function()? onRecurringTap;
 

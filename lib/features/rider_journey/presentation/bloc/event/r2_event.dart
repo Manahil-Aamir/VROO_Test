@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import '../../../data/model/preferences_model.dart';
 
 abstract class R2Event {}

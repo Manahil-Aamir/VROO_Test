@@ -5,9 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../../core/router/navigation.dart';
 import '../../../../../../../core/theme/color/color_theme.dart';
 import '../../../../../../../core/theme/font/font_theme.dart';
-import '../../../../../core/router/routes.dart';
-import '../../bloc/bloc/driver_home_bloc.dart';
-import '../../bloc/event/driver_home_event.dart';
 
 class DriverLocationSelectionButtonsWidget extends StatelessWidget {
   const DriverLocationSelectionButtonsWidget({super.key});
