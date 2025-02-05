@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:vroo_test/features/driver_booking/data/model/schedule_model.dart';
 import '../../../../core/router/navigation.dart';
-import '../../../../core/router/routes.dart';
 import '../../../../core/utils/validators/input_ride_validator.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/date_picker.dart';
@@ -95,8 +94,9 @@ class _D1PageState extends State<D1Page> {
         );
 
         context.read<D1Bloc>().add(SaveScheduleEvent(schedule));
+        // context.read<Navigation>().navigateTo('/driver_home');
         context.read<Navigation>().navigateTo(
-          Routes.d2,
+          '/d2',
           arguments: {
             'toPlaceID': widget.toPlaceId,
             'fromPlaceID': widget.fromPlaceId,

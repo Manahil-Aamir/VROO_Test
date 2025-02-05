@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vroo_test/core/theme/color/color_theme.dart';
 import '../../../../core/router/navigation.dart';
-import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/error_dialog.dart';
 import '../../../../shared/widgets/gradient_button.dart';
@@ -12,7 +11,6 @@ import '../../domain/entity/ride_request.dart';
 import '../bloc/bloc/d3_bloc.dart';
 import '../bloc/event/d3_event.dart';
 import '../bloc/state/d3_state.dart';
-import 'BookingConfirmation.dart';
 import 'widgets/d3/detail_card.dart';
 import 'widgets/d3/detail_tile.dart';
 import 'widgets/d3/expandable_detail_tile.dart';
@@ -62,15 +60,8 @@ Widget build(BuildContext context) {
       if (state is RideSubmitted) {
         print('here');
         context.read<Navigation>().navigateTo(
-          Routes.booking_confirm,
-            arguments: {},
+          '/booking_confirm',
         );
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => BookingConfirmationScreen(),
-        //   ),
-        // );
       }
       if (state is RideSubmissionFailed) {
         ErrorDialog.show(context, state.error);
@@ -207,7 +198,7 @@ Widget build(BuildContext context) {
     );
 
     final rideRequest = RideRequest(
-      driverId: "hritika_1001",
+      driverId: "hritika_1004",
       numOfSeats: availableSeats,
       car: selectedCar,
       coords: routeCoords,

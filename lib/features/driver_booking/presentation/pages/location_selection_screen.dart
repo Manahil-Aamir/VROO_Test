@@ -112,7 +112,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                 onTap: () {
                   if (fromPlaceId != null && toPlaceId != null) {
                     context.read<Navigation>().navigateTo(
-                      Routes.d1,
+                      '/d1',
                       arguments: {
                         'toPlaceId': toPlaceId,
                         'fromPlaceId': fromPlaceId,
