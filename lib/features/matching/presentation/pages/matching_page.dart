@@ -146,14 +146,94 @@ class _MatchingPageState extends State<MatchingPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.remove),
-                  onPressed: () => _modifyTimeWindow(-5),
-                ),
-                Text('Time Window: $currentWindow mins'),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () => _modifyTimeWindow(5),
+                Card(
+                  color: theme.cardColor,
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.w)),
+                  child: Padding(
+                    padding: EdgeInsets.all(16.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title Row
+                        Row(
+                          children: [
+                            Icon(Icons.access_time,
+                                color: theme.primaryColor, size: 24.w),
+                            SizedBox(width: 8.w),
+                            Text(
+                              'Time Window',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: theme.primaryColorDark,
+                                  ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16.h),
+
+                        // Time Adjustment Controls
+                        Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Theme.of(context)
+                                      .primaryColorDark
+                                      .withOpacity(0.75),
+                                  Theme.of(context)
+                                      .primaryColor
+                                      .withOpacity(0.8),
+                                  Theme.of(context)
+                                      .primaryColorDark
+                                      .withOpacity(0.75),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(12.w),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.remove,
+                                      color: theme.scaffoldBackgroundColor),
+                                  onPressed: () => _modifyTimeWindow(-5),
+                                ),
+                                Container(
+                                  width: 80.w,
+                                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    borderRadius: BorderRadius.circular(8.w),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '$currentWindow mins',
+                                      style: theme.textTheme.headlineSmall
+                                          ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: theme.primaryColorDark,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.add,
+                                      color: theme.scaffoldBackgroundColor),
+                                  onPressed: () => _modifyTimeWindow(5),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
