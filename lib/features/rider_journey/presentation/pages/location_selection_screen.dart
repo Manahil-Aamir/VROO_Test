@@ -10,17 +10,17 @@ import '../../../../shared/widgets/gradient_button.dart';
 import '../../../../shared/widgets/location_selection_input.dart';
 import '../../dependancy_injection/location_selection_di.dart';
 
-class LocationSelectionScreen extends StatefulWidget {
+class RiderLocationSelectionScreen extends StatefulWidget {
   final String role;
 
-  const LocationSelectionScreen({required this.role, super.key});
+  const RiderLocationSelectionScreen({required this.role, super.key});
 
   @override
   _LocationSelectionScreenState createState() =>
       _LocationSelectionScreenState();
 }
 
-class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
+class _LocationSelectionScreenState extends State<RiderLocationSelectionScreen> {
   String? fromPlaceId;
   String? fromDescription;
   String? toPlaceId;

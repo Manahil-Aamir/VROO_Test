@@ -10,17 +10,17 @@ import '../../../../shared/widgets/gradient_button.dart';
 import '../../../../shared/widgets/location_selection_input_driver.dart';
 import '../../dependency_injection/location_selection_di.dart';
 
-class LocationSelectionScreen extends StatefulWidget {
+class DriverLocationSelectionScreen extends StatefulWidget {
   final String role;
 
-  const LocationSelectionScreen({required this.role, super.key});
+  const DriverLocationSelectionScreen({required this.role, super.key});
 
   @override
-  _LocationSelectionScreenState createState() =>
-      _LocationSelectionScreenState();
+  _DriverLocationSelectionScreenState createState() =>
+      _DriverLocationSelectionScreenState();
 }
 
-class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
+class _DriverLocationSelectionScreenState extends State<DriverLocationSelectionScreen> {
   String? fromPlaceId;
   String? fromDescription;
   String? toPlaceId;
@@ -112,7 +112,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                 onTap: () {
                   if (fromPlaceId != null && toPlaceId != null) {
                     context.read<Navigation>().navigateTo(
-                      '/d1',
+                      '/route_display_page',
                       arguments: {
                         'toPlaceId': toPlaceId,
                         'fromPlaceId': fromPlaceId,

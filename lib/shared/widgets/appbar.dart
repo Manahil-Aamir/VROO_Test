@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../core/theme/color/color_theme.dart';
-import 'bottom_ship_clipper.dart';
+import 'bottom_shape_clipper.dart';
 
 class appBar extends StatelessWidget implements PreferredSizeWidget {
   final String heading;

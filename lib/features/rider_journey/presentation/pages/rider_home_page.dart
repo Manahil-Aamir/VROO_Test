@@ -30,7 +30,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
               },
             ),
             const TopBarWidget(),
-            const LocationSelectionButtonsWidget(),
+            const RiderLocationSelectionButtonsWidget(),
           ],
         ),
         bottomNavigationBar: CustomBottomNavBar(

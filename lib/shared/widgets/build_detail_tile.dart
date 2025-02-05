@@ -21,7 +21,7 @@ class DetailTile extends StatelessWidget {
       child: Row(
         children: [
           Icon(icon, color: theme.primaryColor),
-          SizedBox(width: 16.w),
+          SizedBox(width: 12.w),
           Expanded(
             child: Text(label,
                 style: theme.textTheme.bodyMedium!

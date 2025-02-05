@@ -1,6 +1,5 @@
 import '../../domain/repository/r1_repository.dart';
 import '../data_source/r1_data_source.dart';
-import '../model/schedule_model.dart';
 
 class R1RepositoryImpl implements R1Repository {
   final R1DataSource dataSource;

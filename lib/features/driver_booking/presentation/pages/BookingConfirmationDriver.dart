@@ -7,8 +7,8 @@ import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/zigzag.dart';
 
-class BookingConfirmationScreen extends StatelessWidget {
-  const BookingConfirmationScreen({super.key});
+class BookingConfirmationDriverScreen extends StatelessWidget {
+  const BookingConfirmationDriverScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

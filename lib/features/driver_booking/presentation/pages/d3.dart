@@ -11,9 +11,9 @@ import '../../domain/entity/ride_request.dart';
 import '../bloc/bloc/d3_bloc.dart';
 import '../bloc/event/d3_event.dart';
 import '../bloc/state/d3_state.dart';
-import 'widgets/d3/detail_card.dart';
-import 'widgets/d3/detail_tile.dart';
-import 'widgets/d3/expandable_detail_tile.dart';
+import 'package:vroo_test/shared/widgets/build_detail_card.dart';
+import 'package:vroo_test/shared/widgets/build_detail_tile.dart';
+import '../../../../shared/widgets/expandable_detail_tile.dart';
 import 'widgets/d3/loading_overlay.dart';
 
 class D3 extends StatelessWidget {
@@ -60,7 +60,7 @@ Widget build(BuildContext context) {
       if (state is RideSubmitted) {
         print('here');
         context.read<Navigation>().navigateTo(
-          '/booking_confirm',
+          '/booking_confirm_driver',
         );
       }
       if (state is RideSubmissionFailed) {
@@ -198,7 +198,7 @@ Widget build(BuildContext context) {
     );
 
     final rideRequest = RideRequest(
-      driverId: "hritika_1004",
+      driverId: "hritika_1005",
       numOfSeats: availableSeats,
       car: selectedCar,
       coords: routeCoords,

@@ -170,7 +170,6 @@ class _R1PageState extends State<R1Page> {
                 return Scaffold(
                   appBar: CustomAppBar(
                     highlightedCircles: 1,
-                    totalCircles: 3,
                   ),
                   body: Padding(
                     padding: EdgeInsets.all(16.0.w),
@@ -182,7 +181,7 @@ class _R1PageState extends State<R1Page> {
                             fromDescription: widget.fromDescription,
                             toDescription: widget.toDescription,
                           ),
-                          SizedBox(height: 12.h),
+                          SizedBox(height: 22.h),
                           CustomDatePicker(
                             labelText: 'Select Date',
                             selectedDate: state.selectedDate,

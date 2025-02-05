@@ -9,8 +9,8 @@ import '../../../../core/theme/color/color_theme.dart';
 import '../../../../core/theme/font/font_theme.dart';
 import '../bloc/event/rider_home_event.dart';
 
-class LocationSelectionButtonsWidget extends StatelessWidget {
-  const LocationSelectionButtonsWidget({super.key});
+class RiderLocationSelectionButtonsWidget extends StatelessWidget {
+  const RiderLocationSelectionButtonsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

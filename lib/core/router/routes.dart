@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-// import 'package:vroo_test/features/matching/dependency_injection/matching_di.dart';
-import 'package:vroo_test/features/rider_journey/data/model/preferences_model.dart';
-import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
-import 'package:vroo_test/features/rider_journey/dependancy_injection/booking_confirm_di.dart';
-import 'package:vroo_test/features/rider_journey/dependancy_injection/rider_home_di.dart';
-import 'package:vroo_test/features/rider_journey/domain/entity/schedule_entity.dart';
-import 'package:vroo_test/features/rider_journey/presentation/pages/rider_home_page.dart';
-import 'package:provider/provider.dart';
-import 'package:vroo_test/features/driver_booking/data/model/carr_model.dart';
+// import '../../features/matching/presentation/pages/matching_page.dart';
 import '../../features/driver_booking/dependency_injection/active_rides_di.dart';
 import '../../features/driver_booking/dependency_injection/booking_di.dart';
 import '../../features/driver_booking/dependency_injection/d1_di.dart';
@@ -17,7 +9,7 @@ import '../../features/driver_booking/dependency_injection/d2_di.dart';
 import '../../features/driver_booking/dependency_injection/d3_di.dart';
 import '../../features/driver_booking/dependency_injection/driver_home_di.dart';
 import '../../features/driver_booking/domain/entity/car.dart';
-import '../../features/driver_booking/presentation/pages/BookingConfirmation.dart';
+import '../../features/driver_booking/presentation/pages/BookingConfirmationDriver.dart';
 import '../../features/driver_booking/presentation/pages/active_rides_screen.dart';
 import '../../features/driver_booking/presentation/pages/d1.dart';
 import '../../features/driver_booking/presentation/pages/d2.dart';
@@ -25,7 +17,11 @@ import '../../features/driver_booking/presentation/pages/d3.dart';
 import '../../features/driver_booking/presentation/pages/driver_home_screen.dart';
 import '../../features/driver_booking/presentation/pages/location_selection_screen.dart';
 import '../../features/driver_booking/presentation/pages/route_display_page.dart';
-// import '../../features/matching/presentation/pages/matching_page.dart';
+import 'package:vroo_test/features/rider_journey/data/model/preferences_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
+import 'package:vroo_test/features/rider_journey/dependancy_injection/booking_confirm_di.dart';
+import 'package:vroo_test/features/rider_journey/dependancy_injection/rider_home_di.dart';
+import 'package:vroo_test/features/rider_journey/presentation/pages/rider_home_page.dart';
 import '../../features/rider_journey/dependancy_injection/r1_di.dart';
 import '../../features/rider_journey/dependancy_injection/r2_di.dart';
 import '../../features/rider_journey/dependancy_injection/r3_di.dart';
@@ -38,13 +34,20 @@ import '../../features/rider_journey/presentation/pages/r3_page.dart';
 class Routes {
   static const String ui = '/ui';
   static const String driverHome = '/driver_home';
-  static const String locationSelection = '/location_selection';
+  static const String locationSelectionDriver = '/location_selection_driver';
   static const String routeDisplayPage = '/route_display_page';
   static const String d1 = '/d1';
   static const String d2 = '/d2';
   static const String d3 = '/d3';
   static const String activeRides = '/active_ride_page';
-  static const String booking_confirm = '/booking_confirm';
+  static const String booking_confirm = '/booking_confirm_driver';
+  static const String riderhome = '/riderhome';
+  static const String locationSelection = '/location_selection';
+  static const String r1Page = '/r1_page';
+  static const String r2Page = '/r2_page';
+  static const String r3Page = '/r3_page';
+  static const String bookingConfirm = '/booking_confirm';
+  static const String matching_rides = '/matching_rides';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -53,10 +56,10 @@ class Routes {
             builder: (_) => MultiProvider(
                 providers: DriverHomeDependencyInjection.init(),
                 child: const DriverHomeScreen()));
-      case locationSelection:
+      case locationSelectionDriver:
         final role = settings.arguments as String? ?? 'driver'; // Default to 'driver'
         return MaterialPageRoute(
-          builder: (_) => LocationSelectionScreen(role: role),
+          builder: (_) => DriverLocationSelectionScreen(role: role),
         );
       case routeDisplayPage:
         final args = settings.arguments as Map<String, dynamic>? ?? {};
@@ -176,13 +179,77 @@ class Routes {
             providers: ActiveRideDi.init(),
             child: ActiveRidesScreen(id: id)),
         );      
-      case '/booking_confirm':
+      case '/booking_confirm_driver':
         return MaterialPageRoute(
           builder: (_) => 
            MultiProvider(
-            providers: BookingConfirmDependencyInjection.init(),
+            providers: DriverBookingConfirmDependencyInjection.init(),
             child: 
-            BookingConfirmationScreen(),
+            BookingConfirmationDriverScreen(),
+          ),
+        );
+
+      case riderhome:
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: RiderHomeDependencyInjection.init(),
+                child: const RiderHomeScreen()));
+      case locationSelection:
+        final arguments = settings.arguments as Map<String, String?>;
+        final role = arguments['role'] ??
+            'rider'; // Access 'role' from the map, default to 'rider'
+        return MaterialPageRoute(
+          builder: (_) => RiderLocationSelectionScreen(role: role),
+        );
+      case r1Page:
+        final arguments = settings.arguments as Map<String, String?>;
+        return MaterialPageRoute(
+          builder: (_) => MultiProvider(
+            providers: R1DependencyInjection.init(),
+            child: R1Page(
+              fromDescription: arguments['fromDescription'] ?? '',
+              toDescription: arguments['toDescription'] ?? '',
+              fromPlaceId: arguments['fromPlaceId'] ?? '',
+              toPlaceId: arguments['toPlaceId'] ?? '',
+            ),
+          ),
+        );
+      case r2Page:
+        final arguments = settings.arguments as Map<String, dynamic>;
+
+        return MaterialPageRoute(
+          builder: (_) => MultiProvider(
+            providers: R2DependencyInjection.init(),
+            child: R2Page(schedule: arguments['schedule'] as ScheduleModel),
+          ),
+        );
+      case r3Page:
+        final arguments = settings.arguments as Map<String, dynamic>;
+        // final preferences = arguments['preference'] as PreferencesModel?;
+        return MaterialPageRoute(
+          builder: (_) => MultiProvider(
+            providers: R3DependancyInjection.init(),
+            child: R3Page(
+              schedule: arguments['schedule'] as ScheduleModel,
+              preferences: arguments['preferences'] as PreferencesModel,
+            ),
+          ),
+        );
+      case '/booking_confirm':
+        final arguments = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => MultiProvider(
+            providers: BookingConfirmDependencyInjection.init(),
+            child: BookingConfirmationScreen(
+              schedule: arguments['schedule'] as ScheduleModel,
+              preferences: arguments['preferences'] as PreferencesModel,
+              rideRequestId: arguments['rideRequestId'] as String,
+              matchingRides: arguments['matchingRides'] as List<dynamic>,
+              minPickupTime: arguments['minPickupTime'] as TimeOfDay,
+              maxPickupTime: arguments['maxPickupTime'] as TimeOfDay,
+              source: arguments['source'] as LatLng,
+              destination: arguments['destination'] as LatLng,
+            ),
           ),
         );
       default:

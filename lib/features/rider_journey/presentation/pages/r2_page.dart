@@ -42,6 +42,7 @@ class _R2PageState extends State<R2Page> {
               print('val${widget.schedule.fromDescription}');
               if (state is PreferenceSaved) {
                 context.read<R2Bloc>().add(ResetStateEvent());
+                return Center(child: CircularProgressIndicator());
               }
               if (state is PreferenceInitial) {
                 context.read<R2Bloc>().add(LoadPreferenceEvent());
@@ -62,7 +63,6 @@ class _R2PageState extends State<R2Page> {
                 return Scaffold(
                   appBar: CustomAppBar(
                     highlightedCircles: 2,
-                    totalCircles: 3,
                   ),
                   body: Padding(
                     padding: EdgeInsets.all(30.0.w),

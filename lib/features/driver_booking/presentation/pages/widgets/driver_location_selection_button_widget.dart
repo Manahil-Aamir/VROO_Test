@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/router/navigation.dart';
-import '../../../../core/theme/color/color_theme.dart';
-import '../../../../core/theme/font/font_theme.dart';
-import '../../core/router/routes.dart';
-import '../../features/driver_booking/presentation/bloc/bloc/driver_home_bloc.dart';
-import '../../features/driver_booking/presentation/bloc/event/driver_home_event.dart';
+import '../../../../../../../core/router/navigation.dart';
+import '../../../../../../../core/theme/color/color_theme.dart';
+import '../../../../../../../core/theme/font/font_theme.dart';
+import '../../../../../core/router/routes.dart';
+import '../../bloc/bloc/driver_home_bloc.dart';
+import '../../bloc/event/driver_home_event.dart';
 
-class LocationSelectionButtonsWidget extends StatelessWidget {
-  const LocationSelectionButtonsWidget({super.key});
+class DriverLocationSelectionButtonsWidget extends StatelessWidget {
+  const DriverLocationSelectionButtonsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class LocationSelectionButtonsWidget extends StatelessWidget {
                 // context.read<DriverHomeBloc>().add(ClearSharedPreferencesEvent());
                 context
                     .read<Navigation>()
-                    .navigateTo('/location_selection', arguments: 'driver');
+                    .navigateTo('/location_selection_driver', arguments: 'driver');
               },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),

@@ -83,7 +83,6 @@ class _R3PageState extends State<R3Page> {
     return Scaffold(
       appBar: CustomAppBar(
         highlightedCircles: 3,
-        totalCircles: 3,
       ),
       body: BlocListener<R3Bloc, R3State>(
         listener: (context, state) {
@@ -205,37 +204,42 @@ class _R3PageState extends State<R3Page> {
                             );
                             return;
                           }
-                          final formattedMinTime = formatISO8601DateTime(
-                            widget.schedule.date,
-                            widget.schedule.minTime,
-                          );
-                          final formattedMaxTime = formatISO8601DateTime(
-                            widget.schedule.date,
-                            widget.schedule.maxTime,
-                          );
+                          // final formattedMinTime = formatISO8601DateTime(
+                          //   widget.schedule.date,
+                          //   widget.schedule.minTime,
+                          // );
+                          // final formattedMaxTime = formatISO8601DateTime(
+                          //   widget.schedule.date,
+                          //   widget.schedule.maxTime,
+                          // );
                           final rideData = {
                             "riderId": generateRandomDriverId(),
                             "source": {
-                              "coords": {
-                                "lat": sourceCoordinates!.latitude,
-                                "lng": sourceCoordinates!.longitude,
-                              },
+                              "coords": [sourceCoordinates!.latitude, sourceCoordinates!.longitude],
                               "placeId": widget.schedule.fromPlaceId,
                               "address": widget.schedule.fromDescription,
                             },
                             "destination": {
-                              "coords": {
-                                "lat": destinationCoordinates!.latitude,
-                                "lng": destinationCoordinates!.longitude,
-                              },
+                              "coords": [destinationCoordinates!.latitude, destinationCoordinates!.longitude],
                               "placeId": widget.schedule.toPlaceId,
                               "address": widget.schedule.toDescription,
                             },
-                            "date": DateFormat('yyyy-MM-dd')
-                                .format(widget.schedule.date),
+                            "date": DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(
+                              DateTime(
+                                widget.schedule.date.year,
+                                widget.schedule.date.month,
+                                widget.schedule.date.day,
+                              ),
+                            ),
                             "pickupTimeRange": {
-                              "min": formattedMinTime,
-                              "max": formattedMaxTime,
+                              "min": formatISO8601DateTime(
+                                widget.schedule.date,
+                                widget.schedule.minTime,
+                              ),
+                              "max": formatISO8601DateTime(
+                                widget.schedule.date,
+                                widget.schedule.maxTime,
+                              ),
                             },
                             "maxArrivalTime": formatISO8601DateTime(
                               widget.schedule.date,
@@ -248,7 +252,7 @@ class _R3PageState extends State<R3Page> {
                             },
                             "isRecurring": false,
                           };
-
+                          print('Ride data: $rideData');
                           // Dispatch the ride request event.
                           context
                               .read<R3Bloc>()
