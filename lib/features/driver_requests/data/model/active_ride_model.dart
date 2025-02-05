@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/entity/active_ride.dart';
-import 'carr_model.dart';
+import '../../../driver_booking/data/model/carr_model.dart';
 
 class ActiveRideModel {
   final String id;
+  final String rideId;  
   final Car car;
   final DateTime date;
   final TimeOfDay time;
-  final int fare;
+  // final int fare;
   final int totalSeats;
   final LocationModel source;
   final LocationModel destination;
@@ -17,10 +18,11 @@ class ActiveRideModel {
 
   ActiveRideModel({
     required this.id,
+    required this.rideId,
     required this.car,
     required this.date,
     required this.time,
-    required this.fare,
+    // required this.fare,
     required this.totalSeats,
     required this.source,
     required this.destination,
@@ -31,10 +33,11 @@ class ActiveRideModel {
   factory ActiveRideModel.fromJson(Map<String, dynamic> json) {
   return ActiveRideModel(
     id: json['_id'] ?? '', // Handle null ID
+    rideId: json['rideId'] ?? '', // Handle null rideId
     car: Car.fromJson(json['car'] ?? {}), // Handle null car
     date: DateTime.parse(json['date']),
     time: TimeOfDay.fromDateTime(DateTime.parse(json['departureTime'])),
-    fare: json['fare']?.toInt() ?? 0,
+    // fare: json['fare']?.toInt() ?? 0,
     totalSeats: json['numOfSeats']?.toInt() ?? 0,
     source: LocationModel.fromJson(json['source'] ?? {}),
     destination: LocationModel.fromJson(json['destination'] ?? {}),
@@ -47,10 +50,11 @@ class ActiveRideModel {
 
   ActiveRideEntity toEntity() => ActiveRideEntity(
         id: id,
+        rideId: rideId,
         car: car.toEntity(),
         date: date,
         time: time,
-        fare: fare,
+        // fare: fare,
         totalSeats: totalSeats,
         source: source.toEntity(),
         destination: destination.toEntity(),

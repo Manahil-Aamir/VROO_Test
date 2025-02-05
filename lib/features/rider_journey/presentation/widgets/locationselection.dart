@@ -27,8 +27,12 @@ class RiderLocationSelectionButtonsWidget extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                context.read<Navigation>().navigateTo(Routes.ui);
-                print('hi');
+                context
+                    .read<Navigation>()
+                    .navigateTo('/location_selection', arguments: {
+                  'role': 'rider',
+                });
+                print('hello');
               },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
@@ -50,7 +54,7 @@ class RiderLocationSelectionButtonsWidget extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 10.h),
+          SizedBox(height: 10.h),
             GestureDetector(
               onTap: () {
                 context

@@ -2,6 +2,8 @@ import 'dart:math' as math;
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import '../../../../../core/router/navigation.dart';
 import '../../../../../core/theme/color/color_theme.dart';
 import '../../../domain/entity/active_ride.dart';
 
@@ -12,37 +14,48 @@ class ActiveRideCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme; // Get the text theme
+    final textTheme = Theme.of(context).textTheme; 
 
-    return Card(
-      margin: EdgeInsets.all(12.w),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      color: ThemeColors.primaryColorDark,
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Top Row with Driver Info and Date/Time
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDriverInfo(textTheme),
-                _buildDateTime(textTheme, ride, context),
-              ],
-            ),
-            SizedBox(height: 12.h),
-            
-            // Centered Route Information with aligned locations
-            _buildRouteInfo(textTheme, ride),
-            SizedBox(height: 16.h),
-            
-            // Car Details
-            _buildCarDetails(textTheme, ride),
-          ],
+    return GestureDetector(
+      onTap: () {
+        print('ride id: ${ride.id}');
+        print('ride id: ${ride.status}');
+        context.read<Navigation>().navigateTo(
+        '/ride_details',
+        arguments: ride.id.toString(),
+    );
+
+      },
+      child: Card(
+        margin: EdgeInsets.all(12.w),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        color: ThemeColors.primaryColorDark,
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Top Row with Driver Info and Date/Time
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDriverInfo(textTheme),
+                  _buildDateTime(textTheme, ride, context),
+                ],
+              ),
+              SizedBox(height: 12.h),
+              
+              // Centered Route Information with aligned locations
+              _buildRouteInfo(textTheme, ride),
+              SizedBox(height: 16.h),
+              
+              // Car Details
+              _buildCarDetails(textTheme, ride),
+            ],
+          ),
         ),
       ),
     );

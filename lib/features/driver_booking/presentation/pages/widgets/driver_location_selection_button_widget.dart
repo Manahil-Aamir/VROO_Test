@@ -29,7 +29,7 @@ class DriverLocationSelectionButtonsWidget extends StatelessWidget {
               // context.read<DriverHomeBloc>().add(ClearSharedPreferencesEvent());
                 context
                     .read<Navigation>()
-                    .navigateTo('/location_selection', arguments: 'driver');
+                    .navigateTo('/location_selection_driver', arguments: 'driver');
               },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),

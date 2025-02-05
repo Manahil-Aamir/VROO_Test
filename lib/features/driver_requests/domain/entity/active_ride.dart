@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'car.dart';
+import '../../../driver_booking/domain/entity/car.dart';
 
 class ActiveRideEntity {
   final String id;
+  final String rideId;
   final CarEntity car;
   final DateTime date;
   final TimeOfDay time;
-  final int fare;
+  // final int fare;
   final int totalSeats;
   final LocationEntity source;
   final LocationEntity destination;
@@ -15,10 +16,11 @@ class ActiveRideEntity {
 
   ActiveRideEntity({
     required this.id,
+    required this.rideId,
     required this.car,
     required this.date,
     required this.time,
-    required this.fare,
+    // required this.fare,
     required this.totalSeats,
     required this.source,
     required this.destination,

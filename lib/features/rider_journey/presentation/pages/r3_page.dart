@@ -224,7 +224,7 @@ class _R3PageState extends State<R3Page> {
                               "placeId": widget.schedule.toPlaceId,
                               "address": widget.schedule.toDescription,
                             },
-                            "date": DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(
+                            "date": DateFormat("yyyy-MM-dd").format(
                               DateTime(
                                 widget.schedule.date.year,
                                 widget.schedule.date.month,

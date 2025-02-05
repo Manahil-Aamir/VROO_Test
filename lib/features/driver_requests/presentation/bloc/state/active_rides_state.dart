@@ -1,4 +1,4 @@
-import 'package:vroo_test/features/driver_booking/domain/entity/active_ride.dart';
+import 'package:vroo_test/features/driver_requests/domain/entity/active_ride.dart';
 
 sealed class ActiveRidesState {}
 

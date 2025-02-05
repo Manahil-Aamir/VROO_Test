@@ -72,6 +72,7 @@ class _R2PageState extends State<R2Page> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           PreferenceSwitch(
+                            icon: Icons.person,
                             label: "Same Gender Only",
                             value: state.sameGender ?? false,
                             onChanged: (value) {
@@ -82,6 +83,7 @@ class _R2PageState extends State<R2Page> {
                           ),
                           SizedBox(height: 20.h),
                           PreferenceSwitch(
+                            icon: Icons.directions_walk,
                             label: "Prefer Walk",
                             value: state.walk ?? false,
                             onChanged: (value) {

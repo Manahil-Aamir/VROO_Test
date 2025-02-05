@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../model/active_ride_model.dart';
 
+import '../model/active_ride_model.dart';
 
 abstract class ActiveRidesDataSource {
   Future<List<ActiveRideModel>> getActiveRides(String driverId);
