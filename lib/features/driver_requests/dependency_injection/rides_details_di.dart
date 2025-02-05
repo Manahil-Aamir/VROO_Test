@@ -6,6 +6,7 @@ import '../../../core/router/navigation.dart';
 import '../data/data_source/rides_details_data_source.dart';
 import '../data/repository/rides_details_repository_impl.dart';
 import '../domain/repository/rides_details_repository.dart';
+import '../domain/usecases/approve_ride_request.dart';
 import '../domain/usecases/get_rides_details.dart';
 import '../presentation/bloc/bloc/rides_details_bloc.dart';
 
@@ -15,6 +16,7 @@ class RidesDetailsDi {
     final dataSource = RideDetailsRemoteDataSource(httpClient);
     final repository = RideDetailsRepositoryImpl(dataSource);
     final getRideDetails = GetRideDetails(repository);
+    final approveRideRequest = ApproveRideRequest(repository);
     final navigationProvider = Navigation();
 
     return [
@@ -23,7 +25,10 @@ class RidesDetailsDi {
       Provider<GetRideDetails>(create: (_) => getRideDetails),
       Provider<Navigation>(create: (_) => navigationProvider),
       BlocProvider<RideDetailsBloc>(
-        create: (_) => RideDetailsBloc(getRideDetails),
+        create: (_) => RideDetailsBloc(
+          getRideDetails: getRideDetails,
+          approveRideRequest: approveRideRequest,
+        ),  
       ),
     ];
   }

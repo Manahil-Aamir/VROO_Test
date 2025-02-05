@@ -5,6 +5,7 @@ import '../model/rides_details_model.dart';
 
 abstract class RideDetailsDataSource {
   Future<List<RideDetailsModel>> getRideDetails(String driverId);
+  Future<void> approveRideRequest(String rideRequestId, String rideId);
 }
 
 class RideDetailsRemoteDataSource implements RideDetailsDataSource {
@@ -48,6 +49,16 @@ class RideDetailsRemoteDataSource implements RideDetailsDataSource {
     } catch (e) {
       print('Error fetching ride details: $e');
       throw Exception('Failed to parse ride details');
+    }
+  }
+
+Future<void> approveRideRequest(String rideRequestId, String rideId) async {
+    final url = 'http://10.0.2.2:5000/rider/ride-request/join/$rideRequestId/approve';
+    final response = await client.post(Uri.parse(url));
+    if (response.statusCode == 200) {
+      throw Exception('Approval success: ${response.body} - ${response.statusCode}');
+    } else {
+      throw Exception('Approval failed: ${response.statusCode}');
     }
   }
 }

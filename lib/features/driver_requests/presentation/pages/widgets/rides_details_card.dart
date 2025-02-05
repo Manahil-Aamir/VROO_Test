@@ -1,9 +1,12 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../../../../../core/theme/color/color_theme.dart';
 import '../../../domain/entity/rides_details.dart';
+import '../../bloc/bloc/rides_details_bloc.dart';
+import '../../bloc/event/rides_details_event.dart';
 
 class RideDetailCard extends StatelessWidget {
   final RideDetailsEntity ride;
@@ -52,8 +55,15 @@ class RideDetailCard extends StatelessWidget {
                   }),
                   SizedBox(width: 16.w),
                   _buildIconButton(Icons.check, () {
-                    // Handle accept action
                     print("Accept tapped");
+                    final request = ride.request;
+                      context.read<RideDetailsBloc>().add(
+                        ApproveRideRequestEvent(
+                          rideRequestId: request.id,
+                          rideId: request.rideId,
+                        ),
+                      );
+                    print("Accept Completed");
                   }),
                 ],
               ),

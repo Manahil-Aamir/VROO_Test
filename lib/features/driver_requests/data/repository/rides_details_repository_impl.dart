@@ -12,4 +12,9 @@ class RideDetailsRepositoryImpl implements RideDetailsRepository {
     final rides = await dataSource.getRideDetails(rideId);
     return rides.map<RideDetailsEntity>((model) => model.toEntity()).toList();
   }
+
+  @override
+  Future<void> approveRideRequest(String rideRequestId, String rideId) async {
+    await dataSource.approveRideRequest(rideRequestId, rideId);
+  }
 }
