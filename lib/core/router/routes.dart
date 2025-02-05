@@ -106,8 +106,7 @@ class Routes {
               schedule: arguments['schedule'] as ScheduleModel,
               preferences: arguments['preferences'] as PreferencesModel,
               rideRequestId: arguments['rideRequestId'] as String,
-              initialMatchingRides:
-                  (arguments['matchingRides'] as List<dynamic>?) ?? [],
+              initialMatchingRides: arguments['matchingRides'] as List<dynamic>,
               minPickupTime: arguments['minPickupTime'] as TimeOfDay,
               maxPickupTime: arguments['maxPickupTime'] as TimeOfDay,
               source: arguments['source'] as LatLng,

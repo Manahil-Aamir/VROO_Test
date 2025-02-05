@@ -97,8 +97,10 @@ class _R3PageState extends State<R3Page> {
             });
           } else if (state is RideRequestSuccess) {
             final response = state.response;
+            print('Response: $response');
             final rideRequestId = response['rideRequestId'];
             final List<dynamic> matchingRides = response['matchingRides'];
+            print('Matching Rides on R3: $matchingRides');
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                   content:
@@ -216,26 +218,37 @@ class _R3PageState extends State<R3Page> {
                           final rideData = {
                             "riderId": generateRandomDriverId(),
                             "source": {
-                              "coords": {
-                                "lat": sourceCoordinates!.latitude,
-                                "lng": sourceCoordinates!.longitude,
-                              },
+                              "coords": [
+                                sourceCoordinates!.latitude,
+                                sourceCoordinates!.longitude
+                              ],
                               "placeId": widget.schedule.fromPlaceId,
                               "address": widget.schedule.fromDescription,
                             },
                             "destination": {
-                              "coords": {
-                                "lat": destinationCoordinates!.latitude,
-                                "lng": destinationCoordinates!.longitude,
-                              },
+                              "coords": [
+                                destinationCoordinates!.latitude,
+                                destinationCoordinates!.longitude
+                              ],
                               "placeId": widget.schedule.toPlaceId,
                               "address": widget.schedule.toDescription,
                             },
-                            "date": DateFormat('yyyy-MM-dd')
-                                .format(widget.schedule.date),
+                            "date": DateFormat("yyyy-MM-dd").format(
+                              DateTime(
+                                widget.schedule.date.year,
+                                widget.schedule.date.month,
+                                widget.schedule.date.day,
+                              ),
+                            ),
                             "pickupTimeRange": {
-                              "min": formattedMinTime,
-                              "max": formattedMaxTime,
+                              "min": formatISO8601DateTime(
+                                widget.schedule.date,
+                                widget.schedule.minTime,
+                              ),
+                              "max": formatISO8601DateTime(
+                                widget.schedule.date,
+                                widget.schedule.maxTime,
+                              ),
                             },
                             "maxArrivalTime": formatISO8601DateTime(
                               widget.schedule.date,

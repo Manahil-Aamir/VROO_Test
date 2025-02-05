@@ -75,18 +75,22 @@ class BookingConfirmationScreen extends StatelessWidget {
               BookingConfirmButton(
                 text: 'Find a Ride',
                 onTap: () {
-                  context
-                      .read<Navigation>()
-                      .navigateTo('/matching_rides', arguments: {
-                    'rideRequestId': rideRequestId,
-                    'matchingRides': matchingRides,
-                    'minPickupTime': minPickupTime,
-                    'maxPickupTime': maxPickupTime,
-                    'schedule': schedule,
-                    'preferences': preferences,
-                    'source': source,
-                    'destination': destination,
-                  });
+                  try {
+                    context
+                        .read<Navigation>()
+                        .navigateTo('/matching_rides', arguments: {
+                      'rideRequestId': rideRequestId,
+                      'matchingRides': matchingRides,
+                      'minPickupTime': minPickupTime,
+                      'maxPickupTime': maxPickupTime,
+                      'schedule': schedule,
+                      'preferences': preferences,
+                      'source': source,
+                      'destination': destination,
+                    });
+                  } catch (e) {
+                    print('Navigation error: $e');
+                  }
                 },
               ),
             ],

@@ -42,7 +42,9 @@ class _R2PageState extends State<R2Page> {
               print('val${widget.schedule.fromDescription}');
               if (state is PreferenceSaved) {
                 context.read<R2Bloc>().add(ResetStateEvent());
+                Center(child: CircularProgressIndicator());
               }
+
               if (state is PreferenceInitial) {
                 context.read<R2Bloc>().add(LoadPreferenceEvent());
               }
