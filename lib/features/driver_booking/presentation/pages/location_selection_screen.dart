@@ -7,7 +7,7 @@ import '../../../../core/router/navigation.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/appbar.dart';
 import '../../../../shared/widgets/gradient_button.dart';
-import '../../../../shared/widgets/location_selection_input.dart';
+import '../../../../shared/widgets/location_selection_input_driver.dart';
 import '../../dependency_injection/location_selection_di.dart';
 
 class LocationSelectionScreen extends StatefulWidget {
