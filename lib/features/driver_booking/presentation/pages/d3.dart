@@ -53,131 +53,132 @@ class D3 extends StatelessWidget {
 
   @override
   @override
-Widget build(BuildContext context) {
-  return BlocListener<RideBloc, RideState>(
-    listener: (context, state) {
-      if (state is RideSubmitted) {
-        print('here');
-        context.read<Navigation>().navigateTo(
-          '/booking_confirm_driver',
-        );
-      }
-      if (state is RideSubmissionFailed) {
-        ErrorDialog.show(context, state.error);
-      }
-    },
-    child: Scaffold(
-      appBar: const CustomAppBar(
-        highlightedCircles: 3,
-      ),
-      body: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      // Trip Details Card
-                      DetailCard(
-                        title: 'Trip Details',
-                        details: [
-                          ExpandableDetailTile(
-                            icon: Icons.location_on,
-                            label: 'From',
-                            value: fromDescription,
-                            onTap: () => _showDetailBottomSheet(
-                                context, 'From', fromDescription),
-                          ),
-                          ExpandableDetailTile(
-                            icon: Icons.flag,
-                            label: 'To',
-                            value: toDescription,
-                            onTap: () => _showDetailBottomSheet(
-                                context, 'To', toDescription),
-                          ),
-                          DetailTile(
-                            icon: Icons.calendar_today,
-                            label: 'Date',
-                            value: '${date.day}/${date.month}/${date.year}',
-                          ),
-                          DetailTile(
-                            icon: Icons.access_time,
-                            label: 'Departure Time',
-                            value: 
-                                '${time.hour}:${time.minute.toString().padLeft(2, '0')}',
-                          ),
-                          DetailTile(
-                            icon: Icons.access_time,
-                            label: 'Max Arrival Time',
-                            value: 
-                                '${maxArrivalTime.hour}:${maxArrivalTime.minute.toString().padLeft(2, '0')}',
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
+  Widget build(BuildContext context) {
+    return BlocListener<RideBloc, RideState>(
+      listener: (context, state) {
+        if (state is RideSubmitted) {
+          print('here');
+          context.read<Navigation>().navigateTo(
+                '/booking_confirm_driver',
+              );
+        }
+        if (state is RideSubmissionFailed) {
+          ErrorDialog.show(context, state.error);
+        }
+      },
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          highlightedCircles: 3,
+        ),
+        body: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        // Trip Details Card
+                        DetailCard(
+                          title: 'Trip Details',
+                          details: [
+                            ExpandableDetailTile(
+                              icon: Icons.location_on,
+                              label: 'From',
+                              value: fromDescription,
+                              onTap: () => _showDetailBottomSheet(
+                                  context, 'From', fromDescription),
+                            ),
+                            ExpandableDetailTile(
+                              icon: Icons.flag,
+                              label: 'To',
+                              value: toDescription,
+                              onTap: () => _showDetailBottomSheet(
+                                  context, 'To', toDescription),
+                            ),
+                            DetailTile(
+                              icon: Icons.calendar_today,
+                              label: 'Date',
+                              value: '${date.day}/${date.month}/${date.year}',
+                            ),
+                            DetailTile(
+                              icon: Icons.access_time,
+                              label: 'Departure Time',
+                              value:
+                                  '${time.hour}:${time.minute.toString().padLeft(2, '0')}',
+                            ),
+                            DetailTile(
+                              icon: Icons.access_time,
+                              label: 'Max Arrival Time',
+                              value:
+                                  '${maxArrivalTime.hour}:${maxArrivalTime.minute.toString().padLeft(2, '0')}',
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
 
-                      // Car and Seats Card
-                      DetailCard(
-                        title: 'Car and Seats',
-                        details: [
-                          DetailTile(
-                            icon: Icons.directions_car,
-                            label: 'Selected Car',
-                            value: '${selectedCar.company} ${selectedCar.model}',
-                          ),
-                          DetailTile(
-                            icon: Icons.event_seat,
-                            label: 'Available Seats',
-                            value: '$availableSeats',
-                          ),
-                          DetailTile(
-                            icon: Icons.person,
-                            label: 'Same Gender',
-                            value: sameGenderOnly ? 'Yes' : 'No',
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
+                        // Car and Seats Card
+                        DetailCard(
+                          title: 'Car and Seats',
+                          details: [
+                            DetailTile(
+                              icon: Icons.directions_car,
+                              label: 'Selected Car',
+                              value:
+                                  '${selectedCar.company} ${selectedCar.model}',
+                            ),
+                            DetailTile(
+                              icon: Icons.event_seat,
+                              label: 'Available Seats',
+                              value: '$availableSeats',
+                            ),
+                            DetailTile(
+                              icon: Icons.person,
+                              label: 'Same Gender',
+                              value: sameGenderOnly ? 'Yes' : 'No',
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
 
-                      // Payment Card
-                      DetailCard(
-                        title: 'Payment',
-                        details: [
-                          DetailTile(
-                            icon: Icons.payment,
-                            label: 'Payment Option',
-                            value: paymentOption.join(', '),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 32),
+                        // Payment Card
+                        DetailCard(
+                          title: 'Payment',
+                          details: [
+                            DetailTile(
+                              icon: Icons.payment,
+                              label: 'Payment Option',
+                              value: paymentOption.join(', '),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 32),
 
-                      // Confirm Button
-                      GradientButton(
-                        onTap: () => _submitRideRequest(context),
-                        text: 'Confirm and Proceed',
-                      ),
-                    ],
+                        // Confirm Button
+                        GradientButton(
+                          onTap: () => _submitRideRequest(context),
+                          text: 'Confirm and Proceed',
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          
-          // Loading Overlay
-          BlocBuilder<RideBloc, RideState>(
-            builder: (context, state) => LoadingOverlay(
-              visible: state is RideSubmitting,
+              ],
             ),
-          ),
-        ],
+
+            // Loading Overlay
+            BlocBuilder<RideBloc, RideState>(
+              builder: (context, state) => LoadingOverlay(
+                visible: state is RideSubmitting,
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   void _submitRideRequest(BuildContext context) {
     final departureDateTime = DateTime(
@@ -234,7 +235,8 @@ Widget build(BuildContext context) {
     return int.parse(cleaned) * 60;
   }
 
-  void _showDetailBottomSheet(BuildContext context, String title, String content) {
+  void _showDetailBottomSheet(
+      BuildContext context, String title, String content) {
     showModalBottomSheet(
       context: context,
       builder: (context) => Padding(
@@ -254,5 +256,4 @@ Widget build(BuildContext context) {
       ),
     );
   }
-
 }

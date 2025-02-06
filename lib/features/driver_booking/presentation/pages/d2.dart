@@ -33,7 +33,7 @@ class D2Page extends StatefulWidget {
   final String recurrence;
 
   const D2Page({
-    Key? key,
+    super.key,
     required this.fromDescription,
     required this.toDescription,
     required this.fromPlaceId,
@@ -45,7 +45,7 @@ class D2Page extends StatefulWidget {
     required this.maxArrivalTime,
     required this.selectedRouteCoords,
     required this.recurrence,
-  }) : super(key: key);
+  });
 
   @override
   _D2PageState createState() => _D2PageState();
@@ -55,8 +55,7 @@ class _D2PageState extends State<D2Page> {
   String? _selectedCarId;
   int _availableSeats = 2;
   bool _sameGenderOnly = false;
-  String _selectedPaymentMethod = 'cash'; 
-
+  String _selectedPaymentMethod = 'cash';
 
   @override
   void initState() {
@@ -77,6 +76,7 @@ class _D2PageState extends State<D2Page> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return MultiBlocListener(
       listeners: [
         BlocListener<CarPreferencesBloc, CarPreferencesState>(
@@ -96,50 +96,69 @@ class _D2PageState extends State<D2Page> {
       ],
       child: Scaffold(
         appBar: CustomAppBar(highlightedCircles: 2),
-        body: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BlocBuilder<CarBloc, CarState>(
-                builder: (context, state) {
-                  if (state is CarLoading) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: Theme.of(context).primaryColor, // Use theme primary color
-                      ),
-                    );
-                  } else if (state is CarError) {
-                    return Center(
-                      child: Text(
-                        "Error loading cars: ${state.message}",
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    );
-                  } else if (state is CarLoaded) {
-                  return CarSelectionWidget(
-                    selectedCarId: _selectedCarId,
-                    onCarSelected: _updateCarPreference,
-                    onAddCarPressed: _showAddCarModal,
-                  );
-                }
-                return const SizedBox.shrink();
-                  // return Container(); // Default empty state
-                },
+        body: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 70.h + 16.h),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              // Ensure the content fills at least the screen's height.
+              minHeight: screenHeight -
+                  kToolbarHeight -
+                  MediaQuery.of(context).padding.top,
+            ),
+            child: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BlocBuilder<CarBloc, CarState>(
+                    builder: (context, state) {
+                      if (state is CarLoading) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        );
+                      } else if (state is CarError) {
+                        return Center(
+                          child: Text(
+                            "Error loading cars: ${state.message}",
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        );
+                      } else if (state is CarLoaded) {
+                        return CarSelectionWidget(
+                          selectedCarId: _selectedCarId,
+                          onCarSelected: _updateCarPreference,
+                          onAddCarPressed: _showAddCarModal,
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                  SizedBox(height: 20.h),
+                  SeatsControlWidget(
+                    availableSeats: _availableSeats,
+                    onSeatsChanged: _updateSeats,
+                  ),
+                  SizedBox(height: 20.h),
+                  GenderToggleWidget(
+                    sameGenderOnly: _sameGenderOnly,
+                    onGenderToggled: _updateGenderPreference,
+                  ),
+                  SizedBox(height: 20.h),
+                  PaymentMethodWidget(
+                    selectedPaymentMethod: _selectedPaymentMethod,
+                    onPaymentSelected: _updatePayment,
+                  ),
+                  // Remove Spacer (which doesn't work well in a scrollable layout)
+                  SizedBox(height: 20.h),
+                  GradientButton(
+                    onTap: _handleNextPressed,
+                    text: 'Next',
+                  ),
+                  SizedBox(height: 70.h),
+                ],
               ),
-              SizedBox(height: 20.h),
-              SeatsControlWidget(availableSeats: _availableSeats, onSeatsChanged: _updateSeats),
-              SizedBox(height: 20.h),
-              GenderToggleWidget(sameGenderOnly: _sameGenderOnly, onGenderToggled: _updateGenderPreference),
-              SizedBox(height: 20.h),
-              PaymentMethodWidget(selectedPaymentMethod: _selectedPaymentMethod, onPaymentSelected: _updatePayment),
-              const Spacer(),
-              GradientButton(
-                onTap: _handleNextPressed,
-                text: 'Next',
-              ),
-              SizedBox(height: 70.h),
-            ],
+            ),
           ),
         ),
       ),
@@ -151,61 +170,61 @@ class _D2PageState extends State<D2Page> {
       _selectedCarId = preferences.selectedCar;
       _availableSeats = preferences.availableSeats;
       _sameGenderOnly = preferences.sameGenderOnly;
-      _selectedPaymentMethod = preferences.payment; 
+      _selectedPaymentMethod = preferences.payment;
     });
   }
 
   void _updateCarPreference(String? carId) {
     context.read<CarPreferencesBloc>().add(
-      SaveCarPreferencesEvent(
-        CarPreferencesEntity(
-          selectedCar: carId,
-          availableSeats: _availableSeats,
-          sameGenderOnly: _sameGenderOnly,
-          payment: _selectedPaymentMethod,
-        ),
-      ),
-    );
+          SaveCarPreferencesEvent(
+            CarPreferencesEntity(
+              selectedCar: carId,
+              availableSeats: _availableSeats,
+              sameGenderOnly: _sameGenderOnly,
+              payment: _selectedPaymentMethod,
+            ),
+          ),
+        );
   }
 
   void _updatePayment(String option) {
     context.read<CarPreferencesBloc>().add(
-      SaveCarPreferencesEvent(
-        CarPreferencesEntity(
-          selectedCar: _selectedCarId,
-          availableSeats: _availableSeats,
-          sameGenderOnly: _sameGenderOnly,
-          payment: option,
-        ),
-      ),
-    );
+          SaveCarPreferencesEvent(
+            CarPreferencesEntity(
+              selectedCar: _selectedCarId,
+              availableSeats: _availableSeats,
+              sameGenderOnly: _sameGenderOnly,
+              payment: option,
+            ),
+          ),
+        );
   }
 
   void _updateSeats(int newValue) {
     if (newValue < 1 || newValue > 6) return;
     context.read<CarPreferencesBloc>().add(
-      SaveCarPreferencesEvent(
-        CarPreferencesEntity(
-          selectedCar: _selectedCarId,
-          availableSeats: newValue,
-          sameGenderOnly: _sameGenderOnly,
-          payment: _selectedPaymentMethod,
-        ),
-      ),
-    );
+          SaveCarPreferencesEvent(
+            CarPreferencesEntity(
+              selectedCar: _selectedCarId,
+              availableSeats: newValue,
+              sameGenderOnly: _sameGenderOnly,
+              payment: _selectedPaymentMethod,
+            ),
+          ),
+        );
   }
 
   void _updateGenderPreference(bool value) {
     context.read<CarPreferencesBloc>().add(
-      SaveCarPreferencesEvent(
-        CarPreferencesEntity(
-          selectedCar: _selectedCarId,
-          availableSeats: _availableSeats,
-          sameGenderOnly: value,
-          payment: _selectedPaymentMethod,
-        ),
-      ),
-    );
+          SaveCarPreferencesEvent(
+            CarPreferencesEntity(
+              selectedCar: _selectedCarId,
+              availableSeats: _availableSeats,
+              sameGenderOnly: value,
+              payment: _selectedPaymentMethod,
+            ),
+          ),
+        );
   }
 
   void _handleNextPressed() {
@@ -217,11 +236,11 @@ class _D2PageState extends State<D2Page> {
     );
 
     context.read<CarPreferencesBloc>().add(
-      SaveCarPreferencesEvent(preferences),
-    );
+          SaveCarPreferencesEvent(preferences),
+        );
 
     final carState = BlocProvider.of<CarBloc>(context).state;
-  
+
     if (carState is! CarLoaded || _selectedCarId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select a vehicle')),
@@ -231,7 +250,8 @@ class _D2PageState extends State<D2Page> {
 
     final selectedCar = carState.cars.firstWhere(
       (car) => car.numberPlate == _selectedCarId,
-      orElse: () => CarEntity( // Fallback dummy car
+      orElse: () => CarEntity(
+        // Fallback dummy car
         company: 'Unknown',
         model: 'Unknown',
         color: 'Unknown',
@@ -303,5 +323,4 @@ class _D2PageState extends State<D2Page> {
       ),
     );
   }
-
 }

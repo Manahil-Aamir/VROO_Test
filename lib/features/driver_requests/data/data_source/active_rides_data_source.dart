@@ -15,12 +15,13 @@ class ActiveRidesRemoteDataSource implements ActiveRidesDataSource {
   @override
   Future<List<ActiveRideModel>> getActiveRides(String driverId) async {
     final response = await client.get(
-      Uri.parse('http://10.0.2.2:5000/driver/active-rides/$driverId'),
+      Uri.parse(
+          'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/driver/active-rides/$driverId'),
     );
 
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
-    
+
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body)['data'];
       return data.map((json) => ActiveRideModel.fromJson(json)).toList();

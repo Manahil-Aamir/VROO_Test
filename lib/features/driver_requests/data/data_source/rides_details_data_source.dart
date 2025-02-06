@@ -19,15 +19,16 @@ class RideDetailsRemoteDataSource implements RideDetailsDataSource {
       print('Fetching ride details for ride ID: $rideId');
       final response = await client.get(
         // Uri.parse('http://10.0.2.2:5000/driver/active-rides/$driverId'),
-        Uri.parse('http://10.0.2.2:5000/driver/ride-requests/$rideId'),
+        Uri.parse(
+            'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/driver/ride-requests/$rideId'),
       );
 
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      
-        if (response.statusCode == 200) {
+
+      if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
-        
+
         // Print the full response for debugging
         print('Full API response: $jsonResponse');
 
@@ -44,7 +45,8 @@ class RideDetailsRemoteDataSource implements RideDetailsDataSource {
           throw Exception('Unexpected data format: ${jsonResponse['data']}');
         }
       } else {
-        throw Exception('Failed to load ride details. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load ride details. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error fetching ride details: $e');
@@ -52,8 +54,10 @@ class RideDetailsRemoteDataSource implements RideDetailsDataSource {
     }
   }
 
-Future<void> approveRideRequest(String rideRequestId, String rideId) async {
-    final url = 'http://10.0.2.2:5000/rider/ride-request/join/$rideRequestId/approve';
+  @override
+  Future<void> approveRideRequest(String rideRequestId, String rideId) async {
+    final url =
+        'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/rider/ride-request/join/$rideRequestId/approve';
     final response = await client.post(Uri.parse(url));
     if (response.statusCode != 200) {
       throw Exception('Approval failed: ${response.statusCode}');

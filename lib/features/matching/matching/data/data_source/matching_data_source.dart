@@ -10,7 +10,8 @@ class MatchingDataSource {
 
   Future<Map<String, dynamic>> sendJoinRequest(
       Map<String, String> rideData) async {
-    final url = Uri.parse('http://10.0.2.2:5000/rider/ride-request/join');
+    final url = Uri.parse(
+        'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/rider/ride-request/join');
 
     // Encode the data to JSON
     final String jsonBody = json.encode(rideData);
@@ -38,8 +39,8 @@ class MatchingDataSource {
 
   Future<List<dynamic>> sendRideRequest(
       String rideRequestId, Map<String, dynamic> requestData) async {
-    final url =
-        Uri.parse('http://10.0.2.2:5000/rider/ride-request/$rideRequestId');
+    final url = Uri.parse(
+        'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/rider/ride-request/$rideRequestId');
     final response = await client.patch(
       url,
       headers: {'Content-Type': 'application/json'},

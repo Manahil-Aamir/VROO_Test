@@ -25,7 +25,8 @@ class R3DataSource {
 
   Future<Map<String, dynamic>> sendRideRequest(
       Map<String, dynamic> requestData) async {
-    final url = Uri.parse('http://10.0.2.2:5000/rider/ride-request');
+    final url = Uri.parse(
+        'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/rider/ride-request');
     final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
