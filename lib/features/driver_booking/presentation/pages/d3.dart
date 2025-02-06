@@ -197,7 +197,7 @@ Widget build(BuildContext context) {
     );
 
     final rideRequest = RideRequest(
-      driverId: "hritika_2010",
+      driverId: "hritika_6000",
       numOfSeats: availableSeats,
       car: selectedCar,
       coords: routeCoords,
