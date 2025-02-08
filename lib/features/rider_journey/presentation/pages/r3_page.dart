@@ -10,6 +10,7 @@ import 'package:vroo_test/shared/widgets/build_detail_card.dart';
 import 'package:vroo_test/shared/widgets/build_detail_tile.dart';
 import 'package:vroo_test/shared/widgets/custom_app_bar.dart';
 import '../../../../core/router/navigation.dart';
+import '../../../../shared/widgets/expandable_detail_tile.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../../data/model/preferences_model.dart';
 import '../../data/model/schedule_model.dart';
@@ -134,12 +135,12 @@ class _R3PageState extends State<R3Page> {
                       DetailCard(
                         title: 'Trip Details',
                         details: [
-                          DetailTile(
+                          ExpandableDetailTile(
                             icon: Icons.location_on,
                             label: 'From',
                             value: widget.schedule.fromDescription,
                           ),
-                          DetailTile(
+                          ExpandableDetailTile(
                             icon: Icons.flag,
                             label: 'To',
                             value: widget.schedule.toDescription,
@@ -156,18 +157,10 @@ class _R3PageState extends State<R3Page> {
                             value:
                               '${widget.schedule.minTime.hour}:${widget.schedule.minTime.minute == 0 ? '00' : widget.schedule.minTime.minute} - ${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute == 0 ? '00' : widget.schedule.maxTime.minute}',
                           ),
-                          // DetailTile(
-                          //   icon: Icons.access_time,
-                          //   label: 'Max Time',
-                          //   value:
-                          //       '${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute}',
-                          // ),
                           DetailTile(
                             icon: Icons.access_time,
                             label: 'Max Arrival Time',
-                            value: widget.schedule.arrivalTime != null
-                                ? '${widget.schedule.arrivalTime.hour}:${widget.schedule.arrivalTime.minute}'
-                                : 'Not set',
+                            value: '${widget.schedule.arrivalTime.hour}:${widget.schedule.arrivalTime.minute == 0 ? '00' : widget.schedule.arrivalTime.minute}',
                           ),
                           // DetailTile(
                           //   icon: Icons.repeat,

@@ -88,15 +88,13 @@ class D3 extends StatelessWidget {
                               icon: Icons.location_on,
                               label: 'From',
                               value: fromDescription,
-                              onTap: () => _showDetailBottomSheet(
-                                  context, 'From', fromDescription),
+                              // onTap: () => _showDetailBottomSheet(context, 'From', fromDescription),
                             ),
                             ExpandableDetailTile(
                               icon: Icons.flag,
                               label: 'To',
                               value: toDescription,
-                              onTap: () => _showDetailBottomSheet(
-                                  context, 'To', toDescription),
+                              // onTap: () => _showDetailBottomSheet(context, 'To', toDescription),
                             ),
                             DetailTile(
                               icon: Icons.calendar_today,
@@ -198,7 +196,7 @@ class D3 extends StatelessWidget {
     );
 
     final rideRequest = RideRequest(
-      driverId: "hritika_3030",
+      driverId: "hritika_3031",
       numOfSeats: availableSeats,
       car: selectedCar,
       coords: routeCoords,
@@ -235,8 +233,7 @@ class D3 extends StatelessWidget {
     return int.parse(cleaned) * 60;
   }
 
-  void _showDetailBottomSheet(
-      BuildContext context, String title, String content) {
+  void _showDetailBottomSheet(BuildContext context, String title, String content) {
     showModalBottomSheet(
       context: context,
       builder: (context) => Padding(
