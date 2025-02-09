@@ -2,21 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:vroo_test/features/matching/matching/presentation/widgets/time_window.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import '../../../../../core/router/navigation.dart';
 import '../../../../../shared/widgets/appbar.dart';
 import '../../../../rider_journey/data/model/preferences_model.dart';
-import '../../dependency_injection/matching_di.dart';
 import '../bloc/bloc/matching_bloc.dart';
 import '../bloc/event/matching_event.dart';
 import '../bloc/state/matching_state.dart';
 import '../widgets/matching_card.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 // Import your additional dependencies (e.g., LatLng, ScheduleModel, PreferencesModel, etc.)
 
 class MatchingPage extends StatefulWidget {
@@ -68,52 +64,18 @@ class _MatchingPageState extends State<MatchingPage> {
     return "${dateString}T$hours:$minutes:$seconds";
   }
 
-  /// Adjust the local time window and trigger the API call.
-  void _modifyTimeWindow(int adjustment) {
-    try {
-      setState(() {
-        currentWindow = (currentWindow + adjustment).clamp(0, 60);
-      });
-      final int totalMinutes =
-          widget.minPickupTime.minute + (currentWindow % 60);
-      final int extraHours = (widget.minPickupTime.hour +
-              (currentWindow ~/ 60) +
-              (totalMinutes ~/ 60)) %
-          24;
-      final int adjustedMinutes = totalMinutes % 60;
-
-      final adjustedMaxTime = TimeOfDay(
-        hour: extraHours,
-        minute: adjustedMinutes,
-      );
-
-      final modifyData = {
-        "pickupTimeRange": {
-          "min": formatISO8601DateTime(
-              widget.schedule.date, widget.schedule.minTime),
-          "max": formatISO8601DateTime(widget.schedule.date, adjustedMaxTime),
-        },
-      };
-
-      print(modifyData);
-
-      print("Sending ModifyTimeWindowEvent with modifyData: $modifyData");
-
-      context.read<MatchingBloc>().add(ModifyTimeWindowEvent(
-          id: widget.rideRequestId, modifyData: modifyData));
-    } catch (e, stackTrace) {
-      print('Error modifying time window: $e');
-    }
-  }
-
   /// Parses and formats an arrival time string.
   String formatArrivalTime(String? arrivalTime) {
     if (arrivalTime == null) return 'Unknown';
     try {
-      String cleanedTime = arrivalTime.replaceAll(' GMT', '');
-      DateFormat inputFormat = DateFormat("EEE, dd MMM yyyy HH:mm:ss");
-      DateTime parsedDate = inputFormat.parse(cleanedTime);
-      return DateFormat.jm().format(parsedDate);
+      DateFormat inputFormat =
+          DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", "en_US");
+
+      // Parse the input string as a UTC datetime
+      DateTime parsedDate = inputFormat.parse(arrivalTime, true).toUtc();
+
+      // Convert UTC time to local time and format it
+      return DateFormat.jm().format(parsedDate.toLocal());
     } catch (e) {
       print('Error parsing expectedArrivalTime: $e');
       return 'Unknown';
@@ -141,102 +103,12 @@ class _MatchingPageState extends State<MatchingPage> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Card(
-                  color: theme.cardColor,
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.w)),
-                  child: Padding(
-                    padding: EdgeInsets.all(16.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Title Row
-                        Row(
-                          children: [
-                            Icon(Icons.access_time,
-                                color: theme.primaryColor, size: 24.w),
-                            SizedBox(width: 8.w),
-                            Text(
-                              'Time Window',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displayMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    color: theme.primaryColorDark,
-                                  ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16.h),
-
-                        // Time Adjustment Controls
-                        Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Theme.of(context)
-                                      .primaryColorDark
-                                      .withOpacity(0.75),
-                                  Theme.of(context)
-                                      .primaryColor
-                                      .withOpacity(0.8),
-                                  Theme.of(context)
-                                      .primaryColorDark
-                                      .withOpacity(0.75),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(12.w),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.remove,
-                                      color: theme.scaffoldBackgroundColor),
-                                  onPressed: () => _modifyTimeWindow(-5),
-                                ),
-                                Container(
-                                  width: 80.w,
-                                  padding: EdgeInsets.symmetric(vertical: 8.h),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .scaffoldBackgroundColor,
-                                    borderRadius: BorderRadius.circular(8.w),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      '$currentWindow mins',
-                                      style: theme.textTheme.headlineSmall
-                                          ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: theme.primaryColorDark,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.add,
-                                      color: theme.scaffoldBackgroundColor),
-                                  onPressed: () => _modifyTimeWindow(5),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              padding: const EdgeInsets.all(16.0),
+              child: TimeWindowWidget(
+                  minPickupTime: widget.minPickupTime,
+                  maxPickupTime: widget.maxPickupTime,
+                  rideRequestId: widget.rideRequestId,
+                  scheduleDate: widget.schedule.date)),
           Expanded(
             child: BlocListener<MatchingBloc, MatchingState>(
               listener: (context, state) {
@@ -246,7 +118,7 @@ class _MatchingPageState extends State<MatchingPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Request Sent Successfully'),
-                        backgroundColor: Colors.green,
+                        backgroundColor: theme.secondaryHeaderColor,
                         duration: Duration(seconds: 2),
                       ),
                     );
@@ -296,7 +168,6 @@ class _MatchingPageState extends State<MatchingPage> {
                               id: widget.rideRequestId,
                               carCompany: ride['car']['company'] ?? 'Unknown',
                               rideId: ride['_id'],
-
                             );
                           } else {
                             return ListTile(

@@ -136,6 +136,7 @@ class _R1PageState extends State<R1Page> {
     print(widget.toDescription);
     print(widget.toPlaceId);
     print(widget.fromPlaceId);
+    final theme = Theme.of(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -143,16 +144,34 @@ class _R1PageState extends State<R1Page> {
             builder: (context, state) {
               if (state is ScheduleSaved) {
                 context.read<R1Bloc>().add(ResetStateEvent());
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.progressIndicatorTheme.color!,
+                    ),
+                  ),
+                );
               }
               if (state is ScheduleInitial) {
                 context.read<R1Bloc>().add(LoadScheduleEvent());
               }
               if (state is ScheduleSaving) {
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.progressIndicatorTheme.color!,
+                    ),
+                  ),
+                );
               }
               if (state is ScheduleLoading) {
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.progressIndicatorTheme.color!,
+                    ),
+                  ),
+                );
               } else if (state is ScheduleLoaded) {
                 // Transition to ScheduleInputState with the loaded schedule
                 final schedule = state.loadedSchedule;
@@ -162,7 +181,13 @@ class _R1PageState extends State<R1Page> {
                       maxPickUpTime: schedule.maxTime,
                       maxArrivalTime: schedule.arrivalTime,
                     ));
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.progressIndicatorTheme.color!,
+                    ),
+                  ),
+                );
               } else if (state is ScheduleInputState) {
                 final bloc = context.read<R1Bloc>();
 

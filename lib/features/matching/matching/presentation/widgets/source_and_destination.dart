@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:math' as math;
 
 class SourceAndDestinationWidget extends StatelessWidget {
   final String source;
@@ -19,11 +20,13 @@ class SourceAndDestinationWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 12.w),
       child: Row(
         children: [
-          SvgPicture.asset(
-            'assets/images/arrow.svg',
-            width: 45.w,
-            height: 45.h,
-            color: theme.scaffoldBackgroundColor,
+          Transform.rotate(
+            angle: -math.pi / 2,
+            child: Icon(
+              Icons.u_turn_left_rounded,
+              color: theme.scaffoldBackgroundColor,
+              size: 60.r, // Maintain original icon size
+            ),
           ),
           SizedBox(width: 6.w),
           Expanded(

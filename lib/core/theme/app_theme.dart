@@ -28,6 +28,11 @@ class AppTheme {
       //Divider Color
       dividerColor: ThemeColors.dividerColor,
 
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: ThemeColors.progressIndicatorColor,
+      ),
+
+      secondaryHeaderColor: ThemeColors.secondaryColor,
       //Text Theme
       textTheme: AppStyles.getTextTheme(),
       // colorScheme: ColorScheme.fromSwatch().copyWith(

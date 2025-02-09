@@ -69,6 +69,7 @@ class _R3PageState extends State<R3Page> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     // Wrap the Scaffold with a MultiProvider so that DI is available.
     print('walk: ${widget.preferences.walk}');
     print('gender: ${widget.preferences.sameGender}');
@@ -101,6 +102,7 @@ class _R3PageState extends State<R3Page> {
             final List<dynamic> matchingRides = response['matchingRides'];
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
+                  backgroundColor: theme.secondaryHeaderColor,
                   content:
                       Text('Ride created successfully! ID: $rideRequestId')),
             );
@@ -154,7 +156,7 @@ class _R3PageState extends State<R3Page> {
                             icon: Icons.access_time,
                             label: 'Pick Up Time',
                             value:
-                              '${widget.schedule.minTime.hour}:${widget.schedule.minTime.minute == 0 ? '00' : widget.schedule.minTime.minute} - ${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute == 0 ? '00' : widget.schedule.maxTime.minute}',
+                                '${widget.schedule.minTime.hour}:${widget.schedule.minTime.minute == 0 ? '00' : widget.schedule.minTime.minute} - ${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute == 0 ? '00' : widget.schedule.maxTime.minute}',
                           ),
                           // DetailTile(
                           //   icon: Icons.access_time,
@@ -216,12 +218,18 @@ class _R3PageState extends State<R3Page> {
                           final rideData = {
                             "riderId": generateRandomDriverId(),
                             "source": {
-                              "coords": [sourceCoordinates!.latitude, sourceCoordinates!.longitude],
+                              "coords": [
+                                sourceCoordinates!.latitude,
+                                sourceCoordinates!.longitude
+                              ],
                               "placeId": widget.schedule.fromPlaceId,
                               "address": widget.schedule.fromDescription,
                             },
                             "destination": {
-                              "coords": [destinationCoordinates!.latitude, destinationCoordinates!.longitude],
+                              "coords": [
+                                destinationCoordinates!.latitude,
+                                destinationCoordinates!.longitude
+                              ],
                               "placeId": widget.schedule.toPlaceId,
                               "address": widget.schedule.toDescription,
                             },

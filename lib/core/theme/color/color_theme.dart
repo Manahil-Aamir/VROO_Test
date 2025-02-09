@@ -5,6 +5,7 @@ abstract class ThemeColors {
   static const primaryColor = Color(0xFFEC8825);
   static const primaryColorDark = Color(0xFF434143);
   static const primaryColorLight = Color(0xFFB8B8B8);
+  static const secondaryColor = Color(0xFF03C04A);
   static const accentColor = Color(0xFFFF324B);
   static const canvasColor = Color(0xFFF3F5F7);
 

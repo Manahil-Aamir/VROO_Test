@@ -34,6 +34,7 @@ class _R2PageState extends State<R2Page> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -42,13 +43,25 @@ class _R2PageState extends State<R2Page> {
               print('val${widget.schedule.fromDescription}');
               if (state is PreferenceSaved) {
                 context.read<R2Bloc>().add(ResetStateEvent());
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.progressIndicatorTheme.color!,
+                    ),
+                  ),
+                );
               }
               if (state is PreferenceInitial) {
                 context.read<R2Bloc>().add(LoadPreferenceEvent());
               }
               if (state is PreferenceLoading) {
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.progressIndicatorTheme.color!,
+                    ),
+                  ),
+                );
               } else if (state is PreferenceLoaded) {
                 // Transition to PreferenceInputState with the loaded preference
                 final preference = state.loadedPreference;
@@ -56,7 +69,13 @@ class _R2PageState extends State<R2Page> {
                       sameGender: preference.sameGender,
                       walk: preference.walk,
                     ));
-                return Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.progressIndicatorTheme.color!,
+                    ),
+                  ),
+                );
               } else if (state is PreferenceInputState) {
                 final bloc = context.read<R2Bloc>();
 

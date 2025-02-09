@@ -29,7 +29,9 @@ class RiderLocationSelectionButtonsWidget extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                context.read<RiderHomeBloc>().add(ClearSharedPreferencesEvent());
+                context
+                    .read<RiderHomeBloc>()
+                    .add(ClearSharedPreferencesEvent());
                 context
                     .read<Navigation>()
                     .navigateTo('/location_selection', arguments: {
@@ -57,9 +59,12 @@ class RiderLocationSelectionButtonsWidget extends StatelessWidget {
                 ),
               ),
             ),
-          SizedBox(height: 10.h),
+            SizedBox(height: 10.h),
             GestureDetector(
               onTap: () {
+                context
+                    .read<RiderHomeBloc>()
+                    .add(ClearSharedPreferencesEvent());
                 context
                     .read<Navigation>()
                     .navigateTo('/location_selection', arguments: {
