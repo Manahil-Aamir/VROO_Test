@@ -11,7 +11,7 @@ abstract class MatchingState extends Equatable {
 /// Initial state that holds a time window and matching rides.
 class RiderRequestInitial extends MatchingState {
   final int timeWindow;
-  final List<MatchingRideModel> matchingRides;
+  final List<dynamic> matchingRides;
 
   const RiderRequestInitial({
     required this.timeWindow,
@@ -28,7 +28,7 @@ class RiderRequestLoading extends MatchingState {}
 /// State after a successful time window modification, with updated rides.
 class RiderRequestLoaded extends MatchingState {
   //final int timeWindow;
-  final List<dynamic> matchingRides;
+  final List<MatchingRideModel> matchingRides;
 
   const RiderRequestLoaded({
     //required this.timeWindow,

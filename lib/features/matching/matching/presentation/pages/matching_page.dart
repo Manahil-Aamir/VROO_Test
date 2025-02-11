@@ -129,34 +129,27 @@ class _MatchingPageState extends State<MatchingPage> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is RiderRequestLoaded) {
                     print('loadinggggggggggg');
-                    print(state.matchingRides);
                     return ListView.builder(
                       itemCount: state.matchingRides.length,
                       itemBuilder: (context, index) {
                         try {
                           final ride = state.matchingRides[index];
-                          if (ride is MatchingRideModel) {
-                            return MatchCard(
-                              driverName: ride.driverId,
-                              rating: 4.3,
-                              trips: 5,
-                              source: ride.source.address,
-                              destination: ride.destination.address,
-                              fare: ride.fare,
-                              carModel: ride.car.model,
-                              totalSeats: ride.numOfSeats,
-                              filledSeats: ride.passengers.length,
-                              estimatedArrivalTime:
-                                  formatArrivalTime(ride.expectedArrivalTime),
-                              id: widget.rideRequestId,
-                              carCompany: ride.car.company,
-                              rideId: ride.id,
-                            );
-                          } else {
-                            return ListTile(
-                              title: Text("Error: Ride data is not valid"),
-                            );
-                          }
+                          return MatchCard(
+                            driverName: ride.driverId,
+                            rating: 4.3,
+                            trips: 5,
+                            source: ride.source.address,
+                            destination: ride.destination.address,
+                            fare: ride.fare,
+                            carModel: ride.car.model,
+                            totalSeats: ride.numOfSeats,
+                            filledSeats: ride.passengers.length,
+                            estimatedArrivalTime:
+                                formatArrivalTime(ride.expectedArrivalTime),
+                            id: widget.rideRequestId,
+                            carCompany: ride.car.company,
+                            rideId: ride.id,
+                          );
                         } catch (error, stackTrace) {
                           print(
                               "Error building MatchCard from loaded ride: $error");

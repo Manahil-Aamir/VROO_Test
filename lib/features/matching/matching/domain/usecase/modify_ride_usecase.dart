@@ -1,5 +1,3 @@
-import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
-
 import '../repository/matching_repository.dart';
 
 class ModifyRideUseCase {
