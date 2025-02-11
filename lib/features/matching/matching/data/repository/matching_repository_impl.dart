@@ -1,3 +1,5 @@
+import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
+
 import '../../domain/repository/matching_repository.dart';
 import '../data_source/matching_data_source.dart';
 
@@ -11,6 +13,7 @@ class MatchingRepositoryImpl implements MatchingRepository {
     return remoteDataSource.sendJoinRequest(rideData);
   }
 
+  @override
   @override
   Future<List<dynamic>> requestRide(
       String rideRequestId, Map<String, dynamic> requestData) {

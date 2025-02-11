@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../rider_journey/data/model/matching_rides_model.dart';
 import '../../../domain/usecase/modify_ride_usecase.dart';
 import '../../../domain/usecase/send_join_request_usecase.dart';
 import '../event/matching_event.dart';
@@ -23,11 +24,13 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
       // The UI sends all parameters needed in modifyData.
       final updatedRides =
           await modifyRideUseCase.execute(event.id, event.modifyData);
+      final rides =
+          updatedRides.map((ride) => MatchingRideModel.fromMap(ride)).toList();
       print('updatinggg rides');
       print(updatedRides);
       emit(RiderRequestLoaded(
         // timeWindow: newTimeWindow,
-        matchingRides: updatedRides,
+        matchingRides: rides,
       ));
     } catch (e) {
       emit(RiderRequestError(e.toString()));

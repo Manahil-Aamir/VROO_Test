@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart'; // Add provider import
+import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
+import 'package:vroo_test/features/rider_journey/domain/entity/source_and_dest_entity.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/Appbar.dart';
@@ -20,7 +22,8 @@ class RiderLocationSelectionScreen extends StatefulWidget {
       _LocationSelectionScreenState();
 }
 
-class _LocationSelectionScreenState extends State<RiderLocationSelectionScreen> {
+class _LocationSelectionScreenState
+    extends State<RiderLocationSelectionScreen> {
   String? fromPlaceId;
   String? fromDescription;
   String? toPlaceId;
@@ -109,13 +112,16 @@ class _LocationSelectionScreenState extends State<RiderLocationSelectionScreen> 
                       print('to');
                       print(toPlaceId);
                       print(toDescription);
+                      SourceAndDestModel location = SourceAndDestModel(
+                        fromPlaceId: fromPlaceId!,
+                        fromDescription: fromDescription!,
+                        toPlaceId: toPlaceId!,
+                        toDescription: toDescription!,
+                      );
                       context.read<Navigation>().navigateTo(
                         Routes.r1Page,
                         arguments: {
-                          'toPlaceId': toPlaceId,
-                          'fromPlaceId': fromPlaceId,
-                          'toDescription': toDescription,
-                          'fromDescription': fromDescription,
+                          'location': location,
                         },
                       );
                     } else {

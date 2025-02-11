@@ -1,3 +1,6 @@
+import 'package:vroo_test/features/driver_requests/data/model/rides_details_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
 import 'package:vroo_test/features/rider_journey/domain/repository/r3_repository.dart';
 
 class RequestRideUseCase {
@@ -5,7 +8,7 @@ class RequestRideUseCase {
 
   RequestRideUseCase(this.repository);
 
-  Future<Map<String, dynamic>> call(Map<String, dynamic> requestData) {
+  Future<RideResponseModel> call(Map<String, dynamic> requestData) {
     return repository.requestRide(requestData);
   }
 }
