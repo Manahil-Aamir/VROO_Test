@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import 'package:vroo_test/shared/widgets/booking_confirm_button.dart';
 
 import '../../../../core/router/navigation.dart';
@@ -14,25 +17,18 @@ import '../bloc/state/booking_confirmation_state.dart';
 
 class BookingConfirmationScreen extends StatelessWidget {
   final String rideRequestId;
-  final List<dynamic> matchingRides;
+  final List<MatchingRideModel> matchingRides;
   final TimeOfDay minPickupTime;
   final TimeOfDay maxPickupTime;
   final ScheduleModel schedule;
-  final PreferencesModel preferences;
-  final LatLng source;
-  final LatLng destination;
 
-  const BookingConfirmationScreen({
-    super.key,
-    required this.rideRequestId,
-    required this.matchingRides,
-    required this.minPickupTime,
-    required this.maxPickupTime,
-    required this.schedule,
-    required this.preferences,
-    required this.source,
-    required this.destination,
-  });
+  const BookingConfirmationScreen(
+      {super.key,
+      required this.rideRequestId,
+      required this.matchingRides,
+      required this.minPickupTime,
+      required this.maxPickupTime,
+      required this.schedule});
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +46,6 @@ class BookingConfirmationScreen extends StatelessWidget {
             'minPickupTime': minPickupTime,
             'maxPickupTime': maxPickupTime,
             'schedule': schedule,
-            'preferences': preferences,
-            'source': source,
-            'destination': destination,
           });
         }
       },
@@ -82,9 +75,6 @@ class BookingConfirmationScreen extends StatelessWidget {
                     'minPickupTime': minPickupTime,
                     'maxPickupTime': maxPickupTime,
                     'schedule': schedule,
-                    'preferences': preferences,
-                    'source': source,
-                    'destination': destination,
                   });
                 },
               ),

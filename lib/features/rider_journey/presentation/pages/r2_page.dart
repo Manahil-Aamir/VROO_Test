@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/features/rider_journey/data/model/preferences_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/gradient_button.dart';
@@ -13,15 +14,17 @@ import '../widgets/preference_switch.dart';
 
 class R2Page extends StatefulWidget {
   final ScheduleModel schedule;
+  final SourceAndDestModel location;
 
   const R2Page({
     super.key,
     required this.schedule,
+    required this.location,
   });
 
   void init() {
     print('r2');
-    print(schedule.fromDescription);
+    print(location.fromDescription);
   }
 
   @override
@@ -40,7 +43,7 @@ class _R2PageState extends State<R2Page> {
         children: [
           BlocBuilder<R2Bloc, R2State>(
             builder: (context, state) {
-              print('val${widget.schedule.fromDescription}');
+              print('val${widget.location.fromDescription}');
               if (state is PreferenceSaved) {
                 context.read<R2Bloc>().add(ResetStateEvent());
                 return Center(
@@ -128,6 +131,7 @@ class _R2PageState extends State<R2Page> {
                                   .navigateTo('/r3_page', arguments: {
                                 'schedule': widget.schedule,
                                 'preferences': preference,
+                                'location': widget.location,
                               });
                             },
                             text: 'Next',

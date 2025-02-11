@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
 
 class R3DataSource {
   final http.Client client;
@@ -23,7 +25,7 @@ class R3DataSource {
     }
   }
 
-  Future<Map<String, dynamic>> sendRideRequest(
+  Future<RideResponseModel> sendRideRequest(
       Map<String, dynamic> requestData) async {
     final url = Uri.parse(
         'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/rider/ride-request');
@@ -34,8 +36,9 @@ class R3DataSource {
     );
 
     if (response.statusCode == 201) {
-      final responseBody = jsonDecode(response.body);
-      return responseBody;
+      final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
+      print(responseBody);
+      return RideResponseModel.fromMap(responseBody); // ✅ Convert map to model
     } else {
       throw Exception("Failed to send ride request");
     }

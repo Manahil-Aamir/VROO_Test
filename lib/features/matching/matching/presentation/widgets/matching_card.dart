@@ -1,10 +1,7 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import '../bloc/bloc/matching_bloc.dart';
 import '../bloc/event/matching_event.dart';
 import 'car_details.dart';

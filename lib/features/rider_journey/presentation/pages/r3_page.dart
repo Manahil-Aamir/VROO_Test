@@ -2,8 +2,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import 'package:vroo_test/features/rider_journey/presentation/bloc/bloc/r3_bloc.dart';
 import 'package:vroo_test/features/rider_journey/presentation/bloc/state/r3_state.dart';
 import 'package:vroo_test/shared/widgets/build_detail_card.dart';
@@ -18,11 +20,13 @@ import '../bloc/event/r3_event.dart';
 class R3Page extends StatefulWidget {
   final ScheduleModel schedule;
   final PreferencesModel preferences;
+  final SourceAndDestModel location;
 
   const R3Page({
     super.key,
     required this.schedule,
     required this.preferences,
+    required this.location,
   });
 
   @override
@@ -30,19 +34,18 @@ class R3Page extends StatefulWidget {
 }
 
 class _R3PageState extends State<R3Page> {
-  LatLng? sourceCoordinates;
-  LatLng? destinationCoordinates;
+  late RiderJourneyModel rideDetails;
 
   @override
   void initState() {
     super.initState();
     final rideBloc = context.read<R3Bloc>();
     rideBloc.add(GetCoordinatesEvent(
-      placeId: widget.schedule.fromPlaceId,
+      placeId: widget.location.fromPlaceId,
       isSource: true,
     ));
     rideBloc.add(GetCoordinatesEvent(
-      placeId: widget.schedule.toPlaceId,
+      placeId: widget.location.toPlaceId,
       isSource: false,
     ));
   }
@@ -91,32 +94,31 @@ class _R3PageState extends State<R3Page> {
           if (state is CoordinatesLoaded) {
             setState(() {
               if (state.isSource) {
-                sourceCoordinates = state.coordinates;
+                widget.location.sourceCoordinates = state.coordinates;
               } else {
-                destinationCoordinates = state.coordinates;
+                widget.location.destCoordinates = state.coordinates;
               }
             });
           } else if (state is RideRequestSuccess) {
-            final response = state.response;
-            final rideRequestId = response['rideRequestId'];
-            final List<dynamic> matchingRides = response['matchingRides'];
+            RideResponseModel response = state.response;
+            final rideRequestId = response.rideRequestId;
+            final List<MatchingRideModel> matchingRides =
+                response.matchingRides;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                   backgroundColor: theme.secondaryHeaderColor,
                   content:
                       Text('Ride created successfully! ID: $rideRequestId')),
             );
+            print('schedule: ${widget.schedule.toMap()}');
             context
                 .read<Navigation>()
                 .navigateTo('/booking_confirm', arguments: {
               'rideRequestId': rideRequestId,
               'matchingRides': matchingRides,
-              'minPickupTime': widget.schedule.minTime,
-              'maxPickupTime': widget.schedule.maxTime,
               'schedule': widget.schedule,
-              'preferences': widget.preferences,
-              'source': sourceCoordinates,
-              'destination': destinationCoordinates,
+              'maxPickupTime': widget.schedule.maxTime,
+              'minPickupTime': widget.schedule.minTime,
             });
           } else if (state is RideRequestFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -139,12 +141,12 @@ class _R3PageState extends State<R3Page> {
                           DetailTile(
                             icon: Icons.location_on,
                             label: 'From',
-                            value: widget.schedule.fromDescription,
+                            value: widget.location.fromDescription,
                           ),
                           DetailTile(
                             icon: Icons.flag,
                             label: 'To',
-                            value: widget.schedule.toDescription,
+                            value: widget.location.toDescription,
                           ),
                           DetailTile(
                             icon: Icons.calendar_today,
@@ -198,8 +200,8 @@ class _R3PageState extends State<R3Page> {
                       GradientButton(
                         onTap: () {
                           // Ensure coordinates have been loaded.
-                          if (sourceCoordinates == null ||
-                              destinationCoordinates == null) {
+                          if (widget.location.sourceCoordinates == null ||
+                              widget.location.destCoordinates == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   content:
@@ -215,57 +217,58 @@ class _R3PageState extends State<R3Page> {
                           //   widget.schedule.date,
                           //   widget.schedule.maxTime,
                           // );
-                          final rideData = {
-                            "riderId": generateRandomDriverId(),
-                            "source": {
-                              "coords": [
-                                sourceCoordinates!.latitude,
-                                sourceCoordinates!.longitude
+                          rideDetails = RiderJourneyModel(
+                            riderId: generateRandomDriverId(),
+                            source: RideLocationModel(
+                              coords: [
+                                widget.location.sourceCoordinates!.latitude,
+                                widget.location.sourceCoordinates!.longitude
                               ],
-                              "placeId": widget.schedule.fromPlaceId,
-                              "address": widget.schedule.fromDescription,
-                            },
-                            "destination": {
-                              "coords": [
-                                destinationCoordinates!.latitude,
-                                destinationCoordinates!.longitude
+                              placeId: widget.location.fromPlaceId,
+                              address: widget.location.fromDescription,
+                            ),
+                            destination: RideLocationModel(
+                              coords: [
+                                widget.location.destCoordinates!.latitude,
+                                widget.location.destCoordinates!.longitude
                               ],
-                              "placeId": widget.schedule.toPlaceId,
-                              "address": widget.schedule.toDescription,
-                            },
-                            "date": DateFormat("yyyy-MM-dd").format(
+                              placeId: widget.location.toPlaceId,
+                              address: widget.location.toDescription,
+                            ),
+                            date: DateFormat("yyyy-MM-dd").format(
                               DateTime(
                                 widget.schedule.date.year,
                                 widget.schedule.date.month,
                                 widget.schedule.date.day,
                               ),
                             ),
-                            "pickupTimeRange": {
-                              "min": formatISO8601DateTime(
+                            pickupTimeRange: PickupTimeRangeModel(
+                              min: formatISO8601DateTime(
                                 widget.schedule.date,
                                 widget.schedule.minTime,
                               ),
-                              "max": formatISO8601DateTime(
+                              max: formatISO8601DateTime(
                                 widget.schedule.date,
                                 widget.schedule.maxTime,
                               ),
-                            },
-                            "maxArrivalTime": formatISO8601DateTime(
+                            ),
+                            maxArrivalTime: formatISO8601DateTime(
                               widget.schedule.date,
                               widget.schedule.arrivalTime,
                             ),
-                            "preferences": {
-                              "maleOnly": !widget.preferences.sameGender,
-                              "femaleOnly": widget.preferences.sameGender,
-                              "canWalk": widget.preferences.walk,
-                            },
-                            "isRecurring": false,
-                          };
-                          print('Ride data: $rideData');
+                            preferences: RidePreferencesModel(
+                              maleOnly: !widget.preferences.sameGender,
+                              femaleOnly: widget.preferences.sameGender,
+                              canWalk: widget.preferences.walk,
+                            ),
+                            isRecurring: false,
+                          );
+
+                          print('Ride data: ${rideDetails.toMap()}');
                           // Dispatch the ride request event.
                           context
                               .read<R3Bloc>()
-                              .add(SendRideRequestEvent(rideData));
+                              .add(SendRideRequestEvent(rideDetails));
                         },
                         text: 'Confirm and Proceed',
                       ),

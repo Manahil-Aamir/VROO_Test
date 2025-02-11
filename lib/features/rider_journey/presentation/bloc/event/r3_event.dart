@@ -1,7 +1,10 @@
+import 'package:vroo_test/features/driver_requests/data/model/rides_details_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
+
 abstract class R3Event {}
 
 class SendRideRequestEvent extends R3Event {
-  final Map<String, dynamic> rideData;
+  final RiderJourneyModel rideData;
   SendRideRequestEvent(this.rideData);
 }
 

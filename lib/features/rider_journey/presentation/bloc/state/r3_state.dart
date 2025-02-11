@@ -1,4 +1,5 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 
 abstract class R3State {}
 
@@ -7,7 +8,7 @@ class RideRequestInitial extends R3State {}
 class RideRequestLoading extends R3State {}
 
 class RideRequestSuccess extends R3State {
-  final Map<String, dynamic> response;
+  final RideResponseModel response;
   RideRequestSuccess(this.response);
 }
 

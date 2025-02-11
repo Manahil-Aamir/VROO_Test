@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 
 abstract class MatchingState extends Equatable {
   const MatchingState();
@@ -10,7 +11,7 @@ abstract class MatchingState extends Equatable {
 /// Initial state that holds a time window and matching rides.
 class RiderRequestInitial extends MatchingState {
   final int timeWindow;
-  final List<Map<String, dynamic>> matchingRides;
+  final List<MatchingRideModel> matchingRides;
 
   const RiderRequestInitial({
     required this.timeWindow,

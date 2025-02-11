@@ -1,29 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:vroo_test/features/matching/matching/presentation/widgets/time_window.dart';
+import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import '../../../../../core/router/navigation.dart';
 import '../../../../../shared/widgets/appbar.dart';
-import '../../../../rider_journey/data/model/preferences_model.dart';
 import '../bloc/bloc/matching_bloc.dart';
-import '../bloc/event/matching_event.dart';
 import '../bloc/state/matching_state.dart';
 import '../widgets/matching_card.dart';
 
-// Import your additional dependencies (e.g., LatLng, ScheduleModel, PreferencesModel, etc.)
-
 class MatchingPage extends StatefulWidget {
   final String rideRequestId;
-  final List<dynamic> initialMatchingRides;
+  final List<MatchingRideModel> initialMatchingRides;
   final TimeOfDay minPickupTime;
   final TimeOfDay maxPickupTime;
-  final LatLng source;
-  final LatLng destination;
   final ScheduleModel schedule;
-  final PreferencesModel preferences;
 
   const MatchingPage({
     super.key,
@@ -31,10 +23,7 @@ class MatchingPage extends StatefulWidget {
     required this.initialMatchingRides,
     required this.minPickupTime,
     required this.maxPickupTime,
-    required this.source,
-    required this.destination,
     required this.schedule,
-    required this.preferences,
   });
 
   @override
@@ -91,10 +80,6 @@ class _MatchingPageState extends State<MatchingPage> {
     print("initialMatchingRides: ${widget.initialMatchingRides}");
     print("minPickupTime: ${widget.minPickupTime}");
     print("maxPickupTime: ${widget.maxPickupTime}");
-    print("source: ${widget.source}");
-    print("destination: ${widget.destination}");
-    print("schedule: ${widget.schedule}");
-    print("preferences: ${widget.preferences}");
 
     return Scaffold(
       appBar: appBar(
@@ -130,7 +115,7 @@ class _MatchingPageState extends State<MatchingPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Error: ${state.error}'),
-                        backgroundColor: Colors.red,
+                        backgroundColor: theme.indicatorColor,
                         duration: Duration(seconds: 3),
                       ),
                     );
@@ -150,24 +135,22 @@ class _MatchingPageState extends State<MatchingPage> {
                       itemBuilder: (context, index) {
                         try {
                           final ride = state.matchingRides[index];
-                          if (ride is Map<String, dynamic>) {
+                          if (ride is MatchingRideModel) {
                             return MatchCard(
-                              driverName: ride['driverId'] ?? 'Unknown Driver',
+                              driverName: ride.driverId,
                               rating: 4.3,
                               trips: 5,
-                              source:
-                                  widget.schedule.fromDescription ?? 'Unknown',
-                              destination:
-                                  ride['destination']?['address'] ?? 'Unknown',
-                              fare: ride['fare'] ?? 0,
-                              carModel: ride['car']['model'] ?? 'Unknown',
-                              totalSeats: ride['numOfSeats'] ?? 0,
-                              filledSeats: ride['passengers'].length ?? 0,
-                              estimatedArrivalTime: formatArrivalTime(
-                                  ride['expectedArrivalTime']),
+                              source: ride.source.address,
+                              destination: ride.destination.address,
+                              fare: ride.fare,
+                              carModel: ride.car.model,
+                              totalSeats: ride.numOfSeats,
+                              filledSeats: ride.passengers.length,
+                              estimatedArrivalTime:
+                                  formatArrivalTime(ride.expectedArrivalTime),
                               id: widget.rideRequestId,
-                              carCompany: ride['car']['company'] ?? 'Unknown',
-                              rideId: ride['_id'],
+                              carCompany: ride.car.company,
+                              rideId: ride.id,
                             );
                           } else {
                             return ListTile(
@@ -195,29 +178,22 @@ class _MatchingPageState extends State<MatchingPage> {
                       itemBuilder: (context, index) {
                         try {
                           final ride = widget.initialMatchingRides[index];
-                          if (ride is Map<String, dynamic>) {
-                            return MatchCard(
-                              driverName: ride['driverId'] ?? 'Unknown Driver',
-                              rating: 4.3,
-                              trips: 5,
-                              source: ride['source']?['address'] ?? 'Unknown',
-                              destination:
-                                  ride['destination']?['address'] ?? 'Unknown',
-                              fare: ride['fare'] ?? 0,
-                              carModel: ride['car']['model'] ?? 'Unknown',
-                              totalSeats: ride['numOfSeats'] ?? 0,
-                              filledSeats: ride['passengers'].length ?? 0,
-                              estimatedArrivalTime: formatArrivalTime(
-                                  ride['expectedArrivalTime']),
-                              id: widget.rideRequestId,
-                              carCompany: ride['car']['company'] ?? 'Unknown',
-                              rideId: ride['_id'],
-                            );
-                          } else {
-                            return ListTile(
-                              title: Text("Error: Ride data is not valid"),
-                            );
-                          }
+                          return MatchCard(
+                            driverName: ride.driverId,
+                            rating: 4.3,
+                            trips: 5,
+                            source: ride.source.address,
+                            destination: ride.destination.address,
+                            fare: ride.fare,
+                            carModel: ride.car.model,
+                            totalSeats: ride.numOfSeats,
+                            filledSeats: ride.passengers.length,
+                            estimatedArrivalTime:
+                                formatArrivalTime(ride.expectedArrivalTime),
+                            id: widget.rideRequestId,
+                            carCompany: ride.car.company,
+                            rideId: ride.id,
+                          );
                         } catch (error, stackTrace) {
                           print(
                               "Error building MatchCard from initial ride: $error");

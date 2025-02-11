@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
+import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import 'package:vroo_test/shared/widgets/recurring_row.dart';
 import 'package:vroo_test/shared/widgets/to_and_fro.dart';
 import '../../../../core/router/navigation.dart';
@@ -17,17 +18,11 @@ import '../bloc/event/r1_event.dart';
 import '../bloc/state/r1_state.dart';
 
 class R1Page extends StatefulWidget {
-  final String fromDescription;
-  final String toDescription;
-  final String fromPlaceId;
-  final String toPlaceId;
+  final SourceAndDestModel location;
 
   const R1Page({
     super.key,
-    required this.fromDescription,
-    required this.toDescription,
-    required this.fromPlaceId,
-    required this.toPlaceId,
+    required this.location,
   });
 
   @override
@@ -95,21 +90,16 @@ class _R1PageState extends State<R1Page> {
 
       // Proceed with saving if all fields are valid
       final schedule = ScheduleModel(
-        fromDescription: widget.fromDescription,
-        toDescription: widget.toDescription,
         date: state.selectedDate!,
         minTime: state.minPickUpTime!,
         maxTime: state.maxPickUpTime!,
         arrivalTime: state.maxArrivalTime!,
         recurrenceType: isRecurring ? recurrence : 'One Time',
-        toPlaceId: widget.toPlaceId,
-        fromPlaceId: widget.fromPlaceId,
       );
-      print('r1 description');
-      print(widget.toDescription);
       context.read<R1Bloc>().add(SaveScheduleEvent(schedule));
       context.read<Navigation>().navigateTo('/r2_page', arguments: {
         'schedule': schedule,
+        'location': widget.location,
       });
     }
   }
@@ -132,10 +122,6 @@ class _R1PageState extends State<R1Page> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.fromDescription);
-    print(widget.toDescription);
-    print(widget.toPlaceId);
-    print(widget.fromPlaceId);
     final theme = Theme.of(context);
     return Scaffold(
       body: Stack(
@@ -202,8 +188,8 @@ class _R1PageState extends State<R1Page> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ToAndFroWidget(
-                            fromDescription: widget.fromDescription,
-                            toDescription: widget.toDescription,
+                            fromDescription: widget.location.fromDescription,
+                            toDescription: widget.location.toDescription,
                           ),
                           SizedBox(height: 22.h),
                           CustomDatePicker(
