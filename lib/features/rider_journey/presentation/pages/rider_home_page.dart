@@ -53,7 +53,7 @@ class NativeGoogleMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const AndroidView(
-      viewType: 'NativeMapView',
+      viewType: 'native_google_map',
       layoutDirection: TextDirection.ltr,
       creationParamsCodec: StandardMessageCodec(),
     );

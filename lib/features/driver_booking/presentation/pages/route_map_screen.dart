@@ -1,15 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../bloc/bloc/route_map_bloc.dart';
 import '../bloc/event/route_map_event.dart';
+import '../bloc/state/route_map_state.dart';
 
-class RouteMapScreen extends StatefulWidget {
+class RouteMapScreen extends StatelessWidget {
   final List<dynamic> routeData;
   final String fromPlaceDesc;
   final String toPlaceDesc;
@@ -17,114 +15,96 @@ class RouteMapScreen extends StatefulWidget {
   final String toPlaceId;
 
   const RouteMapScreen({
-    super.key,
+    Key? key,
     required this.routeData,
     required this.fromPlaceDesc,
     required this.toPlaceDesc,
     required this.fromPlaceId,
     required this.toPlaceId,
-  });
-
-  @override
-  _RouteMapScreenState createState() => _RouteMapScreenState();
-}
-
-class _RouteMapScreenState extends State<RouteMapScreen> {
-  static const MethodChannel _channel = MethodChannel('NativeMapViewChannel');
-  Map<String, dynamic>? _selectedRoute;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _sendRoutesToNative();
-    });
-
-    _channel.setMethodCallHandler((call) async {
-      if (call.method == "onRouteSelected") {
-        setState(() {
-          _selectedRoute = jsonDecode(call.arguments);
-        });
-      }
-    });
-  }
-
-  void _sendRoutesToNative() {
-    print('Sending routes to native view');
-    print(widget.routeData);
-    _channel.invokeMethod("drawRoutes", jsonEncode(widget.routeData));
-  }
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MapBloc()..add(LoadRoutesEvent(widget.routeData)),
+      create: (context) => MapBloc()..add(LoadRoutesEvent(routeData)),
       child: Scaffold(
-        body: Stack(
-          children: [
-            // Native Android Google Maps View
-            Positioned.fill(
-              child: AndroidView(
-                viewType: 'NativeMapView',
-                layoutDirection: TextDirection.ltr,
-                creationParams: {
-                  "routeData": jsonEncode(widget.routeData),
-                },
-                creationParamsCodec: const StandardMessageCodec(),
-              ),
-            ),
-
-            // Route Information Card
-            if (_selectedRoute != null)
-              Positioned(
-                bottom: 80.h,
-                left: 20.w,
-                right: 100.w,
-                child: Card(
-                  color: Theme.of(context).canvasColor,
-                  elevation: 4,
-                  child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                    child: Text(
-                      'Distance: ${_selectedRoute!['distance']}\n'
-                      'Duration: ${_selectedRoute!['duration']}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium
-                          ?.copyWith(color: Theme.of(context).primaryColorDark),
+        body: BlocBuilder<MapBloc, MapState>(
+          builder: (context, state) {
+            if (state is MapInitial || state is MapLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is MapLoaded) {
+              return Stack(
+                children: [
+                  GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(
+                        routeData[0]['coords'][0][0],
+                        routeData[0]['coords'][0][1],
+                      ),
+                      zoom: 12,
                     ),
+                    polylines: state.polylines,
+                    markers: state.markers,
                   ),
-                ),
-              ),
+                  if (state.selectedRoute != null) 
+                    Stack(
+                      children: [
+                        Positioned(
+                          bottom: 80,
+                          left: 20,
+                          right: 100,
+                          child: Card(
+                            color: Theme.of(context).canvasColor,
+//                            color: Theme.of(context).primaryColorDark,
+                            elevation: 4,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              child: Text(
+                                'Distance: ${state.selectedRoute['distance']}\n'
+                                'Duration: ${state.selectedRoute['duration']}',
+                                style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).primaryColorDark),
+                                //style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).scaffoldBackgroundColor),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 20,
+                          left: 20,
+                          right: 100,
+                          child: GradientButton(
+                            onTap: () {
+                              // Get the selected route coordinates
+                              final selectedRouteCoords = state.selectedRoute['coords'];
 
-            // Select Route Button
-            Positioned(
-              bottom: 20.h,
-              left: 20.w,
-              right: 100.w,
-              child: GradientButton(
-                onTap: () {
-                  if (_selectedRoute != null) {
-                    Navigator.pushNamed(
-                      context,
-                      Routes.d1,
-                      arguments: {
-                        'toPlaceID': widget.toPlaceId,
-                        'fromPlaceID': widget.fromPlaceId,
-                        'toDescription': widget.toPlaceDesc,
-                        'fromDescription': widget.fromPlaceDesc,
-                        'selectedRouteCoords': _selectedRoute!['coords'],
-                        'distance': _selectedRoute!['distance'],
-                        'duration': _selectedRoute!['duration'],
-                      },
-                    );
-                  }
-                }, // Disable button if no route selected
-                text: 'Select Route',
-              ),
-            ),
-          ],
+                              // Navigate to the D1 screen with the required arguments and the singleton bloc
+                              Navigator.pushNamed(
+                                context,
+                                Routes.d1,
+                                arguments: {
+                                  'toPlaceID': toPlaceId,
+                                  'fromPlaceID': fromPlaceId,
+                                  'toDescription': toPlaceDesc,
+                                  'fromDescription': fromPlaceDesc,
+                                  'selectedRouteCoords': selectedRouteCoords,
+                                  'distance': state.selectedRoute['distance'], 
+                                  'duration': state.selectedRoute['duration'], 
+                                },
+                              );
+                            },
+                            text: 'Select Route',
+                          ),
+                        ),
+                      ],
+                    )
+
+                ],
+              );
+            } else if (state is MapError) {
+              return Center(child: Text('Error: ${state.message}'));
+            }
+            return const SizedBox.shrink();
+          },
         ),
       ),
     );
