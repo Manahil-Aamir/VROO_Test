@@ -159,12 +159,13 @@ class _R3PageState extends State<R3Page> {
                             icon: Icons.access_time,
                             label: 'Pick Up Time',
                             value:
-                                '${widget.schedule.minTime.hour}:${widget.schedule.minTime.minute == 0 ? '00' : widget.schedule.minTime.minute} - ${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute == 0 ? '00' : widget.schedule.maxTime.minute}',
+                                '${widget.schedule.minTime.hour}:${widget.schedule.minTime.minute.toString().padLeft(2, '0')} - ${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute.toString().padLeft(2, '0')}',
                           ),
                           DetailTile(
                             icon: Icons.access_time,
                             label: 'Max Arrival Time',
-                            value: '${widget.schedule.arrivalTime.hour}:${widget.schedule.arrivalTime.minute == 0 ? '00' : widget.schedule.arrivalTime.minute}',
+                            value:
+                                '${widget.schedule.arrivalTime.hour}:${widget.schedule.arrivalTime.minute == 0 ? '00' : widget.schedule.arrivalTime.minute}',
                           ),
                           // DetailTile(
                           //   icon: Icons.repeat,

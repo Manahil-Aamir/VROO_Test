@@ -258,6 +258,7 @@ class _R1PageState extends State<R1Page> {
                             },
                             text: 'Next',
                           ),
+                          SizedBox(height: 12.h),
                         ],
                       ),
                     ),
