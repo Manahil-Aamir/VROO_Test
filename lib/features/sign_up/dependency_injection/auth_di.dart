@@ -7,6 +7,7 @@ import '../data/repository/auth_repository_impl.dart';
 import '../domain/repository/auth_repository.dart';
 import '../domain/usecases/auth_usecases.dart';
 import '../presentation/bloc/bloc/auth_bloc.dart';
+import '../presentation/bloc/bloc/email_verification_bloc.dart';
 
 class AuthDependencyInjection {
   static List<SingleChildWidget> init() {
@@ -24,6 +25,12 @@ class AuthDependencyInjection {
         signUpUseCase: SignUpUseCase(authRepository),
         sendEmailVerificationUseCase: SendEmailVerificationUseCase(authRepository)
       )),
+      BlocProvider<EmailVerificationBloc>(
+        create: (context) => EmailVerificationBloc(
+          checkEmailVerification: context.read<CheckEmailVerificationUseCase>(),
+          sendEmailVerification: context.read<SendEmailVerificationUseCase>(),
+        ),
+      ),
     ];
   }
 }

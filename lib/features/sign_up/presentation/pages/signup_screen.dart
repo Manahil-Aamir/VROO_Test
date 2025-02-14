@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../ui.dart';
+import '../../../../core/router/navigation.dart';
 import '../bloc/bloc/auth_bloc.dart';
 import '../bloc/event/auth_event.dart';
 import '../bloc/state/auth_state.dart';
@@ -44,6 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         listener: (context, state) {
           if (state is SignUpSuccess) {
             print('success');
+            context.read<Navigation>().navigateTo('/email-verification');
             // Navigator.pushReplacement(
             //   context,
             //   MaterialPageRoute(builder: (_) => SimpleUI()),

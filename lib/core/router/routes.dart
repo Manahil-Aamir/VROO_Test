@@ -37,6 +37,8 @@ import '../../features/rider_journey/presentation/pages/r1_page.dart';
 import '../../features/rider_journey/presentation/pages/r2_page.dart';
 import '../../features/rider_journey/presentation/pages/r3_page.dart';
 import '../../features/sign_up/dependency_injection/auth_di.dart';
+import '../../features/sign_up/presentation/pages/email_verification_screen.dart';
+import '../../features/sign_up/presentation/pages/profile_screen.dart';
 import '../../features/sign_up/presentation/pages/signup_screen.dart';
 
 class Routes {
@@ -58,6 +60,8 @@ class Routes {
   static const String bookingConfirm = '/booking_confirm';
   static const String matching_rides = '/matching_rides';
   static const String sign_up = '/sign_up';
+  static const String emailVerification = '/email-verification';
+  static const String profile = '/profile';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -665,6 +669,16 @@ class Routes {
             builder: (_) => MultiProvider(
                 providers: AuthDependencyInjection.init(),
                 child: const SignUpScreen()));
+      case emailVerification:
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: AuthDependencyInjection.init(),
+                child: const EmailVerificationScreen()));
+      case profile:
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: AuthDependencyInjection.init(),
+                child: const ProfileScreen()));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
