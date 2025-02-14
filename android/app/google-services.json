@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "167670342099",
+    "project_id": "vroo-2c1a3",
+    "storage_bucket": "vroo-2c1a3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167670342099:android:1969fdf9cb625866ec4f26",
+        "android_client_info": {
+          "package_name": "com.example.vroo_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYN2QVcsMxl9XodAlzeblKDc5BwYSIh4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
