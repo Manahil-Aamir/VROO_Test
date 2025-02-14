@@ -11,7 +11,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   final regex = RegExp(r'^[A-Za-z]\.[A-Za-z]+\.\d{5}@khi\.iba\.edu\.pk$');
-  final testString = 'm.aamir.24441@khi.iba.edu.pk';
+  final testString = 'h.rai.24513@khi.iba.edu.pk';
 
   print('Trimmed: "${testString.trim()}"');
   print('Regex match? ${regex.hasMatch(testString.trim())}');

@@ -658,6 +658,9 @@ class Routes {
           ),
         );
       case sign_up:
+        print('Sign up route matched'); 
+          // return MaterialPageRoute(builder: (_) => Scaffold(body: Center(child: Text('Test Screen'))));
+
         return MaterialPageRoute(
             builder: (_) => MultiProvider(
                 providers: AuthDependencyInjection.init(),
