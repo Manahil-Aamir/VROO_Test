@@ -36,6 +36,8 @@ import '../../features/rider_journey/presentation/pages/location_selection_scree
 import '../../features/rider_journey/presentation/pages/r1_page.dart';
 import '../../features/rider_journey/presentation/pages/r2_page.dart';
 import '../../features/rider_journey/presentation/pages/r3_page.dart';
+import '../../features/sign_up/dependency_injection/auth_di.dart';
+import '../../features/sign_up/presentation/pages/signup_screen.dart';
 
 class Routes {
   static const String ui = '/ui';
@@ -55,6 +57,7 @@ class Routes {
   static const String r3Page = '/r3_page';
   static const String bookingConfirm = '/booking_confirm';
   static const String matching_rides = '/matching_rides';
+  static const String sign_up = '/sign_up';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -654,6 +657,14 @@ class Routes {
             ),
           ),
         );
+      case sign_up:
+        print('Sign up route matched'); 
+          // return MaterialPageRoute(builder: (_) => Scaffold(body: Center(child: Text('Test Screen'))));
+
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: AuthDependencyInjection.init(),
+                child: const SignUpScreen()));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
