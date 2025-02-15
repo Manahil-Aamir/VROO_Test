@@ -37,6 +37,7 @@ import '../../features/rider_journey/presentation/pages/r1_page.dart';
 import '../../features/rider_journey/presentation/pages/r2_page.dart';
 import '../../features/rider_journey/presentation/pages/r3_page.dart';
 import '../../features/sign_up/dependency_injection/auth_di.dart';
+import '../../features/sign_up/dependency_injection/crate_user_di.dart';
 import '../../features/sign_up/presentation/pages/email_verification_screen.dart';
 import '../../features/sign_up/presentation/pages/profile_screen.dart';
 import '../../features/sign_up/presentation/pages/signup_screen.dart';
@@ -677,8 +678,8 @@ class Routes {
       case profile:
         return MaterialPageRoute(
             builder: (_) => MultiProvider(
-                providers: AuthDependencyInjection.init(),
-                child: const ProfileScreen()));
+                providers: CreateUserDependencies.init(),
+                child: CreateUserScreen()));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
