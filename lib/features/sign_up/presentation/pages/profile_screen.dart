@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/features/sign_up/domain/entity/user_entity.dart';
+import 'package:vroo_test/features/sign_up/presentation/widgets/gender_dropdown.dart';
+import 'package:vroo_test/shared/widgets/appbar_no_icon.dart';
+import 'package:vroo_test/shared/widgets/gradient_button.dart';
+import 'package:vroo_test/shared/widgets/input_field.dart';
 import '../bloc/bloc/create_user_bloc.dart';
 import '../bloc/bloc/phone_verification_bloc.dart';
 import '../bloc/event/create_user_event.dart';
@@ -8,18 +13,26 @@ import '../bloc/event/phone_verification_event.dart';
 import '../bloc/state/create_user_state.dart';
 import '../bloc/state/phone_verification_state.dart';
 
-class CreateUserScreen extends StatelessWidget {
-  // final String email; 
-  final TextEditingController genderController = TextEditingController();
+class CreateUserScreen extends StatefulWidget {
+  const CreateUserScreen({super.key});
+
+  @override
+  _CreateUserScreenState createState() => _CreateUserScreenState();
+}
+
+class _CreateUserScreenState extends State<CreateUserScreen> {
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  // Removed genderController since we're using a dropdown for gender.
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController otpController = TextEditingController();
-
-  // CreateUserScreen({required this.email, Key? key}) : super(key: key);
+  String selectedGender = 'Male';
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Complete CreateUser')),
+      appBar: AppBarNoIcon(heading: 'User Info'),
       body: MultiBlocListener(
         listeners: [
           BlocListener<PhoneVerificationBloc, PhoneVerificationState>(
@@ -43,14 +56,35 @@ class CreateUserScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              TextField(
-                controller: genderController,
-                decoration: InputDecoration(labelText: 'Gender')),
-              TextField(
+              InputField(
+                labelText: 'First Name',
+                controller: firstNameController,
+              ),
+              SizedBox(height: 20.h),
+              InputField(
+                labelText: 'Last Name',
+                controller: lastNameController,
+              ),
+              SizedBox(height: 20.h),
+              GenderDropdown(
+                items: ['Male', 'Female', 'Other'],
+                onChanged: (value) {
+                  setState(() {
+                    selectedGender = value!;
+                  });
+                },
+                selectedValue: selectedGender,
+                labelText: 'Gender',
+                errorText: null,
+                hintText: 'Select Gender',
+              ),
+              SizedBox(height: 20.h),
+              InputField(
+                labelText: 'Phone Number',
                 controller: phoneController,
                 keyboardType: TextInputType.phone,
-                decoration: InputDecoration(labelText: 'Phone Number')),
-              
+                hintText: '+923001234567',
+              ),
               BlocBuilder<PhoneVerificationBloc, PhoneVerificationState>(
                 builder: (context, state) {
                   if (state is PhoneVerificationCodeSent) {
@@ -58,28 +92,34 @@ class CreateUserScreen extends StatelessWidget {
                       children: [
                         TextField(
                           controller: otpController,
-                          decoration: InputDecoration(labelText: 'OTP')),
+                          decoration: InputDecoration(labelText: 'OTP'),
+                        ),
                         ElevatedButton(
-                          onPressed: () => context.read<PhoneVerificationBloc>()
-                            .add(VerifyOtpEvent(state.verificationId, otpController.text)),
-                          child: const Text('Verify OTP')),
+                          onPressed: () => context
+                              .read<PhoneVerificationBloc>()
+                              .add(VerifyOtpEvent(
+                                  state.verificationId, otpController.text)),
+                          child: const Text('Verify OTP'),
+                        ),
                       ],
                     );
                   }
                   return ElevatedButton(
-                    onPressed: () => context.read<PhoneVerificationBloc>()
-                      .add(SendOtpEvent(phoneController.text)),
-                    child: const Text('Send OTP'));
+                    onPressed: () => context
+                        .read<PhoneVerificationBloc>()
+                        .add(SendOtpEvent(phoneController.text)),
+                    child: const Text('Send OTP'),
+                  );
                 },
               ),
-              
               BlocBuilder<PhoneVerificationBloc, PhoneVerificationState>(
                 builder: (context, state) {
-                  return ElevatedButton(
-                    onPressed: state is PhoneVerificationSuccess
+                  return GradientButton(
+                    onTap: state is PhoneVerificationSuccess
                         ? () => _submitCreateUser(context)
-                        : null,
-                    child: const Text('Complete Registration'));
+                        : () {},
+                    text: 'Complete Registration',
+                  );
                 },
               ),
             ],
@@ -90,12 +130,13 @@ class CreateUserScreen extends StatelessWidget {
   }
 
   void _submitCreateUser(BuildContext context) {
-    //final authUser = context.read<AuthRepository>().getCurrentUser();
-    final CreateUser = UserEntity(
-      email: '',//email,
-      gender: genderController.text,
+    final createUser = UserEntity(
+      email: '', // email,
+      first_name: firstNameController.text,
+      last_name: lastNameController.text,
+      gender: selectedGender,
       phoneNumber: phoneController.text,
     );
-    context.read<CreateUserBloc>().add(CreateUserSubmitted(CreateUser));
+    context.read<CreateUserBloc>().add(CreateUserSubmitted(createUser));
   }
 }

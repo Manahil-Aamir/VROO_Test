@@ -25,11 +25,14 @@ class EmailVerificationBloc
     try {
       final user = await checkEmailVerification();
       if (user.isEmailVerified) {
+        print('verified');
         emit(EmailVerificationSuccess());
       } else {
+        print('not verified');
         emit(EmailVerificationFailure('Email not verified yet'));
       }
     } catch (e) {
+      print('failure');
       emit(EmailVerificationFailure(e.toString()));
     }
   }

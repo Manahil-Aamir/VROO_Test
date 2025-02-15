@@ -8,7 +8,10 @@ class InputField extends StatelessWidget {
   final VoidCallback? onTap;
   final String? errorText;
   final IconData? icon;
-  final VoidCallback? onIconTap; // Function to be applied on icon tap
+  final VoidCallback? onIconTap;
+  final String? hintText;
+  final bool? obscure;
+  final TextInputType? keyboardType;
 
   const InputField({
     super.key,
@@ -18,15 +21,21 @@ class InputField extends StatelessWidget {
     this.onTap,
     this.errorText,
     this.icon,
-    this.onIconTap, // Optional function for icon tap
+    this.onIconTap,
+    this.hintText,
+    this.obscure,
+    this.keyboardType,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      cursorColor: Theme.of(context).primaryColor,
       controller: controller,
       readOnly: readOnly,
+      obscureText: obscure ?? false,
       onTap: onTap,
+      keyboardType: keyboardType ?? TextInputType.text,
       style: Theme.of(context)
           .textTheme
           .bodyLarge
@@ -34,6 +43,8 @@ class InputField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         errorText: errorText,
+        hintText: hintText ?? '',
+        hintStyle: TextStyle(color: Theme.of(context).primaryColorLight),
         errorStyle: TextStyle(color: Theme.of(context).indicatorColor),
         suffixIcon: icon != null
             ? GestureDetector(
