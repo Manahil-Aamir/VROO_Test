@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../bloc/bloc/email_verification_bloc.dart';
-import '../bloc/event/email_verification_event.dart';
+class ResendButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onTap;
 
-class VerifyButton extends StatelessWidget {
-  const VerifyButton({super.key});
+  const ResendButton({
+    super.key,
+    required this.text,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +21,8 @@ class VerifyButton extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            theme.secondaryHeaderColor,
-            theme.secondaryHeaderColor.withOpacity(0.5),
+            theme.primaryColorLight.withOpacity(0.5),
+            theme.primaryColorLight.withOpacity(0.1),
           ],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
@@ -31,11 +34,9 @@ class VerifyButton extends StatelessWidget {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
         ),
-        onPressed: () => context
-            .read<EmailVerificationBloc>()
-            .add(EmailVerificationCheckRequested()),
+        onPressed: onTap,
         child: Text(
-          'Check Verification',
+          text,
           style: theme.textTheme.labelLarge?.copyWith(
             color: theme.primaryColorDark,
           ),

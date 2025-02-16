@@ -6,6 +6,7 @@ import 'package:vroo_test/features/sign_up/presentation/widgets/gender_dropdown.
 import 'package:vroo_test/shared/widgets/appbar_no_icon.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import 'package:vroo_test/shared/widgets/input_field.dart';
+import '../../../../core/router/navigation.dart';
 import '../bloc/bloc/create_user_bloc.dart';
 import '../bloc/bloc/phone_verification_bloc.dart';
 import '../bloc/event/create_user_event.dart';
@@ -47,7 +48,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
           BlocListener<CreateUserBloc, CreateUserState>(
             listener: (context, state) {
               if (state is CreateUserSuccess) {
-                Navigator.pushReplacementNamed(context, '/home');
+                context.read<Navigation>().navigateTo('/riderhome');
               }
             },
           ),

@@ -65,6 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBarNoIcon(heading: 'Sign Up'),
       body: BlocConsumer<SignUpBloc, SignUpState>(
@@ -74,7 +75,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             context.read<Navigation>().navigateTo('/email-verification');
           } else if (state is SignUpFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
+              SnackBar(
+                content: Text(state.error),
+                backgroundColor: theme.indicatorColor,
+                duration: Duration(seconds: 3),
+              ),
             );
           }
         },

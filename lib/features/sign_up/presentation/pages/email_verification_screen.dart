@@ -24,11 +24,19 @@ class EmailVerificationScreen extends StatelessWidget {
             // Navigator.pushReplacementNamed(context, Routes.profile);
           } else if (state is EmailVerificationFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
+              SnackBar(
+                content: Text(state.error),
+                backgroundColor: theme.indicatorColor,
+                duration: Duration(seconds: 3),
+              ),
             );
           } else if (state is EmailVerificationResent) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Verification email resent!')),
+              SnackBar(
+                content: Text('Verification email resent!'),
+                backgroundColor: theme.secondaryHeaderColor,
+                duration: Duration(seconds: 3),
+              ),
             );
           }
         },
@@ -70,9 +78,11 @@ class EmailVerificationScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 32.h),
-                        SizedBox(
-                          width: double.infinity,
-                          child: VerifyButton(),
+                        GradientButton(
+                          onTap: () => context
+                              .read<EmailVerificationBloc>()
+                              .add(EmailVerificationCheckRequested()),
+                          text: 'Check Verification',
                         ),
                         SizedBox(height: 18.h),
                         Text(
@@ -82,7 +92,7 @@ class EmailVerificationScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 8.h),
-                        GradientButton(
+                        ResendButton(
                           onTap: () => context
                               .read<EmailVerificationBloc>()
                               .add(EmailVerificationResendRequested()),
