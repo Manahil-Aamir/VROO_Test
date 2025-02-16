@@ -53,7 +53,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
             },
           ),
         ],
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
@@ -132,12 +132,13 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
 
   void _submitCreateUser(BuildContext context) {
     final createUser = UserEntity(
-      email: '', // email,
+      email: '', // email
       first_name: firstNameController.text,
       last_name: lastNameController.text,
       gender: selectedGender,
       phoneNumber: phoneController.text,
     );
+    print('creating user');
     context.read<CreateUserBloc>().add(CreateUserSubmitted(createUser));
   }
 }

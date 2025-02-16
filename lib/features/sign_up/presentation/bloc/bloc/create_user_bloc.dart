@@ -16,6 +16,7 @@ class CreateUserBloc extends Bloc<CreateUserEvent, CreateUserState> {
     emit(CreateUserLoading());
     try {
       await createUser(event.CreateUser);
+      print('user created');
       emit(CreateUserSuccess());
     } catch (e) {
       emit(CreateUserFailure(e.toString()));

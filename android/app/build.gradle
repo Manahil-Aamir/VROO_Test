@@ -2,7 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'dev.flutter.flutter-gradle-plugin'
-}
+    }
+
 
 android {
     namespace = "com.example.vroo_test"
@@ -43,5 +44,6 @@ flutter {
 }
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:28.4.0')
     implementation 'com.google.android.gms:play-services-maps:18.1.1'
 }
