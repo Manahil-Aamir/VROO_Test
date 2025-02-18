@@ -37,7 +37,7 @@ import '../../features/rider_journey/presentation/pages/r1_page.dart';
 import '../../features/rider_journey/presentation/pages/r2_page.dart';
 import '../../features/rider_journey/presentation/pages/r3_page.dart';
 import '../../features/sign_up/dependency_injection/auth_di.dart';
-import '../../features/sign_up/dependency_injection/crate_user_di.dart';
+import '../../features/sign_up/dependency_injection/create_user_di.dart';
 import '../../features/sign_up/presentation/pages/email_verification_screen.dart';
 import '../../features/sign_up/presentation/pages/profile_screen.dart';
 import '../../features/sign_up/presentation/pages/signup_screen.dart';
@@ -663,8 +663,8 @@ class Routes {
           ),
         );
       case sign_up:
-        print('Sign up route matched'); 
-          // return MaterialPageRoute(builder: (_) => Scaffold(body: Center(child: Text('Test Screen'))));
+        print('Sign up route matched');
+        // return MaterialPageRoute(builder: (_) => Scaffold(body: Center(child: Text('Test Screen'))));
 
         return MaterialPageRoute(
             builder: (_) => MultiProvider(
@@ -678,7 +678,7 @@ class Routes {
       case profile:
         return MaterialPageRoute(
             builder: (_) => MultiProvider(
-                providers: CreateUserDependencies.init(),
+                providers: CreateUserDependencyInjection.init(),
                 child: CreateUserScreen()));
       default:
         return MaterialPageRoute(

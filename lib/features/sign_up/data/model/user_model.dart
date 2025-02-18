@@ -1,17 +1,17 @@
-class UserModel {
-  final String email;
-  final String gender;
-  final String phoneNumber;
+import '../../domain/entity/user_entity.dart';
 
+class UserModel extends UserEntity {
   UserModel({
-    required this.email,
-    required this.gender,
-    required this.phoneNumber,
+    required super.id,
+    required super.gender,
+    required super.phoneNumber,
+    required super.name,
   });
 
   Map<String, dynamic> toJson() => {
-    'email': email,
-    'gender': gender,
-    'phoneNumber': phoneNumber,
-  };
+        'id': id,
+        'gender': gender,
+        'phoneNumber': phoneNumber,
+        'name': name,
+      };
 }

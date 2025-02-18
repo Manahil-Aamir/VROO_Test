@@ -1,26 +1,35 @@
+import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:vroo_test/features/sign_up/data/model/user_model.dart';
+import '../model/user_model.dart';
 
 abstract class UserRemoteDataSource {
-  Future<void> createUser(UserModel profile);
+  UserRemoteDataSource(http.Client client);
+
+  Future<Map<String, dynamic>> createUser(UserModel user, String token);
 }
 
-class ApiUserRemoteDataSource implements UserRemoteDataSource {
+class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   final http.Client client;
-  static const String baseUrl = 'your_backend_url/users';
 
-  ApiUserRemoteDataSource(this.client);
+  UserRemoteDataSourceImpl(this.client);
 
   @override
-  Future<void> createUser(UserModel profile) async {
+  Future<Map<String, dynamic>> createUser(UserModel user, String token) async {
+    final url = Uri.parse('http://localhost:3000/user2');
+
     final response = await client.post(
-      Uri.parse(baseUrl),
-      body: profile.toJson(),
-      headers: {'Content-Type': 'application/json'},
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(user.toJson()),
     );
 
-    if (response.statusCode != 201) {
-      throw Exception('Failed to create user: ${response.body}');
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to create user');
     }
   }
 }

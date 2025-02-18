@@ -9,13 +9,16 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<AuthUser> signUpWithEmailAndPassword(String email, String password) async {
-    final user = await remoteDataSource.signUpWithEmailAndPassword(email, password);
+  Future<AuthUser> signUpWithEmailAndPassword(
+      String email, String password) async {
+    final user =
+        await remoteDataSource.signUpWithEmailAndPassword(email, password);
     return AuthModel.fromFirebaseUser(user).toEntity();
   }
 
   @override
-  Future<void> sendEmailVerification() => remoteDataSource.sendEmailVerification();
+  Future<void> sendEmailVerification() =>
+      remoteDataSource.sendEmailVerification();
 
   @override
   Future<AuthUser> checkEmailVerification() async {
@@ -31,8 +34,6 @@ class AuthRepositoryImpl implements AuthRepository {
 }
 
 extension AuthModelExtensions on AuthModel {
-  AuthUser toEntity() => AuthUser(
-    email: email,
-    isEmailVerified: isEmailVerified
-  );
+  AuthUser toEntity() =>
+      AuthUser(email: email, isEmailVerified: isEmailVerified);
 }

@@ -1,18 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vroo_test/features/sign_up/domain/entity/user_entity.dart';
 import 'package:vroo_test/features/sign_up/presentation/widgets/gender_dropdown.dart';
-import 'package:vroo_test/shared/widgets/appbar_no_icon.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import 'package:vroo_test/shared/widgets/input_field.dart';
 import '../../../../core/router/navigation.dart';
+import '../../../../core/utils/validators/auth_validators.dart';
+import '../../data/model/user_model.dart';
 import '../bloc/bloc/create_user_bloc.dart';
-import '../bloc/bloc/phone_verification_bloc.dart';
 import '../bloc/event/create_user_event.dart';
-import '../bloc/event/phone_verification_event.dart';
 import '../bloc/state/create_user_state.dart';
-import '../bloc/state/phone_verification_state.dart';
 
 class CreateUserScreen extends StatefulWidget {
   const CreateUserScreen({super.key});
@@ -24,35 +21,53 @@ class CreateUserScreen extends StatefulWidget {
 class _CreateUserScreenState extends State<CreateUserScreen> {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
-  // Removed genderController since we're using a dropdown for gender.
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController otpController = TextEditingController();
   String selectedGender = 'Male';
+
+  void _validate(BuildContext context) {
+    final theme = Theme.of(context);
+    final firstNameError =
+        AuthValidators.validateName(firstNameController.text);
+    final lastNameError = AuthValidators.validateName(lastNameController.text);
+    final mobileError =
+        AuthValidators.validateMobileNumber(phoneController.text);
+
+    String? errorMessage;
+    if (firstNameError != null) {
+      errorMessage = firstNameError;
+    } else if (lastNameError != null) {
+      errorMessage = lastNameError;
+    } else
+      errorMessage = mobileError;
+
+    if (errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: theme.indicatorColor,
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
+    _submitCreateUser(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBarNoIcon(heading: 'User Info'),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<PhoneVerificationBloc, PhoneVerificationState>(
-            listener: (context, state) {
-              if (state is PhoneVerificationFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.error)),
-                );
-              }
-            },
-          ),
-          BlocListener<CreateUserBloc, CreateUserState>(
-            listener: (context, state) {
-              if (state is CreateUserSuccess) {
-                context.read<Navigation>().navigateTo('/riderhome');
-              }
-            },
-          ),
-        ],
+      appBar: AppBar(title: const Text('User Info')),
+      body: BlocListener<CreateUserBloc, CreateUserState>(
+        listener: (context, state) {
+          if (state is CreateUserSuccess) {
+            context.read<Navigation>().navigateTo('/riderhome');
+          } else if (state is CreateUserFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error)),
+            );
+          }
+        },
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -61,12 +76,12 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                 labelText: 'First Name',
                 controller: firstNameController,
               ),
-              SizedBox(height: 20.h),
+              const SizedBox(height: 20),
               InputField(
                 labelText: 'Last Name',
                 controller: lastNameController,
               ),
-              SizedBox(height: 20.h),
+              const SizedBox(height: 20),
               GenderDropdown(
                 items: ['Male', 'Female', 'Other'],
                 onChanged: (value) {
@@ -76,52 +91,20 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                 },
                 selectedValue: selectedGender,
                 labelText: 'Gender',
-                errorText: null,
                 hintText: 'Select Gender',
+                errorText: null,
               ),
-              SizedBox(height: 20.h),
+              const SizedBox(height: 20),
               InputField(
                 labelText: 'Phone Number',
                 controller: phoneController,
                 keyboardType: TextInputType.phone,
                 hintText: '+923001234567',
               ),
-              BlocBuilder<PhoneVerificationBloc, PhoneVerificationState>(
-                builder: (context, state) {
-                  if (state is PhoneVerificationCodeSent) {
-                    return Column(
-                      children: [
-                        TextField(
-                          controller: otpController,
-                          decoration: InputDecoration(labelText: 'OTP'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () => context
-                              .read<PhoneVerificationBloc>()
-                              .add(VerifyOtpEvent(
-                                  state.verificationId, otpController.text)),
-                          child: const Text('Verify OTP'),
-                        ),
-                      ],
-                    );
-                  }
-                  return ElevatedButton(
-                    onPressed: () => context
-                        .read<PhoneVerificationBloc>()
-                        .add(SendOtpEvent(phoneController.text)),
-                    child: const Text('Send OTP'),
-                  );
-                },
-              ),
-              BlocBuilder<PhoneVerificationBloc, PhoneVerificationState>(
-                builder: (context, state) {
-                  return GradientButton(
-                    onTap: state is PhoneVerificationSuccess
-                        ? () => _submitCreateUser(context)
-                        : () {},
-                    text: 'Complete Registration',
-                  );
-                },
+              const SizedBox(height: 30),
+              GradientButton(
+                onTap: () => _validate(context),
+                text: 'Complete Registration',
               ),
             ],
           ),
@@ -131,14 +114,15 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
   }
 
   void _submitCreateUser(BuildContext context) {
-    final createUser = UserEntity(
-      email: '', // email
-      first_name: firstNameController.text,
-      last_name: lastNameController.text,
+    final createUser = UserModel(
+      //id: FirebaseAuth.instance.currentUser!.uid,
+      id: 24446,
+      name: '${firstNameController.text} ${lastNameController.text}',
       gender: selectedGender,
       phoneNumber: phoneController.text,
     );
-    print('creating user');
-    context.read<CreateUserBloc>().add(CreateUserSubmitted(createUser));
+    print(createUser.toJson());
+
+    context.read<CreateUserBloc>().add(CreateUserSubmitted(user: createUser));
   }
 }

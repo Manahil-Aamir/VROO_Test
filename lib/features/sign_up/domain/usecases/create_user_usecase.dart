@@ -1,9 +1,12 @@
-import 'package:vroo_test/features/sign_up/domain/entity/user_entity.dart';
-
+import '../../data/model/user_model.dart';
 import '../repository/user_repository.dart';
 
 class CreateUserUseCase {
   final UserRepository repository;
+
   CreateUserUseCase(this.repository);
-  Future<void> call(UserEntity profile) => repository.createUser(profile);
+
+  Future<Map<String, dynamic>> call(UserModel user, String token) {
+    return repository.createUser(user, token);
+  }
 }

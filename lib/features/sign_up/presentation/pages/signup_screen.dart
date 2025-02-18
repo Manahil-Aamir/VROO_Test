@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vroo_test/core/utils/validators/auth_validators.dart';
 import 'package:vroo_test/shared/widgets/appbar_no_icon.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import '../../../../core/router/navigation.dart';
@@ -32,24 +33,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _signUp(BuildContext context) {
     final theme = Theme.of(context);
-    if (_emailController.text.isEmpty ||
-        _passwordController.text.isEmpty ||
-        _confirmPasswordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text("Email, password, and confirm password cannot be empty."),
-          backgroundColor: theme.indicatorColor,
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return;
+    final emailError = AuthValidators.validateEmail(_emailController.text);
+    final passwordError =
+        AuthValidators.validatePassword(_passwordController.text);
+    final confirmPasswordError = AuthValidators.validatePasswordsMatch(
+      _passwordController.text,
+      _confirmPasswordController.text,
+    );
+
+    String? errorMessage;
+    if (emailError != null) {
+      errorMessage = emailError;
+    } else if (passwordError != null) {
+      errorMessage = passwordError;
+    } else if (confirmPasswordError != null) {
+      errorMessage = confirmPasswordError;
     }
 
-    if (_passwordController.text != _confirmPasswordController.text) {
+    if (errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Passwords do not match."),
+          content: Text(errorMessage),
           backgroundColor: theme.indicatorColor,
           duration: Duration(seconds: 3),
         ),

@@ -6,8 +6,6 @@ class AuthModel {
 
   AuthModel({required this.email, required this.isEmailVerified});
 
-  factory AuthModel.fromFirebaseUser(User user) => AuthModel(
-    email: user.email,
-    isEmailVerified: user.emailVerified
-  );
+  factory AuthModel.fromFirebaseUser(User user) =>
+      AuthModel(email: user.email, isEmailVerified: user.emailVerified);
 }

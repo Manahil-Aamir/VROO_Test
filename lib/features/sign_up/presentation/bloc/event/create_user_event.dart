@@ -1,9 +1,16 @@
-import 'package:vroo_test/features/sign_up/domain/entity/user_entity.dart';
+import 'package:equatable/equatable.dart';
+import 'package:vroo_test/features/sign_up/data/model/user_model.dart';
 
-sealed class CreateUserEvent {}
+sealed class CreateUserEvent extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
 final class CreateUserSubmitted extends CreateUserEvent {
-  final UserEntity CreateUser;
+  final UserModel user;
 
-  CreateUserSubmitted(this.CreateUser);
+  CreateUserSubmitted({required this.user});
+
+  @override
+  List<Object?> get props => [user];
 }
