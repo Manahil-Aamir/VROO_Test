@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
-import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
 
 class R3DataSource {
   final http.Client client;

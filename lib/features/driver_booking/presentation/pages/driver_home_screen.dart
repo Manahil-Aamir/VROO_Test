@@ -7,7 +7,6 @@ import '../../dependency_injection/driver_home_di.dart';
 import 'widgets/driver_location_selection_button_widget.dart';
 import '../../../../shared/widgets/top_bar_widget.dart';
 import '../bloc/bloc/driver_home_bloc.dart';
-import '../bloc/event/driver_home_event.dart';
 import '../bloc/state/driver_home_state.dart';
 
 class DriverHomeScreen extends StatefulWidget {

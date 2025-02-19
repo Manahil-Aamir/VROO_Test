@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
 

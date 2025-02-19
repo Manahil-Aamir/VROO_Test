@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
-import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import '../../features/driver_booking/dependency_injection/booking_di.dart';
 import '../../features/driver_booking/dependency_injection/d1_di.dart';

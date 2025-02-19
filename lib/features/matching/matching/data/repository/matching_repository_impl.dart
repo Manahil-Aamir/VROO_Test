@@ -1,5 +1,3 @@
-import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
-
 import '../../domain/repository/matching_repository.dart';
 import '../data_source/matching_data_source.dart';
 

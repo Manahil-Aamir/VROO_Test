@@ -1,7 +1,4 @@
-// r3_event.dart
 import 'package:equatable/equatable.dart';
-import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
-import 'package:vroo_test/features/rider_journey/domain/entity/ride_journey_entity.dart';
 
 abstract class MatchingEvent extends Equatable {
   const MatchingEvent();

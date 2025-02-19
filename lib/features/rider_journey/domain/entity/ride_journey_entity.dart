@@ -21,7 +21,6 @@ class RiderJourneyEntity {
     required this.isRecurring,
   });
 
-  @override
   List<Object> get props => [
         riderId,
         source,

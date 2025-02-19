@@ -232,25 +232,4 @@ class D3 extends StatelessWidget {
     final cleaned = input.replaceAll(RegExp(r'[^0-9]'), '');
     return int.parse(cleaned) * 60;
   }
-
-  void _showDetailBottomSheet(BuildContext context, String title, String content) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(content, style: const TextStyle(fontSize: 16)),
-          ],
-        ),
-      ),
-    );
-  }
 }

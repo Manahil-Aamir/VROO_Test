@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart'; // Add provider import
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
-import 'package:vroo_test/features/rider_journey/domain/entity/source_and_dest_entity.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/appbar.dart';
