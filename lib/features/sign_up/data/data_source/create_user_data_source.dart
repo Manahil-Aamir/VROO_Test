@@ -15,8 +15,9 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   @override
   Future<Map<String, dynamic>> createUser(UserModel user, String token) async {
-    final url = Uri.parse('http://localhost:3000/user2');
-
+    final url = Uri.parse('http://10.0.2.2:3000/user2');
+    print('creating user');
+    print(token);
     final response = await client.post(
       url,
       headers: {
