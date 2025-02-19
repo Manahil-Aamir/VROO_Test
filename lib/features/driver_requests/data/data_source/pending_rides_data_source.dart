@@ -1,20 +1,20 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../model/rides_details_model.dart';
+import '../model/pending_rides_model.dart';
 
-abstract class RideDetailsDataSource {
-  Future<List<RideDetailsModel>> getRideDetails(String driverId);
+abstract class PendingRidesDataSource {
+  Future<List<PendingRidesModel>> getPendingRides(String driverId);
   Future<void> approveRideRequest(String rideRequestId, String rideId);
 }
 
-class RideDetailsRemoteDataSource implements RideDetailsDataSource {
+class PendingRidesRemoteDataSource implements PendingRidesDataSource {
   final http.Client client;
 
-  RideDetailsRemoteDataSource(this.client);
+  PendingRidesRemoteDataSource(this.client);
 
   @override
-  Future<List<RideDetailsModel>> getRideDetails(String rideId) async {
+  Future<List<PendingRidesModel>> getPendingRides(String rideId) async {
     try {
       print('Fetching ride details for ride ID: $rideId');
       final response = await client.get(
@@ -40,7 +40,7 @@ class RideDetailsRemoteDataSource implements RideDetailsDataSource {
             print('First ride detail: ${data[0]}');
           }
 
-          return data.map((json) => RideDetailsModel.fromJson(json)).toList();
+          return data.map((json) => PendingRidesModel.fromJson(json)).toList();
         } else {
           throw Exception('Unexpected data format: ${jsonResponse['data']}');
         }

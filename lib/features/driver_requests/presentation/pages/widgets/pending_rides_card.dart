@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../../../../../core/theme/color/color_theme.dart';
-import '../../../domain/entity/rides_details.dart';
-import '../../bloc/bloc/rides_details_bloc.dart';
-import '../../bloc/event/rides_details_event.dart';
+import '../../../domain/entity/pending_rides.dart';
+import '../../bloc/bloc/pending_rides_bloc.dart';
+import '../../bloc/event/pending_rides_event.dart';
 
 class RideDetailCard extends StatelessWidget {
-  final RideDetailsEntity ride;
+  final PendingRidesEntity ride;
 
   const RideDetailCard({super.key, required this.ride});
 
@@ -57,7 +57,7 @@ class RideDetailCard extends StatelessWidget {
                   _buildIconButton(Icons.check, () {
                     print("Accept tapped");
                     final request = ride.request;
-                      context.read<RideDetailsBloc>().add(
+                      context.read<PendingRidesBloc>().add(
                         ApproveRideRequestEvent(
                           rideRequestId: request.id,
                           rideId: request.rideId,
@@ -126,7 +126,7 @@ class RideDetailCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRouteInfo(TextTheme textTheme, RideDetailsEntity ride) {
+  Widget _buildRouteInfo(TextTheme textTheme, PendingRidesEntity ride) {
     return Center(
       child: SizedBox(
         width: 0.8.sw,
@@ -171,7 +171,7 @@ class RideDetailCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDateTime(TextTheme textTheme, RideDetailsEntity ride, BuildContext context) {
+  Widget _buildDateTime(TextTheme textTheme, PendingRidesEntity ride, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [

@@ -2,37 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/widgets/appbar.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
-import '../bloc/bloc/rides_details_bloc.dart';
-import '../bloc/event/rides_details_event.dart';
-import '../bloc/state/rides_details_state.dart';
-import 'widgets/rides_details_card.dart';
+import '../bloc/bloc/pending_rides_bloc.dart';
+import '../bloc/event/pending_rides_event.dart';
+import '../bloc/state/pending_rides_state.dart';
+import 'widgets/pending_rides_card.dart';
 
-class RideDetailsScreen extends StatefulWidget {
+class PendingRidesScreen extends StatefulWidget {
   final String id;
-  const RideDetailsScreen({super.key, required this.id});
+  const PendingRidesScreen({super.key, required this.id});
 
   @override
-  State<RideDetailsScreen> createState() => _RideDetailsScreenState();
+  State<PendingRidesScreen> createState() => _PendingRidesScreenState();
 }
 
-class _RideDetailsScreenState extends State<RideDetailsScreen> {
+class _PendingRidesScreenState extends State<PendingRidesScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<RideDetailsBloc>().add(FetchRideDetails(widget.id));
+    context.read<PendingRidesBloc>().add(FetchPendingRides(widget.id));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(heading: 'Your Rides'),
-      body: BlocBuilder<RideDetailsBloc, RideDetailsState>(
+      body: BlocBuilder<PendingRidesBloc, PendingRidesState>(
         builder: (context, state) {
-          if (state is RideDetailsLoading) {
+          if (state is PendingRidesLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is RideDetailsError) {
+          } else if (state is PendingRidesError) {
             return Center(child: Text(state.message));
-          } else if (state is RideDetailsLoaded) {
+          } else if (state is PendingRidesLoaded) {
             if (state.rides.isEmpty) {
               return const Center(child: Text('No rides available.'));
             }

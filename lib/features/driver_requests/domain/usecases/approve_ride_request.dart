@@ -1,7 +1,7 @@
-import '../repository/rides_details_repository.dart';
+import '../repository/pending_rides_repository.dart';
 
 class ApproveRideRequest {
-  final RideDetailsRepository repository;
+  final PendingRidesRepository repository;
 
   ApproveRideRequest(this.repository);
 

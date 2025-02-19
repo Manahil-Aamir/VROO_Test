@@ -1,6 +1,6 @@
-import '../../domain/entity/rides_details.dart';
+import '../../domain/entity/pending_rides.dart';
 
-class RideDetailsModel {
+class PendingRidesModel {
   final DateTime date;
   final LocationModel source;
   final LocationModel destination;
@@ -10,7 +10,7 @@ class RideDetailsModel {
   final PreferencesModel preferences;
   final RequestModel request;
 
-  RideDetailsModel({
+  PendingRidesModel({
     required this.date,
     required this.source,
     required this.destination,
@@ -21,8 +21,8 @@ class RideDetailsModel {
     required this.request,
   });
 
-  factory RideDetailsModel.fromJson(Map<String, dynamic> json) {
-    return RideDetailsModel(
+  factory PendingRidesModel.fromJson(Map<String, dynamic> json) {
+    return PendingRidesModel(
       date: DateTime.parse(json['date']),
       source: LocationModel.fromJson(json['source'] ?? {}),
       destination: LocationModel.fromJson(json['destination'] ?? {}),
@@ -34,7 +34,7 @@ class RideDetailsModel {
     );
   }
 
-  RideDetailsEntity toEntity() => RideDetailsEntity(
+  PendingRidesEntity toEntity() => PendingRidesEntity(
         date: date,
         source: source.toEntity(),
         destination: destination.toEntity(),

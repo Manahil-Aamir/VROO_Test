@@ -1,4 +1,4 @@
-class RideDetailsEntity {
+class PendingRidesEntity {
   final DateTime date;
   final Location source;
   final Location destination;
@@ -8,7 +8,7 @@ class RideDetailsEntity {
   final Preferences preferences;
   final Request request;
 
-  RideDetailsEntity({
+  PendingRidesEntity({
     required this.date,
     required this.source,
     required this.destination,

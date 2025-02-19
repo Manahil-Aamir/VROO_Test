@@ -23,9 +23,9 @@ import 'package:vroo_test/features/rider_journey/dependancy_injection/booking_co
 import 'package:vroo_test/features/rider_journey/dependancy_injection/rider_home_di.dart';
 import 'package:vroo_test/features/rider_journey/presentation/pages/rider_home_page.dart';
 import '../../features/driver_requests/dependency_injection/active_rides_di.dart';
-import '../../features/driver_requests/dependency_injection/rides_details_di.dart';
+import '../../features/driver_requests/dependency_injection/pending_rides_di.dart';
 import '../../features/driver_requests/presentation/pages/active_rides_screen.dart';
-import '../../features/driver_requests/presentation/pages/rides_details_screen.dart';
+import '../../features/driver_requests/presentation/pages/pending_rides_screen.dart';
 import '../../features/matching/matching/dependency_injection/matching_di.dart';
 import '../../features/matching/matching/presentation/pages/matching_page.dart';
 import '../../features/rider_journey/dependancy_injection/r1_di.dart';
@@ -581,7 +581,7 @@ class Routes {
         return MaterialPageRoute(
           builder: (_) => MultiProvider(
               providers: RidesDetailsDi.init(),
-              child: RideDetailsScreen(id: id)),
+              child: PendingRidesScreen(id: id)),
         );
 
       case riderhome:

@@ -1,4 +1,4 @@
-import 'package:vroo_test/features/driver_requests/data/model/rides_details_model.dart';
+import 'package:vroo_test/features/driver_requests/data/model/pending_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
 
 abstract class R3Event {}
