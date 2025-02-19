@@ -7,7 +7,7 @@ import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_mode
 import 'package:vroo_test/features/rider_journey/domain/entity/source_and_dest_entity.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/router/routes.dart';
-import '../../../../shared/widgets/Appbar.dart';
+import '../../../../shared/widgets/appbar.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../../../../shared/widgets/location_selection_input.dart';
 import '../../dependancy_injection/location_selection_di.dart';

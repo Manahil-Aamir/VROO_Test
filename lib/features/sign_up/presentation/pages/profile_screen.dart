@@ -6,6 +6,7 @@ import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import 'package:vroo_test/shared/widgets/input_field.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/utils/validators/auth_validators.dart';
+import '../../../../shared/widgets/appbar.dart';
 import '../../data/model/user_model.dart';
 import '../bloc/bloc/create_user_bloc.dart';
 import '../bloc/event/create_user_event.dart';
@@ -57,7 +58,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('User Info')),
+      appBar: appBar(heading: 'User Info',),
       body: BlocListener<CreateUserBloc, CreateUserState>(
         listener: (context, state) {
           if (state is CreateUserSuccess) {

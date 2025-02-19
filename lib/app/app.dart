@@ -25,7 +25,7 @@ class App extends StatelessWidget {
             builder: (context, widget) {
               return MaterialApp(
                 navigatorKey: Navigation.navigatorKey,
-                title: "Your App Title",
+                title: "Vroo",
                 theme: AppTheme.getThemeData(),
                 debugShowCheckedModeBanner: false,
                 builder: (context, widget) {
@@ -39,7 +39,7 @@ class App extends StatelessWidget {
                     child: widget,
                   );
                 },
-                initialRoute: Routes.sign_up,
+                initialRoute: Routes.profile,
                 onGenerateRoute: Routes().generateRoute,
               );
             },

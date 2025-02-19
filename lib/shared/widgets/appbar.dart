@@ -52,7 +52,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                     ),
                     // Spacer to push the heading to the center
-                    SizedBox(width: 50.w),
+                    SizedBox(width: 60.w),
                     // Heading
                     Align(
                       alignment: Alignment.center,
