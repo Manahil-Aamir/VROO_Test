@@ -1,5 +1,5 @@
-import 'package:vroo_test/features/sign_up/data/model/user_model.dart';
-import 'package:vroo_test/features/sign_up/domain/repository/user_repository.dart';
+import 'package:vroo_test/features/authentication/data/model/user_model.dart';
+import 'package:vroo_test/features/authentication/domain/repository/user_repository.dart';
 
 import '../data_source/create_user_data_source.dart';
 

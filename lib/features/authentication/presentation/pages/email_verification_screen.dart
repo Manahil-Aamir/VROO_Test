@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vroo_test/features/sign_up/presentation/widgets/verify_button.dart';
+import 'package:vroo_test/features/authentication/presentation/widgets/verify_button.dart';
 
 import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/appbar_no_icon.dart';

@@ -34,11 +34,11 @@ import '../../features/rider_journey/presentation/pages/location_selection_scree
 import '../../features/rider_journey/presentation/pages/r1_page.dart';
 import '../../features/rider_journey/presentation/pages/r2_page.dart';
 import '../../features/rider_journey/presentation/pages/r3_page.dart';
-import '../../features/sign_up/dependency_injection/auth_di.dart';
-import '../../features/sign_up/dependency_injection/create_user_di.dart';
-import '../../features/sign_up/presentation/pages/email_verification_screen.dart';
-import '../../features/sign_up/presentation/pages/profile_screen.dart';
-import '../../features/sign_up/presentation/pages/signup_screen.dart';
+import '../../features/authentication/dependency_injection/auth_di.dart';
+import '../../features/authentication/dependency_injection/create_user_di.dart';
+import '../../features/authentication/presentation/pages/email_verification_screen.dart';
+import '../../features/authentication/presentation/pages/profile_screen.dart';
+import '../../features/authentication/presentation/pages/signup_screen.dart';
 
 class Routes {
   static const String ui = '/ui';

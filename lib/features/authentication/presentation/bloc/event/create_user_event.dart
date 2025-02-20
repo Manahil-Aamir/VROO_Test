@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:vroo_test/features/sign_up/data/model/user_model.dart';
+import 'package:vroo_test/features/authentication/data/model/user_model.dart';
 
 sealed class CreateUserEvent extends Equatable {
   @override

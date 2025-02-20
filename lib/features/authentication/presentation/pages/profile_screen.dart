@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vroo_test/features/sign_up/presentation/widgets/gender_dropdown.dart';
+import 'package:vroo_test/features/authentication/presentation/widgets/gender_dropdown.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import 'package:vroo_test/shared/widgets/input_field.dart';
 import '../../../../core/router/navigation.dart';
@@ -58,7 +58,9 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(heading: 'User Info',),
+      appBar: appBar(
+        heading: 'User Info',
+      ),
       body: BlocListener<CreateUserBloc, CreateUserState>(
         listener: (context, state) {
           if (state is CreateUserSuccess) {
