@@ -110,6 +110,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   obscure: true,
                 ),
                 SizedBox(height: 20.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Already have an account? ",
+                      style: theme.textTheme.bodyLarge
+                          ?.copyWith(color: theme.primaryColorDark),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/sign_in');
+                      },
+                      style: ButtonStyle(
+                        overlayColor: WidgetStateProperty.all(
+                          theme.primaryColor.withOpacity(0.1),
+                        ),
+                      ),
+                      child: Text(
+                        'Sign In',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.primaryColorDark,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                            decorationColor: theme.primaryColor,
+                            decorationThickness: 2.0),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20.h),
                 GradientButton(
                   onTap:
                       state is SignUpLoading ? () {} : () => _signUp(context),

@@ -96,7 +96,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
 
                 /// "Forgot Password?" link on the right side (login mode only)
-                if (_isLoginMode) SizedBox(height: 10.h),
+                if (_isLoginMode) SizedBox(height: 5.h),
                 if (_isLoginMode)
                   Align(
                     alignment: Alignment.centerRight,
@@ -113,6 +113,39 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                     ),
                   ),
+
+                SizedBox(height: 14.h),
+
+                /// "Does not have an account? Sign Up" link
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Does not have an account? ",
+                      style: theme.textTheme.bodyLarge
+                          ?.copyWith(color: theme.primaryColorDark),
+                    ),
+                    TextButton(
+                      style: ButtonStyle(
+                        overlayColor: WidgetStateProperty.all(
+                          theme.primaryColor.withOpacity(0.1),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/sign_up');
+                      },
+                      child: Text(
+                        'Sign Up',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.primaryColorDark,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                            decorationColor: theme.primaryColor,
+                            decorationThickness: 2.0),
+                      ),
+                    ),
+                  ],
+                ),
 
                 SizedBox(height: 20.h),
 
@@ -140,7 +173,6 @@ class _SignInPageState extends State<SignInPage> {
                   },
                   text: _isLoginMode ? 'Login' : 'Reset Password',
                 ),
-                SizedBox(height: 10.h),
               ],
             ),
           );
