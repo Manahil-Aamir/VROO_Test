@@ -39,7 +39,7 @@ class App extends StatelessWidget {
                     child: widget,
                   );
                 },
-                initialRoute: Routes.profile,
+                initialRoute: Routes.sign_in,
                 onGenerateRoute: Routes().generateRoute,
               );
             },

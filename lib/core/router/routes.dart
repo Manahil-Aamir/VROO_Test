@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vroo_test/features/authentication/data/data_source/sign_in_data_source.dart';
+import 'package:vroo_test/features/authentication/dependency_injection/sign_in_di.dart';
+import 'package:vroo_test/features/authentication/presentation/pages/sign_in_page.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import '../../features/driver_booking/dependency_injection/booking_di.dart';
@@ -59,6 +62,7 @@ class Routes {
   static const String bookingConfirm = '/booking_confirm';
   static const String matching_rides = '/matching_rides';
   static const String sign_up = '/sign_up';
+  static const String sign_in = '/sign_in';
   static const String emailVerification = '/email-verification';
   static const String profile = '/profile';
 
@@ -678,6 +682,11 @@ class Routes {
             builder: (_) => MultiProvider(
                 providers: CreateUserDependencyInjection.init(),
                 child: CreateUserScreen()));
+      case sign_in:
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: SignInDependencyInjection.init(),
+                child: const SignInPage()));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
