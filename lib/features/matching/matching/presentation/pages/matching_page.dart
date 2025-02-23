@@ -57,8 +57,8 @@ class _MatchingPageState extends State<MatchingPage> {
   String formatArrivalTime(String? arrivalTime) {
     if (arrivalTime == null) return 'Unknown';
     try {
-      DateFormat inputFormat =
-          DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", "en_US");
+      // Define the input format to match the ISO 8601 format
+      DateFormat inputFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
       // Parse the input string as a UTC datetime
       DateTime parsedDate = inputFormat.parse(arrivalTime, true).toUtc();
