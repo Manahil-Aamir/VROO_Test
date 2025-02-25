@@ -21,6 +21,19 @@ class DriverHomeLoaded extends DriverHomeState {
   List<Object> get props => [location];
 }
 
+class DriverHomeLogoutLoading extends DriverHomeState {}
+
+class DriverHomeLogoutSuccess extends DriverHomeState {}
+
+class DriverHomeLogoutError extends DriverHomeState {
+  final String message;
+
+  const DriverHomeLogoutError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
 class DriverHomeError extends DriverHomeState {
   final String message;
 

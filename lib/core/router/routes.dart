@@ -588,9 +588,10 @@ class Routes {
 
       case riderhome:
         return MaterialPageRoute(
-            builder: (_) => MultiProvider(
-                providers: RiderHomeDependencyInjection.init(),
-                child: const RiderHomeScreen()));
+            builder: (_) => MultiProvider(providers: [
+                  ...RiderHomeDependencyInjection.init(),
+                  ...DriverHomeDependencyInjection.init(),
+                ], child: const RiderHomeScreen()));
       case locationSelection:
         final arguments = settings.arguments as Map<String, String?>;
         final role = arguments['role'] ??
