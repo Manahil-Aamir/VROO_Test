@@ -8,7 +8,7 @@ import '../../features/rider_journey/presentation/bloc/bloc/rider_home_bloc.dart
 import '../../features/rider_journey/presentation/bloc/event/rider_home_event.dart';
 
 class LogoutDialog {
-  void showLogoutDialog(BuildContext context, RiderHomeBloc riderHomeBloc) {
+  void showLogoutDialog(BuildContext context, dynamic homeBloc) {
     final theme = Theme.of(context);
 
     showDialog(
@@ -41,7 +41,11 @@ class LogoutDialog {
 
                 // Now use the passed bloc instead of context.read()
                 Future.delayed(const Duration(milliseconds: 100), () {
-                  riderHomeBloc.add(RiderLogoutEvent()); // Safe Bloc call
+                  if (homeBloc is RiderHomeBloc) {
+                    homeBloc.add(RiderLogoutEvent()); // Safe Bloc call
+                  } else if (homeBloc is DriverHomeBloc) {
+                    homeBloc.add(DriverLogoutEvent()); // Safe Bloc call
+                  }
                 });
               },
               child: Text(

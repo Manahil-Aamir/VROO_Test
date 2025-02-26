@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:vroo_test/shared/widgets/side_bar.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../core/theme/font/font_theme.dart';
 import '../../core/router/navigation.dart'; // Ensure this is imported
 
-class TopBarWidget extends StatelessWidget {
+class TopBarDriverWidget extends StatelessWidget {
   final String roleText;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
-  const TopBarWidget(
+  const TopBarDriverWidget(
       {super.key, required this.roleText, required this.scaffoldKey});
 
   @override
@@ -32,7 +31,7 @@ class TopBarWidget extends StatelessWidget {
                   Icon(Icons.menu, color: ThemeColors.scaffoldBackgroundColor),
               onPressed: () {
                 print('open');
-                // scaffoldKey.currentState?.openDrawer();
+                scaffoldKey.currentState?.openDrawer();
               },
             ),
           ),

@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vroo_test/features/rider_journey/presentation/bloc/bloc/rider_home_bloc.dart';
 import 'package:vroo_test/shared/widgets/logout_dialog.dart';
 import 'package:vroo_test/shared/widgets/setting_button.dart';
-import '../../features/rider_journey/presentation/bloc/event/rider_home_event.dart';
-import 'gradient_button.dart';
+import '../../features/driver_booking/presentation/bloc/bloc/driver_home_bloc.dart';
 
 class SidebarWidget extends StatelessWidget {
-  const SidebarWidget({super.key});
+  final bool isRider;
+  const SidebarWidget({super.key, required this.isRider});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,9 @@ class SidebarWidget extends StatelessWidget {
           SettingButton(
             onTap: () {
               Navigator.of(context).pop();
-              final bloc = context.read<RiderHomeBloc>();
+              final bloc = isRider
+                  ? context.read<RiderHomeBloc>()
+                  : context.read<DriverHomeBloc>();
               LogoutDialog().showLogoutDialog(context, bloc);
             },
             text: 'Logout',

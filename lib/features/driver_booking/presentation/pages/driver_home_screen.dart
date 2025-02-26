@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../../shared/widgets/side_bar.dart';
+import '../../../../shared/widgets/top_bar_driver_widget.dart';
 import '../../dependency_injection/driver_home_di.dart';
 import 'widgets/driver_location_selection_button_widget.dart';
-import '../../../../shared/widgets/top_bar_widget.dart';
 import '../bloc/bloc/driver_home_bloc.dart';
 import '../bloc/state/driver_home_state.dart';
 
@@ -27,7 +27,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       key: key,
       drawer: BlocProvider.value(
         value: context.read<DriverHomeBloc>(), // Provide existing instance
-        child: SidebarWidget(),
+        child: SidebarWidget(
+          isRider: false,
+        ),
       ),
       body: Stack(
         children: [
@@ -43,7 +45,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               },
             ),
           ),
-          TopBarWidget(
+          TopBarDriverWidget(
             scaffoldKey: key,
             roleText: 'Driver',
           ),

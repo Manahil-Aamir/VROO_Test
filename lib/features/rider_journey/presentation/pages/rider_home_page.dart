@@ -10,7 +10,6 @@ import '../../dependancy_injection/rider_home_di.dart';
 import '../bloc/bloc/rider_home_bloc.dart';
 import '../bloc/state/rider_home_state.dart';
 import '../widgets/locationselection.dart';
-import '../../../../shared/widgets/top_bar_widget.dart';
 
 class RiderHomeScreen extends StatefulWidget {
   const RiderHomeScreen({super.key});
@@ -28,7 +27,9 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
       drawer: BlocProvider.value(
         value: context.read<
             RiderHomeBloc>(), // Ensure SidebarWidget has access to RiderHomeBloc
-        child: const SidebarWidget(),
+        child: const SidebarWidget(
+          isRider: true,
+        ),
       ),
       body: Stack(
         children: [
