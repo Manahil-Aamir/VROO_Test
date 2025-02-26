@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vroo_test/features/authentication/data/data_source/sign_in_data_source.dart';
 import 'package:vroo_test/features/authentication/dependency_injection/sign_in_di.dart';
 import 'package:vroo_test/features/authentication/presentation/pages/sign_in_page.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
@@ -665,9 +664,6 @@ class Routes {
           ),
         );
       case sign_up:
-        print('Sign up route matched');
-        // return MaterialPageRoute(builder: (_) => Scaffold(body: Center(child: Text('Test Screen'))));
-
         return MaterialPageRoute(
             builder: (_) => MultiProvider(
                 providers: AuthDependencyInjection.init(),

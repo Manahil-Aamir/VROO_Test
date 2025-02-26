@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:provider/single_child_widget.dart';
 import 'package:vroo_test/features/authentication/data/data_source/sign_in_data_source.dart';
 import 'package:vroo_test/features/authentication/data/repository/sign_in_repository_impl.dart';
@@ -14,7 +14,7 @@ import '../domain/usecases/login_usecase.dart';
 class SignInDependencyInjection {
   static List<SingleChildWidget> init() {
     final firebaseAuth = FirebaseAuth.instance;
-    final client = http.Client();
+    //final client = http.Client();
     // Data Source
     final authDataSource = SignInDataSourceImpl(firebaseAuth: firebaseAuth);
 
