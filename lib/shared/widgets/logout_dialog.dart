@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vroo_test/features/rider_journey/dependancy_injection/rider_home_di.dart';
-import '../../core/router/navigation.dart';
 import '../../features/driver_booking/presentation/bloc/bloc/driver_home_bloc.dart';
 import '../../features/driver_booking/presentation/bloc/event/driver_home_event.dart';
 import '../../features/rider_journey/presentation/bloc/bloc/rider_home_bloc.dart';

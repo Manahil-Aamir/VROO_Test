@@ -127,6 +127,5 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
     print(createUser.toJson());
 
     context.read<CreateUserBloc>().add(CreateUserSubmitted(user: createUser));
-    // Navigator.of(context).pushNamed('/riderhome');
   }
 }

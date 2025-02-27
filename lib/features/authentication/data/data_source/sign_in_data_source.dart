@@ -1,10 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class SignInDataSource {
-  /// Signs in the user with email and password.
   Future<void> login(String email, String password);
-
-  /// Sends a password reset email.
   Future<void> forgotPassword(String email);
 }
 
