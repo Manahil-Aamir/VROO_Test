@@ -44,7 +44,8 @@ class RouteDisplayPage extends StatelessWidget {
             } else if (state is RouteLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is RouteLoaded) {
-              print('Route Data: $state.routeData');
+              final routeData = state.routeData['route_data'];
+              print('Route Data: $routeData');
               return RouteMapScreen(
                 routeData: state.routeData['route_data'],
                 fromPlaceDesc: fromPlaceDesc,

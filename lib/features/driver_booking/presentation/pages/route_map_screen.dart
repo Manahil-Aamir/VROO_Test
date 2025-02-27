@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter/services.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../bloc/bloc/route_map_bloc.dart';
@@ -15,13 +15,13 @@ class RouteMapScreen extends StatelessWidget {
   final String toPlaceId;
 
   const RouteMapScreen({
-    Key? key,
+    super.key,
     required this.routeData,
     required this.fromPlaceDesc,
     required this.toPlaceDesc,
     required this.fromPlaceId,
     required this.toPlaceId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,18 +35,30 @@ class RouteMapScreen extends StatelessWidget {
             } else if (state is MapLoaded) {
               return Stack(
                 children: [
-                  GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                        routeData[0]['coords'][0][0],
-                        routeData[0]['coords'][0][1],
-                      ),
-                      zoom: 12,
-                    ),
-                    polylines: state.polylines,
-                    markers: state.markers,
+                  AndroidView(
+                    viewType: 'native_google_map',
+                    onPlatformViewCreated: (int id) {
+                      final methodChannel =
+                          MethodChannel('native_google_map_$id');
+                      print("Sending route data to Native: $routeData");
+                      methodChannel.invokeMethod('setRouteData', {
+                        'routeData': routeData,
+                      });
+
+                      // Listen for route selection from native side
+                      methodChannel.setMethodCallHandler((call) async {
+                        if (call.method == "routeSelected") {
+                          final selectedRoute = Map<String, dynamic>.from(call.arguments as Map);
+                          print("Route selected from Native: $selectedRoute");
+
+                          // Dispatch event to update Bloc state
+                          BlocProvider.of<MapBloc>(context)
+                              .add(SelectRouteEvent(selectedRoute));
+                        }
+                      });
+                    },
                   ),
-                  if (state.selectedRoute != null) 
+                  if (state.selectedRoute != null)
                     Stack(
                       children: [
                         Positioned(
@@ -55,15 +67,18 @@ class RouteMapScreen extends StatelessWidget {
                           right: 100,
                           child: Card(
                             color: Theme.of(context).canvasColor,
-//                            color: Theme.of(context).primaryColorDark,
                             elevation: 4,
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              padding:
+                                  const EdgeInsets.fromLTRB(20, 10, 20, 10),
                               child: Text(
-                                'Distance: ${state.selectedRoute['distance']}\n'
-                                'Duration: ${state.selectedRoute['duration']}',
-                                style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).primaryColorDark),
-                                //style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).scaffoldBackgroundColor),
+                                'Distance: ${state.selectedRoute?['distance']}, Duration: ${state.selectedRoute?['duration']}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context).primaryColorDark,
+                                    ),
                               ),
                             ),
                           ),
@@ -74,10 +89,17 @@ class RouteMapScreen extends StatelessWidget {
                           right: 100,
                           child: GradientButton(
                             onTap: () {
-                              // Get the selected route coordinates
-                              final selectedRouteCoords = state.selectedRoute['coords'];
+                              if (state.selectedRoute == null) {
+                                print("No route selected!");
+                                return;
+                              }
 
-                              // Navigate to the D1 screen with the required arguments and the singleton bloc
+                              final selectedRouteCoords =
+                                  state.selectedRoute?['coords'];
+
+                              print("Navigating with selected route:");
+                              print("Coords: $selectedRouteCoords");
+
                               Navigator.pushNamed(
                                 context,
                                 Routes.d1,
@@ -87,8 +109,8 @@ class RouteMapScreen extends StatelessWidget {
                                   'toDescription': toPlaceDesc,
                                   'fromDescription': fromPlaceDesc,
                                   'selectedRouteCoords': selectedRouteCoords,
-                                  'distance': state.selectedRoute['distance'], 
-                                  'duration': state.selectedRoute['duration'], 
+                                  'distance': state.selectedRoute?['distance'],
+                                  'duration': state.selectedRoute?['duration'],
                                 },
                               );
                             },
@@ -96,8 +118,7 @@ class RouteMapScreen extends StatelessWidget {
                           ),
                         ),
                       ],
-                    )
-
+                    ),
                 ],
               );
             } else if (state is MapError) {
