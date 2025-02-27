@@ -9,4 +9,8 @@ class GetCurrentLocation {
   Future<LatLng> execute() {
     return repository.getCurrentLocation();
   }
+
+  Future<void> logout() {
+    return repository.logout();
+  }
 }

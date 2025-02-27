@@ -1,9 +1,11 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class RiderHomeDataSource {
   Future<LatLng> getCurrentLocation();
   Future<void> clearSharedPreferences();
+  Future<void> logout();
 }
 
 class MockLocationDataSource implements RiderHomeDataSource {
@@ -25,6 +27,16 @@ class MockLocationDataSource implements RiderHomeDataSource {
       print('SharedPreferences cleared successfully');
     } catch (e) {
       print('Failed to clear SharedPreferences: $e');
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      print('User logged out successfully');
+    } catch (e) {
+      print('Failed to log out: $e');
     }
   }
 }

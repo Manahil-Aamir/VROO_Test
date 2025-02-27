@@ -5,9 +5,13 @@ import '../../../../core/theme/color/color_theme.dart';
 import '../../../../core/theme/font/font_theme.dart';
 import '../../core/router/navigation.dart'; // Ensure this is imported
 
-class TopBarWidget extends StatelessWidget {
+class TopBarDriverWidget extends StatelessWidget {
   final String roleText;
-  const TopBarWidget({super.key, required this.roleText});
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  const TopBarDriverWidget(
+      {super.key, required this.roleText, required this.scaffoldKey});
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -26,7 +30,8 @@ class TopBarWidget extends StatelessWidget {
               icon:
                   Icon(Icons.menu, color: ThemeColors.scaffoldBackgroundColor),
               onPressed: () {
-                // Handle menu action
+                print('open');
+                scaffoldKey.currentState?.openDrawer();
               },
             ),
           ),

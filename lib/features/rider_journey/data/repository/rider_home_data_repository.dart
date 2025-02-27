@@ -16,4 +16,8 @@ class RiderHomeRepositoryImpl implements RiderHomeRepository {
   Future<void> clearSharedPreferences() async {
     return await dataSource.clearSharedPreferences();
   }
+
+  Future<void> logout() async {
+    return await dataSource.logout();
+  }
 }

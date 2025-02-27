@@ -7,6 +7,7 @@ import '../data/data_source/rider_home_data_source.dart';
 import '../data/repository/rider_home_data_repository.dart';
 import '../domain/repository/rider_home_repository.dart';
 import '../domain/usecases/clear_preferences_usecase.dart';
+import '../domain/usecases/logout_usecase.dart';
 import '../domain/usecases/rider_home_usecase.dart';
 
 class RiderHomeDependencyInjection {
@@ -17,6 +18,7 @@ class RiderHomeDependencyInjection {
     final getCurrentLocation = GetCurrentLocation(locationRepository);
     final navigationProvider = Navigation();
     final clearPreferencesUsecase = ClearPreferencesUseCase(locationRepository);
+    final logoutUsecase = Logout(locationRepository);
 
     // Return the list of providers
     return [
@@ -24,9 +26,10 @@ class RiderHomeDependencyInjection {
       Provider<GetCurrentLocation>(create: (_) => getCurrentLocation),
       Provider<Navigation>(create: (_) => navigationProvider),
       Provider<ClearPreferencesUseCase>(create: (_) => clearPreferencesUsecase),
+      Provider<Logout>(create: (_) => logoutUsecase),
       BlocProvider<RiderHomeBloc>(
-          create: (_) =>
-              RiderHomeBloc(getCurrentLocation, clearPreferencesUsecase)),
+          create: (_) => RiderHomeBloc(
+              getCurrentLocation, clearPreferencesUsecase, logoutUsecase)),
     ];
   }
 }

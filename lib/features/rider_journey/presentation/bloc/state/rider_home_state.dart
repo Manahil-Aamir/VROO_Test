@@ -29,3 +29,16 @@ class RiderHomeError extends RiderHomeState {
   @override
   List<Object> get props => [message];
 }
+
+class RiderHomeLogoutLoading extends RiderHomeState {}
+
+class RiderHomeLogoutSuccess extends RiderHomeState {}
+
+class RiderHomeLogoutError extends RiderHomeState {
+  final String message;
+
+  const RiderHomeLogoutError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

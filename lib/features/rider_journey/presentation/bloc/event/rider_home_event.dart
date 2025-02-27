@@ -10,3 +10,5 @@ abstract class RiderHomeEvent extends Equatable {
 class LoadCurrentLocation extends RiderHomeEvent {}
 
 class ClearSharedPreferencesEvent extends RiderHomeEvent {}
+
+class RiderLogoutEvent extends RiderHomeEvent {}
