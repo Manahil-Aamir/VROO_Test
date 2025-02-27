@@ -6,12 +6,14 @@ class UserModel extends UserEntity {
     required super.gender,
     required super.phoneNumber,
     required super.name,
+    required super.email,
   });
 
   Map<String, dynamic> toJson() => {
-        'id': id,
+        'uid': id,
         'gender': gender,
         'phoneNumber': phoneNumber,
         'name': name,
+        'email': email,
       };
 }

@@ -122,9 +122,11 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
       name: '${firstNameController.text} ${lastNameController.text}',
       gender: selectedGender,
       phoneNumber: phoneController.text,
+      email: FirebaseAuth.instance.currentUser!.email!,
     );
     print(createUser.toJson());
 
-    context.read<CreateUserBloc>().add(CreateUserSubmitted(user: createUser));
+    //context.read<CreateUserBloc>().add(CreateUserSubmitted(user: createUser));
+    Navigator.of(context).pushNamed('/riderhome');
   }
 }
