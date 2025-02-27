@@ -9,7 +9,7 @@
     <application
         android:label="Vroo"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/vroo_launcher"
         android:enableOnBackInvokedCallback="true">
         
         <activity
