@@ -23,6 +23,7 @@ class _SignInPageState extends State<SignInPage> {
 
   /// Toggles between "Login" and "Forgot Password" mode
   bool _isLoginMode = true;
+  bool _isPasswordObscured = true;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +93,15 @@ class _SignInPageState extends State<SignInPage> {
                   InputField(
                     labelText: 'Password',
                     controller: _passwordController,
-                    obscure: true,
+                    obscure: _isPasswordObscured,
+                    icon: _isPasswordObscured
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    onIconTap: () {
+                      setState(() {
+                        _isPasswordObscured = !_isPasswordObscured;
+                      });
+                    },
                   ),
 
                 /// "Forgot Password?" link on the right side (login mode only)

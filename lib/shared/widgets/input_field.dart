@@ -32,7 +32,7 @@ class InputField extends StatelessWidget {
     return TextField(
       cursorColor: Theme.of(context).primaryColor,
       controller: controller,
-      readOnly: readOnly,
+      readOnly: false,
       obscureText: obscure ?? false,
       onTap: onTap,
       keyboardType: keyboardType ?? TextInputType.text,

@@ -9,20 +9,33 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
 
-class NativeMapView(context: Context, messenger: io.flutter.plugin.common.BinaryMessenger, viewId: Int) 
-    : PlatformView, OnMapReadyCallback, MethodChannel.MethodCallHandler {
+class NativeMapView(
+    context: Context,
+    messenger: io.flutter.plugin.common.BinaryMessenger,
+    viewId: Int
+) : PlatformView, OnMapReadyCallback, MethodChannel.MethodCallHandler {
 
     private val mapView: MapView = MapView(context)
     private lateinit var googleMap: GoogleMap
     private val methodChannel: MethodChannel
 
+    // Store route data at the class level
+    private var routeData: List<Map<String, Any>> = emptyList()
+
+    // Store all polylines
+    private val allPolylines = mutableListOf<Polyline>()
+
+    // Track currently selected polyline
+    private var selectedPolyline: Polyline? = null
+
+    // Define route colors
     private val routeColors = listOf(
         Color.parseColor("#8B008B"), // Dark Magenta
         Color.parseColor("#008B8B"), // Dark Cyan
         Color.parseColor("#B8860B"), // Dark Goldenrod
         Color.parseColor("#8B0000"), // Dark Red
         Color.parseColor("#00008B"), // Dark Blue
-        Color.parseColor("#006400")  // Dark Green     
+        Color.parseColor("#006400")  // Dark Green
     )
 
     init {
@@ -50,21 +63,34 @@ class NativeMapView(context: Context, messenger: io.flutter.plugin.common.Binary
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLatLng, 15f))
         println("Google Map is ready!")
 
+        setupPolylineClickListener()
+    }
+
+    private fun setupPolylineClickListener() {
         googleMap.setOnPolylineClickListener { polyline ->
             val selectedRoute = polyline.tag as? Map<*, *>
+
             if (selectedRoute != null) {
-                println("Route selected: $selectedRoute")
-                val convertedRoute = selectedRoute.mapKeys { it.key.toString() } // 🔹 Ensure String keys
-    methodChannel.invokeMethod("routeSelected", convertedRoute)
+                val convertedRoute = selectedRoute.mapKeys { it.key.toString() }
                 methodChannel.invokeMethod("routeSelected", convertedRoute)
+
+                // Reset all polyline colors (make all unselected)
+                allPolylines.forEachIndexed { index, line ->
+                    line.color = routeColors[index % routeColors.size]
+                }
+
+                // Highlight the newly selected polyline
+                polyline.color = Color.parseColor("#EC8825")
+                selectedPolyline = polyline
             }
         }
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         if (call.method == "setRouteData") {
-            val routeData = call.argument<List<Map<String, Any>>>("routeData")
-            if (routeData != null) {
+            val newRouteData = call.argument<List<Map<String, Any>>>("routeData")
+            if (newRouteData != null) {
+                routeData = newRouteData
                 drawRoutes(routeData)
             }
             result.success(null)
@@ -73,43 +99,44 @@ class NativeMapView(context: Context, messenger: io.flutter.plugin.common.Binary
         }
     }
 
-private fun drawRoutes(routeData: List<Map<String, Any>>) {
-    println("Received ${routeData.size} routes to draw")
+    private fun drawRoutes(routeData: List<Map<String, Any>>) {
+        println("Received ${routeData.size} routes to draw")
 
-    val builder = LatLngBounds.Builder()
+        googleMap.clear()
+        allPolylines.clear()  // Clear polyline tracking list
 
-    routeData.forEachIndexed { index, route ->
-        val coords = route["coords"] as List<List<Double>>
-        val color = routeColors[index % routeColors.size]
+        val builder = LatLngBounds.Builder()
 
-        val polylineOptions = PolylineOptions()
-            .color(color)
-            .width(8f)
-            .geodesic(true)
-            .clickable(true)
+        routeData.forEachIndexed { index, route ->
+            val coords = route["coords"] as List<List<Double>>
+            val color = routeColors[index % routeColors.size]
 
-        coords.forEach { point ->
-            val latLng = LatLng(point[0], point[1])
-            polylineOptions.add(latLng)
-            builder.include(latLng) // Include points in bounds
+            val polylineOptions = PolylineOptions()
+                .color(color)
+                .width(8f)
+                .geodesic(true)
+                .clickable(true)
+
+            coords.forEach { point ->
+                val latLng = LatLng(point[0], point[1])
+                polylineOptions.add(latLng)
+                builder.include(latLng)
+            }
+
+            val polyline = googleMap.addPolyline(polylineOptions)
+            polyline.tag = route  // Store the route data in the polyline
+            allPolylines.add(polyline)  // Track this polyline
+            println("Polyline added with ${coords.size} points, color: $color")
         }
 
-        val polyline = googleMap.addPolyline(polylineOptions) // ✅ Create polyline instance
-        polyline.tag = route  // ✅ Assign the route data to the polyline
-        println("Polyline added with ${coords.size} points, color: $color")
-    }
+        val bounds = builder.build()
 
-    // ✅ Adjust camera to fit all routes
-    val bounds = builder.build()
-
-    mapView.post { // Ensure layout is ready before adjusting camera
-        try {
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
-        } catch (e: Exception) {
-            println("Error adjusting camera: ${e.message}")
+        mapView.post {
+            try {
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+            } catch (e: Exception) {
+                println("Error adjusting camera: ${e.message}")
+            }
         }
     }
-}
-
-
 }
