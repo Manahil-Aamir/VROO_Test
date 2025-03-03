@@ -12,6 +12,8 @@ class InputField extends StatelessWidget {
   final String? hintText;
   final bool? obscure;
   final TextInputType? keyboardType;
+  final Widget? suffixIcon; // Changed to use proper suffixIcon parameter
+
 
   const InputField({
     super.key,
@@ -25,6 +27,7 @@ class InputField extends StatelessWidget {
     this.hintText,
     this.obscure,
     this.keyboardType,
+    this.suffixIcon,
   });
 
   @override
@@ -46,12 +49,7 @@ class InputField extends StatelessWidget {
         hintText: hintText ?? '',
         hintStyle: TextStyle(color: Theme.of(context).primaryColorLight),
         errorStyle: TextStyle(color: Theme.of(context).indicatorColor),
-        suffixIcon: icon != null
-            ? GestureDetector(
-                onTap: onIconTap,
-                child: Icon(icon, color: Theme.of(context).primaryColor),
-              )
-            : null,
+        suffixIcon: suffixIcon, // Directly use provided suffixIcon widget
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0.r),
         ),

@@ -15,22 +15,31 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   @override
   Future<Map<String, dynamic>> createUser(UserModel user, String token) async {
-    final url = Uri.parse('http://10.0.2.2:3000/user2');
+    final url = Uri.parse('http://10.0.2.2:3000/api/users/signup');
     print('creating user');
     print(token);
-    final response = await client.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(user.toJson()),
-    );
+    try {
+      final response = await client.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(user.toJson()),
+      );
+      print(jsonEncode(user.toJson()));
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to create user');
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to create user');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+      rethrow;  // Re-throw the exception after logging it
     }
   }
 }

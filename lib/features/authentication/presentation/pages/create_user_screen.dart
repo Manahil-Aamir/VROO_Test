@@ -122,6 +122,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
       name: '${firstNameController.text} ${lastNameController.text}',
       gender: selectedGender,
       phoneNumber: phoneController.text,
+      email: FirebaseAuth.instance.currentUser!.email!,
     );
     print(createUser.toJson());
 

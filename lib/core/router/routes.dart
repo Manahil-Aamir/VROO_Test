@@ -39,7 +39,7 @@ import '../../features/rider_journey/presentation/pages/r3_page.dart';
 import '../../features/authentication/dependency_injection/auth_di.dart';
 import '../../features/authentication/dependency_injection/create_user_di.dart';
 import '../../features/authentication/presentation/pages/email_verification_screen.dart';
-import '../../features/authentication/presentation/pages/profile_screen.dart';
+import '../../features/authentication/presentation/pages/create_user_screen.dart';
 import '../../features/authentication/presentation/pages/signup_screen.dart';
 
 class Routes {

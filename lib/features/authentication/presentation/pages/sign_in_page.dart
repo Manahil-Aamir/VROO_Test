@@ -20,8 +20,8 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _obscurePassword = true; // Added state to track password visibility
 
-  /// Toggles between "Login" and "Forgot Password" mode
   bool _isLoginMode = true;
   bool _isPasswordObscured = true;
 
@@ -35,7 +35,6 @@ class _SignInPageState extends State<SignInPage> {
       body: BlocConsumer<SignInBloc, SignInState>(
         listener: (context, state) {
           if (state is AuthLoginSuccess) {
-            // Show success message
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Login Successful!'),
@@ -43,9 +42,7 @@ class _SignInPageState extends State<SignInPage> {
                 duration: Duration(seconds: 3),
               ),
             );
-            // Navigate on successful login
             Navigator.pushNamed(context, '/riderhome');
-            // or context.read<Navigation>().navigateTo('/home');
           } else if (state is AuthLoginFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -81,40 +78,33 @@ class _SignInPageState extends State<SignInPage> {
             padding: EdgeInsets.all(16.w),
             child: Column(
               children: [
-                /// Email Field
                 InputField(
                   labelText: 'Email',
                   controller: _emailController,
                 ),
                 SizedBox(height: 20.h),
 
-                /// Password Field (only in login mode)
                 if (_isLoginMode)
                   InputField(
                     labelText: 'Password',
                     controller: _passwordController,
-                    obscure: _isPasswordObscured,
-                    icon: _isPasswordObscured
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    onIconTap: () {
-                      setState(() {
-                        _isPasswordObscured = !_isPasswordObscured;
-                      });
-                    },
+                    obscure: _obscurePassword,
+                    // Added eye icon toggle
+                    suffixIcon: GestureDetector(
+                      onTap: () => setState(() => _obscurePassword = !_obscurePassword),
+                      child: Icon(
+                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        color: Theme.of(context).primaryColor, // Set primary color
+                      ),
+                    ),
                   ),
 
-                /// "Forgot Password?" link on the right side (login mode only)
                 if (_isLoginMode) SizedBox(height: 5.h),
                 if (_isLoginMode)
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _isLoginMode = false;
-                        });
-                      },
+                      onPressed: () => setState(() => _isLoginMode = false),
                       child: Text(
                         'Forgot Password?',
                         style: theme.textTheme.bodyMedium
@@ -125,7 +115,6 @@ class _SignInPageState extends State<SignInPage> {
 
                 SizedBox(height: 14.h),
 
-                /// "Does not have an account? Sign Up" link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -140,9 +129,7 @@ class _SignInPageState extends State<SignInPage> {
                           theme.primaryColor.withOpacity(0.1),
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/sign_up');
-                      },
+                      onPressed: () => Navigator.pushNamed(context, '/sign_up'),
                       child: Text(
                         'Sign Up',
                         style: theme.textTheme.bodyMedium?.copyWith(
@@ -158,26 +145,23 @@ class _SignInPageState extends State<SignInPage> {
 
                 SizedBox(height: 20.h),
 
-                /// Button to either Login or Reset Password
                 GradientButton(
                   onTap: () {
                     if (_isLoginMode) {
                       context.read<SignInBloc>().add(
-                            LoginEvent(
-                              email: _emailController.text.trim(),
-                              password: _passwordController.text.trim(),
-                            ),
-                          );
+                        LoginEvent(
+                          email: _emailController.text.trim(),
+                          password: _passwordController.text.trim(),
+                        ),
+                      );
                     } else {
                       context.read<SignInBloc>().add(
-                            ForgotPasswordEvent(
-                              email: _emailController.text.trim(),
-                            ),
-                          );
+                        ForgotPasswordEvent(
+                          email: _emailController.text.trim(),
+                        ),
+                      );
                       context.read<Navigation>().navigateTo('/sign_in');
-                      setState(() {
-                        _isLoginMode = true;
-                      });
+                      setState(() => _isLoginMode = true);
                     }
                   },
                   text: _isLoginMode ? 'Login' : 'Reset Password',

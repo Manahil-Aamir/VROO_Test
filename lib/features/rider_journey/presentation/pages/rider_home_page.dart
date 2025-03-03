@@ -6,7 +6,6 @@ import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/bottomnavbar.dart';
 import '../../../../shared/widgets/side_bar.dart';
 import '../../../../shared/widgets/top_bar_rider_widget.dart';
-import '../../dependancy_injection/rider_home_di.dart';
 import '../bloc/bloc/rider_home_bloc.dart';
 import '../bloc/state/rider_home_state.dart';
 import '../widgets/locationselection.dart';

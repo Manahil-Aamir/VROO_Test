@@ -20,8 +20,9 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  bool _obscurePassword = true; 
+  bool _obscurePassword2 = true; 
 
   @override
   void dispose() {
@@ -101,13 +102,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 InputField(
                   labelText: 'Password',
                   controller: _passwordController,
-                  obscure: true,
+                  obscure: _obscurePassword,
+                  suffixIcon: GestureDetector(
+                      onTap: () => setState(() => _obscurePassword = !_obscurePassword),
+                      child: Icon(
+                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        color: Theme.of(context).primaryColor, // Set primary color
+                      ),
+                    ),
                 ),
                 SizedBox(height: 20.h),
                 InputField(
                   labelText: 'Confirm Password',
                   controller: _confirmPasswordController,
-                  obscure: true,
+                  obscure: _obscurePassword2,
+                  suffixIcon: GestureDetector(
+                      onTap: () => setState(() => _obscurePassword2 = !_obscurePassword2),
+                      child: Icon(
+                        _obscurePassword2 ? Icons.visibility_off : Icons.visibility,
+                        color: Theme.of(context).primaryColor, // Set primary color
+                      ),
+                    ),
                 ),
                 SizedBox(height: 20.h),
                 Row(
