@@ -1,5 +1,3 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 abstract class MapState {}
 
 class MapInitial extends MapState {}
@@ -24,7 +22,6 @@ class MapLoaded extends MapState {
 
   MapLoaded({required this.routeData, this.selectedRoute});
 
-  @override
   List<Object?> get props => [routeData, selectedRoute];
 }
 

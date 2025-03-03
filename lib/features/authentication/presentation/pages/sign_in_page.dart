@@ -20,10 +20,9 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _obscurePassword = true; // Added state to track password visibility
+  bool _obscurePassword = true; 
 
   bool _isLoginMode = true;
-  bool _isPasswordObscured = true;
 
   @override
   Widget build(BuildContext context) {
