@@ -72,7 +72,9 @@ class RouteMapScreen extends StatelessWidget {
                               padding:
                                   const EdgeInsets.fromLTRB(20, 10, 20, 10),
                               child: Text(
-                                'Distance: ${state.selectedRoute?['distance']}, Duration: ${state.selectedRoute?['duration']}',
+                                // 'Distance: ${state.selectedRoute['distance']}\n'
+                                // 'Duration: ${state.selectedRoute['duration']}',
+                                'Distance: ${state.selectedRoute?['distance']} \nDuration: ${state.selectedRoute?['duration']}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineMedium
