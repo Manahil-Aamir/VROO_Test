@@ -9,7 +9,7 @@ class CustomBottomNavBar extends StatelessWidget {
     String route;
     switch (index) {
       case 0:
-        route = '/driver_home'; // Driver's home
+        route = '/home'; // Driver's home
         break;
       case 1:
         route = '/active_ride_page'; // Active requests

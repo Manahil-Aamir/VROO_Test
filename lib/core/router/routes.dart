@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:vroo_test/features/authentication/dependency_injection/sign_in_di.dart';
 import 'package:vroo_test/features/authentication/presentation/pages/sign_in_page.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
+import '../../features/HomeScreens/dependency_injection/home_di.dart';
+import '../../features/HomeScreens/dependency_injection/location_di.dart';
+import '../../features/HomeScreens/presentation/pages/home_screen.dart';
+import '../../features/HomeScreens/presentation/pages/location_selection.dart';
 import '../../features/driver_booking/dependency_injection/booking_di.dart';
 import '../../features/driver_booking/dependency_injection/d1_di.dart';
 import '../../features/driver_booking/dependency_injection/d2_di.dart';
 import '../../features/driver_booking/dependency_injection/d3_di.dart';
-import '../../features/driver_booking/dependency_injection/driver_home_di.dart';
 import '../../features/driver_booking/domain/entity/car.dart';
 import '../../features/driver_booking/presentation/pages/BookingConfirmationDriver.dart';
 import '../../features/driver_booking/presentation/pages/d1.dart';
 import '../../features/driver_booking/presentation/pages/d2.dart';
 import '../../features/driver_booking/presentation/pages/d3.dart';
-import '../../features/driver_booking/presentation/pages/driver_home_screen.dart';
-import '../../features/driver_booking/presentation/pages/location_selection_screen.dart';
 import '../../features/driver_booking/presentation/pages/route_display_page.dart';
 import 'package:vroo_test/features/rider_journey/data/model/preferences_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import 'package:vroo_test/features/rider_journey/dependancy_injection/booking_confirm_di.dart';
-import 'package:vroo_test/features/rider_journey/dependancy_injection/rider_home_di.dart';
-import 'package:vroo_test/features/rider_journey/presentation/pages/rider_home_page.dart';
 import '../../features/driver_requests/dependency_injection/active_rides_di.dart';
 import '../../features/driver_requests/dependency_injection/pending_rides_di.dart';
 import '../../features/driver_requests/presentation/pages/active_rides_screen.dart';
@@ -32,7 +32,6 @@ import '../../features/rider_journey/dependancy_injection/r1_di.dart';
 import '../../features/rider_journey/dependancy_injection/r2_di.dart';
 import '../../features/rider_journey/dependancy_injection/r3_di.dart';
 import '../../features/rider_journey/presentation/pages/booking_confirm_screen.dart';
-import '../../features/rider_journey/presentation/pages/location_selection_screen.dart';
 import '../../features/rider_journey/presentation/pages/r1_page.dart';
 import '../../features/rider_journey/presentation/pages/r2_page.dart';
 import '../../features/rider_journey/presentation/pages/r3_page.dart';
@@ -64,19 +63,24 @@ class Routes {
   static const String sign_in = '/sign_in';
   static const String emailVerification = '/email-verification';
   static const String profile = '/profile';
+  static const String home = '/home';
+  static const String location= '/location';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case driverHome:
+      case home:
         return MaterialPageRoute(
-            builder: (_) => MultiProvider(
-                providers: DriverHomeDependencyInjection.init(),
-                child: const DriverHomeScreen()));
-      case locationSelectionDriver:
-        final role =
-            settings.arguments as String? ?? 'driver'; // Default to 'driver'
+          builder: (_) => MultiBlocProvider( // Use MultiBlocProvider instead of MultiProvider
+            providers: HomeDependencyInjection.init(),
+            child: const HomeScreen(),
+          ),
+        );
+      case location:
         return MaterialPageRoute(
-          builder: (_) => DriverLocationSelectionScreen(role: role),
+          builder: (_) => MultiBlocProvider(
+            providers: LocationDependencyInjection.init(),
+            child: const LocationSelectionScreen(),
+          ),
         );
       case routeDisplayPage:
         final args = settings.arguments as Map<String, dynamic>? ?? {};
@@ -583,20 +587,6 @@ class Routes {
           builder: (_) => MultiProvider(
               providers: RidesDetailsDi.init(),
               child: PendingRidesScreen(id: id)),
-        );
-
-      case riderhome:
-        return MaterialPageRoute(
-            builder: (_) => MultiProvider(providers: [
-                  ...RiderHomeDependencyInjection.init(),
-                  ...DriverHomeDependencyInjection.init(),
-                ], child: const RiderHomeScreen()));
-      case locationSelection:
-        final arguments = settings.arguments as Map<String, String?>;
-        final role = arguments['role'] ??
-            'rider'; // Access 'role' from the map, default to 'rider'
-        return MaterialPageRoute(
-          builder: (_) => RiderLocationSelectionScreen(role: role),
         );
       case r1Page:
         final arguments =

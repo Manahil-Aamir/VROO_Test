@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'app/app.dart';
 import 'core/router/navigation.dart';
+import 'features/HomeScreens/dependency_injection/role_di.dart';
 import 'features/notification/data/data_source/notification_remote_data_source.dart';
 import 'features/notification/data/repository/notification_repository_impl.dart';
 import 'features/notification/dependency_injection/Notification_di.dart';
@@ -39,6 +40,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ...RoleDependencyInjection.init(), // Add role DI
         Provider<Navigation>(create: (_) => Navigation()),
         ...NotificationDependencyInjection.essentialProviders(),
         Provider<FirebaseService>(create: (_) => firebaseService),

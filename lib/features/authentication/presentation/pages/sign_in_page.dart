@@ -41,7 +41,8 @@ class _SignInPageState extends State<SignInPage> {
                 duration: Duration(seconds: 3),
               ),
             );
-            Navigator.pushNamed(context, '/riderhome');
+            context.read<Navigation>().navigateTo('/home');
+            // Navigator.pushNamed(context, '/home');
           } else if (state is AuthLoginFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
