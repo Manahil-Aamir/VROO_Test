@@ -16,23 +16,25 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   Future<void> _onAppStarted(AppStarted event, Emitter<AppState> emit) async {
-    // Check initial auth state synchronously
-    final initialUser = _auth.currentUser;
-    if (initialUser != null) {
-      emit(AppAuthenticated());
-    } else {
-      emit(AppUnauthenticated());
-    }
-
-    // Listen for future auth changes
-    _authSubscription?.cancel();
-    _authSubscription = _auth.authStateChanges().listen((user) {
-      if (user != null && state is! AppAuthenticated) {
+    try {
+      final initialUser = _auth.currentUser;
+      if (initialUser != null) {
         emit(AppAuthenticated());
-      } else if (user == null && state is! AppUnauthenticated) {
+      } else {
         emit(AppUnauthenticated());
       }
-    });
+
+      _authSubscription?.cancel();
+      _authSubscription = _auth.authStateChanges().listen((user) {
+        if (user != null && state is! AppAuthenticated) {
+          emit(AppAuthenticated());
+        } else if (user == null && state is! AppUnauthenticated) {
+          emit(AppUnauthenticated());
+        }
+      });
+    } catch (e) {
+      emit(AppUnauthenticated());
+    }
   }
 
   @override

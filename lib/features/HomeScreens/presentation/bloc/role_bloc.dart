@@ -14,9 +14,14 @@ class RoleBloc extends Bloc<RoleEvent, RoleState> {
   }
 
   void _onSwitchRole(SwitchRoleEvent event, Emitter<RoleState> emit) {
-    final newRole = state.role == 'Driver' ? 'Rider' : 'Driver';
-    prefs.setString('user_role', newRole);
-    emit(RoleSwitched(newRole));
+    try {
+      final newRole = state.role == 'Driver' ? 'Rider' : 'Driver';
+      prefs.setString('user_role', newRole);
+      emit(RoleSwitched(newRole));
+    } catch (e) {
+      // Handle error
+      print('Error switching role: $e');
+    }
   }
 }
 
