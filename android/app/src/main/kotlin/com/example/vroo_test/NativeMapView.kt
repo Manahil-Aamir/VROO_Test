@@ -19,16 +19,11 @@ class NativeMapView(
     private lateinit var googleMap: GoogleMap
     private val methodChannel: MethodChannel
 
-    // Store route data at the class level
     private var routeData: List<Map<String, Any>> = emptyList()
-
-    // Store all polylines
     private val allPolylines = mutableListOf<Polyline>()
-
-    // Track currently selected polyline
     private var selectedPolyline: Polyline? = null
+    private var selectedMarker: Marker? = null  // Track the selected marker
 
-    // Define route colors
     private val routeColors = listOf(
         Color.parseColor("#8B008B"), // Dark Magenta
         Color.parseColor("#008B8B"), // Dark Cyan
@@ -58,7 +53,6 @@ class NativeMapView(
         googleMap.uiSettings.isZoomControlsEnabled = true
         googleMap.uiSettings.isMyLocationButtonEnabled = true
 
-        // Set initial camera position
         val initialLatLng = LatLng(24.941875, 67.114297)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLatLng, 15f))
         println("Google Map is ready!")
@@ -74,14 +68,40 @@ class NativeMapView(
                 val convertedRoute = selectedRoute.mapKeys { it.key.toString() }
                 methodChannel.invokeMethod("routeSelected", convertedRoute)
 
-                // Reset all polyline colors (make all unselected)
+                // Reset all polyline colors
                 allPolylines.forEachIndexed { index, line ->
                     line.color = routeColors[index % routeColors.size]
+                    line.width = 10f  // Reset width of unselected lines
                 }
 
                 // Highlight the newly selected polyline
                 polyline.color = Color.parseColor("#EC8825")
+                polyline.width = 20f  // Increase width for the selected polyline
                 selectedPolyline = polyline
+
+                // Find midpoint of the selected route
+                val routeCoords = (selectedRoute["coords"] as? List<List<Double>>)?.map {
+                    LatLng(it[0], it[1])
+                } ?: return@setOnPolylineClickListener
+
+                val midIndex = routeCoords.size / 2
+                val midPoint = routeCoords[midIndex]  // Midpoint of route
+
+                // Remove the previous marker if exists
+                selectedMarker?.remove()
+
+                // Add a new marker at the midpoint with route details
+                selectedMarker = googleMap.addMarker(
+                    MarkerOptions()
+                        .position(midPoint)
+                        .title("Route Info")
+                       .snippet(
+            "${selectedRoute["distance"]}, ${selectedRoute["duration"]}"
+        )
+                )
+
+                // Show the info window immediately
+                selectedMarker?.showInfoWindow()
             }
         }
     }
@@ -103,7 +123,7 @@ class NativeMapView(
         println("Received ${routeData.size} routes to draw")
 
         googleMap.clear()
-        allPolylines.clear()  // Clear polyline tracking list
+        allPolylines.clear()
 
         val builder = LatLngBounds.Builder()
 
@@ -113,7 +133,7 @@ class NativeMapView(
 
             val polylineOptions = PolylineOptions()
                 .color(color)
-                .width(8f)
+                .width(10f)  // Default width for unselected polylines
                 .geodesic(true)
                 .clickable(true)
 
@@ -124,8 +144,8 @@ class NativeMapView(
             }
 
             val polyline = googleMap.addPolyline(polylineOptions)
-            polyline.tag = route  // Store the route data in the polyline
-            allPolylines.add(polyline)  // Track this polyline
+            polyline.tag = route
+            allPolylines.add(polyline)
             println("Polyline added with ${coords.size} points, color: $color")
         }
 
