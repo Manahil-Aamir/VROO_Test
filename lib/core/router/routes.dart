@@ -40,9 +40,11 @@ import '../../features/authentication/dependency_injection/create_user_di.dart';
 import '../../features/authentication/presentation/pages/email_verification_screen.dart';
 import '../../features/authentication/presentation/pages/create_user_screen.dart';
 import '../../features/authentication/presentation/pages/signup_screen.dart';
+import '../../splash.dart';
 
 class Routes {
   static const String ui = '/ui';
+  static const String splash = '/splash';
   static const String driverHome = '/driver_home';
   static const String locationSelectionDriver = '/location_selection_driver';
   static const String routeDisplayPage = '/route_display_page';
@@ -68,6 +70,10 @@ class Routes {
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case splash:
+        return MaterialPageRoute(
+          builder: (_) => const SplashScreen(),
+        );
       case home:
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider( // Use MultiBlocProvider instead of MultiProvider

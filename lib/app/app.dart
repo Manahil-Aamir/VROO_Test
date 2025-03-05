@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'app_bloc.dart';
+import 'app_event.dart';
+import 'app_state.dart';
 import '../core/router/navigation.dart';
 import '../core/router/routes.dart';
-import 'app_bloc.dart';
-import 'app_state.dart';
 import '../core/theme/app_theme.dart';
 
 class App extends StatelessWidget {
@@ -12,8 +14,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AppBloc(),
+    return MultiProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AppBloc()..add(AppStarted()),
+        ),
+      ],
       child: BlocBuilder<AppBloc, AppState>(
         builder: (context, state) {
           return ScreenUtilInit(
@@ -21,17 +27,14 @@ class App extends StatelessWidget {
             minTextAdapt: true,
             splitScreenMode: true,
             useInheritedMediaQuery: true,
-            rebuildFactor: (old, data) => true,
-            builder: (context, widget) {
+            builder: (context, child) {
               return MaterialApp(
                 navigatorKey: Navigation.navigatorKey,
                 title: "Vroo",
                 theme: AppTheme.getThemeData(),
                 debugShowCheckedModeBanner: false,
                 builder: (context, widget) {
-                  widget ??= const Center(
-                    child: Text('App Widget is null'),
-                  );
+                  widget ??= const Center(child: Text('App Widget is null'));
                   return MediaQuery(
                     data: MediaQuery.of(context).copyWith(
                       textScaler: const TextScaler.linear(1.0),
@@ -39,7 +42,7 @@ class App extends StatelessWidget {
                     child: widget,
                   );
                 },
-                initialRoute: Routes.home,
+                initialRoute: _getInitialRoute(state),
                 onGenerateRoute: Routes().generateRoute,
               );
             },
@@ -47,5 +50,14 @@ class App extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String _getInitialRoute(AppState state) {
+    if (state is AppAuthenticated) {
+      return Routes.home;
+    } else if (state is AppUnauthenticated) {
+      return Routes.sign_in;
+    }
+    return Routes.splash;
   }
 }

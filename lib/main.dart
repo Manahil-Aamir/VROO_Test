@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'app/app.dart';
 import 'core/router/navigation.dart';
 import 'features/HomeScreens/dependency_injection/role_di.dart';
@@ -27,6 +28,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final prefs = await SharedPreferences.getInstance();
 
   // Initialize FCM Service FIRST
   final firebaseService = FirebaseService(
@@ -40,7 +42,8 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ...RoleDependencyInjection.init(), // Add role DI
+        ...await RoleDependencyInjection.init(),
+        Provider<SharedPreferences>(create: (_) => prefs),
         Provider<Navigation>(create: (_) => Navigation()),
         ...NotificationDependencyInjection.essentialProviders(),
         Provider<FirebaseService>(create: (_) => firebaseService),

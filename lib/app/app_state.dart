@@ -7,5 +7,6 @@ abstract class AppState extends Equatable {
   List<Object?> get props => [];
 }
 
-// Example of a specific state
 class AppInitial extends AppState {}
+class AppAuthenticated extends AppState {}
+class AppUnauthenticated extends AppState {}

@@ -1,15 +1,22 @@
-// features/home/presentation/bloc/role/role_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RoleBloc extends Bloc<RoleEvent, RoleState> {
-  RoleBloc() : super(const RoleInitial('Driver')) {
+  final SharedPreferences prefs;
+
+  RoleBloc({required this.prefs}) : super(RoleInitial(_getInitialRole(prefs))) {
     on<SwitchRoleEvent>(_onSwitchRole);
   }
 
+  static String _getInitialRole(SharedPreferences prefs) {
+    return prefs.getString('user_role') ?? 'Driver';
+  }
+
   void _onSwitchRole(SwitchRoleEvent event, Emitter<RoleState> emit) {
-    emit(RoleSwitched(state.role == 'Driver' ? 'Rider' : 'Driver'));
+    final newRole = state.role == 'Driver' ? 'Rider' : 'Driver';
+    prefs.setString('user_role', newRole);
+    emit(RoleSwitched(newRole));
   }
 }
 
