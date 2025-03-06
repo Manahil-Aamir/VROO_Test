@@ -28,6 +28,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Register background handler from FirebaseService
+  FirebaseMessaging.onBackgroundMessage(
+    FirebaseService.handleBackgroundMessage, // Static reference
+  );
+
   final prefs = await SharedPreferences.getInstance();
 
   // Initialize FCM Service FIRST
