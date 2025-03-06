@@ -43,3 +43,4 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     return super.close();
   }
 }
+

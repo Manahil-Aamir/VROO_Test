@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vroo_test/shared/widgets/setting_button.dart';
+import '../../../../core/router/navigation.dart';
 import '../bloc/bloc/home_bloc.dart';
 import '../bloc/role_bloc.dart';
 import 'logout_dialog.dart';
@@ -31,6 +32,13 @@ class SidebarWidget extends StatelessWidget {
                 ),
               ),
               SettingButton(
+                  onTap: () {
+                    context.read<Navigation>().navigateTo('/sos');
+                  },
+                  text: 'SOS',
+                  color: Theme.of(context).indicatorColor,
+                  textColor: Theme.of(context).scaffoldBackgroundColor),
+              SettingButton(
                 onTap: () {
                   Navigator.of(context).pop();
                   final homeBloc = context.read<HomeBloc>();
@@ -38,6 +46,7 @@ class SidebarWidget extends StatelessWidget {
                 },
                 text: 'Logout',
                 color: Theme.of(context).primaryColor,
+                textColor: Theme.of(context).primaryColorDark,
               ),
             ],
           ),
