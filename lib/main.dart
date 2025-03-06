@@ -14,14 +14,6 @@ import 'firebase_options.dart';
 import 'core/services/firebase_service.dart';
 import 'package:http/http.dart' as http;
 
-
-// Background handler (must be top-level)
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print("[BACKGROUND] Received message: ${message.messageId}");
-  print("Notification data: ${message.data}");
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
