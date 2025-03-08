@@ -94,7 +94,6 @@ class _D1PageState extends State<D1Page> {
         );
 
         context.read<D1Bloc>().add(SaveScheduleEvent(schedule));
-        // context.read<Navigation>().navigateTo('/driver_home');
         context.read<Navigation>().navigateTo(
           '/d2',
           arguments: {

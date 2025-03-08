@@ -45,7 +45,6 @@ import '../../splash.dart';
 class Routes {
   static const String ui = '/ui';
   static const String splash = '/splash';
-  static const String driverHome = '/driver_home';
   static const String locationSelectionDriver = '/location_selection_driver';
   static const String routeDisplayPage = '/route_display_page';
   static const String d1 = '/d1';
