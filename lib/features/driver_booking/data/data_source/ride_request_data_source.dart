@@ -15,13 +15,17 @@ class RideRemoteDataSourceImpl implements RideRemoteDataSource {
   @override
   Future<void> submitRideRequest(RideRequestModel request) async {
     final url = Uri.parse(
-        'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/driver/ride');
+      // 'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/driver/ride'
+      'http://10.0.2.2:8080/driver/ride'    
+    );
     final response = await client.post(
       url,
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(request.toJson()),
     );
+
     print('Response: ${response.body}');
+    print('Response status: ${response.statusCode}');
 
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception("Failed to submit ride request");

@@ -51,7 +51,25 @@ class D3 extends StatelessWidget {
     required this.routeDuration,
   });
 
-  @override
+
+  void printVariables() {
+    print('fromDescription: $fromDescription');
+    print('fromPlaceId: $fromPlaceId');
+    print('toDescription: $toDescription');
+    print('toPlaceId: $toPlaceId');
+    print('routeCoords: $routeCoords');
+    print('date: $date');
+    print('time: $time');
+    print('maxArrivalTime: $maxArrivalTime');
+    print('recurrence: $recurrence');
+    print('selectedCar: $selectedCar');
+    print('availableSeats: $availableSeats');
+    print('sameGenderOnly: $sameGenderOnly');
+    print('paymentOption: $paymentOption');
+    print('routeDistance: $routeDistance');
+    print('routeDuration: $routeDuration');
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<RideBloc, RideState>(

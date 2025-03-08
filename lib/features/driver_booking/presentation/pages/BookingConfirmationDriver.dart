@@ -32,7 +32,7 @@ class BookingConfirmationDriverScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: GradientButton(
                 onTap: () {
-                  context.read<Navigation>().navigateTo('/driver_home');
+                  context.read<Navigation>().navigateTo('/home');
                 },
                 text: "Go to Home",
               ),

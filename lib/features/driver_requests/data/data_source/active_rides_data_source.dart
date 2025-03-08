@@ -16,7 +16,9 @@ class ActiveRidesRemoteDataSource implements ActiveRidesDataSource {
   Future<List<ActiveRideModel>> getActiveRides(String driverId) async {
     final response = await client.get(
       Uri.parse(
-          'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/driver/active-rides/$driverId'),
+        // 'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/driver/active-rides/$driverId'
+        'http://10.0.2.2:8080/driver/active-rides/$driverId'
+      ),
     );
 
     print('Response status: ${response.statusCode}');

@@ -90,8 +90,8 @@ class Routes {
         );
       case routeDisplayPage:
         final args = settings.arguments as Map<String, dynamic>? ?? {};
-        final toPlaceID = args['toPlaceId'] as String? ?? '';
-        final fromPlaceID = args['fromPlaceId'] as String? ?? '';
+        final toPlaceID = args['toPlaceId'] as String? ?? 'ChIJ9SEZ0Lw4sz4RhAdTxTaH2V8';
+        final fromPlaceID = args['fromPlaceId'] as String? ?? 'ChIJOyUu0UQ-sz4RzFgD4rLU7PI';
         final toDescription = args['toDescription'] as String? ??
             'IBA, University Rd, University Of Karachi, Karachi, Pakistan';
         final fromDescription = args['fromDescription'] as String? ??

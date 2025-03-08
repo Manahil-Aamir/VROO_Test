@@ -27,14 +27,18 @@ class R3DataSource {
   Future<RideResponseModel> sendRideRequest(
       Map<String, dynamic> requestData) async {
     final url = Uri.parse(
-        'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/rider/ride-request');
+      // 'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/rider/ride-request'
+      'http://10.0.2.2:8080/rider/ride-request'
+    );
     final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(requestData),
     );
 
-    if (response.statusCode == 201) {
+    print('Response: ${response.statusCode}');
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
       final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
       print(responseBody);
       return RideResponseModel.fromMap(responseBody); // ✅ Convert map to model

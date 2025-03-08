@@ -57,7 +57,9 @@ class PendingRidesRemoteDataSource implements PendingRidesDataSource {
   @override
   Future<void> approveRideRequest(String rideRequestId, String rideId) async {
     final url =
-        'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/rider/ride-request/join/$rideRequestId/approve';
+      // 'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/rider/ride-request/join/$rideRequestId/approve'
+      'http://10.0.2.2:8080/ride/ride-request/join/$rideRequestId/approve'
+    ;
     final response = await client.post(Uri.parse(url));
     if (response.statusCode != 200) {
       throw Exception('Approval failed: ${response.statusCode}');
