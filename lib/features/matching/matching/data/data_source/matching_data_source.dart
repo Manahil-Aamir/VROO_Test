@@ -11,10 +11,9 @@ class MatchingDataSource {
 
   Future<Map<String, dynamic>> sendJoinRequest(
       Map<String, String> rideData) async {
-    final url = Uri.parse(
-      '${ApiConstants.baseUrl}ride/ride-request/join'
-      // 'http://localhost:8080/ride/ride-request/join'
-    );
+    final url = Uri.parse('${ApiConstants.baseUrl}ride/ride-request/join'
+        // 'http://localhost:8080/ride/ride-request/join'
+        );
 
     // Encode the data to JSON
     final String jsonBody = json.encode(rideData);
@@ -42,10 +41,9 @@ class MatchingDataSource {
 
   Future<List<dynamic>> sendRideRequest(
       String rideRequestId, Map<String, dynamic> requestData) async {
-    final url = Uri.parse(
-      '${ApiConstants.baseUrl}rider/ride-request/$rideRequestId'
-      // 'http://10.0.2.2:8080/rider/ride-request/$rideRequestId'
-    );
+    final url =
+        Uri.parse('${ApiConstants.baseUrl}rider/ride-request/$rideRequestId');
+
     final response = await client.patch(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -53,11 +51,14 @@ class MatchingDataSource {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
       final responseBody = jsonDecode(response.body);
+
+      // Extract only the 'data' field and ensure it's a List
+      final data = responseBody['data'];
       print('matching update');
-      print(responseBody);
-      return responseBody;
+      print(data);
+
+      return data is List ? data : [];
     } else {
       throw Exception("Failed to send ride request");
     }

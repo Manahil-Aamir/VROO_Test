@@ -209,11 +209,17 @@ class RideResponseModel extends RideResponse {
   }
 
   factory RideResponseModel.fromMap(Map<String, dynamic> map) {
+    final data = map['data'] as Map<String, dynamic>? ?? {};
+
     return RideResponseModel(
-      message: map['message'] ?? '',
-      rideRequestId: map['rideRequestId'] ?? '',
-      matchingRides: List<MatchingRideModel>.from((map['matchingRides'] ?? [])
-          .map((x) => MatchingRideModel.fromMap(x))),
+      message: data['message'] ?? '',
+      rideRequestId: data['rideRequestId'] ?? '',
+      matchingRides: (data['matchingRides'] != null &&
+              data['matchingRides'] is List)
+          ? (data['matchingRides'] as List)
+              .map((x) => MatchingRideModel.fromMap(x as Map<String, dynamic>))
+              .toList()
+          : [],
     );
   }
 }
