@@ -108,7 +108,7 @@ class _MatchingPageState extends State<MatchingPage> {
                       ),
                     );
                   });
-                  context.read<Navigation>().navigateTo('/riderhome');
+                  context.read<Navigation>().navigateTo('/home');
                 } else if (state is RiderRequestError) {
                   // Show an error SnackBar when there's an error.
                   WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -27,7 +27,9 @@ class R3DataSource {
   }
 
   Future<RideResponseModel> sendRideRequest(
-      Map<String, dynamic> requestData) async {
+    Map<String, dynamic> requestData) async {
+      print('Request Data: $requestData');
+      print('In Send Request Datasource');
     final url = Uri.parse(
       '${ApiConstants.baseUrl}rider/ride-request'
       // 'http://10.0.2.2:8080/rider/ride-request'
@@ -43,6 +45,8 @@ class R3DataSource {
     if (response.statusCode == 201 || response.statusCode == 200) {
       final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
       print(responseBody);
+      print('here in success in datasource');
+      print(RideResponseModel.fromMap(responseBody));
       return RideResponseModel.fromMap(responseBody); // ✅ Convert map to model
     } else {
       throw Exception("Failed to send ride request");

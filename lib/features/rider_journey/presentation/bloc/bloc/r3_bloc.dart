@@ -21,8 +21,10 @@ class R3Bloc extends Bloc<R3Event, R3State> {
     try {
       final response = await requestRideUseCase(event.rideData.toMap());
       print(response);
+      print('here in success');
       emit(RideRequestSuccess(response));
     } catch (e) {
+      print('here in error');
       print('error: $e');
       emit(RideRequestFailure(e.toString()));
     }
