@@ -1,11 +1,11 @@
 import 'dart:convert'; // Import this for JSON encoding
 import 'package:http/http.dart' as http;
 
+import '../../../../core/utils/constant/api_constants.dart';
 import '../model/notification_request.dart';
 
 class NotificationRemoteDataSource {
   final http.Client client;
-  static const String baseUrl = 'http://10.0.2.2:3000';
 
   NotificationRemoteDataSource(this.client);
 
@@ -14,9 +14,9 @@ class NotificationRemoteDataSource {
     print(NotificationRequest(token).toJson());
 
     final response = await client.post(
-      Uri.parse('$baseUrl/send-notification/test'),
-      headers: {'Content-Type': 'application/json'}, // Add JSON headers
-      body: jsonEncode(NotificationRequest(token).toJson()), // Encode the body properly
+      Uri.parse('${ApiConstants.baseUrl}/send-notification/test'),
+      headers: {'Content-Type': 'application/json'}, 
+      body: jsonEncode(NotificationRequest(token).toJson()), 
     );
 
     print('Response status: ${response.statusCode}');

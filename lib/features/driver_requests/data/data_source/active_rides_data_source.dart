@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../../../../core/utils/constant/api_constants.dart';
 import '../model/active_ride_model.dart';
 
 abstract class ActiveRidesDataSource {
@@ -16,8 +17,8 @@ class ActiveRidesRemoteDataSource implements ActiveRidesDataSource {
   Future<List<ActiveRideModel>> getActiveRides(String driverId) async {
     final response = await client.get(
       Uri.parse(
-        // 'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/driver/active-rides/$driverId'
-        'http://10.0.2.2:8080/driver/active-rides/$driverId'
+        '${ApiConstants.baseUrl}driver/active-rides/$driverId'
+        // 'http://10.0.2.2:8080/driver/active-rides/$driverId'
       ),
     );
 

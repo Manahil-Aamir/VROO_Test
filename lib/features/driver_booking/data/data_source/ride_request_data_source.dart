@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../../../../core/utils/constant/api_constants.dart';
 import '../model/ride_request_modal.dart';
 
 abstract class RideRemoteDataSource {
@@ -15,8 +16,8 @@ class RideRemoteDataSourceImpl implements RideRemoteDataSource {
   @override
   Future<void> submitRideRequest(RideRequestModel request) async {
     final url = Uri.parse(
-      // 'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/driver/ride'
-      'http://10.0.2.2:8080/driver/ride'    
+      '${ApiConstants.baseUrl}driver/ride'    
+      // 'http://10.0.2.2:8080/driver/ride'    
     );
     final response = await client.post(
       url,
