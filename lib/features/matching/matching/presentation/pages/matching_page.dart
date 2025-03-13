@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:vroo_test/features/matching/matching/presentation/widgets/time_window.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
@@ -85,125 +86,128 @@ class _MatchingPageState extends State<MatchingPage> {
       appBar: appBar(
         heading: 'Matching Rides',
       ),
-      body: Column(
-        children: [
-          Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TimeWindowWidget(
-                  minPickupTime: widget.minPickupTime,
-                  maxPickupTime: widget.maxPickupTime,
-                  rideRequestId: widget.rideRequestId,
-                  scheduleDate: widget.schedule.date)),
-          Expanded(
-            child: BlocListener<MatchingBloc, MatchingState>(
-              listener: (context, state) {
-                if (state is RiderJoinSuccess) {
-                  // Show a success SnackBar when the join is successful.
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Request Sent Successfully'),
-                        backgroundColor: theme.secondaryHeaderColor,
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  });
-                  context.read<Navigation>().navigateTo('/home');
-                } else if (state is RiderRequestError) {
-                  // Show an error SnackBar when there's an error.
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Error: ${state.error}'),
-                        backgroundColor: theme.indicatorColor,
-                        duration: Duration(seconds: 3),
-                      ),
-                    );
-                  });
-                }
-              },
-              child: BlocBuilder<MatchingBloc, MatchingState>(
-                builder: (context, state) {
-                  if (state is RiderRequestLoading ||
-                      state is RiderJoinLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is RiderRequestLoaded) {
-                    print('loadinggggggggggg');
-                    return ListView.builder(
-                      itemCount: state.matchingRides.length,
-                      itemBuilder: (context, index) {
-                        try {
-                          final ride = state.matchingRides[index];
-                          return MatchCard(
-                            driverName: ride.driverId,
-                            rating: 4.3,
-                            trips: 5,
-                            source: ride.source.address,
-                            destination: ride.destination.address,
-                            fare: ride.fare,
-                            carModel: ride.car.model,
-                            totalSeats: ride.numOfSeats.toInt(),
-                            filledSeats: ride.passengers.length,
-                            estimatedArrivalTime:
-                                formatArrivalTime(ride.expectedArrivalTime),
-                            id: widget.rideRequestId,
-                            carCompany: ride.car.company,
-                            rideId: ride.id,
-                          );
-                        } catch (error, stackTrace) {
-                          print(
-                              "Error building MatchCard from loaded ride: $error");
-                          return ListTile(
-                            title: Text("Error loading ride"),
-                            subtitle: Text("$error"),
-                          );
-                        }
-                      },
-                    );
+      body: Padding(
+        padding: EdgeInsets.all(12.0.sp),
+        child: Column(
+          children: [
+            Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TimeWindowWidget(
+                    minPickupTime: widget.minPickupTime,
+                    maxPickupTime: widget.maxPickupTime,
+                    rideRequestId: widget.rideRequestId,
+                    scheduleDate: widget.schedule.date)),
+            Expanded(
+              child: BlocListener<MatchingBloc, MatchingState>(
+                listener: (context, state) {
+                  if (state is RiderJoinSuccess) {
+                    // Show a success SnackBar when the join is successful.
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Request Sent Successfully'),
+                          backgroundColor: theme.secondaryHeaderColor,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    });
+                    context.read<Navigation>().navigateTo('/home');
                   } else if (state is RiderRequestError) {
-                    return Center(child: Text('Error: ${state.error}'));
-                  } else if (state is RiderRequestInitial) {
-                    if (widget.initialMatchingRides.isEmpty) {
-                      return const Center(child: Text('No rides found.'));
-                    }
-                    return ListView.builder(
-                      itemCount: widget.initialMatchingRides.length,
-                      itemBuilder: (context, index) {
-                        try {
-                          final ride = widget.initialMatchingRides[index];
-                          return MatchCard(
-                            driverName: ride.driverId,
-                            rating: 4.3,
-                            trips: 5,
-                            source: ride.source.address,
-                            destination: ride.destination.address,
-                            fare: ride.fare,
-                            carModel: ride.car.model,
-                            totalSeats: ride.numOfSeats.toInt(),
-                            filledSeats: ride.passengers.length,
-                            estimatedArrivalTime:
-                                formatArrivalTime(ride.expectedArrivalTime),
-                            id: widget.rideRequestId,
-                            carCompany: ride.car.company,
-                            rideId: ride.id,
-                          );
-                        } catch (error, stackTrace) {
-                          print(
-                              "Error building MatchCard from initial ride: $error");
-                          return ListTile(
-                            title: Text("Error loading ride"),
-                            subtitle: Text("$error"),
-                          );
-                        }
-                      },
-                    );
+                    // Show an error SnackBar when there's an error.
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error: ${state.error}'),
+                          backgroundColor: theme.indicatorColor,
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                    });
                   }
-                  return const SizedBox.shrink();
                 },
+                child: BlocBuilder<MatchingBloc, MatchingState>(
+                  builder: (context, state) {
+                    if (state is RiderRequestLoading ||
+                        state is RiderJoinLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is RiderRequestLoaded) {
+                      print('loadinggggggggggg');
+                      return ListView.builder(
+                        itemCount: state.matchingRides.length,
+                        itemBuilder: (context, index) {
+                          try {
+                            final ride = state.matchingRides[index];
+                            return MatchCard(
+                              driverName: ride.driverId,
+                              rating: 4.3,
+                              trips: 5,
+                              source: ride.source.address,
+                              destination: ride.destination.address,
+                              fare: ride.fare,
+                              carModel: ride.car.model,
+                              totalSeats: ride.numOfSeats.toInt(),
+                              filledSeats: ride.passengers.length,
+                              estimatedArrivalTime:
+                                  formatArrivalTime(ride.expectedArrivalTime),
+                              id: widget.rideRequestId,
+                              carCompany: ride.car.company,
+                              rideId: ride.id,
+                            );
+                          } catch (error, stackTrace) {
+                            print(
+                                "Error building MatchCard from loaded ride: $error");
+                            return ListTile(
+                              title: Text("Error loading ride"),
+                              subtitle: Text("$error"),
+                            );
+                          }
+                        },
+                      );
+                    } else if (state is RiderRequestError) {
+                      return Center(child: Text('Error: ${state.error}'));
+                    } else if (state is RiderRequestInitial) {
+                      if (widget.initialMatchingRides.isEmpty) {
+                        return const Center(child: Text('No rides found.'));
+                      }
+                      return ListView.builder(
+                        itemCount: widget.initialMatchingRides.length,
+                        itemBuilder: (context, index) {
+                          try {
+                            final ride = widget.initialMatchingRides[index];
+                            return MatchCard(
+                              driverName: ride.driverId,
+                              rating: 4.3,
+                              trips: 5,
+                              source: ride.source.address,
+                              destination: ride.destination.address,
+                              fare: ride.fare,
+                              carModel: ride.car.model,
+                              totalSeats: ride.numOfSeats.toInt(),
+                              filledSeats: ride.passengers.length,
+                              estimatedArrivalTime:
+                                  formatArrivalTime(ride.expectedArrivalTime),
+                              id: widget.rideRequestId,
+                              carCompany: ride.car.company,
+                              rideId: ride.id,
+                            );
+                          } catch (error, stackTrace) {
+                            print(
+                                "Error building MatchCard from initial ride: $error");
+                            return ListTile(
+                              title: Text("Error loading ride"),
+                              subtitle: Text("$error"),
+                            );
+                          }
+                        },
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

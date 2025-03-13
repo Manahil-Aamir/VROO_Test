@@ -120,8 +120,8 @@ class _TimeWindowWidgetState extends State<TimeWindowWidget> {
           ),
           elevation: 4.h,
           child: Container(
-            width: 300.w,
-            height: 210.h, // Adjust the height as needed
+            width: 310.w,
+            height: 215.h, // Adjust the height as needed
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
