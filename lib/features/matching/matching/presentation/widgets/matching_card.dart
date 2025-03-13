@@ -13,7 +13,7 @@ class MatchCard extends StatelessWidget {
   final int trips;
   final String source;
   final String destination;
-  final int fare;
+  final double fare;
   final String carModel;
   final int totalSeats;
   final int filledSeats;

@@ -142,7 +142,7 @@ class _MatchingPageState extends State<MatchingPage> {
                             destination: ride.destination.address,
                             fare: ride.fare,
                             carModel: ride.car.model,
-                            totalSeats: ride.numOfSeats,
+                            totalSeats: ride.numOfSeats.toInt(),
                             filledSeats: ride.passengers.length,
                             estimatedArrivalTime:
                                 formatArrivalTime(ride.expectedArrivalTime),
@@ -179,7 +179,7 @@ class _MatchingPageState extends State<MatchingPage> {
                             destination: ride.destination.address,
                             fare: ride.fare,
                             carModel: ride.car.model,
-                            totalSeats: ride.numOfSeats,
+                            totalSeats: ride.numOfSeats.toInt(),
                             filledSeats: ride.passengers.length,
                             estimatedArrivalTime:
                                 formatArrivalTime(ride.expectedArrivalTime),
