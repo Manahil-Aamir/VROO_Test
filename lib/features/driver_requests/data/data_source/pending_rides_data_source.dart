@@ -62,7 +62,7 @@ class PendingRidesRemoteDataSource implements PendingRidesDataSource {
       '${ApiConstants.baseUrl}ride/ride-request/join/$rideRequestId/approve'
     ;
     final response = await client.post(Uri.parse(url));
-    if (response.statusCode != 200) {
+    if (response.statusCode != 200 && response.statusCode != 201){
       throw Exception('Approval failed: ${response.statusCode}');
     }
   }

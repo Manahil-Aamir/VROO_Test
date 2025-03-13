@@ -75,7 +75,7 @@ class ActiveRideCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Amjad Ali',
+              'Ali Ahmed',
               style: textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,

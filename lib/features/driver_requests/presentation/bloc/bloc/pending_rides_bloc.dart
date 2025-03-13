@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../domain/usecases/approve_ride_request.dart';
 import '../../../domain/usecases/get_pending_rides.dart';
 import '../event/pending_rides_event.dart';
@@ -37,6 +36,8 @@ class PendingRidesBloc extends Bloc<PendingRidesEvent, PendingRidesState> {
   ) async {
     try {
       await approveRideRequest.execute(event.rideRequestId, event.rideId);
+      // Emit a success state (optional, if needed)
+      emit(RideApprovalSuccess());
       // Refresh data after approval
       final rides = await getPendingRides.execute(event.rideId);
       emit(PendingRidesLoaded(rides));

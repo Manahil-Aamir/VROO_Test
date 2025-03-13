@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/widgets/appbar.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
+import '../../../../shared/widgets/error_dialog.dart';
 import '../bloc/bloc/pending_rides_bloc.dart';
 import '../bloc/event/pending_rides_event.dart';
 import '../bloc/state/pending_rides_state.dart';
@@ -26,7 +27,21 @@ class _PendingRidesScreenState extends State<PendingRidesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(heading: 'Your Rides'),
-      body: BlocBuilder<PendingRidesBloc, PendingRidesState>(
+      body: BlocConsumer<PendingRidesBloc, PendingRidesState>(
+        listener: (context, state) {
+        if (state is RideApprovalSuccess) {
+          // Show success Snackbar
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Ride approved successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else if (state is PendingRidesError) {
+          // Show error dialog
+          ErrorDialog.show(context, state.message);
+        }
+      },
         builder: (context, state) {
           if (state is PendingRidesLoading) {
             return const Center(child: CircularProgressIndicator());
