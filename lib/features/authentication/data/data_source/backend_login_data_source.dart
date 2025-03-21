@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../../../../core/utils/constant/api_constants.dart';
 
 abstract class BackendLoginDataSource {
-  Future<void> notifyLogin(String uid, String token);
+  Future<void> notifyLogin(String token);
 }
 
 class BackendLoginDataSourceImpl implements BackendLoginDataSource {
@@ -13,9 +13,8 @@ class BackendLoginDataSourceImpl implements BackendLoginDataSource {
   BackendLoginDataSourceImpl({required this.client});
 
   @override
-  Future<void> notifyLogin(String uid, String token) async {
+  Future<void> notifyLogin(String token) async {
     print('in backend login data source');
-    print('uid: $uid');
     print('Logintoken: $token');
     final url = Uri.parse('${ApiConstants.baseUrl}users/login');
     // final url = Uri.parse('http://10.0.2.2:8080/users/login');
@@ -25,10 +24,7 @@ class BackendLoginDataSourceImpl implements BackendLoginDataSource {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
-      body: jsonEncode({'uid': uid}),
     );
-    print(jsonEncode({'uid': uid}));
-
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
 

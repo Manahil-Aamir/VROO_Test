@@ -118,7 +118,6 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
 
   void _submitCreateUser(BuildContext context) {
     final createUser = UserModel(
-      id: FirebaseAuth.instance.currentUser!.uid,
       name: '${firstNameController.text} ${lastNameController.text}',
       gender: selectedGender,
       phoneNumber: phoneController.text,

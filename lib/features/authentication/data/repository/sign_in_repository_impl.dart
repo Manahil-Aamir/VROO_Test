@@ -28,7 +28,7 @@ class SignInRepositoryImpl implements SignInRepository {
     final token = await user.getIdToken();
 
     // Notify backend
-    await backendLoginDataSource.notifyLogin(user.uid, token ?? '');
+    await backendLoginDataSource.notifyLogin(token ?? '');
   }
 
   @override
