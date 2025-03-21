@@ -14,13 +14,14 @@ class NotificationRemoteDataSource {
     print(NotificationRequest(token).toJson());
 
     final response = await client.post(
-      Uri.parse('${ApiConstants.baseUrl}/send-notification/test'),
+      Uri.parse('http://10.0.2.2:8080/send-notification/test'),
+      // Uri.parse('${ApiConstants.baseUrl}/send-notification/test'),
       headers: {'Content-Type': 'application/json'}, 
       body: jsonEncode(NotificationRequest(token).toJson()), 
     );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    print('FCM Response status: ${response.statusCode}');
+    print('FCM Response body: ${response.body}');
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       print('Successfully sent');

@@ -16,6 +16,7 @@ class BackendLoginDataSourceImpl implements BackendLoginDataSource {
   Future<void> notifyLogin(String uid, String token) async {
     print('in backend login data source');
     print('uid: $uid');
+    print('Logintoken: $token');
     final url = Uri.parse('${ApiConstants.baseUrl}users/login');
     // final url = Uri.parse('http://10.0.2.2:8080/users/login');
     final response = await client.post(
