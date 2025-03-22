@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../../../core/utils/constant/api_constants.dart';
 import '../model/user_model.dart';
 
 abstract class UserRemoteDataSource {
@@ -15,7 +16,8 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   @override
   Future<Map<String, dynamic>> createUser(UserModel user, String token) async {
-    final url = Uri.parse('http://10.0.2.2:3000/api/users/signup');
+    final url = Uri.parse('${ApiConstants.baseUrl}users/signup');
+    // final url = Uri.parse('http://10.0.2.2:8080/api/users/signup');
     print('creating user');
     print(token);
     try {

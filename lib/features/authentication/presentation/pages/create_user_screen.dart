@@ -64,7 +64,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
       body: BlocListener<CreateUserBloc, CreateUserState>(
         listener: (context, state) {
           if (state is CreateUserSuccess) {
-            context.read<Navigation>().navigateTo('/riderhome');
+            context.read<Navigation>().navigateTo('/home');
           } else if (state is CreateUserFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.error)),
@@ -118,7 +118,6 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
 
   void _submitCreateUser(BuildContext context) {
     final createUser = UserModel(
-      id: FirebaseAuth.instance.currentUser!.uid,
       name: '${firstNameController.text} ${lastNameController.text}',
       gender: selectedGender,
       phoneNumber: phoneController.text,

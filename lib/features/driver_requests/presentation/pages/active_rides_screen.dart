@@ -19,7 +19,7 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ActiveRidesBloc>().add(FetchActiveRides('hritika_3031'));
+    context.read<ActiveRidesBloc>().add(FetchActiveRides('Ali Ahmed'));
   }
 
   @override

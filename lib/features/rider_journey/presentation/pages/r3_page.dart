@@ -122,9 +122,10 @@ class _R3PageState extends State<R3Page> {
               'minPickupTime': widget.schedule.minTime,
             });
           } else if (state is RideRequestFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: ${runtimeType.toString()}')),
-            );
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(content: Text('Error: ${runtimeType.toString()}')),
+            // );
+            print('Error: ${state.error}');
           }
         },
         child: Column(

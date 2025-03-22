@@ -5,7 +5,7 @@ class DriverAndFare extends StatelessWidget {
   final String driverName;
   final double rating;
   final int trips;
-  final int fare;
+  final double fare;
 
   const DriverAndFare({
     super.key,

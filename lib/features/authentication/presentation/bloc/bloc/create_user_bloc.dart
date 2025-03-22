@@ -34,11 +34,9 @@ class CreateUserBloc extends Bloc<CreateUserEvent, CreateUserState> {
       if (success) {
         emit(CreateUserSuccess());
       } else {
-        // emit(CreateUserSuccess());
         emit(CreateUserFailure(message));
       }
     } catch (e) {
-      // emit(CreateUserSuccess());
       emit(CreateUserFailure(e.toString()));
     }
   }

@@ -2,7 +2,6 @@ import '../../domain/entity/user_entity.dart';
 
 class UserModel extends UserEntity {
   UserModel({
-    required super.id,
     required super.gender,
     required super.phoneNumber,
     required super.name,
@@ -10,7 +9,6 @@ class UserModel extends UserEntity {
   });
 
   Map<String, dynamic> toJson() => {
-        'uid': id,
         'gender': gender,
         'phoneNumber': phoneNumber,
         'name': name,

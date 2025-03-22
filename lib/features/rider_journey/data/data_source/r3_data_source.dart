@@ -3,6 +3,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 
+import '../../../../core/utils/constant/api_constants.dart';
+
 class R3DataSource {
   final http.Client client;
   final String apiKey = "AIzaSyClFyao6GuHD2iaFLzxsz8kAmHUvTAWokI";
@@ -25,18 +27,26 @@ class R3DataSource {
   }
 
   Future<RideResponseModel> sendRideRequest(
-      Map<String, dynamic> requestData) async {
+    Map<String, dynamic> requestData) async {
+      print('Request Data: $requestData');
+      print('In Send Request Datasource');
     final url = Uri.parse(
-        'https://vrooapp-a2fqgtc3cng6gca8.westindia-01.azurewebsites.net/rider/ride-request');
+      '${ApiConstants.baseUrl}rider/ride-request'
+      // 'http://10.0.2.2:8080/rider/ride-request'
+    );
     final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(requestData),
     );
 
-    if (response.statusCode == 201) {
+    print('Response: ${response.statusCode}');
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
       final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
       print(responseBody);
+      print('here in success in datasource');
+      print(RideResponseModel.fromMap(responseBody));
       return RideResponseModel.fromMap(responseBody); // ✅ Convert map to model
     } else {
       throw Exception("Failed to send ride request");

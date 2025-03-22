@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../../features/notification/domain/usecases/send_notification_token_usecase.dart';
@@ -111,6 +112,36 @@ class FirebaseService {
 
   Future<void> _showNotification(RemoteMessage message) async {
     await _notifications.show(
+      0,
+      message.notification?.title,
+      message.notification?.body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'default_channel',
+          'General Notifications',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+    );
+  }
+
+
+  // Inside FirebaseService class
+  static Future<void> handleBackgroundMessage(RemoteMessage message) async {
+    await Firebase.initializeApp();
+    print("[BACKGROUND] Handling message: ${message.messageId}");
+    
+    // Re-initialize notifications plugin (static context)
+    final notifications = FlutterLocalNotificationsPlugin();
+    await notifications.initialize(
+      const InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      ),
+    );
+
+    // Show notification
+    await notifications.show(
       0,
       message.notification?.title,
       message.notification?.body,

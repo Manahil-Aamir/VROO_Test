@@ -47,7 +47,6 @@ import '../../splash.dart';
 class Routes {
   static const String ui = '/ui';
   static const String splash = '/splash';
-  static const String driverHome = '/driver_home';
   static const String locationSelectionDriver = '/location_selection_driver';
   static const String routeDisplayPage = '/route_display_page';
   static const String d1 = '/d1';
@@ -94,8 +93,8 @@ class Routes {
         );
       case routeDisplayPage:
         final args = settings.arguments as Map<String, dynamic>? ?? {};
-        final toPlaceID = args['toPlaceId'] as String? ?? '';
-        final fromPlaceID = args['fromPlaceId'] as String? ?? '';
+        final toPlaceID = args['toPlaceId'] as String? ?? 'ChIJ9SEZ0Lw4sz4RhAdTxTaH2V8';
+        final fromPlaceID = args['fromPlaceId'] as String? ?? 'ChIJOyUu0UQ-sz4RzFgD4rLU7PI';
         final toDescription = args['toDescription'] as String? ??
             'IBA, University Rd, University Of Karachi, Karachi, Pakistan';
         final fromDescription = args['fromDescription'] as String? ??

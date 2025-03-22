@@ -9,16 +9,16 @@ class MatchingRide extends Equatable {
   final String departureTime;
   final RideLocationModel source;
   final RideLocationModel destination;
-  final int distance;
+  final double distance;
   final String driverId;
-  final int duration;
+  final double duration;
   final EnvironmentStatsModel environmentStats;
   final String expectedArrivalTime;
-  final int fare;
+  final double fare;
   final bool isRecurring;
   final String maxArrivalTime;
   final List<String> neighbourRouteCells;
-  final int numOfSeats;
+  final double numOfSeats;
   final List<PassengerModel> passengers;
   final List<dynamic> paymentMethod;
   final RidePreferencesModel preferences;
@@ -111,7 +111,7 @@ class CarDetails extends Equatable {
 
 class EnvironmentStats extends Equatable {
   final double co2Saved;
-  final int fuelSaved;
+  final double fuelSaved;
 
   const EnvironmentStats({required this.co2Saved, required this.fuelSaved});
 
@@ -121,7 +121,7 @@ class EnvironmentStats extends Equatable {
 
 class Passenger extends Equatable {
   final String eta;
-  final int fare;
+  final double fare;
   final String rideRequestId;
   final String riderId;
   final String status;

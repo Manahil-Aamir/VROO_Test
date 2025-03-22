@@ -12,3 +12,9 @@ class PendingRidesError extends PendingRidesState {
   final String message;
   PendingRidesError(this.message);
 }
+class RideApproved extends PendingRidesState {}
+class RideApprovalError extends PendingRidesState {
+  final String message;
+  RideApprovalError(this.message);
+}
+class RideApprovalSuccess extends PendingRidesState {}
