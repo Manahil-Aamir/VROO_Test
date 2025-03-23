@@ -7,7 +7,8 @@ import '../../../../core/services/sms_service.dart';
 import '../models/sos_model.dart';
 
 abstract class SosDataSource {
-  Future<bool> addEmergencyContact(ContactModel contact, String uid);
+  Future<Map<String, dynamic>> addEmergencyContact(
+      ContactModel contact, String uid);
   Future<List<ContactModel>> getEmergencyContacts(String uid);
   Future<bool> deleteEmergencyContact(String uid, String contactId);
   Future<void> triggerSOS(String uid);
@@ -19,7 +20,8 @@ class SosDataSourceImpl implements SosDataSource {
   final PermissionService _permissionService = PermissionService();
 
   @override
-  Future<bool> addEmergencyContact(ContactModel contact, String uid) async {
+  Future<Map<String, dynamic>> addEmergencyContact(
+      ContactModel contact, String uid) async {
     final response = await http.post(
       Uri.parse('$baseUrl/addEmergencyContact'),
       headers: {"Content-Type": "application/json"},
@@ -37,7 +39,7 @@ class SosDataSourceImpl implements SosDataSource {
     } else {
       print("Failed to add emergency contact.");
     }
-    return data['success'];
+    return {"message": data['message'], "success": data['success']};
   }
 
   @override

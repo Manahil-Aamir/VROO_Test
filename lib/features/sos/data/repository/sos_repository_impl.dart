@@ -10,7 +10,8 @@ class SosRepositoryImpl implements SosRepository {
   SosRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<bool> addEmergencyContact(ContactModel contact, String uid) {
+  Future<Map<String, dynamic>> addEmergencyContact(
+      ContactModel contact, String uid) {
     return remoteDataSource.addEmergencyContact(contact, uid);
   }
 

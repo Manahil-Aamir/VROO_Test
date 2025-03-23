@@ -6,7 +6,7 @@ class AddEmergencyContact {
 
   AddEmergencyContact(this.repository);
 
-  Future<bool> call(ContactModel contact, String uid) {
+  Future<Map<String, dynamic>> call(ContactModel contact, String uid) {
     return repository.addEmergencyContact(contact, uid);
   }
 }

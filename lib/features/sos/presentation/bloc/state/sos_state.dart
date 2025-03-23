@@ -10,6 +10,8 @@ class SosInitial extends SosState {}
 
 class SosLoading extends SosState {}
 
+class SosTemp extends SosState {}
+
 // Successfully loaded contacts
 class SosLoaded extends SosState {
   final List<ContactModel> contacts;

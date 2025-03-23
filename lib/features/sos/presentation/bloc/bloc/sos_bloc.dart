@@ -46,15 +46,18 @@ class SosBloc extends Bloc<SosEvent, SosState> {
 
   Future<void> _onAddContact(AddContact event, Emitter<SosState> emit) async {
     try {
-      final success = await addEmergencyContact.call(event.contact, event.uid);
-      if (success) {
-        print('hello');
+      final result = await addEmergencyContact.call(event.contact, event.uid);
+      if (result['success'] == true) {
         add(FetchContacts(event.uid));
       } else {
-        emit(SosError("Failed to add contact"));
+        if (result['success'] == false) {
+          print('erorr add');
+          emit(SosTemp());
+          emit(SosError(result['message'] ?? "Failed to add contact"));
+        }
       }
     } catch (e) {
-      emit(SosError("Error adding contact"));
+      emit(SosError("Error adding contact: ${e.toString()}"));
     }
   }
 

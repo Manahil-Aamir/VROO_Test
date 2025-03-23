@@ -63,7 +63,12 @@ class _ContactScreenState extends State<ContactScreen> {
               onTap: () {
                 showDialog(
                   context: context,
-                  builder: (context) => AddContactDialog(userId: widget.userId),
+                  builder: (dialogContext) {
+                    return BlocProvider.value(
+                      value: context.read<SosBloc>(), // Provide existing bloc
+                      child: AddContactDialog(userId: widget.userId),
+                    );
+                  },
                 );
               },
               text: "Add Contact",
