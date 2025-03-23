@@ -1,6 +1,8 @@
 import '../../data/models/contact_model.dart';
 
 abstract class SosRepository {
-  Future<List<ContactModel>> getContacts();
-  Future<void> saveContacts(List<ContactModel> contacts);
+  Future<bool> addEmergencyContact(ContactModel contact, String uid);
+  Future<List<ContactModel>> getEmergencyContacts(String uid);
+  Future<bool> deleteEmergencyContact(String uid, String contactId);
+  Future<void> triggerSOS(String uid);
 }

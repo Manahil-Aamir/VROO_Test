@@ -1,19 +1,31 @@
+import 'package:sms_advanced/contact.dart';
+import 'package:vroo_test/features/sos/data/models/contact_model.dart';
+
 import '../../domain/repository/sos_repository.dart';
 import '../data_source/sos_data_source.dart';
-import '../models/contact_model.dart';
 
 class SosRepositoryImpl implements SosRepository {
-  final SosDataSource dataSource;
+  final SosDataSource remoteDataSource;
 
-  SosRepositoryImpl(this.dataSource);
+  SosRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<List<ContactModel>> getContacts() {
-    return dataSource.getContacts();
+  Future<bool> addEmergencyContact(ContactModel contact, String uid) {
+    return remoteDataSource.addEmergencyContact(contact, uid);
   }
 
   @override
-  Future<void> saveContacts(List<ContactModel> contacts) async {
-    dataSource.saveContacts(contacts);
+  Future<List<ContactModel>> getEmergencyContacts(String uid) {
+    return remoteDataSource.getEmergencyContacts(uid);
+  }
+
+  @override
+  Future<bool> deleteEmergencyContact(String uid, String contactId) {
+    return remoteDataSource.deleteEmergencyContact(uid, contactId);
+  }
+
+  @override
+  Future<void> triggerSOS(String uid) {
+    return remoteDataSource.triggerSOS(uid);
   }
 }

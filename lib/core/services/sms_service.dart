@@ -5,8 +5,8 @@ class SmsService {
   final SmsSender sender = SmsSender();
 
   Future<Map<String, dynamic>> sendSosMessage(
-      List<ContactModel> contacts) async {
-    final message = "SOS! I need help. Please contact me immediately!";
+      List<ContactModel> contacts, String sosLink) async {
+    final message = "🚨 SOS Alert! I need help. Please check: $sosLink 🚨";
     final phoneNumbers = contacts.map((c) => c.number).toList();
 
     try {

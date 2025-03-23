@@ -1,9 +1,12 @@
-import 'package:vroo_test/features/sos/data/models/contact_model.dart';
-import 'package:vroo_test/features/sos/domain/repository/sos_repository.dart';
+import '../../data/models/contact_model.dart';
+import '../repository/sos_repository.dart';
 
-class SaveContactsUseCase {
+class AddEmergencyContact {
   final SosRepository repository;
-  SaveContactsUseCase(this.repository);
-  Future<void> call(List<ContactModel> contacts) =>
-      repository.saveContacts(contacts);
+
+  AddEmergencyContact(this.repository);
+
+  Future<bool> call(ContactModel contact, String uid) {
+    return repository.addEmergencyContact(contact, uid);
+  }
 }

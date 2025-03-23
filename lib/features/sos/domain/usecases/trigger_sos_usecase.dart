@@ -1,0 +1,11 @@
+import '../repository/sos_repository.dart';
+
+class TriggerSOS {
+  final SosRepository repository;
+
+  TriggerSOS(this.repository);
+
+  Future<void> call(String uid) {
+    return repository.triggerSOS(uid);
+  }
+}
