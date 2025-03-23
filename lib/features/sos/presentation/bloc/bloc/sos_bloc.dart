@@ -47,17 +47,32 @@ class SosBloc extends Bloc<SosEvent, SosState> {
   Future<void> _onAddContact(AddContact event, Emitter<SosState> emit) async {
     try {
       final result = await addEmergencyContact.call(event.contact, event.uid);
+
       if (result['success'] == true) {
         add(FetchContacts(event.uid));
-      } else {
-        if (result['success'] == false) {
-          print('erorr add');
-          emit(SosTemp());
-          emit(SosError(result['message'] ?? "Failed to add contact"));
-        }
+      } else if (result['success'] == false) {
+        print('success is false');
+        String errorMessage = result['error'] != null &&
+                result['error']!.contains('emergencyContacts')
+            ? "A user can have up to 5 emergency contacts."
+            : result['error'] ?? result['message'] ?? "Failed to add contact";
+        print('errorMessage: $errorMessage');
+        // Deep copy to prevent mutation issues
+        final List<ContactModel> previousContacts = (state is SosLoaded)
+            ? List<ContactModel>.from((state as SosLoaded).contacts)
+            : [];
+
+        emit(SosError(errorMessage, previousContacts));
       }
     } catch (e) {
-      emit(SosError("Error adding contact: ${e.toString()}"));
+      final List<ContactModel> previousContacts = (state is SosLoaded)
+          ? (state as SosLoaded)
+              .contacts
+              .map((contact) => ContactModel.fromMap(contact.toMap()))
+              .toList()
+          : [];
+
+      emit(SosError("Error adding contact: ${e.toString()}", previousContacts));
     }
   }
 
@@ -66,6 +81,7 @@ class SosBloc extends Bloc<SosEvent, SosState> {
     try {
       final success =
           await deleteEmergencyContact.call(event.uid, event.contactId);
+      print('Contact Id: ${event.contactId}');
       if (success) {
         add(FetchContacts(event.uid));
       } else {

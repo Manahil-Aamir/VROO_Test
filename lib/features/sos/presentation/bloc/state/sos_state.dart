@@ -34,9 +34,11 @@ class SosTriggered extends SosState {
 
 class SosError extends SosState {
   final String message;
+  final List<ContactModel> previousContacts;
 
-  SosError(this.message);
+  SosError(this.message, [List<ContactModel>? previousContacts])
+      : previousContacts = previousContacts ?? [];
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [message, previousContacts];
 }

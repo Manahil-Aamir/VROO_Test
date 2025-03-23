@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/features/sos/data/models/contact_model.dart';
 import 'package:vroo_test/features/sos/presentation/widgets/add_dialog.dart';
+import 'package:vroo_test/features/sos/presentation/widgets/contact_list.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../bloc/event/sos_event.dart';
@@ -29,6 +30,16 @@ class _ContactScreenState extends State<ContactScreen> {
     });
   }
 
+  void _showSnackbar(String message) {
+    final theme = Theme.of(context);
+    final snackBar = SnackBar(
+      content: Text(message, style: TextStyle(color: Colors.white)),
+      backgroundColor: theme.indicatorColor,
+      duration: const Duration(seconds: 3),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -46,14 +57,26 @@ class _ContactScreenState extends State<ContactScreen> {
             ),
             SizedBox(height: 10.h),
             Expanded(
-              child: BlocBuilder<SosBloc, SosState>(
+              child: BlocConsumer<SosBloc, SosState>(
+                listener: (context, state) {
+                  if (state is SosError) {
+                    if (state.message !=
+                        'Emergency contact with this phone number already exists.') {
+                      _showSnackbar(state.message);
+                    } // Show error message in a Snackbar
+                  }
+                },
                 builder: (context, state) {
                   if (state is SosLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is SosLoaded) {
-                    return _buildContactList(context, state.contacts);
+                    return ContactList(
+                        contacts: state.contacts, userId: widget.userId);
                   } else if (state is SosError) {
-                    return Center(child: Text(state.message));
+                    // Preserve previous contacts & show the Snackbar message
+                    return ContactList(
+                        contacts: state.previousContacts,
+                        userId: widget.userId);
                   }
                   return const Center(child: Text("No contacts added yet."));
                 },
@@ -76,39 +99,6 @@ class _ContactScreenState extends State<ContactScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildContactList(BuildContext context, List<ContactModel> contacts) {
-    return ListView.builder(
-      itemCount: contacts.length,
-      itemBuilder: (context, index) {
-        final contact = contacts[index];
-        return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: ThemeColors.primaryColor,
-              child: const Icon(Icons.person, color: Colors.white),
-            ),
-            title: Text(
-              contact.name,
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
-            ),
-            subtitle: Text(contact.number),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () {
-                context
-                    .read<SosBloc>()
-                    .add(DeleteContact(contact.id!, widget.userId));
-              },
-            ),
-          ),
-        );
-      },
     );
   }
 }

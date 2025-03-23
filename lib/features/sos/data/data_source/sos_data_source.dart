@@ -38,14 +38,21 @@ class SosDataSourceImpl implements SosDataSource {
       print("Successfully added emergency contact.");
     } else {
       print("Failed to add emergency contact.");
+      if (data.containsKey('error')) {
+        print("Error: ${data['error']}");
+      }
     }
-    return {"message": data['message'], "success": data['success']};
+    return {
+      "message": data['message'],
+      "success": data['success'],
+      "error": data.containsKey('error') ? data['error'] : null,
+    };
   }
 
   @override
   Future<List<ContactModel>> getEmergencyContacts(String uid) async {
     print('getting contacts datasource');
-    print("Sending UID: $uid");
+    //print("Sending UID: $uid");
 
     final response = await http.get(
       Uri.parse('$baseUrl/getEmergencyContacts?uid=$uid'),
@@ -89,6 +96,8 @@ class SosDataSourceImpl implements SosDataSource {
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"uid": uid, "contactId": contactId}),
     );
+    print('delete response');
+    print(response.body);
 
     final data = jsonDecode(response.body);
     if (data['success']) {

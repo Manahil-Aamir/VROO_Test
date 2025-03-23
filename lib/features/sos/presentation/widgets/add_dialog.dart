@@ -53,10 +53,17 @@ class _AddContactDialogState extends State<AddContactDialog> {
               numberError = 'Number already exists';
             });
           }
+          if (state.message == 'A user can have up to 5 emergency contacts.') {
+            Navigator.pop(context);
+          }
         } else if (state is SosLoaded) {
           Navigator.pop(context); // Close the dialog
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Contact added successfully!")),
+            SnackBar(
+              content: const Text("Contact added successfully!"),
+              backgroundColor: theme.secondaryHeaderColor,
+              duration: const Duration(seconds: 2),
+            ),
           );
         }
       },
