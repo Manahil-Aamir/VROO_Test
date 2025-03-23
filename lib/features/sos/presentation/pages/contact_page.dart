@@ -34,7 +34,7 @@ class _ContactScreenState extends State<ContactScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.all(30.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
