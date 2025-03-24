@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -14,6 +15,7 @@ import '../domain/usecases/login_usecase.dart';
 class SignInDependencyInjection {
   static List<SingleChildWidget> init() {
     final firebaseAuth = FirebaseAuth.instance;
+    final firebaseMessaging = FirebaseMessaging.instance;
     final authDataSource = SignInDataSourceImpl(firebaseAuth: firebaseAuth);
     final client = http.Client();
     final backendLoginDataSource = BackendLoginDataSourceImpl(
@@ -24,6 +26,7 @@ class SignInDependencyInjection {
       dataSource: authDataSource,
       backendLoginDataSource: backendLoginDataSource,
       firebaseAuth: firebaseAuth, 
+      firebaseMessaging: firebaseMessaging, // Pass FirebaseMessaging
     );
 
     final loginUseCase = LoginUseCase(repository: authRepository);

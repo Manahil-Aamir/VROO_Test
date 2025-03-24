@@ -7,16 +7,15 @@ abstract class SignInDataSource {
 
 class SignInDataSourceImpl implements SignInDataSource {
   final FirebaseAuth firebaseAuth;
-
   SignInDataSourceImpl({required this.firebaseAuth});
-
   @override
   Future<void> login(String email, String password) async {
+    print('Logging in');
     await firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
-    print('signed in');
+    print('logged in');
   }
 
   @override

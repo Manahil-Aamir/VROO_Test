@@ -45,6 +45,8 @@ class DriverAndFare extends StatelessWidget {
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.scaffoldBackgroundColor,
                   ),
+                   overflow: TextOverflow.ellipsis,
+                   maxLines: 1,
                 ),
                 Row(
                   children: [

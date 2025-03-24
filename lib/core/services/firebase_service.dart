@@ -79,6 +79,9 @@ class FirebaseService {
     if (user == null) {
       print("[FCM] No user logged in - storing token temporarily");
       return;
+    } else {
+      print("[FCM] User logged in: ${user.uid}");
+      print("[FCM] Current Auth token: ${_auth.currentUser!.getIdToken()}");
     }
 
     try {

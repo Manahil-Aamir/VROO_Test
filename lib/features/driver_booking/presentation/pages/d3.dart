@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -213,8 +214,11 @@ class D3 extends StatelessWidget {
       maxArrivalTime.minute,
     );
 
+    final user = FirebaseAuth.instance.currentUser;
+
     final rideRequest = RideRequest(
-      driverId: "Ali Ahmed",
+      // driverId: "Ali Ahmed 4,
+      driverId: user!.uid,
       numOfSeats: availableSeats,
       car: selectedCar,
       coords: routeCoords,

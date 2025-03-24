@@ -33,7 +33,7 @@ class RideDetailCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildDriverInfo(textTheme),
+                _buildDriverInfo(textTheme, ride),
                 _buildDateTime(textTheme, ride, context),
               ],
             ),
@@ -88,7 +88,7 @@ class RideDetailCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDriverInfo(TextTheme textTheme) {
+  Widget _buildDriverInfo(TextTheme textTheme, PendingRidesEntity ride) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -6,10 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app/app.dart';
 import 'core/router/navigation.dart';
 import 'features/HomeScreens/dependency_injection/role_di.dart';
-import 'features/notification/data/data_source/notification_remote_data_source.dart';
-import 'features/notification/data/repository/notification_repository_impl.dart';
-import 'features/notification/dependency_injection/Notification_di.dart';
-import 'features/notification/domain/usecases/send_notification_token_usecase.dart';
+// import 'features/notification/data/data_source/notification_remote_data_source.dart';
+// import 'features/notification/data/repository/notification_repository_impl.dart';
+// import 'features/notification/dependency_injection/Notification_di.dart';
+// import 'features/notification/domain/usecases/send_notification_token_usecase.dart';
 import 'firebase_options.dart';
 import 'core/services/firebase_service.dart';
 import 'package:http/http.dart' as http;
@@ -30,11 +30,11 @@ void main() async {
 
   // Initialize FCM Service FIRST
   final firebaseService = FirebaseService(
-    sendTokenUseCase: SendNotificationTokenUseCase( // Temporary instance
-      NotificationRepositoryImpl(
-        NotificationRemoteDataSource(http.Client()),
-    ),
-  ));
+    // sendTokenUseCase: SendNotificationTokenUseCase( // Temporary instance
+    //   NotificationRepositoryImpl(
+    //     NotificationRemoteDataSource(http.Client()),
+    // ),)
+    );
   await firebaseService.initializeFCM();
 
   runApp(
@@ -43,7 +43,7 @@ void main() async {
         ...await RoleDependencyInjection.init(),
         Provider<SharedPreferences>(create: (_) => prefs),
         Provider<Navigation>(create: (_) => Navigation()),
-        ...NotificationDependencyInjection.essentialProviders(),
+        // ...NotificationDependencyInjection.essentialProviders(),
         Provider<FirebaseService>(create: (_) => firebaseService),
       ],
       child: const App(),

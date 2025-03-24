@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/widgets/appbar.dart';
@@ -19,7 +20,9 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ActiveRidesBloc>().add(FetchActiveRides('Ali Ahmed'));
+    final user = FirebaseAuth.instance.currentUser;
+    // context.read<ActiveRidesBloc>().add(FetchActiveRides('Ali Ahmed 4'));
+    context.read<ActiveRidesBloc>().add(FetchActiveRides(user!.uid));
   }
 
   @override

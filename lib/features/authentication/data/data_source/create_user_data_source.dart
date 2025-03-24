@@ -6,7 +6,7 @@ import '../model/user_model.dart';
 abstract class UserRemoteDataSource {
   UserRemoteDataSource(http.Client client);
 
-  Future<Map<String, dynamic>> createUser(UserModel user, String token);
+  Future<Map<String, dynamic>> createUser(UserModel user, String token, String fcmToken);
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -15,11 +15,18 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   UserRemoteDataSourceImpl(this.client);
 
   @override
-  Future<Map<String, dynamic>> createUser(UserModel user, String token) async {
-    final url = Uri.parse('${ApiConstants.baseUrl}users/signup');
-    // final url = Uri.parse('http://10.0.2.2:8080/api/users/signup');
+  Future<Map<String, dynamic>> createUser(UserModel user, String token, String fcmToken) async {
+    // final url = Uri.parse('${ApiConstants.baseUrl}users/signup');
+    final url = Uri.parse('http://10.0.2.2:8080/users/signup');
     print('creating user');
-    print(token);
+    print('authtoken: $token');
+    print('fcmToken: $fcmToken');
+    final userJson = user.toJson();
+
+    // Add the FCM token to the user JSON
+    userJson['fcmToken'] = fcmToken;
+    print('User JSON with FCM token: ${jsonEncode(userJson)}');
+
     try {
       final response = await client.post(
         url,
@@ -27,7 +34,8 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode(user.toJson()),
+        // body: jsonEncode(user.toJson()),
+        body: jsonEncode(userJson),
       );
       print(jsonEncode(user.toJson()));
 

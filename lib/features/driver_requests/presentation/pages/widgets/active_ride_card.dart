@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -62,6 +63,7 @@ class ActiveRideCard extends StatelessWidget {
   }
 
   Widget _buildDriverInfo(TextTheme textTheme) {
+    final user = FirebaseAuth.instance.currentUser;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -75,11 +77,14 @@ class ActiveRideCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Ali Ahmed',
+              // 'Ali Ahmed 4',
+              user!.uid,
               style: textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
             SizedBox(height: 2.h),
             Row(

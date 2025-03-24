@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -17,6 +18,7 @@ import '../presentation/bloc/bloc/create_user_bloc.dart';
 class CreateUserDependencyInjection {
   static List<SingleChildWidget> init() {
     final firebaseAuth = FirebaseAuth.instance;
+    final firebaseMessaging = FirebaseMessaging.instance;
     final client = http.Client();
 
     final tokenDataSource =
@@ -24,7 +26,7 @@ class CreateUserDependencyInjection {
     final userDataSource = UserRemoteDataSourceImpl(client);
 
     final tokenRepository = TokenRepositoryImpl(tokenDataSource);
-    final userRepository = UserRepositoryImpl(userDataSource);
+    final userRepository = UserRepositoryImpl(userDataSource, firebaseMessaging);
 
     final getTokenUseCase = GetTokenUseCase(tokenRepository);
     final createUserUseCase = CreateUserUseCase(userRepository);

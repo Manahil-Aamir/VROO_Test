@@ -1,17 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:vroo_test/features/authentication/data/data_source/sign_in_data_source.dart';
 import '../../domain/repository/sign_in_repository.dart';
 import '../data_source/backend_login_data_source.dart';
 
 class SignInRepositoryImpl implements SignInRepository {
   final SignInDataSource dataSource;
-  final FirebaseAuth firebaseAuth; // Add FirebaseAuth dependency
+  final FirebaseAuth firebaseAuth;
   final BackendLoginDataSource backendLoginDataSource;
+  final FirebaseMessaging firebaseMessaging; // Add FirebaseMessaging dependency
 
   SignInRepositoryImpl({
     required this.dataSource,
     required this.firebaseAuth,
     required this.backendLoginDataSource,
+    required this.firebaseMessaging,
   });
 
   @override
@@ -27,8 +30,11 @@ class SignInRepositoryImpl implements SignInRepository {
     // Get ID token
     final token = await user.getIdToken();
 
-    // Notify backend
-    await backendLoginDataSource.notifyLogin(token ?? '');
+    // Get FCM token
+    final fcmToken = await firebaseMessaging.getToken();
+
+    // Notify backend with both tokens
+    await backendLoginDataSource.notifyLogin(token ?? '', fcmToken ?? '');
   }
 
   @override

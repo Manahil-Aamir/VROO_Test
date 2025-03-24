@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../../../../core/utils/constant/api_constants.dart';
 
 abstract class BackendLoginDataSource {
-  Future<void> notifyLogin(String token);
+  Future<void> notifyLogin(String token, String fcmToken);
 }
 
 class BackendLoginDataSourceImpl implements BackendLoginDataSource {
@@ -13,17 +13,19 @@ class BackendLoginDataSourceImpl implements BackendLoginDataSource {
   BackendLoginDataSourceImpl({required this.client});
 
   @override
-  Future<void> notifyLogin(String token) async {
+  Future<void> notifyLogin(String authToken, String fcmToken) async {
     print('in backend login data source');
-    print('Logintoken: $token');
-    final url = Uri.parse('${ApiConstants.baseUrl}users/login');
-    // final url = Uri.parse('http://10.0.2.2:8080/users/login');
+    print('Logintoken: $authToken');
+    print('fcmToken: $fcmToken');
+    // final url = Uri.parse('${ApiConstants.baseUrl}users/login');
+    final url = Uri.parse('http://10.0.2.2:8080/users/login');
     final response = await client.post(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
+        'Authorization': 'Bearer $authToken',
         'Content-Type': 'application/json',
       },
+      body: jsonEncode({ 'fcmToken': fcmToken,}),
     );
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');

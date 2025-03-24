@@ -16,8 +16,8 @@ class RideRemoteDataSourceImpl implements RideRemoteDataSource {
   @override
   Future<void> submitRideRequest(RideRequestModel request) async {
     final url = Uri.parse(
-      '${ApiConstants.baseUrl}driver/ride'    
-      // 'http://10.0.2.2:8080/driver/ride'    
+      // '${ApiConstants.baseUrl}driver/ride'    
+      'http://10.0.2.2:8080/driver/ride'    
     );
     final response = await client.post(
       url,

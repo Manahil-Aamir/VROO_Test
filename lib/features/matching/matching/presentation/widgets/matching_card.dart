@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,6 +43,7 @@ class MatchCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final user = FirebaseAuth.instance.currentUser!;
 
     return SizedBox(
       width: 363.w,
@@ -103,7 +105,8 @@ class MatchCard extends StatelessWidget {
                           "rideId": rideId,
                           "rideRequestId": id,
                           "driverId": driverName,
-                          "riderId": "new2"
+                          "riderId": user!.uid,
+                          // "riderId": "new2"
                         };
                         context
                             .read<MatchingBloc>()

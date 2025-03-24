@@ -13,8 +13,8 @@ class RouteDataSource {
     print('from place id : $fromPlaceId');
     print('to place id : $toPlaceId');
     final url = Uri.parse(
-      '${ApiConstants.baseUrl}driver/routeoptions'
-      // 'http://10.0.2.2:8080/driver/routeoptions'
+      // '${ApiConstants.baseUrl}driver/routeoptions'
+      'http://10.0.2.2:8080/driver/routeoptions'
     );
     final body = jsonEncode({
       'source_place_id': fromPlaceId,

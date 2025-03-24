@@ -17,8 +17,8 @@ class ActiveRidesRemoteDataSource implements ActiveRidesDataSource {
   Future<List<ActiveRideModel>> getActiveRides(String driverId) async {
     final response = await client.get(
       Uri.parse(
-        '${ApiConstants.baseUrl}driver/active-rides/$driverId'
-        // 'http://10.0.2.2:8080/driver/active-rides/$driverId'
+        // '${ApiConstants.baseUrl}driver/active-rides/$driverId'
+        'http://10.0.2.2:8080/driver/active-rides/$driverId'
       ),
     );
 
