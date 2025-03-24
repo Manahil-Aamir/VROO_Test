@@ -14,8 +14,8 @@ class MatchingDataSource {
     Map<String, String> rideData) async {
     print('matching data source');
     final url = Uri.parse(
-    //'${ApiConstants.baseUrl}ride/ride-request/join'
-        'http://10.0.2.2:8080/ride/ride-request/join'
+    '${ApiConstants.baseUrl}ride/ride-request/join'
+        // 'http://10.0.2.2:8080/ride/ride-request/join'
         );
 
     // Encode the data to JSON
@@ -46,8 +46,8 @@ class MatchingDataSource {
   Future<List<dynamic>> sendRideRequest(
       String rideRequestId, Map<String, dynamic> requestData) async {
     final url =
-        Uri.parse('http://10.0.2.2:8080/rider/ride-request/$rideRequestId');
-        // Uri.parse('${ApiConstants.baseUrl}rider/ride-request/$rideRequestId');
+        // Uri.parse('http://10.0.2.2:8080/rider/ride-request/$rideRequestId');
+        Uri.parse('${ApiConstants.baseUrl}rider/ride-request/$rideRequestId');
 
     final response = await client.patch(
       url,

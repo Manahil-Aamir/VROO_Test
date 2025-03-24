@@ -2,20 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../../features/notification/domain/usecases/send_notification_token_usecase.dart';
 
 class FirebaseService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
-  late final SendNotificationTokenUseCase _sendTokenUseCase;
   
-  String? _currentToken;
   bool _isInitialized = false;
 
-  FirebaseService({
-    required SendNotificationTokenUseCase sendTokenUseCase,
-  }) : _sendTokenUseCase = sendTokenUseCase {
+  FirebaseService() {
     initializeFCM();
   }
 
@@ -28,18 +23,6 @@ class FirebaseService {
     _isInitialized = true;
 
     print("[FCM] Initializing service...");
-    
-    // Setup auth listener
-    _auth.authStateChanges().listen((user) {
-      if (user != null) {
-        print("[AUTH] User logged in: ${user.uid}");
-        _handleTokenForUser(user);
-      } else {
-        print("[AUTH] User logged out");
-      }
-    });
-
-    print("🔑 Current User Status: ${_auth.currentUser != null ? "Logged In" : "Not Logged In"}");
 
     // Request permissions
     final settings = await _messaging.requestPermission(
@@ -48,48 +31,16 @@ class FirebaseService {
     print("[FCM] Permission status: ${settings.authorizationStatus}");
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      await _setupTokenManagement();
       _setupNotifications();
     }
   }
 
-  Future<void> _setupTokenManagement() async {
-    // Get initial token
-    _currentToken = await _messaging.getToken();
-    print("[FCM] Initial token: $_currentToken");
-    _sendTokenToBackend();
-
-    // Listen for token refresh
-    _messaging.onTokenRefresh.listen((newToken) {
-      print("[FCM] Token refreshed: $newToken");
-      _currentToken = newToken;
-      _sendTokenToBackend();
-    });
-  }
-
-  void _handleTokenForUser(User user) {
-    if (_currentToken != null) {
-      print("[FCM] Sending token for logged-in user: ${user.uid}");
-      _sendTokenToBackend();
-    }
-  }
-
-  Future<void> _sendTokenToBackend() async {
-    final user = _auth.currentUser;
-    if (user == null) {
-      print("[FCM] No user logged in - storing token temporarily");
-      return;
-    } else {
-      print("[FCM] User logged in: ${user.uid}");
-      print("[FCM] Current Auth token: ${_auth.currentUser!.getIdToken()}");
-    }
-
+  Future<String?> getFCMToken() async {
     try {
-      print("[FCM] Sending token to backend for ${user.uid}");
-      await _sendTokenUseCase(_currentToken!);
-      print("[FCM] Token successfully sent to backend");
+      return await _messaging.getToken();
     } catch (e) {
-      print("[FCM] Error sending token: $e");
+      print("[FCM] Error getting token: $e");
+      return null;
     }
   }
 
@@ -129,13 +80,11 @@ class FirebaseService {
     );
   }
 
-
-  // Inside FirebaseService class
+  // Background message handler
   static Future<void> handleBackgroundMessage(RemoteMessage message) async {
     await Firebase.initializeApp();
     print("[BACKGROUND] Handling message: ${message.messageId}");
     
-    // Re-initialize notifications plugin (static context)
     final notifications = FlutterLocalNotificationsPlugin();
     await notifications.initialize(
       const InitializationSettings(
@@ -143,7 +92,6 @@ class FirebaseService {
       ),
     );
 
-    // Show notification
     await notifications.show(
       0,
       message.notification?.title,

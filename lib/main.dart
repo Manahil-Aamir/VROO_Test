@@ -12,7 +12,6 @@ import 'features/HomeScreens/dependency_injection/role_di.dart';
 // import 'features/notification/domain/usecases/send_notification_token_usecase.dart';
 import 'firebase_options.dart';
 import 'core/services/firebase_service.dart';
-import 'package:http/http.dart' as http;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

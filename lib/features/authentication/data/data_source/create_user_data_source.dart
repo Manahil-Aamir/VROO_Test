@@ -16,8 +16,8 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   @override
   Future<Map<String, dynamic>> createUser(UserModel user, String token, String fcmToken) async {
-    // final url = Uri.parse('${ApiConstants.baseUrl}users/signup');
-    final url = Uri.parse('http://10.0.2.2:8080/users/signup');
+    final url = Uri.parse('${ApiConstants.baseUrl}users/signup');
+    // final url = Uri.parse('http://10.0.2.2:8080/users/signup');
     print('creating user');
     print('authtoken: $token');
     print('fcmToken: $fcmToken');

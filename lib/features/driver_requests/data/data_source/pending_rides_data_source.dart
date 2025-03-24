@@ -20,8 +20,8 @@ class PendingRidesRemoteDataSource implements PendingRidesDataSource {
       print('Fetching ride details for ride ID: $rideId');
       final response = await client.get(
       Uri.parse(
-        'http://10.0.2.2:8080/driver/ride-requests/$rideId',
-        // '${ApiConstants.baseUrl}driver/ride-requests/$rideId'
+        // 'http://10.0.2.2:8080/driver/ride-requests/$rideId',
+        '${ApiConstants.baseUrl}driver/ride-requests/$rideId'
       ),);
 
       print('Response status: ${response.statusCode}');
@@ -58,8 +58,8 @@ class PendingRidesRemoteDataSource implements PendingRidesDataSource {
   @override
   Future<void> approveRideRequest(String rideRequestId, String rideId) async {
     final url =
-      'http://10.0.2.2:8080/ride/ride-request/join/$rideRequestId/approve'
-      //'${ApiConstants.baseUrl}ride/ride-request/join/$rideRequestId/approve'
+      // 'http://10.0.2.2:8080/ride/ride-request/join/$rideRequestId/approve'
+      '${ApiConstants.baseUrl}ride/ride-request/join/$rideRequestId/approve'
     ;
     final response = await client.post(Uri.parse(url));
     if (response.statusCode != 200 && response.statusCode != 201){

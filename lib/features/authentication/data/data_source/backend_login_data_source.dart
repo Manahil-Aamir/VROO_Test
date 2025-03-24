@@ -17,8 +17,8 @@ class BackendLoginDataSourceImpl implements BackendLoginDataSource {
     print('in backend login data source');
     print('Logintoken: $authToken');
     print('fcmToken: $fcmToken');
-    // final url = Uri.parse('${ApiConstants.baseUrl}users/login');
-    final url = Uri.parse('http://10.0.2.2:8080/users/login');
+    final url = Uri.parse('${ApiConstants.baseUrl}users/login');
+    // final url = Uri.parse('http://10.0.2.2:8080/users/login');
     final response = await client.post(
       url,
       headers: {
