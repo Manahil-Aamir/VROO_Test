@@ -8,6 +8,7 @@ import '../data/repository/pending_rides_repository_impl.dart';
 import '../domain/repository/pending_rides_repository.dart';
 import '../domain/usecases/approve_ride_request.dart';
 import '../domain/usecases/get_pending_rides.dart';
+import '../domain/usecases/reject_ride_request.dart';
 import '../presentation/bloc/bloc/pending_rides_bloc.dart';
 
 class RidesDetailsDi {
@@ -17,6 +18,7 @@ class RidesDetailsDi {
     final repository = PendingRidesRepositoryImpl(dataSource);
     final getPendingRides = GetPendingRides(repository);
     final approveRideRequest = ApproveRideRequest(repository);
+    final rejectRideRequest = RejectRideRequest(repository);
     final navigationProvider = Navigation();
 
     return [
@@ -28,6 +30,7 @@ class RidesDetailsDi {
         create: (_) => PendingRidesBloc(
           getPendingRides: getPendingRides,
           approveRideRequest: approveRideRequest,
+          rejectRideRequest: rejectRideRequest,
         ),  
       ),
     ];

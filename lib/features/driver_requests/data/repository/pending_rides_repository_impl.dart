@@ -17,4 +17,9 @@ class PendingRidesRepositoryImpl implements PendingRidesRepository {
   Future<void> approveRideRequest(String rideRequestId, String rideId) async {
     await dataSource.approveRideRequest(rideRequestId, rideId);
   }
+
+  @override
+  Future<void> rejectRideRequest(String rideRequestId, String rideId) async {
+    await dataSource.rejectRideRequest(rideRequestId, rideId);
+  }
 }

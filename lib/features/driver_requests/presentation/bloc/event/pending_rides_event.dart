@@ -14,3 +14,13 @@ class ApproveRideRequestEvent extends PendingRidesEvent {
     required this.rideId,
   });
 }
+
+class RejectRideRequestEvent extends PendingRidesEvent {
+  final String rideRequestId;
+  final String rideId;
+
+  RejectRideRequestEvent({
+    required this.rideRequestId,
+    required this.rideId,
+  });
+}

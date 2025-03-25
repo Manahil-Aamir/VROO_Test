@@ -37,6 +37,15 @@ class _PendingRidesScreenState extends State<PendingRidesScreen> {
               backgroundColor: Colors.green,
             ),
           );
+        if (state is RideRejectedSuccess) {
+          // Show success Snackbar
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Ride rejected successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
         } else if (state is PendingRidesError) {
           // Show error dialog
           ErrorDialog.show(context, state.message);

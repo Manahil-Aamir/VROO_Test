@@ -50,8 +50,15 @@ class RideDetailCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildIconButton(Icons.close, () {
-                    // Handle reject action
                     print("Reject tapped");
+                    final request = ride.request;
+                    context.read<PendingRidesBloc>().add(
+                      RejectRideRequestEvent(
+                        rideRequestId: request.id,
+                        rideId: request.rideId,
+                      ),
+                    );
+                    print("Reject Completed");
                   }),
                   SizedBox(width: 16.w),
                   _buildIconButton(Icons.check, () {

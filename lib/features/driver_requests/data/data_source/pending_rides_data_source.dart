@@ -7,6 +7,7 @@ import '../model/pending_rides_model.dart';
 abstract class PendingRidesDataSource {
   Future<List<PendingRidesModel>> getPendingRides(String driverId);
   Future<void> approveRideRequest(String rideRequestId, String rideId);
+  Future<void> rejectRideRequest(String rideRequestId, String rideId);
 }
 
 class PendingRidesRemoteDataSource implements PendingRidesDataSource {
@@ -64,6 +65,19 @@ class PendingRidesRemoteDataSource implements PendingRidesDataSource {
     final response = await client.post(Uri.parse(url));
     if (response.statusCode != 200 && response.statusCode != 201){
       throw Exception('Approval failed: ${response.statusCode}');
+    }
+  }
+
+  @override
+  Future<void> rejectRideRequest(String rideRequestId, String rideId) async {
+    final url = 
+      // 'http://10.0.2.2:8080/ride/ride-request/join/$rideRequestId/reject'
+      '${ApiConstants.baseUrl}ride/ride-request/join/$rideRequestId/reject'
+    ;
+    final response = await client.post(Uri.parse(url));
+    print('Rejection response: ${response.body}');
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('Rejection failed: ${response.statusCode}');
     }
   }
 }
