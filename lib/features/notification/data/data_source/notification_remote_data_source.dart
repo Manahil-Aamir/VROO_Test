@@ -1,7 +1,6 @@
 import 'dart:convert'; // Import this for JSON encoding
 import 'package:http/http.dart' as http;
 
-import '../../../../core/utils/constant/api_constants.dart';
 import '../model/notification_request.dart';
 
 class NotificationRemoteDataSource {
@@ -16,8 +15,8 @@ class NotificationRemoteDataSource {
     final response = await client.post(
       Uri.parse('http://10.0.2.2:8080/send-notification/test'),
       // Uri.parse('${ApiConstants.baseUrl}/send-notification/test'),
-      headers: {'Content-Type': 'application/json'}, 
-      body: jsonEncode(NotificationRequest(token).toJson()), 
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(NotificationRequest(token).toJson()),
     );
 
     print('FCM Response status: ${response.statusCode}');

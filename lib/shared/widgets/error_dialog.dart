@@ -5,7 +5,7 @@ import '../../core/theme/color/color_theme.dart';
 class ErrorDialog extends StatelessWidget {
   final String errorMessage;
 
-  const ErrorDialog({Key? key, required this.errorMessage}) : super(key: key);
+  const ErrorDialog({super.key, required this.errorMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,8 @@ class ErrorDialog extends StatelessWidget {
                 child: Text(
                   'Submission Failed',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: ThemeColors.headlinesTextColor,
-                  ),
+                        color: ThemeColors.headlinesTextColor,
+                      ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -43,8 +43,8 @@ class ErrorDialog extends StatelessWidget {
           Text(
             'Please try again...',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: ThemeColors.bodyTextColor,
-            ),
+                  color: ThemeColors.bodyTextColor,
+                ),
           ),
           SizedBox(height: 8.h),
           Text(
@@ -52,8 +52,8 @@ class ErrorDialog extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: ThemeColors.bodyTextColor,
-            ),
+                  color: ThemeColors.bodyTextColor,
+                ),
           ),
           SizedBox(height: 8.h),
         ],

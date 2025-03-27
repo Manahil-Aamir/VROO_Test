@@ -19,8 +19,7 @@ class SosModel extends SosEntity {
   Map<String, dynamic> toMap() => {
         'sessionId': sessionId,
         'sosLink': sosLink,
-        'emergencyContacts': emergencyContacts
-            .map((contact) => (contact as ContactModel).toMap())
-            .toList(),
+        'emergencyContacts':
+            emergencyContacts.map((contact) => (contact).toMap()).toList(),
       };
 }

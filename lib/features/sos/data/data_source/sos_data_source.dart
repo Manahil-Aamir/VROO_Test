@@ -1,21 +1,22 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:vroo_test/features/sos/data/models/contact_model.dart';
-
 import '../../../../core/services/permission_handler.dart';
 import '../../../../core/services/sms_service.dart';
 import '../models/sos_model.dart';
+import '../../../../core/utils/constant/api_constants.dart';
+import 'tracking_data_source.dart';
 
 abstract class SosDataSource {
   Future<Map<String, dynamic>> addEmergencyContact(
       ContactModel contact, String uid);
   Future<List<ContactModel>> getEmergencyContacts(String uid);
   Future<bool> deleteEmergencyContact(String uid, String contactId);
-  Future<void> triggerSOS(String uid);
+  Future<String> triggerSOS(String uid);
 }
 
 class SosDataSourceImpl implements SosDataSource {
-  static const String baseUrl = "http://10.0.2.2:3000/emergency";
+  static const String baseUrl = "${ApiConstants.baseUrl}emergency";
   final SmsService _smsService = SmsService();
   final PermissionService _permissionService = PermissionService();
 
@@ -109,33 +110,62 @@ class SosDataSourceImpl implements SosDataSource {
   }
 
   @override
-  Future<void> triggerSOS(String uid) async {
-    // 🔥 Check SMS permission before sending messages
+  Future<String> triggerSOS(String uid) async {
     bool smsPermissionGranted = await _permissionService.requestSmsPermission();
     if (!smsPermissionGranted) {
-      print("SMS permission denied.");
-      throw Exception("SMS permission denied");
+      return "SMS permission denied";
     }
 
-    final response = await http.post(
-      Uri.parse('$baseUrl/triggerSOS'),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"uid": uid}),
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/triggerSOS?uid=$uid'),
+        headers: {"Content-Type": "application/json"},
+      );
 
-    final data = jsonDecode(response.body);
-    if (!data['success']) {
-      print("Failed to trigger SOS.");
-      throw Exception("Failed to trigger SOS");
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        return "Failed to trigger SOS: Server error ${response.statusCode}";
+      }
+
+      final Map<String, dynamic> data = jsonDecode(response.body);
+
+      if (data['success'] is! bool || !(data['success'] as bool)) {
+        return "Failed to trigger SOS: ${data['message'] ?? 'Unknown error'}";
+      }
+
+      final SosModel sosData = SosModel.fromMap(data['data']);
+
+      String message =
+          "SOS Triggered!\nSession ID: ${sosData.sessionId}\nLink: ${sosData.sosLink}";
+      print(message);
+      print(sosData.emergencyContacts);
+
+      List<ContactModel> contacts = [];
+      contacts = sosData.emergencyContacts;
+      print(contacts.length);
+
+      if (contacts.isEmpty) {
+        return "No emergency contacts found.";
+      }
+
+      // Get response as Map instead of expecting a bool**
+      final Map<String, dynamic> smsResponse = {
+        'success': true,
+        'message': 'SOS sent successfully'
+      };
+      //await _smsService.sendSosMessage(contacts, message);
+      if (smsResponse['success'] == true) {
+        print("Message sent successfully, starting tracking...");
+
+        SosTrackerService(
+          sessionId: sosData.sessionId,
+        ).startTracking();
+
+        return "Message sent successfully";
+      } else {
+        return "Failed to send message: ${smsResponse['message']}";
+      }
+    } catch (e) {
+      return "An error occurred: ${e.toString()}";
     }
-
-    print("Successfully triggered SOS.");
-    final SosModel sosData = SosModel.fromMap(data['data']);
-    await _smsService.sendSosMessage(
-      sosData.emergencyContacts
-          .map((e) => ContactModel.fromMap(e as Map<String, dynamic>))
-          .toList(),
-      sosData.sosLink,
-    );
   }
 }

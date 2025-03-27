@@ -3,36 +3,21 @@ import '../../domain/entity/ride_request.dart';
 
 class RideRequestModel extends RideRequest {
   RideRequestModel({
-    required String driverId,
-    required int numOfSeats,
-    required CarEntity car,
-    required List<dynamic> coords,
-    required Map<String, dynamic> source,
-    required Map<String, dynamic> destination,
-    required bool samegender,
-    required String departureTime,
-    required String maxArrivalTime,
-    required double distance,
-    required int duration,
-    required String date,
-    required double fare,
-    required List<String> paymentMethod,
-  }) : super(
-          driverId: driverId,
-          numOfSeats: numOfSeats,
-          car: car,
-          coords: coords,
-          source: source,
-          destination: destination,
-          samegender: samegender,
-          departureTime: departureTime,
-          maxArrivalTime: maxArrivalTime,
-          distance: distance,
-          duration: duration,
-          date: date,
-          fare: fare,
-          paymentMethod: paymentMethod,
-        );
+    required super.driverId,
+    required super.numOfSeats,
+    required super.car,
+    required super.coords,
+    required super.source,
+    required super.destination,
+    required super.samegender,
+    required super.departureTime,
+    required super.maxArrivalTime,
+    required super.distance,
+    required super.duration,
+    required super.date,
+    required super.fare,
+    required super.paymentMethod,
+  });
 
   Map<String, dynamic> toJson() {
     return {

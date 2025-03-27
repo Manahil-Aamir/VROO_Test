@@ -5,7 +5,7 @@ class TriggerSOS {
 
   TriggerSOS(this.repository);
 
-  Future<void> call(String uid) {
+  Future<String> call(String uid) {
     return repository.triggerSOS(uid);
   }
 }

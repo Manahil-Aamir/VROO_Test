@@ -24,5 +24,6 @@ plugins {
     // id 'org.jetbrains.kotlin.android' version '1.9.22'  // Match version
 }
 
-
 include ":app"
+include ':flutter_plugin_android_lifecycle'
+project(':flutter_plugin_android_lifecycle').projectDir = new File("C:/Users/Hp/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.24/android")

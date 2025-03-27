@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vroo_test/features/sos/data/models/contact_model.dart';
 import 'package:vroo_test/features/sos/presentation/widgets/add_dialog.dart';
 import 'package:vroo_test/features/sos/presentation/widgets/contact_list.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';

@@ -1,20 +1,26 @@
-import 'package:sms_advanced/sms_advanced.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 import 'package:vroo_test/features/sos/data/models/contact_model.dart';
 
 class SmsService {
-  final SmsSender sender = SmsSender();
-
   Future<Map<String, dynamic>> sendSosMessage(
-      List<ContactModel> contacts, String sosLink) async {
-    final message = "🚨 SOS Alert! I need help. Please check: $sosLink 🚨";
+      List<ContactModel> contacts, String message) async {
     final phoneNumbers = contacts.map((c) => c.number).toList();
 
+    print(
+        'Debug: Preparing to send SOS message to ${phoneNumbers.length} contacts.');
+
     try {
-      for (String number in phoneNumbers) {
-        sender.sendSms(SmsMessage(number, message));
-      }
+      String result = await sendSMS(
+        message: message,
+        recipients: phoneNumbers,
+        sendDirect:
+            true, // Change to false if you want the user to confirm before sending
+      );
+
+      print('Debug: SMS Result - $result');
       return {'success': true, 'message': 'SOS sent successfully'};
     } catch (e) {
+      print('Debug: Error occurred while sending SOS messages: $e');
       return {
         'success': false,
         'message': 'Failed to send SOS',

@@ -16,7 +16,7 @@ import 'package:http/http.dart' as http;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -30,9 +30,10 @@ void main() async {
 
   // Initialize FCM Service FIRST
   final firebaseService = FirebaseService(
-    sendTokenUseCase: SendNotificationTokenUseCase( // Temporary instance
-      NotificationRepositoryImpl(
-        NotificationRemoteDataSource(http.Client()),
+      sendTokenUseCase: SendNotificationTokenUseCase(
+    // Temporary instance
+    NotificationRepositoryImpl(
+      NotificationRemoteDataSource(http.Client()),
     ),
   ));
   await firebaseService.initializeFCM();

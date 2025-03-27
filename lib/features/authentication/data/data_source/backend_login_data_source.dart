@@ -24,6 +24,9 @@ class BackendLoginDataSourceImpl implements BackendLoginDataSource {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
+      body: jsonEncode({
+        'fcmToken': 'your_fcm_token_here',
+      }),
     );
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');

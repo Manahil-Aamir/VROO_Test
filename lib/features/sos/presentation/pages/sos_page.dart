@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:vroo_test/features/sos/presentation/widgets/sos_tab.dart';
 import 'package:vroo_test/shared/widgets/appbar.dart';
-import '../../../../core/theme/color/color_theme.dart';
 import 'contact_page.dart';
 
 class SosScreen extends StatelessWidget {

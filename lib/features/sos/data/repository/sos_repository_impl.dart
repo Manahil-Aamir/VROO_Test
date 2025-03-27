@@ -1,4 +1,3 @@
-import 'package:sms_advanced/contact.dart';
 import 'package:vroo_test/features/sos/data/models/contact_model.dart';
 
 import '../../domain/repository/sos_repository.dart';
@@ -26,7 +25,7 @@ class SosRepositoryImpl implements SosRepository {
   }
 
   @override
-  Future<void> triggerSOS(String uid) {
+  Future<String> triggerSOS(String uid) {
     return remoteDataSource.triggerSOS(uid);
   }
 }

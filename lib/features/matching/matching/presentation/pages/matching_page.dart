@@ -153,7 +153,7 @@ class _MatchingPageState extends State<MatchingPage> {
                               carCompany: ride.car.company,
                               rideId: ride.id,
                             );
-                          } catch (error, stackTrace) {
+                          } catch (error) {
                             print(
                                 "Error building MatchCard from loaded ride: $error");
                             return ListTile(
@@ -190,7 +190,7 @@ class _MatchingPageState extends State<MatchingPage> {
                               carCompany: ride.car.company,
                               rideId: ride.id,
                             );
-                          } catch (error, stackTrace) {
+                          } catch (error) {
                             print(
                                 "Error building MatchCard from initial ride: $error");
                             return ListTile(

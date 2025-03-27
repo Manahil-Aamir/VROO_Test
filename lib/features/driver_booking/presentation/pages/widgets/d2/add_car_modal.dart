@@ -8,7 +8,7 @@ import '../../../../domain/entity/car.dart';
 class AddCarModal extends StatefulWidget {
   final Function(CarEntity) onCarAdded;
 
-  const AddCarModal({Key? key, required this.onCarAdded}) : super(key: key);
+  const AddCarModal({super.key, required this.onCarAdded});
 
   @override
   _AddCarModalState createState() => _AddCarModalState();

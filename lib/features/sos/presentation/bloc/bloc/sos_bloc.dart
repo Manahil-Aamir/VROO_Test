@@ -1,8 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vroo_test/features/sos/data/models/contact_model.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
-import '../../../../../core/services/permission_handler.dart';
-import '../../../../../core/services/sms_service.dart';
 import '../../../domain/usecases/delete_contact_usecase.dart';
 import '../../../domain/usecases/get_contacts_usecase.dart';
 import '../../../domain/usecases/save_contacts_usecase.dart';
@@ -95,10 +92,15 @@ class SosBloc extends Bloc<SosEvent, SosState> {
   Future<void> _onTriggerSos(TriggerSos event, Emitter<SosState> emit) async {
     emit(SosLoading());
     try {
-      final sosLink = await triggerSOS.call(event.uid);
-      emit(SosTriggered(''));
+      final String message = await triggerSOS.call(event.uid);
+
+      if (message == "Message sent successfully") {
+        emit(SosTriggered(message));
+      } else {
+        emit(SosError(message)); // Emit error if the message is not success
+      }
     } catch (e) {
-      emit(SosError("Failed to trigger SOS"));
+      emit(SosError("Failed to trigger SOS: ${e.toString()}"));
     }
   }
 }
