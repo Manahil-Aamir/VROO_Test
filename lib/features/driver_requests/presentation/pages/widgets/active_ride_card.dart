@@ -22,7 +22,7 @@ class ActiveRideCard extends StatelessWidget {
         print('ride id: ${ride.id}');
         print('ride id: ${ride.status}');
         context.read<Navigation>().navigateTo(
-        '/ride_details',
+        '/ride_request_status',
         arguments: ride.id.toString(),
     );
 

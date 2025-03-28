@@ -25,7 +25,8 @@ import 'package:vroo_test/features/rider_journey/dependancy_injection/booking_co
 import '../../features/driver_requests/dependency_injection/active_rides_di.dart';
 import '../../features/driver_requests/dependency_injection/pending_rides_di.dart';
 import '../../features/driver_requests/presentation/pages/active_rides_screen.dart';
-import '../../features/driver_requests/presentation/pages/pending_rides_screen.dart';
+import '../../features/driver_requests/presentation/pages/pending_rides_tab.dart';
+import '../../features/driver_requests/presentation/pages/ride_request_status.dart';
 import '../../features/matching/matching/dependency_injection/matching_di.dart';
 import '../../features/matching/matching/presentation/pages/matching_page.dart';
 import '../../features/rider_journey/dependancy_injection/r1_di.dart';
@@ -52,7 +53,7 @@ class Routes {
   static const String d3 = '/d3';
   static const String activeRides = '/active_ride_page';
   static const String booking_confirm = '/booking_confirm_driver';
-  static const String ride_details = '/ride_details';
+  static const String ride_request_status = '/ride_request_status';
   static const String riderhome = '/riderhome';
   static const String locationSelection = '/location_selection';
   static const String r1Page = '/r1_page';
@@ -585,13 +586,13 @@ class Routes {
             child: BookingConfirmationDriverScreen(),
           ),
         );
-      case ride_details:
+      case ride_request_status:
         final id = settings.arguments as String? ??
             '6799bec18972ba4dbd99374a'; // Default to 'driver'
         return MaterialPageRoute(
           builder: (_) => MultiProvider(
               providers: RidesDetailsDi.init(),
-              child: PendingRidesScreen(id: id)),
+              child: RideRequestStatusScreen(rideId: id)),
         );
       case r1Page:
         final arguments =
