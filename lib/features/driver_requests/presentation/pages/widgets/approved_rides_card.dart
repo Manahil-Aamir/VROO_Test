@@ -1,17 +1,14 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../../../../../core/theme/color/color_theme.dart';
-import '../../../domain/entity/pending_rides.dart';
-import '../../bloc/bloc/pending_rides_bloc.dart';
-import '../../bloc/event/pending_rides_event.dart';
+import '../../../domain/entity/approved_rides.dart';
 
-class PendingRideCard extends StatelessWidget {
-  final PendingRidesEntity ride;
+class ApprovedRideCard extends StatelessWidget {
+  final ApprovedRidesEntity ride;
 
-  const PendingRideCard({super.key, required this.ride});
+  const ApprovedRideCard({super.key, required this.ride});
 
   @override
   Widget build(BuildContext context) {
@@ -44,58 +41,13 @@ class PendingRideCard extends StatelessWidget {
             SizedBox(height: 10.h),
 
             // Buttons aligned to bottom right
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildIconButton(Icons.close, () {
-                    print("Reject tapped");
-                    final request = ride.request;
-                    context.read<PendingRidesBloc>().add(
-                      RejectRideRequestEvent(
-                        rideRequestId: request.id,
-                        rideId: request.rideId,
-                      ),
-                    );
-                    print("Reject Completed");
-                  }),
-                  SizedBox(width: 16.w),
-                  _buildIconButton(Icons.check, () {
-                    print("Accept tapped");
-                    final request = ride.request;
-                      context.read<PendingRidesBloc>().add(
-                        ApproveRideRequestEvent(
-                          rideRequestId: request.id,
-                          rideId: request.rideId,
-                        ),
-                      );
-                    print("Accept Completed");
-                  }),
-                ],
-              ),
-            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildIconButton(IconData icon, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(5.r),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.orange, width: 2),
-        ),
-        child: Icon(icon, color: Colors.orange, size: 24.r),
-      ),
-    );
-  }
-
-  Widget _buildDriverInfo(TextTheme textTheme, PendingRidesEntity ride) {
+  Widget _buildDriverInfo(TextTheme textTheme, ApprovedRidesEntity ride) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -133,7 +85,7 @@ class PendingRideCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRouteInfo(TextTheme textTheme, PendingRidesEntity ride) {
+  Widget _buildRouteInfo(TextTheme textTheme, ApprovedRidesEntity ride) {
     return Center(
       child: SizedBox(
         width: 0.8.sw,
@@ -178,7 +130,7 @@ class PendingRideCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDateTime(TextTheme textTheme, PendingRidesEntity ride, BuildContext context) {
+  Widget _buildDateTime(TextTheme textTheme, ApprovedRidesEntity ride, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [

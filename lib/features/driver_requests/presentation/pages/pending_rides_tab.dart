@@ -42,7 +42,7 @@ class PendingRidesTab extends StatelessWidget {
           }
           return ListView.builder(
             itemCount: state.rides.length,
-            itemBuilder: (context, index) => RideDetailCard(
+            itemBuilder: (context, index) => PendingRideCard(
               ride: state.rides[index],
             ),
           );

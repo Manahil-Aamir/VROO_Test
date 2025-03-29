@@ -11,7 +11,7 @@ import '../domain/usecases/get_pending_rides.dart';
 import '../domain/usecases/reject_ride_request.dart';
 import '../presentation/bloc/bloc/pending_rides_bloc.dart';
 
-class RidesDetailsDi {
+class PendingRideDi {
   static List<SingleChildWidget> init() {
     final httpClient = http.Client();
     final dataSource = PendingRidesRemoteDataSource(httpClient);
