@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'app/app.dart';
 import 'core/router/navigation.dart';
 import 'features/HomeScreens/dependency_injection/role_di.dart';
@@ -37,6 +38,31 @@ void main() async {
     ),
   ));
   await firebaseService.initializeFCM();
+
+  // ✅ Initialize FlutterForegroundTask
+  FlutterForegroundTask.init(
+    androidNotificationOptions: AndroidNotificationOptions(
+      channelId: 'foreground_service',
+      channelName: 'Foreground Service',
+      channelDescription: 'This notification appears when the service is running',
+      channelImportance: NotificationChannelImportance.HIGH,
+      priority: NotificationPriority.HIGH,
+      visibility: NotificationVisibility.VISIBILITY_PUBLIC,
+    ),
+    iosNotificationOptions: IOSNotificationOptions(
+      showNotification: true,
+      playSound: false,
+    ),
+    foregroundTaskOptions: ForegroundTaskOptions(
+      eventAction: ForegroundTaskEventAction.once(), // <-- Add this line
+      autoRunOnBoot: true,
+      allowWakeLock: true,
+      allowWifiLock: true,
+    ),
+  );
+  FlutterForegroundTask.initCommunicationPort();
+  // Add a small delay to ensure port registration completes
+  await Future.delayed(Duration(milliseconds: 500));
 
   runApp(
     MultiProvider(
