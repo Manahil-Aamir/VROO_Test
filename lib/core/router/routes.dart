@@ -79,13 +79,13 @@ class Routes {
         return MaterialPageRoute(
           builder: (_) => const SplashScreen(),
         );
-      // case location_tracking:
-      //   return MaterialPageRoute(
-      //     builder: (_) => MultiBlocProvider(
-      //       providers: LocationTrackingDependencyInjection.init(),
-      //       child: LocationTracker(),
-      //     ),
-      //   );
+      case location_tracking:
+        return MaterialPageRoute(
+          builder: (_) => MultiBlocProvider(
+            providers: LocationTrackingDependencyInjection.init(),
+            child: LocationTracking(),
+          ),
+        );
       case home:
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
