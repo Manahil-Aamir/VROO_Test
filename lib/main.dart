@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'app/app.dart';
 import 'core/router/navigation.dart';
+import 'core/services/bb.dart';
 import 'features/HomeScreens/dependency_injection/role_di.dart';
 import 'features/notification/data/data_source/notification_remote_data_source.dart';
 import 'features/notification/data/repository/notification_repository_impl.dart';
@@ -40,29 +41,34 @@ void main() async {
   await firebaseService.initializeFCM();
 
   // ✅ Initialize FlutterForegroundTask
-  FlutterForegroundTask.init(
-    androidNotificationOptions: AndroidNotificationOptions(
-      channelId: 'foreground_service',
-      channelName: 'Foreground Service',
-      channelDescription: 'This notification appears when the service is running',
-      channelImportance: NotificationChannelImportance.HIGH,
-      priority: NotificationPriority.HIGH,
-      visibility: NotificationVisibility.VISIBILITY_PUBLIC,
-    ),
-    iosNotificationOptions: IOSNotificationOptions(
-      showNotification: true,
-      playSound: false,
-    ),
-    foregroundTaskOptions: ForegroundTaskOptions(
-      eventAction: ForegroundTaskEventAction.once(), // <-- Add this line
-      autoRunOnBoot: true,
-      allowWakeLock: true,
-      allowWifiLock: true,
-    ),
-  );
-  FlutterForegroundTask.initCommunicationPort();
-  // Add a small delay to ensure port registration completes
-  await Future.delayed(Duration(milliseconds: 500));
+  // FlutterForegroundTask.init(
+  //   androidNotificationOptions: AndroidNotificationOptions(
+  //     channelId: 'foreground_service',
+  //     channelName: 'Foreground Service',
+  //     channelDescription: 'This notification appears when the service is running',
+  //     channelImportance: NotificationChannelImportance.HIGH,
+  //     priority: NotificationPriority.HIGH,
+  //     visibility: NotificationVisibility.VISIBILITY_PUBLIC,
+  //   ),
+  //   iosNotificationOptions: IOSNotificationOptions(
+  //     showNotification: true,
+  //     playSound: false,
+  //   ),
+  //   foregroundTaskOptions: ForegroundTaskOptions(
+  //     eventAction: ForegroundTaskEventAction.once(), // <-- Add this line
+  //     autoRunOnBoot: true,
+  //     allowWakeLock: true,
+  //     allowWifiLock: true,
+  //   ),
+  // );
+
+// Initialize location service
+  final locationService = LocationService();
+  await locationService.initialize();
+  
+  // FlutterForegroundTask.initCommunicationPort();
+  // // Add a small delay to ensure port registration completes
+  // await Future.delayed(Duration(milliseconds: 500));
 
   runApp(
     MultiProvider(

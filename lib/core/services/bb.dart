@@ -1,14 +1,80 @@
 import 'dart:async';
-import 'dart:isolate';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:geolocator/geolocator.dart';
 
+// Define a top-level function as the entry point for the background task
+@pragma('vm:entry-point')
+void startLocationTaskCallback() {
+  // The background task initialization requires a top-level function
+  FlutterForegroundTask.setTaskHandler(LocationTaskHandler());
+}
+
+// Implement the TaskHandler for handling background location updates
+
+class LocationTaskHandler extends TaskHandler {
+  StreamSubscription<Position>? _positionStream;
+  
+  @override
+  Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
+    print("🚀 Background Location Task Started!");
+    
+    // Start location tracking
+    _positionStream = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 1,
+      ),
+    ).listen((Position position) {
+      print("📍 Location Update: ${position.latitude}, ${position.longitude} , ${DateTime.now()}");
+      
+      // Update the notification with the current location
+      FlutterForegroundTask.updateService(
+        notificationText: "Lat: ${position.latitude}, Lng: ${position.longitude}",
+      );
+      
+      // Send data to the main isolate if needed
+      FlutterForegroundTask.sendDataToMain({
+        'latitude': position.latitude,
+        'longitude': position.longitude,
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+    });
+  }
+  
+  @override
+  void onRepeatEvent(DateTime timestamp) {
+    // This will be called based on the interval specified in ForegroundTaskOptions
+    print("⏰ Task Repeat Event: ${timestamp.toIso8601String()}");
+  }
+  
+  @override
+  Future<void> onDestroy(DateTime timestamp) async {
+    print("🛑 Background Location Task Stopped");
+    await _positionStream?.cancel();
+    _positionStream = null;
+    
+    // Clean up any resources here
+    await FlutterForegroundTask.clearAllData();
+  }
+  
+  @override
+  void onReceiveData(Object data) {
+    // Handle data received from the main isolate
+    print("📩 Data Received in Background Task: $data");
+    
+    // Check if we should stop the task
+    if (data == 'stop') {
+      FlutterForegroundTask.stopService();
+    }
+  }
+}
+
+// Main service class to be used from your app
 class LocationService {
   static final LocationService _instance = LocationService._internal();
   factory LocationService() => _instance;
   LocationService._internal();
 
-  StreamSubscription<Position>? _positionStream;
   bool _isTracking = false;
 
   /// Request location permissions (requires "Always" for background)
@@ -31,11 +97,45 @@ class LocationService {
     return permission == LocationPermission.always;
   }
 
+  /// Initialize and check required prerequisites
+  Future<void> initialize() async {
+    // Initialize FlutterForegroundTask
+    await _initForegroundTask();
+    
+    // Register for data updates from background task
+    FlutterForegroundTask.addTaskDataCallback((data) {
+      print("✉️ Data received from background task: $data");
+    });
+  }
+
+  Future<void> _initForegroundTask() async {
+  // Initialize FlutterForegroundTask
+    FlutterForegroundTask.init(
+      androidNotificationOptions: AndroidNotificationOptions(
+        channelId: 'location_foreground_service',
+        channelName: 'Location Tracking Service',
+        channelDescription: 'This notification appears when the service is running',
+        channelImportance: NotificationChannelImportance.HIGH,
+        priority: NotificationPriority.HIGH,
+        visibility: NotificationVisibility.VISIBILITY_PUBLIC,
+      ),
+      iosNotificationOptions: const IOSNotificationOptions(
+        showNotification: true,
+        playSound: false,
+      ),
+      foregroundTaskOptions: ForegroundTaskOptions(
+        eventAction: ForegroundTaskEventAction.repeat(5000),  // Add this line
+        autoRunOnBoot: true,
+        allowWakeLock: true,
+        allowWifiLock: true,
+      ),
+    );
+  }
   /// Start tracking location in the background
-  Future<void> startTracking() async {
+  Future<bool> startTracking() async {
     if (_isTracking) {
       print("🚨 Tracking already running!");
-      return;
+      return true;
     }
 
     print("✅ Start Tracking requested!");
@@ -43,34 +143,33 @@ class LocationService {
     bool hasPermission = await requestLocationPermission();
     if (!hasPermission) {
       print("❌ Location permission denied!");
-      return;
+      return false;
     }
 
     print("📌 Permissions granted. Starting foreground service...");
     
-    // Initialize communication port BEFORE starting service
+    // Initialize communication port for receiving data from the background task
     FlutterForegroundTask.initCommunicationPort();
-
+    
+    // Check if service is already running
     bool isRunning = await FlutterForegroundTask.isRunningService;
     if (!isRunning) {
-      ServiceRequestResult result = await FlutterForegroundTask.startService(
-        notificationTitle: "Tracking Location",
-        notificationText: "Your location is being tracked in the background.",
-        callback: _startBackgroundTask,
+      // Start the service
+      final result = await FlutterForegroundTask.startService(
+        notificationTitle: "Location Tracking",
+        notificationText: "Tracking your location in background",
+        callback: startLocationTaskCallback,
       );
-
-      if (result is! ServiceRequestSuccess) {
-        print("❌ Failed to start foreground service: ${(result as ServiceRequestFailure).error}");
-        return;
+      
+      if (result is ServiceRequestFailure) {
+        print("❌ Failed to start foreground service: ${result.error}");
+        return false;
       }
-
-      // Wait a bit longer before initializing the background task
-      await Future.delayed(Duration(seconds: 2));
     }
 
-    _startBackgroundTask();
     _isTracking = true;
     print("🎯 Tracking started successfully!");
+    return true;
   }
     
   /// Stop tracking location
@@ -78,72 +177,21 @@ class LocationService {
     if (!_isTracking) return;
 
     print("✅ Stop Tracking requested!");
-
-    await FlutterForegroundTask.saveData(key: 'stop', value: true);
+    
+    // Send stop signal to background task
+    FlutterForegroundTask.sendDataToTask('stop');
+    
+    // Also try to stop directly in case communication fails
     await FlutterForegroundTask.stopService();
     _isTracking = false;
 
     print("✅ Location tracking stopped.");
   }
-
-  /// Background task callback (runs in a separate isolate)
-  @pragma('vm:entry-point')
-  static void _startBackgroundTask() {
-    print("🚀 Background Task Started!");
-
-    // Try multiple times to get the receive port
-    int retryCount = 0;
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      retryCount++;
-      final receivePort = FlutterForegroundTask.receivePort;
-      
-      if (receivePort != null) {
-        print("✅ Receive port initialized successfully.");
-        _listenToPort(receivePort);
-        timer.cancel();
-      } else {
-        print("⏳ Receive port not ready. Retry attempt $retryCount...");
-        
-        // Initialize port again just in case
-        FlutterForegroundTask.initCommunicationPort();
-        
-        // Stop trying after several attempts
-        if (retryCount >= 5) {
-          print("❌ Error: Failed to initialize receive port after multiple attempts.");
-          timer.cancel();
-        }
-      }
-    });
+  
+  /// Check if tracking is currently active
+  Future<bool> isTracking() async {
+    final isRunning = await FlutterForegroundTask.isRunningService;
+    _isTracking = isRunning;
+    return isRunning;
   }
-    
-  /// Listen for messages from the main isolate
-  static void _listenToPort(ReceivePort receivePort) {
-    print("📬 Listening for messages...");
-
-    StreamSubscription<dynamic>? messageSub;
-    StreamSubscription<Position>? positionSub;
-
-    messageSub = receivePort.listen((message) {
-      print("📩 Message received: $message");
-      if (message == 'stop') {
-        positionSub?.cancel();
-        messageSub?.cancel();
-        FlutterForegroundTask.stopService();
-        print("🛑 Background task stopped.");
-      }
-    });
-
-    positionSub = Geolocator.getPositionStream(
-      locationSettings: LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    ).listen((Position position) {
-      print("📍 Location Update: ${position.latitude}, ${position.longitude}");
-      FlutterForegroundTask.updateService(
-        notificationText: "Lat: ${position.latitude}, Lng: ${position.longitude}",
-      );
-    });
-  }
-
 }
