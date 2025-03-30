@@ -8,7 +8,6 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/utils/constant/api_constants.dart';
-import 'package:android_intent_plus/android_intent.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 final FlutterBackgroundService _backgroundService = FlutterBackgroundService();

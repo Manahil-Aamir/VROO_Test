@@ -42,6 +42,8 @@ import '../../features/authentication/dependency_injection/create_user_di.dart';
 import '../../features/authentication/presentation/pages/email_verification_screen.dart';
 import '../../features/authentication/presentation/pages/create_user_screen.dart';
 import '../../features/authentication/presentation/pages/signup_screen.dart';
+import '../../features/sos/dependancy_injection/location_di.dart';
+import '../../features/sos/presentation/pages/location_screen.dart';
 import '../../splash.dart';
 
 class Routes {
@@ -69,6 +71,7 @@ class Routes {
   static const String home = '/home';
   static const String location = '/location';
   static const String sos = '/sos';
+  static const String location_tracking = '/location_tracking';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -76,6 +79,13 @@ class Routes {
         return MaterialPageRoute(
           builder: (_) => const SplashScreen(),
         );
+      // case location_tracking:
+      //   return MaterialPageRoute(
+      //     builder: (_) => MultiBlocProvider(
+      //       providers: LocationTrackingDependencyInjection.init(),
+      //       child: LocationTracker(),
+      //     ),
+      //   );
       case home:
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(

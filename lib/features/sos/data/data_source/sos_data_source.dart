@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:vroo_test/features/sos/data/models/contact_model.dart';
 import '../../../../core/services/permission_handler.dart';
-import '../../../../core/services/sms_service.dart';
+// import '../../../../core/services/sms_service.dart';
 import '../models/sos_model.dart';
 import '../../../../core/utils/constant/api_constants.dart';
 import 'tracking_data_source.dart';
@@ -17,7 +17,7 @@ abstract class SosDataSource {
 
 class SosDataSourceImpl implements SosDataSource {
   static const String baseUrl = "${ApiConstants.baseUrl}emergency";
-  final SmsService _smsService = SmsService();
+  // final SmsService _smsService = SmsService();
   final PermissionService _permissionService = PermissionService();
 
   @override
