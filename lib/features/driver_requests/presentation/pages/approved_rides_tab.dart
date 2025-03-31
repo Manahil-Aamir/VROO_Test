@@ -34,7 +34,7 @@ class ApprovedRidesTab extends StatelessWidget {
             ),
           );
         }
-        return const Center(child: Text('Fetching pending requests...'));
+        return const Center(child: Text('Fetching approved requests...'));
       },
     );
   }

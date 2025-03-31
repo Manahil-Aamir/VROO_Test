@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -66,9 +68,10 @@ class _R3PageState extends State<R3Page> {
     return "${dateString}T$hours:$minutes:$seconds";
   }
 
-  String generateRandomDriverId() {
-    final random = Random();
-    return 'Test ${random.nextInt(100)}';
+  String getRiderId() {
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance; // Initialize FirebaseAuth
+    final User user = firebaseAuth.currentUser!; // Get current user
+    return user.uid; // Return UID or null if user is not logged in
   }
 
   @override
@@ -213,7 +216,7 @@ class _R3PageState extends State<R3Page> {
                           //   widget.schedule.maxTime,
                           // );
                           rideDetails = RiderJourneyModel(
-                            riderId: generateRandomDriverId(),
+                            riderId: getRiderId(),
                             source: RideLocationModel(
                               coords: [
                                 widget.location.sourceCoordinates!.latitude,

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    _printToken();
+  }
+
+  Future<void> _printToken() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final token = await user.getIdToken();
+      print('User ID Token: $token');
+    } else {
+      print('No user logged in');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       builder: (context, state) {
+        print('HomeState: $state');
+
         return const NativeGoogleMap();
       },
     );

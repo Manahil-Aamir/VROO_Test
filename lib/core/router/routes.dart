@@ -9,6 +9,8 @@ import '../../features/HomeScreens/dependency_injection/home_di.dart';
 import '../../features/HomeScreens/dependency_injection/location_di.dart';
 import '../../features/HomeScreens/presentation/pages/home_screen.dart';
 import '../../features/HomeScreens/presentation/pages/location_selection.dart';
+import '../../features/chat/dependency_injection/chat_di.dart';
+import '../../features/chat/presentation/pages/chat_screen.dart';
 import '../../features/driver_booking/dependency_injection/booking_di.dart';
 import '../../features/driver_booking/dependency_injection/d1_di.dart';
 import '../../features/driver_booking/dependency_injection/d2_di.dart';
@@ -66,7 +68,8 @@ class Routes {
   static const String emailVerification = '/email-verification';
   static const String profile = '/profile';
   static const String home = '/home';
-  static const String location= '/location';
+  static const String location = '/location';
+  static const String chat = '/chat';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -576,7 +579,8 @@ class Routes {
             settings.arguments as String? ?? 'driver 86'; // Default to 'driver'
         return MaterialPageRoute(
           builder: (_) => MultiProvider(
-              providers: ActiveRideDi.init(), child: ActiveRidesScreen(id: id)),
+              providers: ActiveRideDi.init(), 
+              child: ActiveRidesScreen(id: id)),
         );
       case '/booking_confirm_driver':
         return MaterialPageRoute(
@@ -683,6 +687,11 @@ class Routes {
             builder: (_) => MultiProvider(
                 providers: SignInDependencyInjection.init(),
                 child: const SignInPage()));
+      case chat:
+        return MaterialPageRoute(
+             builder: (_) => MultiBlocProvider(
+                providers: ChatDependencyInjection.init(),
+                child: ChatScreen()));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

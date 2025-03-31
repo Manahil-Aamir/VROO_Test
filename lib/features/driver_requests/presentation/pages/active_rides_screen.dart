@@ -36,6 +36,14 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
           } else if (state is ActiveRidesError) {
             return Center(child: Text(state.message));
           } else if (state is ActiveRidesLoaded) {
+            if (state.rides.isEmpty) {
+              return const Center(
+                child: Text(
+                  'Please create a ride',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+              );
+            }
             return ListView.builder(
               itemCount: state.rides.length,
               itemBuilder: (context, index) => ActiveRideCard(
@@ -43,7 +51,6 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
               ),
             );
           }
-          // Handle the "initial" state gracefully
           return const Center(child: Text('Fetching rides...'));
         },
       ),

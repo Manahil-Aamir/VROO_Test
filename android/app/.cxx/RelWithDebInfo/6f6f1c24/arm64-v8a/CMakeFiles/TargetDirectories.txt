@@ -1,0 +1,2 @@
+C:/Users/PMLS/Downloads/Github/vroo-test/VROO_Test/android/app/.cxx/RelWithDebInfo/6f6f1c24/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/PMLS/Downloads/Github/vroo-test/VROO_Test/android/app/.cxx/RelWithDebInfo/6f6f1c24/arm64-v8a/CMakeFiles/rebuild_cache.dir
