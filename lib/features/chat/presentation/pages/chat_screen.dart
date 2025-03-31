@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/router/navigation.dart';
 import '../../../../core/styles/app_styles.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/appbar.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../HomeScreens/presentation/bloc/role_bloc.dart';
-import '../../domain/usecases/get_chat_fcm_tokens.dart';
+import '../../domain/entity/chat_user.dart';
 import '../bloc/bloc/chat_bloc.dart';
 import '../bloc/event/chat_event.dart';
 import '../bloc/state/chat_state.dart';
@@ -20,12 +21,14 @@ class ChatScreen extends StatelessWidget {
       body: BlocBuilder<RoleBloc, RoleState>(
         builder: (context, roleState) {
           if (roleState is RoleInitial || roleState is RoleSwitched) {
-            final role = roleState.role; // Get the role from RoleBloc
+            final role = roleState.role; // Get role from RoleBloc
 
             return BlocProvider(
-              create: (context) =>
-                  ChatBloc(getChatUsers: context.read<GetChatUsersUseCase>())
-                    ..add(LoadChatUsers(role)), // Use role here
+              create: (context) => ChatBloc(
+                getChatUsers: context.read(),
+                sendMessage: context.read(),
+                getMessages: context.read(),
+              )..add(LoadChatUsers(role)),
               child: BlocBuilder<ChatBloc, ChatState>(
                 builder: (context, state) {
                   if (state is ChatLoading) {
@@ -34,12 +37,12 @@ class ChatScreen extends StatelessWidget {
                         color: ThemeColors.progressIndicatorColor,
                       ),
                     );
-                  } else if (state is ChatLoaded) {
+                  } else if (state is ChatUsersLoaded) {
                     return ListView.builder(
                       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                       itemCount: state.users.length,
                       itemBuilder: (context, index) {
-                        final user = state.users[index];
+                        final ChatUser user = state.users[index];
                         return Card(
                           color: ThemeColors.cardColor,
                           shape: RoundedRectangleBorder(
@@ -67,7 +70,7 @@ class ChatScreen extends StatelessWidget {
                               color: ThemeColors.primaryColor,
                             ),
                             onTap: () {
-                              // Navigate to chat screen
+                              context.read<Navigation>().navigateTo('/chat_detail', arguments: user);
                             },
                           ),
                         );
@@ -119,9 +122,7 @@ class ChatScreen extends StatelessWidget {
           );
         },
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 2,
-      ),
+      bottomNavigationBar: CustomBottomNavBar(selectedIndex: 2),
     );
   }
 }

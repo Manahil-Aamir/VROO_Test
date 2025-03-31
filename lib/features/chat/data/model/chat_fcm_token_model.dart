@@ -15,11 +15,11 @@ class ChatUserModel {
 
   factory ChatUserModel.fromJson(Map<String, dynamic> json) {
     return ChatUserModel(
-      id: json.containsKey('riderId') ? json['riderId'] : json['driverId'],
-      name: json['name'],
-      fcmToken: json['fcmToken'],
-      source: json['source'],
-      destination: json['destination'],
+      id: json['riderId'] ?? json['driverId'] ?? '',  // Handle both cases
+      name: json['name'] ?? json['driverName'] ?? '', // Handle both cases
+      fcmToken: json['fcmToken'] ?? '',
+      source: json['source'] ?? '',
+      destination: json['destination'] ?? '',
     );
   }
 }

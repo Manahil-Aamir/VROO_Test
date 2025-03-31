@@ -1,14 +1,40 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../domain/entity/chat_message.dart';
 import '../../domain/entity/chat_user.dart';
 import '../../domain/repository/chat_repository.dart';
+import '../data_source/chat_firestore_data_source.dart';
 import '../data_source/chat_remote_datasource.dart';
+import '../model/chat_message_model.dart';
 
 class ChatRepositoryImpl implements ChatRepository {
   final FirebaseAuth firebaseAuth;
   final ChatRemoteDataSource remoteDataSource;
+  final ChatFirestoreDataSource firestoreDataSource;
 
-  ChatRepositoryImpl(this.remoteDataSource, this.firebaseAuth);
+  ChatRepositoryImpl(this.remoteDataSource, this.firebaseAuth, this.firestoreDataSource);
+
+  @override
+  Future<void> sendMessage(ChatMessage message) {
+    return firestoreDataSource.sendMessage(ChatMessageModel(
+      senderId: message.senderId,
+      receiverId: message.receiverId,
+      message: message.message,
+      timestamp: message.timestamp,
+    ));
+  }
+
+  @override
+  Stream<List<ChatMessage>> getMessages(String chatId) {
+    return firestoreDataSource.getMessages(chatId).map((messages) => messages
+        .map((message) => ChatMessage(
+              senderId: message.senderId,
+              receiverId: message.receiverId,
+              message: message.message,
+              timestamp: message.timestamp,
+            ))
+        .toList());
+  }
 
   @override
   Future<List<ChatUser>> getChatUsers(String role) async {

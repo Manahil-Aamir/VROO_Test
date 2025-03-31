@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:vroo_test/features/authentication/dependency_injection/sign_in_di.dart';
 import 'package:vroo_test/features/authentication/presentation/pages/sign_in_page.dart';
+import 'package:vroo_test/features/chat/domain/entity/chat_user.dart';
+import 'package:vroo_test/features/chat/presentation/pages/chat_detail_screen.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import '../../features/HomeScreens/dependency_injection/home_di.dart';
@@ -70,6 +72,7 @@ class Routes {
   static const String home = '/home';
   static const String location = '/location';
   static const String chat = '/chat';
+  static const String chat_detail = '/chat_detail';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -692,6 +695,12 @@ class Routes {
              builder: (_) => MultiBlocProvider(
                 providers: ChatDependencyInjection.init(),
                 child: ChatScreen()));
+      case chat_detail:
+        final user = settings.arguments as ChatUser;
+        return MaterialPageRoute(
+             builder: (_) => MultiBlocProvider(
+                providers: ChatDependencyInjection.init(),
+                child: ChatDetailScreen(user: user)));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
