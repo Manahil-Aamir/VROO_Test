@@ -19,26 +19,51 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       emit(ChatLoading());
       try {
         final users = await getChatUsers(event.role);
-        emit(ChatUsersLoaded(users));
+        if (users.isEmpty) {
+          emit(ChatError('No users available for chat'));
+        } else {
+          emit(ChatUsersLoaded(users));
+        }
       } catch (e) {
-        emit(ChatError('Failed to load users'));
+        print('Error loading chat users: $e');
+        emit(ChatError('Failed to load users: ${e.toString()}'));
       }
     });
 
     on<SendMessageEvent>((event, emit) async {
       try {
         await sendMessage(event.message);
+        // We don't need to emit a new state here as the messages stream
+        // will automatically update the UI when the new message is added
       } catch (e) {
-        emit(ChatError('Failed to send message'));
+        print('Error sending message: $e');
+        emit(ChatError('Failed to send message: ${e.toString()}'));
       }
     });
 
     on<LoadChatMessages>((event, emit) async {
       emit(ChatLoading());
-      final messagesStream = getMessages(event.chatId);
-      await emit.forEach(messagesStream, onData: (messages) {
-        return ChatMessagesLoaded(messages);
-      });
+      try {
+        await emit.forEach(
+          getMessages(event.chatId),
+          onData: (messages) {
+            return ChatMessagesLoaded(messages);
+          },
+          onError: (error, stackTrace) {
+            print('Error in message stream: $error');
+            print('Stack trace: $stackTrace');
+            return ChatError('Failed to load messages: ${error.toString()}');
+          },
+        );
+      } catch (e) {
+        print('Error setting up message stream: $e');
+        emit(ChatError('Failed to load messages: ${e.toString()}'));
+      }
     });
+  }
+
+  String _getChatId(String user1, String user2) {
+    List<String> sortedIds = [user1, user2]..sort();
+    return sortedIds.join('_');
   }
 }
