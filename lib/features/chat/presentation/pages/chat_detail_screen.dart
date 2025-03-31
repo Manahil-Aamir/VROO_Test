@@ -21,6 +21,7 @@ class ChatDetailScreen extends StatefulWidget {
 
 class _ChatDetailScreenState extends State<ChatDetailScreen> {
   final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   late String currentUserId;
   late String chatId;
 
@@ -30,6 +31,23 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
     chatId = _getChatId(currentUserId, widget.user.id);
     context.read<ChatBloc>().add(LoadChatMessages(chatId));
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   String _getChatId(String user1, String user2) {
@@ -47,7 +65,15 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       body: Column(
         children: [
           Expanded(
-            child: BlocBuilder<ChatBloc, ChatState>(
+            child: BlocConsumer<ChatBloc, ChatState>(
+              listener: (context, state) {
+                if (state is ChatMessagesLoaded) {
+                  // Scroll to bottom when new messages arrive
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _scrollToBottom();
+                  });
+                }
+              },
               builder: (context, state) {
                 if (state is ChatLoading) {
                   return Center(
@@ -66,6 +92,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   }
                   
                   return ListView.builder(
+                    controller: _scrollController,
                     padding: EdgeInsets.all(10.r),
                     itemCount: state.messages.length,
                     itemBuilder: (context, index) {
@@ -167,7 +194,13 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 ),
                 SizedBox(width: 8.w),
                 GestureDetector(
-                  onTap: _sendMessage,
+                  onTap: () {
+                    _sendMessage();
+                    // Scroll to bottom after sending message
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _scrollToBottom();
+                    });
+                  },
                   child: Container(
                     padding: EdgeInsets.all(12.r),
                     decoration: BoxDecoration(
@@ -203,12 +236,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   String _formatTime(DateTime time) {
-    return '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
-  }
-
-  @override
-  void dispose() {
-    _messageController.dispose();
-    super.dispose();
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 }

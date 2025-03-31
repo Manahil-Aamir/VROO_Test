@@ -62,8 +62,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     });
   }
 
-  String _getChatId(String user1, String user2) {
-    List<String> sortedIds = [user1, user2]..sort();
-    return sortedIds.join('_');
-  }
+  // String _getChatId(String user1, String user2) {
+  //   List<String> sortedIds = [user1, user2]..sort();
+  //   return sortedIds.join('_');
+  // }
 }

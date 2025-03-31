@@ -40,7 +40,7 @@ class ChatFirestoreDataSourceImpl implements ChatFirestoreDataSource {
         .collection('chats')
         .doc(chatId)
         .collection('messages')
-        .orderBy('timestamp', descending: true)
+        .orderBy('timestamp', descending: false) // Changed to false to get oldest first
         .snapshots()
         .map((snapshot) {
           final messages = snapshot.docs
