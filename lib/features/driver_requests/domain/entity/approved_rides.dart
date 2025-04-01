@@ -1,22 +1,24 @@
 class ApprovedRidesEntity {
-  final DateTime date;
+  final String riderId;
+  final String status;
+  final int fare;
+  final String rideRequestId;
   final Location source;
   final Location destination;
-  final DateTime eta;
-  final int fare;
+  final DateTime date;
   final TimeRange pickupTimeRange;
-  final Preferences preferences;
-  final Request request;
+  final DateTime maxArrivalTime;
 
   ApprovedRidesEntity({
-    required this.date,
+    required this.riderId,
+    required this.status,
+    required this.fare,
+    required this.rideRequestId,
     required this.source,
     required this.destination,
-    required this.eta,
-    required this.fare,
+    required this.date,
     required this.pickupTimeRange,
-    required this.preferences,
-    required this.request,
+    required this.maxArrivalTime,
   });
 }
 
@@ -39,36 +41,4 @@ class TimeRange {
   final DateTime max;
 
   TimeRange({required this.min, required this.max});
-}
-
-class Preferences {
-  final bool canWalk;
-  final bool femaleOnly;
-  final bool maleOnly;
-
-  Preferences({
-    required this.canWalk,
-    required this.femaleOnly,
-    required this.maleOnly,
-  });
-}
-
-class Request {
-  final String id;
-  final String createdAt;
-  final String driverId;
-  final String rideId;
-  final String rideRequestId;
-  final String riderId;
-  final String status;
-
-  Request({
-    required this.id,
-    required this.createdAt,
-    required this.driverId,
-    required this.rideId,
-    required this.rideRequestId,
-    required this.riderId,
-    required this.status,
-  });
 }

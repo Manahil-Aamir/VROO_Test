@@ -1,51 +1,56 @@
 import '../../domain/entity/approved_rides.dart';
 
 class ApprovedRidesModel {
-  final DateTime date;
+  final String riderId;
+  final String status;
+  final int fare;
+  final String rideRequestId;
   final LocationModel source;
   final LocationModel destination;
-  final DateTime eta;
-  final int fare;
+  final DateTime date;
   final TimeRangeModel pickupTimeRange;
-  final PreferencesModel preferences;
-  final RequestModel request;
+  final DateTime maxArrivalTime;
 
   ApprovedRidesModel({
-    required this.date,
+    required this.riderId,
+    required this.status,
+    required this.fare,
+    required this.rideRequestId,
     required this.source,
     required this.destination,
-    required this.eta,
-    required this.fare,
+    required this.date,
     required this.pickupTimeRange,
-    required this.preferences,
-    required this.request,
+    required this.maxArrivalTime,
   });
 
   factory ApprovedRidesModel.fromJson(Map<String, dynamic> json) {
     return ApprovedRidesModel(
-      date: DateTime.parse(json['date']),
+      riderId: json['riderId'] ?? '',
+      status: json['status'] ?? '',
+      fare: json['fare']?.toInt() ?? 0,
+      rideRequestId: json['rideRequestId'] ?? '',
       source: LocationModel.fromJson(json['source'] ?? {}),
       destination: LocationModel.fromJson(json['destination'] ?? {}),
-      eta: DateTime.parse(json['eta']),
-      fare: json['fare']?.toInt() ?? 0,
+      date: DateTime.parse(json['date']),
       pickupTimeRange: TimeRangeModel.fromJson(json['pickupTimeRange'] ?? {}),
-      preferences: PreferencesModel.fromJson(json['preferences'] ?? {}),
-      request: RequestModel.fromJson(json['request'] ?? {}),
+      maxArrivalTime: DateTime.parse(json['maxArrivalTime']),
     );
   }
 
-  ApprovedRidesEntity toEntity() => ApprovedRidesEntity(
-        date: date,
-        source: source.toEntity(),
-        destination: destination.toEntity(),
-        eta: eta,
-        fare: fare,
-        pickupTimeRange: pickupTimeRange.toEntity(),
-        preferences: preferences.toEntity(),
-        request: request.toEntity(),
-      );
+  ApprovedRidesEntity toEntity() {
+    return ApprovedRidesEntity(
+      riderId: riderId,
+      status: status,
+      fare: fare,
+      rideRequestId: rideRequestId,
+      source: source.toEntity(),
+      destination: destination.toEntity(),
+      date: date,
+      pickupTimeRange: pickupTimeRange.toEntity(),
+      maxArrivalTime: maxArrivalTime,
+    );
+  }
 }
-
 class LocationModel {
   final String address;
   final String cellId;
@@ -95,73 +100,5 @@ class TimeRangeModel {
   TimeRange toEntity() => TimeRange(
         min: min,
         max: max,
-      );
-}
-
-class PreferencesModel {
-  final bool canWalk;
-  final bool femaleOnly;
-  final bool maleOnly;
-
-  PreferencesModel({
-    required this.canWalk,
-    required this.femaleOnly,
-    required this.maleOnly,
-  });
-
-  factory PreferencesModel.fromJson(Map<String, dynamic> json) {
-    return PreferencesModel(
-      canWalk: json['canWalk'] ?? false,
-      femaleOnly: json['femaleOnly'] ?? false,
-      maleOnly: json['maleOnly'] ?? false,
-    );
-  }
-
-  Preferences toEntity() => Preferences(
-        canWalk: canWalk,
-        femaleOnly: femaleOnly,
-        maleOnly: maleOnly,
-      );
-}
-
-class RequestModel {
-  final String id;
-  final String createdAt;
-  final String driverId;
-  final String rideId;
-  final String rideRequestId;
-  final String riderId;
-  final String status;
-
-  RequestModel({
-    required this.id,
-    required this.createdAt,
-    required this.driverId,
-    required this.rideId,
-    required this.rideRequestId,
-    required this.riderId,
-    required this.status,
-  });
-
-  factory RequestModel.fromJson(Map<String, dynamic> json) {
-    return RequestModel(
-      id: json['_id'] ?? '',
-      createdAt: json['created_at'] ?? '',
-      driverId: json['driverId'] ?? '',
-      rideId: json['rideId'] ?? '',
-      rideRequestId: json['rideRequestId'] ?? '',
-      riderId: json['riderId'] ?? '',
-      status: json['status'] ?? 'approved',
-    );
-  }
-
-  Request toEntity() => Request(
-        id: id,
-        createdAt: createdAt,
-        driverId: driverId,
-        rideId: rideId,
-        rideRequestId: rideRequestId,
-        riderId: riderId,
-        status: status,
       );
 }

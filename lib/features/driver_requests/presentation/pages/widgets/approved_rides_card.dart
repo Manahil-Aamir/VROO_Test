@@ -148,7 +148,7 @@ class ApprovedRideCard extends StatelessWidget {
             Icon(Icons.access_time, color: ThemeColors.primaryColor, size: 16.r),
             SizedBox(width: 6.w),
             Text(
-              DateFormat('h:mm a').format(ride.eta),
+              DateFormat('h:mm a').format(ride.pickupTimeRange.min),
               style: textTheme.bodySmall?.copyWith(
                 color: ThemeColors.buttonTextColor,
                 fontWeight: FontWeight.w500,

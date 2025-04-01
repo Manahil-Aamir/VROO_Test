@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -12,8 +13,9 @@ import '../presentation/bloc/bloc/approved_rides_bloc.dart';
 class ApproveRidesDi {
   static List<SingleChildWidget> init() {
     final httpClient = http.Client();
+    final firebaseAuth = FirebaseAuth.instance; 
     final dataSource = ApprovedRidesRemoteDataSource(httpClient);
-    final repository = ApprovedRidesRepositoryImpl(dataSource);
+    final repository = ApprovedRidesRepositoryImpl(dataSource, firebaseAuth);
     final getApprovedRides = GetApprovedRides(repository);
     final navigationProvider = Navigation();
 

@@ -20,11 +20,15 @@ class ApprovedRidesTab extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is ApprovedRidesLoading) {
+          print('Loading approved rides...');
           return const Center(child: CircularProgressIndicator());
         } else if (state is ApprovedRidesError) {
+          print('Error loading approved rides: ${state.message}');
           return Center(child: Text(state.message));
         } else if (state is ApprovedRidesLoaded) {
+          print('Approved rides loaded: ${state.rides.length} rides found.');
           if (state.rides.isEmpty) {
+            print('No approved rides found.');
             return const Center(child: Text('No pending requests.'));
           }
           return ListView.builder(

@@ -5,7 +5,7 @@ import '../../../../core/utils/constant/api_constants.dart';
 import '../model/approved_rides_model.dart';
 
 abstract class ApprovedRidesDataSource {
-  Future<List<ApprovedRidesModel>> getApprovedRides(String driverId);
+  Future<List<ApprovedRidesModel>> getApprovedRides(String driverId, String token);
 }
 
 class ApprovedRidesRemoteDataSource implements ApprovedRidesDataSource {
@@ -14,16 +14,20 @@ class ApprovedRidesRemoteDataSource implements ApprovedRidesDataSource {
   ApprovedRidesRemoteDataSource(this.client);
 
   @override
-  Future<List<ApprovedRidesModel>> getApprovedRides(String rideId) async {
+  Future<List<ApprovedRidesModel>> getApprovedRides(String rideId, String token) async {
     try {
-      print('Fetching ride details for ride ID: $rideId');
+      print('Fetching approved ride details for ride ID: $rideId');
       final response = await client.get(
-      Uri.parse(
-        // 'http://10.0.2.2:8080/driver/ride-requests/$rideId',
-        '${ApiConstants.baseUrl}driver/ride-requests/$rideId'
-      ),);
+        Uri.parse(
+          'http://10.0.2.2:8080/driver/approved-requests/$rideId',
+        ),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
 
-      print('Response status: ${response.statusCode}');
+      print('Response status approved rides: ${response.statusCode}');
       print('Response body for approved rides: ${response.body}');
 
       if (response.statusCode == 200) {

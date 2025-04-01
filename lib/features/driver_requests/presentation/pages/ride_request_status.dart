@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/widgets/appbar.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../../shared/widgets/custom_top_bar.dart';
+import '../bloc/bloc/approved_rides_bloc.dart';
 import '../bloc/bloc/pending_rides_bloc.dart';
+import '../bloc/event/approved_rides_event.dart';
 import '../bloc/event/pending_rides_event.dart';
 import 'approved_rides_tab.dart';
 import 'pending_rides_tab.dart';
@@ -32,6 +34,7 @@ class _RideRequestStatusScreenState extends State<RideRequestStatusScreen>
     // Fetch both pending and approved rides when screen loads
     context.read<PendingRidesBloc>().add(FetchPendingRides(widget.rideId));
     // TODO: Add event for fetching approved rides
+    context.read<ApprovedRidesBloc>().add(FetchApprovedRides(widget.rideId));
   }
 
   @override
