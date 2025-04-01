@@ -11,6 +11,7 @@ import '../data/repository/chat_repository_impl.dart';
 import '../domain/repository/chat_repository.dart';
 import '../domain/usecases/get_chat_fcm_tokens.dart';
 import '../domain/usecases/get_messages_usecase.dart';
+import '../domain/usecases/messages_usecases.dart';
 import '../domain/usecases/send_message_usecase.dart';
 import '../presentation/bloc/bloc/chat_bloc.dart';
 
@@ -18,23 +19,34 @@ class ChatDependencyInjection {
   static List<SingleChildWidget> init() {
     final client = http.Client();
     final firebaseAuth = FirebaseAuth.instance;
-    final chatDataSource = ChatRemoteDataSourceImpl(client);
     final firestore = FirebaseFirestore.instance;
-    final chatMesageDataSource = ChatFirestoreDataSourceImpl(firestore);
-    final chatRepository = ChatRepositoryImpl(chatDataSource, firebaseAuth, chatMesageDataSource);
+    final chatFirestoreDataSource = ChatFirestoreDataSourceImpl(firestore);
+    final chatRemoteDataSource = ChatRemoteDataSourceImpl(client);
+    final chatRepository = ChatRepositoryImpl(chatRemoteDataSource, firebaseAuth, chatFirestoreDataSource);
     final getChatUsersUseCase = GetChatUsersUseCase(chatRepository);
     final sendMessageUseCase = SendMessageUseCase(chatRepository);
     final getMessagesUseCase = GetMessagesUseCase(chatRepository);
-
+    final getChatInfoUseCase = GetChatInfoUseCase(chatRepository);
+    final streamLastMessageInfoUseCase = StreamLastMessageInfoUseCase(chatRepository);
 
     return [
-      Provider<ChatRemoteDataSource>(create: (_) => chatDataSource),
+      Provider<ChatFirestoreDataSource>(create: (_) => chatFirestoreDataSource),
+      Provider<ChatRemoteDataSource>(create: (_) => chatRemoteDataSource),
       Provider<ChatRepository>(create: (_) => chatRepository),
       Provider<GetChatUsersUseCase>(create: (_) => getChatUsersUseCase),
       Provider<SendMessageUseCase>(create: (_) => sendMessageUseCase),
       Provider<GetMessagesUseCase>(create: (_) => getMessagesUseCase),
+      Provider<GetChatInfoUseCase>(create: (_) => getChatInfoUseCase),
+      Provider<StreamLastMessageInfoUseCase>(create: (_) => streamLastMessageInfoUseCase),
       BlocProvider<ChatBloc>(
-        create: (_) => ChatBloc(getChatUsers: getChatUsersUseCase, sendMessage: sendMessageUseCase, getMessages: getMessagesUseCase),
+        create: (context) => ChatBloc(
+          getChatUsers: getChatUsersUseCase, 
+          sendMessage: sendMessageUseCase, 
+          getMessages: getMessagesUseCase,
+          getChatInfo: getChatInfoUseCase,
+          firestoreDataSource: chatFirestoreDataSource,
+          streamLastMessageInfo: streamLastMessageInfoUseCase,  
+        ),
       ),
     ];
   }

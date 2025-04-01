@@ -25,8 +25,8 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Stream<List<ChatMessage>> getMessages(String chatId) {
-    return firestoreDataSource.getMessages(chatId).map((messages) => messages
+  Stream<List<ChatMessage>> getMessages(String chatId, [int limit = 20]) {
+    return firestoreDataSource.getMessages(chatId, limit).map((messages) => messages
         .map((message) => ChatMessage(
               senderId: message.senderId,
               receiverId: message.receiverId,
@@ -34,6 +34,11 @@ class ChatRepositoryImpl implements ChatRepository {
               timestamp: message.timestamp,
             ))
         .toList());
+  }
+
+  @override
+  Future<Map<String, dynamic>?> getChatInfo(String chatId) {
+    return firestoreDataSource.getChatInfo(chatId);
   }
 
   @override
@@ -56,5 +61,9 @@ class ChatRepositoryImpl implements ChatRepository {
               destination: user.destination,
             ))
         .toList();
+  }
+
+  Stream<Map<String, dynamic>?> streamLastMessageInfo(String chatId) {
+    return firestoreDataSource.streamLastMessageInfo(chatId);
   }
 }

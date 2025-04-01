@@ -6,7 +6,7 @@ class GetMessagesUseCase {
 
   GetMessagesUseCase(this.repository);
 
-  Stream<List<ChatMessage>> call(String chatId) {
-    return repository.getMessages(chatId);
+  Stream<List<ChatMessage>> call(String chatId, [int limit = 20]) {
+    return repository.getMessages(chatId, limit);
   }
 }
