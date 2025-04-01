@@ -20,6 +20,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final ChatFirestoreDataSource firestoreDataSource;
   
   final Map<String, StreamSubscription<Map<String, dynamic>?>> _streamSubscriptions = {};
+  final Map<String, Map<String, dynamic>> _lastMessagesCache = {};
 
   ChatBloc({
     required this.getChatUsers,
@@ -52,17 +53,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         _cancelAllSubscriptions();
 
         final currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
-        final lastMessagesInfo = <String, Map<String, dynamic>>{};
-        final lastMessageStreams = <String, Stream<Map<String, dynamic>?>>{};
-
+        
+        // Initialize with cached data if available
+        final initialLastMessagesInfo = Map<String, Map<String, dynamic>>.from(_lastMessagesCache);
+        
         for (final user in users) {
           final chatId = _getChatId(currentUserId, user.id);
           final stream = streamLastMessageInfo(chatId);
-          lastMessageStreams[user.id] = stream;
           
           // Set up subscription for this user's chat
           _streamSubscriptions[user.id] = stream.listen((lastMessageInfo) {
             if (lastMessageInfo != null) {
+              // Update cache
+              _lastMessagesCache[user.id] = lastMessageInfo;
               add(UpdateLastMessageInfo(
                 userId: user.id,
                 lastMessageInfo: lastMessageInfo,
@@ -70,17 +73,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             }
           });
 
-          // Get initial data
-          final initialData = await stream.first;
-          if (initialData != null) {
-            lastMessagesInfo[user.id] = initialData;
+          // If we don't have cached data, get initial data
+          if (!initialLastMessagesInfo.containsKey(user.id)) {
+            final initialData = await stream.first;
+            if (initialData != null) {
+              initialLastMessagesInfo[user.id] = initialData;
+              _lastMessagesCache[user.id] = initialData;
+            }
           }
         }
 
         emit(ChatUsersLoaded(
-          users,
-          lastMessagesInfo,
-          lastMessageStreams,
+          users: users,
+          lastMessagesInfo: initialLastMessagesInfo,
         ));
       }
     } catch (e) {
@@ -94,15 +99,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ) {
     if (state is ChatUsersLoaded) {
       final currentState = state as ChatUsersLoaded;
-      final updatedLastMessages = Map<String, Map<String, dynamic>>.from(currentState.lastMessagesInfo);
-      updatedLastMessages[event.userId] = event.lastMessageInfo;
-      
       emit(currentState.copyWith(
-        lastMessagesInfo: updatedLastMessages,
+        lastMessagesInfo: Map<String, Map<String, dynamic>>.from(currentState.lastMessagesInfo)
+          ..[event.userId] = event.lastMessageInfo,
       ));
     }
   }
-
+  
   Future<void> _onSendMessage(
     SendMessageEvent event,
     Emitter<ChatState> emit,
@@ -192,6 +195,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   @override
   Future<void> close() {
     _cancelAllSubscriptions();
+    _lastMessagesCache.clear();
     return super.close();
   }
 

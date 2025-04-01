@@ -69,7 +69,8 @@ class ChatFirestoreDataSourceImpl implements ChatFirestoreDataSource {
   @override
   Stream<Map<String, dynamic>?> streamLastMessageInfo(String chatId) {
     return firestore.collection('chats').doc(chatId).snapshots().map((snapshot) {
-      return snapshot.data();
+      if (!snapshot.exists) return null;
+      return snapshot.data()!..['chatId'] = chatId; // Include chatId in the data
     });
   }
 

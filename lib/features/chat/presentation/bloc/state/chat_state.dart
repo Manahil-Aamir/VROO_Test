@@ -17,25 +17,24 @@ class ChatLoading extends ChatState {}
 class ChatUsersLoaded extends ChatState {
   final List<ChatUser> users;
   final Map<String, Map<String, dynamic>> lastMessagesInfo;
-  final Map<String, Stream<Map<String, dynamic>?>> lastMessageStreams;
 
-  ChatUsersLoaded(
-    this.users,
-    this.lastMessagesInfo,
-    this.lastMessageStreams,
-  );
+  ChatUsersLoaded({
+    required this.users,
+    required this.lastMessagesInfo,
+  });
 
   ChatUsersLoaded copyWith({
     List<ChatUser>? users,
     Map<String, Map<String, dynamic>>? lastMessagesInfo,
-    Map<String, Stream<Map<String, dynamic>?>>? lastMessageStreams,
   }) {
     return ChatUsersLoaded(
-      users ?? this.users,
-      lastMessagesInfo ?? this.lastMessagesInfo,
-      lastMessageStreams ?? this.lastMessageStreams,
+      users: users ?? this.users,
+      lastMessagesInfo: lastMessagesInfo ?? this.lastMessagesInfo,
     );
   }
+
+  @override
+  List<Object> get props => [users, lastMessagesInfo];
 }
 
 /// Successfully loaded chat messages
