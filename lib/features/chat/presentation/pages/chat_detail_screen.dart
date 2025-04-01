@@ -57,12 +57,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       }
     }
   }
-  
-  void _markMessagesAsRead() {
-    // Add this method to your ChatBloc
-    final firestoreDataSource = context.read<ChatFirestoreDataSource>();
-    firestoreDataSource.markMessageAsRead(chatId, currentUserId);
-  }
 
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
@@ -132,34 +126,72 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 70.h,
         backgroundColor: ThemeColors.primaryColor,
+        titleSpacing: 0,
         title: Row(
           children: [
             CircleAvatar(
-              backgroundColor: ThemeColors.primaryColorLight,
-              child: Icon(Icons.person, color: ThemeColors.headlinesTextColor),
+              radius: 15.r, // Slightly larger
+              backgroundColor: ThemeColors.cardColor,
+              child: Text(
+                widget.user.name[0].toUpperCase(),
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                  color: ThemeColors.headlinesTextColor,
+                ),
+              ),
             ),
-            SizedBox(width: 10.w),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.user.name,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.user.name,
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Text(
+                        '${DateFormat('dd-MM-yyyy').format(widget.user.date)}  ',                          
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.white,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                  Text(
-                    '${widget.user.source} → ${widget.user.destination}',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.white70,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                  SizedBox(height: 4.h),
+                  Row(
+                    children: [
+                      Icon(Icons.location_on, size: 14.w, color: Colors.white70),
+                      SizedBox(width: 4.w),
+                      Expanded(
+                        child: Text(
+                          '${_getFirstThreeWords(widget.user.source)} → ${_getFirstThreeWords(widget.user.destination)}',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: Colors.white70,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -168,14 +200,14 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.info_outline),
+            icon: Icon(Icons.info_outline, color: Colors.white),
             onPressed: () {
-              // Show user info or chat settings
               _showUserInfoBottomSheet(context);
             },
           ),
         ],
       ),
+
       body: Column(
         children: [
           Expanded(
@@ -329,7 +361,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                   padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                                   decoration: BoxDecoration(
                                     color: isMe
-                                        ? ThemeColors.primaryColor.withOpacity(0.9)
+                                        ? ThemeColors.primaryColor.withOpacity(0.85)
                                         : ThemeColors.cardColor,
                                     borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(16.r),
@@ -354,7 +386,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                           fontSize: 14.sp,
                                           color: isMe
                                               ? Colors.white
-                                              : ThemeColors.bodyTextColor,
+                                              : ThemeColors.primaryColorDark,
                                         ),
                                       ),
                                       SizedBox(height: 4.h),
@@ -380,8 +412,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                           ],
                                         ],
                                       ),
+                                    
                                     ],
                                   ),
+                                
                                 ),
                               ),
                             ],
@@ -541,6 +575,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         ],
       ),
     );
+  }
+  
+  String _getFirstThreeWords(String text) {
+    List<String> words = text.split(' ');
+    return words.length <= 3 ? text : '${words.take(3).join(' ')}...';
   }
 
   String _getDateSeparator(DateTime date) {

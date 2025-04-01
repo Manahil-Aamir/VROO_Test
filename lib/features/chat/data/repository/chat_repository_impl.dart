@@ -59,6 +59,7 @@ class ChatRepositoryImpl implements ChatRepository {
               fcmToken: user.fcmToken,
               source: user.source,
               destination: user.destination,
+              date: user.date,
             ))
         .toList();
   }

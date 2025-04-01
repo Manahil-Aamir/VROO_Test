@@ -4,6 +4,7 @@ class ChatUser {
   final String fcmToken;
   final String source;
   final String destination;
+  final DateTime date;
 
   ChatUser({
     required this.id,
@@ -11,5 +12,6 @@ class ChatUser {
     required this.fcmToken,
     required this.source,
     required this.destination,
+    required this.date,
   });
 }

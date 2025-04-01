@@ -4,6 +4,7 @@ class ChatUserModel {
   final String fcmToken;
   final String source;
   final String destination;
+  final DateTime date;
 
   ChatUserModel({
     required this.id,
@@ -11,6 +12,7 @@ class ChatUserModel {
     required this.fcmToken,
     required this.source,
     required this.destination,
+    required this.date,
   });
 
   factory ChatUserModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class ChatUserModel {
       fcmToken: json['fcmToken'] ?? '',
       source: json['source'] ?? '',
       destination: json['destination'] ?? '',
-    );
+      date: DateTime.parse(json['date'] ?? ''),
+    );  
   }
 }

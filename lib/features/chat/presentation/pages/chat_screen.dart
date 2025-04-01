@@ -10,10 +10,10 @@ import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/appbar.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../HomeScreens/presentation/bloc/role_bloc.dart';
-import '../../domain/entity/chat_user.dart';
 import '../bloc/bloc/chat_bloc.dart';
 import '../bloc/event/chat_event.dart';
 import '../bloc/state/chat_state.dart';
+import '../widgets/chat_list_item.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -37,15 +37,11 @@ class ChatScreen extends StatelessWidget {
                 firestoreDataSource: context.read(),
               )..add(LoadChatUsers(roleState.role)),
               child: BlocConsumer<ChatBloc, ChatState>(
-                listener: (context, state) {
-                  // No longer needed as streams are managed by bloc
-                },
+                listener: (context, state) {},
                 builder: (context, state) {
                   if (state is ChatLoading) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: ThemeColors.progressIndicatorColor,
-                      ),
+                    return const Center(
+                      child: CircularProgressIndicator(),
                     );
                   } else if (state is ChatUsersLoaded) {
                     return RefreshIndicator(
@@ -53,37 +49,32 @@ class ChatScreen extends StatelessWidget {
                         context.read<ChatBloc>().add(LoadChatUsers(roleState.role));
                       },
                       child: ListView.builder(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.w, vertical: 10.h),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                         itemCount: state.users.length,
                         itemBuilder: (context, index) {
                           final user = state.users[index];
                           final chatId = _getChatId(currentUserId, user.id);
-                          final lastMessageInfo =
-                              state.lastMessagesInfo[user.id] ?? {};
+                          final lastMessageInfo = state.lastMessagesInfo[user.id] ?? {};
 
                           final lastMessage = lastMessageInfo['lastMessage'] ?? '';
-                          final lastMessageTime =
-                              lastMessageInfo['lastMessageTime'] != null
-                                  ? _formatTime(DateTime.parse(
-                                      lastMessageInfo['lastMessageTime']))
-                                  : '';
-                          final unreadCount = lastMessageInfo[
-                                  'unreadCount_$currentUserId'] as int? ??
-                              0;
+                          final lastMessageTime = lastMessageInfo['lastMessageTime'] != null
+                              ? _formatTime(DateTime.parse(lastMessageInfo['lastMessageTime']))
+                              : '';
+                          final unreadCount = lastMessageInfo['unreadCount_$currentUserId'] as int? ?? 0;
 
-                          return ChatListItem(
-                            user: user,
-                            lastMessage: lastMessage,
-                            lastMessageTime: lastMessageTime,
-                            unreadCount: unreadCount,
-                            onTap: () {
-                              context.read<ChatBloc>().add(
-                                  MarkMessagesAsReadEvent(chatId, currentUserId));
-                              context.read<Navigation>().navigateTo(
-                                  '/chat_detail',
-                                  arguments: user);
-                            },
+                          return AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            child: ChatListItem(
+                              user: user,
+                              lastMessage: lastMessage,
+                              lastMessageTime: lastMessageTime,
+                              unreadCount: unreadCount,
+                              onTap: () {
+                                context.read<ChatBloc>().add(MarkMessagesAsReadEvent(chatId, currentUserId));
+                                context.read<Navigation>().navigateTo('/chat_detail', arguments: user);
+                              },
+                            ),
                           );
                         },
                       ),
@@ -95,32 +86,25 @@ class ChatScreen extends StatelessWidget {
                         children: [
                           Text(
                             state.message,
-                            style: AppStyles.getTextTheme()
-                                .headlineMedium
-                                ?.copyWith(
+                            style: AppStyles.getTextTheme().headlineMedium?.copyWith(
                                   color: ThemeColors.accentColor,
                                 ),
                           ),
                           SizedBox(height: 10.h),
                           ElevatedButton(
                             onPressed: () {
-                              context
-                                  .read<ChatBloc>()
-                                  .add(LoadChatUsers(roleState.role));
+                              context.read<ChatBloc>().add(LoadChatUsers(roleState.role));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: ThemeColors.buttonColor,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20.w, vertical: 12.h),
+                              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8.r),
                               ),
                             ),
                             child: Text(
                               'Retry',
-                              style: AppStyles.getTextTheme()
-                                  .labelLarge
-                                  ?.copyWith(
+                              style: AppStyles.getTextTheme().labelLarge?.copyWith(
                                     color: ThemeColors.buttonTextColor,
                                   ),
                             ),
@@ -134,28 +118,16 @@ class ChatScreen extends StatelessWidget {
               ),
             );
           }
-          return Center(
-            child: CircularProgressIndicator(
-              color: ThemeColors.progressIndicatorColor,
-            ),
-          );
+          return const Center(child: CircularProgressIndicator());
         },
       ),
       bottomNavigationBar: CustomBottomNavBar(selectedIndex: 2),
     );
   }
 
-  String _getFirstThreeWords(String text) {
-    List<String> words = text.split(' ');
-    if (words.length <= 3) return text;
-    return '${words.take(3).join(' ')}...';
-  }
-
   String _formatTime(DateTime time) {
     final now = DateTime.now();
-    if (time.day == now.day &&
-        time.month == now.month &&
-        time.year == now.year) {
+    if (time.day == now.day && time.month == now.month && time.year == now.year) {
       return DateFormat('h:mm a').format(time);
     }
     return DateFormat('MM/dd/yy').format(time);
@@ -164,125 +136,6 @@ class ChatScreen extends StatelessWidget {
   String _getChatId(String user1, String user2) {
     List<String> sortedIds = [user1, user2]..sort();
     return sortedIds.join('_');
-  }
-}
-
-class ChatListItem extends StatelessWidget {
-  final ChatUser user;
-  final String lastMessage;
-  final String lastMessageTime;
-  final int unreadCount;
-  final VoidCallback onTap;
-
-  const ChatListItem({
-    super.key,
-    required this.user,
-    required this.lastMessage,
-    required this.lastMessageTime,
-    required this.unreadCount,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: ThemeColors.cardColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      margin: EdgeInsets.only(bottom: 12.h),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12.r),
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // User name and unread count
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    user.name,
-                    style: AppStyles.getTextTheme().headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (unreadCount > 0)
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                      decoration: BoxDecoration(
-                        color: ThemeColors.primaryColor,
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Text(
-                        unreadCount.toString(),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-
-              SizedBox(height: 8.h),
-
-              // Route information
-              Text(
-                '${_getFirstThreeWords(user.source)} → ${_getFirstThreeWords(user.destination)}',
-                style: AppStyles.getTextTheme().bodySmall?.copyWith(
-                      color: ThemeColors.bodyTextColor,
-                    ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-
-              SizedBox(height: 8.h),
-
-              // Last message and timestamp
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      lastMessage.isNotEmpty ? lastMessage : 'No messages yet',
-                      style: AppStyles.getTextTheme().bodySmall?.copyWith(
-                            color: lastMessage.isNotEmpty
-                                ? ThemeColors.bodyTextColor
-                                : ThemeColors.bodyTextColor.withOpacity(0.6),
-                            fontWeight:
-                                unreadCount > 0 ? FontWeight.bold : FontWeight.normal,
-                          ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  if (lastMessageTime.isNotEmpty)
-                    Text(
-                      lastMessageTime,
-                      style: AppStyles.getTextTheme().bodySmall?.copyWith(
-                            color: ThemeColors.bodyTextColor.withOpacity(0.6),
-                          ),
-                    ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  String _getFirstThreeWords(String text) {
-    List<String> words = text.split(' ');
-    if (words.length <= 3) return text;
-    return '${words.take(3).join(' ')}...';
   }
 }
 
