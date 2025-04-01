@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/styles/app_styles.dart';
 import '../../../../core/theme/color/color_theme.dart';
-import '../../data/data_source/chat_firestore_data_source.dart';
 import '../../domain/entity/chat_message.dart';
 import '../../domain/entity/chat_user.dart';
 import '../bloc/bloc/chat_bloc.dart';
