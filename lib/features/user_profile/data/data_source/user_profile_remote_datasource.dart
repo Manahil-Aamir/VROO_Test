@@ -29,10 +29,12 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
     }
   }
 
+  @override
   Future<UserProfileModel> updateUserProfile({String? name, String? phoneNumber, required String userId}) async {
     print('[Profile] Updating user profile for userId: $userId');
     print('[Profile] New name: $name');
     print('[Profile] New phone number: $phoneNumber');
+    
     final response = await client.patch(
       Uri.parse('http://10.0.2.2:8080/users/profile/$userId'),
       headers: {'Content-Type': 'application/json'},
@@ -46,11 +48,10 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
     print('[Profile] Response body: ${response.body}');
 
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      return UserProfileModel.fromJson(jsonData);
+      // After updating successfully, immediately fetch the full profile
+      return await getUserProfile(userId);
     } else {
       throw Exception('Failed to update user profile');
     }
   }
-
 }
