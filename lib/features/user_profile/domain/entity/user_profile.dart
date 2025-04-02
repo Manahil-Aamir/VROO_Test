@@ -9,8 +9,6 @@ class UserProfile {
   final int fuelSaved;
   final int totalRidesAsDriver;
   final int totalRidesAsRider;
-  final List<String> recentLocations;
-  final List<String> favouritePlaces;
 
   const UserProfile({
     required this.name,
@@ -23,7 +21,5 @@ class UserProfile {
     required this.fuelSaved,
     required this.totalRidesAsDriver,
     required this.totalRidesAsRider,
-    required this.recentLocations,
-    required this.favouritePlaces,
   });
 }

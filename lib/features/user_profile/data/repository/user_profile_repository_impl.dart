@@ -12,7 +12,10 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
 
   @override
   Future<UserProfile> getUserProfile() async {
-    final user = firebaseAuth.currentUser!;
-    return await remoteDataSource.getUserProfile(user.uid);
+    return await remoteDataSource.getUserProfile(firebaseAuth.currentUser!.uid);
+  }
+
+  Future<UserProfile> updateUserProfile({String? name, String? phoneNumber}) async {
+    return await remoteDataSource.updateUserProfile(name: name, phoneNumber: phoneNumber, userId: firebaseAuth.currentUser!.uid);
   }
 }

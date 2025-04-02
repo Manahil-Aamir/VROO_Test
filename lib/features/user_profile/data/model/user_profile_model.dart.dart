@@ -12,8 +12,6 @@ class UserProfileModel extends UserProfile {
     required super.fuelSaved,
     required super.totalRidesAsDriver,
     required super.totalRidesAsRider,
-    required super.recentLocations,
-    required super.favouritePlaces,
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
@@ -29,8 +27,6 @@ class UserProfileModel extends UserProfile {
       fuelSaved: data['environmentStats']['fuelSaved'],
       totalRidesAsDriver: data['totalRides']['asDriver'],
       totalRidesAsRider: data['totalRides']['asRider'],
-      recentLocations: List<String>.from(data['recentLocations']),
-      favouritePlaces: List<String>.from(data['favouritePlaces']),
     );
   }
 }
