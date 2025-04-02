@@ -597,127 +597,216 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     }
   }
 
-  void _showUserInfoBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-      ),
-      builder: (context) {
-        return Container(
-          padding: EdgeInsets.all(20.w),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  height: 5.h,
-                  width: 40.w,
-                  margin: EdgeInsets.only(bottom: 20.h),
+void _showUserInfoBottomSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+    ),
+    builder: (context) {
+      return Container(
+        padding: EdgeInsets.all(20.w),
+        decoration: BoxDecoration(
+          color: ThemeColors.backgroundColor,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Drag Handle
+            Center(
+              child: Container(
+                height: 5.h,
+                width: 40.w,
+                margin: EdgeInsets.only(bottom: 20.h),
+                decoration: BoxDecoration(
+                  color: ThemeColors.dividerColor,
+                  borderRadius: BorderRadius.circular(5.r),
+                ),
+              ),
+            ),
+
+            /// Title
+            Text(
+              'Contact Information',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(          
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: ThemeColors.headlinesTextColor,
+              ),
+            ),
+            SizedBox(height: 20.h),
+
+            /// User Profile Section
+            Row(
+              children: [
+                /// Profile Icon
+                Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(5.r),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 5,
+                        spreadRadius: 2,
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              Text(
-                'Contact Information',
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: ThemeColors.headlinesTextColor,
-                ),
-              ),
-              SizedBox(height: 20.h),
-              Row(
-                children: [
-                  CircleAvatar(
+                  child: CircleAvatar(
                     backgroundColor: ThemeColors.primaryColorLight,
                     radius: 30.r,
                     child: Icon(Icons.person, color: ThemeColors.headlinesTextColor, size: 32.sp),
                   ),
-                  SizedBox(width: 16.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.user.name,
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            color: ThemeColors.headlinesTextColor,
-                          ),
+                ),
+                SizedBox(width: 16.w),
+
+                /// Name & ID
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// Name (Handles overflow)
+                      Text(
+                        widget.user.name,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                          fontSize: 16.sp,
+                          color: ThemeColors.headlinesTextColor,
                         ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          'ID: ${widget.user.id}',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: ThemeColors.bodyTextColor.withOpacity(0.7),
-                          ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      SizedBox(height: 4.h),
+
+                      /// User ID (Handles overflow)
+                      Text(
+                        'ID: ${widget.user.id}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.sp,
+                          color: ThemeColors.bodyTextColor.withOpacity(0.7),
                         ),
-                      ],
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 24.h),
+
+            /// Location Information
+            _infoItem(Icons.place_outlined, 'From', widget.user.source),
+            SizedBox(height: 12.h),
+            _infoItem(Icons.location_on_outlined, 'To', widget.user.destination),
+            SizedBox(height: 24.h),
+
+            /// Divider
+            Divider(thickness: 1, color: ThemeColors.dividerColor.withOpacity(0.6)),
+            SizedBox(height: 8.h),
+
+            /// Close Button
+            Center(
+              child: SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: ThemeColors.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                  ),
+                  child: Text(
+                    'Close',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp, 
+                      color: Colors.white                      
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 24.h),
-              _infoItem(Icons.place_outlined, 'From', widget.user.source),
-              SizedBox(height: 12.h),
-              _infoItem(Icons.location_on_outlined, 'To', widget.user.destination),
-              SizedBox(height: 24.h),
-              Divider(),
-              SizedBox(height: 8.h),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: TextButton.styleFrom(
-                    foregroundColor: ThemeColors.accentColor,
-                  ),
-                  child: Text('Close'),
                 ),
               ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _infoItem(IconData icon, String label, String value) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 20.sp,
-          color: ThemeColors.primaryColor,
+            ),
+          ],
         ),
-        SizedBox(width: 12.w),
-        Column(
+      );
+    },
+  );
+}
+
+/// Helper method to handle location display
+Widget _infoItem(IconData icon, String title, String value) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Icon(icon, color: ThemeColors.primaryColor, size: 20.sp),
+      SizedBox(width: 12.w),
+      Expanded(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              label,
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: ThemeColors.bodyTextColor.withOpacity(0.7),
+              title,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 14.sp,
+                color: ThemeColors.bodyTextColor.withOpacity(0.8),
               ),
             ),
             SizedBox(height: 2.h),
             Text(
               value,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: ThemeColors.bodyTextColor,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontSize: 13.sp,
+                color: ThemeColors.headlinesTextColor,
               ),
+              maxLines: 2, // Allows up to 2 lines
+              overflow: TextOverflow.ellipsis, // Truncates text if needed
             ),
           ],
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
+
+  // Widget _infoItem(IconData icon, String label, String value) {
+  //   return Row(
+  //     children: [
+  //       Icon(
+  //         icon,
+  //         size: 20.sp,
+  //         color: ThemeColors.primaryColor,
+  //       ),
+  //       SizedBox(width: 12.w),
+  //       Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Text(
+  //             label,
+  //             style: TextStyle(
+  //               fontSize: 12.sp,
+  //               color: ThemeColors.bodyTextColor.withOpacity(0.7),
+  //             ),
+  //           ),
+  //           SizedBox(height: 2.h),
+  //           Text(
+  //             value,
+  //             style: TextStyle(
+  //               fontSize: 14.sp,
+  //               color: ThemeColors.bodyTextColor,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
+
 }
