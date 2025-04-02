@@ -7,6 +7,7 @@ import 'package:vroo_test/features/chat/domain/entity/chat_user.dart';
 import 'package:vroo_test/features/chat/presentation/pages/chat_detail_screen.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
+import 'package:vroo_test/features/user_profile/presentation/pages/user_profile_page.dart';
 import '../../features/HomeScreens/dependency_injection/home_di.dart';
 import '../../features/HomeScreens/dependency_injection/location_di.dart';
 import '../../features/HomeScreens/presentation/pages/home_screen.dart';
@@ -45,6 +46,7 @@ import '../../features/authentication/dependency_injection/create_user_di.dart';
 import '../../features/authentication/presentation/pages/email_verification_screen.dart';
 import '../../features/authentication/presentation/pages/create_user_screen.dart';
 import '../../features/authentication/presentation/pages/signup_screen.dart';
+import '../../features/user_profile/dependency_injection/user_profile_di.dart';
 import '../../splash.dart';
 
 class Routes {
@@ -73,6 +75,7 @@ class Routes {
   static const String location = '/location';
   static const String chat = '/chat';
   static const String chat_detail = '/chat_detail';
+  static const String user_profile = '/user_profile';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -701,6 +704,11 @@ class Routes {
              builder: (_) => MultiBlocProvider(
                 providers: ChatDependencyInjection.init(),
                 child: ChatDetailScreen(user: user)));
+      case user_profile:
+        return MaterialPageRoute(
+             builder: (_) => MultiBlocProvider(
+                providers: UserProfileDi.init(),
+                child: UserProfilePage()));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

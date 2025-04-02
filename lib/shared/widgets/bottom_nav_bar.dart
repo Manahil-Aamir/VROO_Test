@@ -18,7 +18,7 @@ class CustomBottomNavBar extends StatelessWidget {
         route = '/chat';
         break;
       case 3:
-        route = '/profile';
+        route = '/user_profile';
         break;
       default:
         return;
