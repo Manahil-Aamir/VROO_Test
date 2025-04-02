@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/color/color_theme.dart';
 
 class StatCards extends StatelessWidget {
@@ -23,7 +24,7 @@ class StatCards extends StatelessWidget {
                 theme,
               ),
             ),
-            SizedBox(width: 16),
+            SizedBox(width: 16.w),
             Expanded(
               child: _buildStatCard(
                 'Rider Rating',
@@ -35,7 +36,7 @@ class StatCards extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 16),
+        SizedBox(height: 16.h),
         Row(
           children: [
             Expanded(
@@ -48,7 +49,7 @@ class StatCards extends StatelessWidget {
                 subtitle: 'Total Rides',
               ),
             ),
-            SizedBox(width: 16),
+            SizedBox(width: 16.w),
             Expanded(
               child: _buildStatCard(
                 'As Rider',
@@ -75,22 +76,23 @@ class StatCards extends StatelessWidget {
     }
   ) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: ThemeColors.backgroundColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: ThemeColors.primaryColor.withOpacity(0.05),
             spreadRadius: 2,
             blurRadius: 10,
-            offset: Offset(0, 4),)
+            offset: Offset(0, 4.h),
+          ),
         ],
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: 28),
-          SizedBox(height: 12),
+          Icon(icon, color: color, size: 28.w),
+          SizedBox(height: 12.h),
           Text(
             value,
             style: theme.textTheme.headlineSmall?.copyWith(
@@ -98,7 +100,7 @@ class StatCards extends StatelessWidget {
               color: color,
             ),
           ),
-          SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             title,
             style: theme.textTheme.bodySmall?.copyWith(
@@ -109,7 +111,7 @@ class StatCards extends StatelessWidget {
             Text(
               subtitle,
               style: theme.textTheme.bodySmall?.copyWith(
-                fontSize: 12,
+                fontSize: 12.sp,
                 color: ThemeColors.captionTextColor,
               ),
             ),
@@ -119,3 +121,4 @@ class StatCards extends StatelessWidget {
     );
   }
 }
+

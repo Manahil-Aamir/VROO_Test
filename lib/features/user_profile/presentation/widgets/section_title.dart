@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/color/color_theme.dart';
 
 class SectionTitle extends StatelessWidget {
@@ -11,7 +12,7 @@ class SectionTitle extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12.h),
       child: Row(
         children: [
           Text(
@@ -20,10 +21,10 @@ class SectionTitle extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Expanded(
             child: Container(
-              height: 1,
+              height: 1.h,
               color: ThemeColors.dividerColor,
             ),
           ),

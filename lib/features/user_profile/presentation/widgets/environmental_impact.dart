@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/color/color_theme.dart';
 
 class EnvironmentalImpact extends StatelessWidget {
@@ -11,22 +12,23 @@ class EnvironmentalImpact extends StatelessWidget {
     final theme = Theme.of(context);
     
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: ThemeColors.backgroundColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: ThemeColors.primaryColor.withOpacity(0.05),
             spreadRadius: 2,
             blurRadius: 10,
-            offset: Offset(0, 4),)
+            offset: Offset(0, 4.h),
+          ),
         ],
       ),
       child: Column(
         children: [
           _buildImpactStats(theme),
-          SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildEcoMessage(theme),
         ],
       ),
@@ -42,9 +44,9 @@ class EnvironmentalImpact extends StatelessWidget {
               Icon(
                 Icons.eco,
                 color: ThemeColors.secondaryColor,
-                size: 36,
+                size: 36.w,
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Text(
                 '${user.co2Saved} kg',
                 style: theme.textTheme.titleLarge?.copyWith(
@@ -62,8 +64,8 @@ class EnvironmentalImpact extends StatelessWidget {
           ),
         ),
         Container(
-          height: 60,
-          width: 1,
+          height: 60.h,
+          width: 1.w,
           color: ThemeColors.dividerColor,
         ),
         Expanded(
@@ -72,9 +74,9 @@ class EnvironmentalImpact extends StatelessWidget {
               Icon(
                 Icons.local_gas_station,
                 color: ThemeColors.primaryColor,
-                size: 36,
+                size: 36.w,
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Text(
                 '${user.fuelSaved} L',
                 style: theme.textTheme.titleLarge?.copyWith(
@@ -97,19 +99,19 @@ class EnvironmentalImpact extends StatelessWidget {
 
   Widget _buildEcoMessage(ThemeData theme) {
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: ThemeColors.secondaryColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
         children: [
           Icon(
             Icons.insights, 
             color: ThemeColors.secondaryColor, 
-            size: 24
+            size: 24.w,
           ),
-          SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Expanded(
             child: Text(
               'You\'ve reduced your carbon footprint by carpooling!',

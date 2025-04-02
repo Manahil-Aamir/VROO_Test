@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../bloc/bloc/user_profile_bloc.dart';
 import '../bloc/event/user_profile_event.dart';
-import '../bloc/state/user_profile_state.dart';
 
 class ProfileHeader extends StatelessWidget {
   final dynamic user;
   
-  const ProfileHeader({Key? key, required this.user}) : super(key: key);
+  const ProfileHeader({
+    super.key,
+    required this.user,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,7 @@ class ProfileHeader extends StatelessWidget {
     String initials = _getInitials(user.name);
     
     return Container(
-      padding: EdgeInsets.only(top: 40, bottom: 16),
+      padding: const EdgeInsets.only(top: 40, bottom: 16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -29,125 +32,116 @@ class ProfileHeader extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildProfileImage(initials, theme),
-          SizedBox(height: 16),
-          _buildUserName(user.name, theme, context),
-          SizedBox(height: 8),
-          _buildUserEmail(user.email, theme),
-          SizedBox(height: 8),
-          _buildUserPhone(user.phoneNumber, context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProfileImage(String initials, ThemeData theme) {
-    return Stack(
-      alignment: Alignment.bottomRight,
-      children: [
-        Container(
-          padding: EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: ThemeColors.backgroundColor,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: ThemeColors.headlinesTextColor.withOpacity(0.1),
-                blurRadius: 8,
-                offset: Offset(0, 2),
+          // Profile image with edit button
+          Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: ThemeColors.backgroundColor,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: ThemeColors.headlinesTextColor.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundColor: ThemeColors.primaryColor.withOpacity(0.2),
+                  child: Text(
+                    initials,
+                    style: theme.textTheme.headlineLarge?.copyWith(
+                      color: ThemeColors.primaryColor,
+                    ),
+                  ),
+                ),
+              ),
+              CircleAvatar(
+                radius: 18,
+                backgroundColor: ThemeColors.primaryColor,
+                child: Icon(
+                  Icons.camera_alt, 
+                  size: 18, 
+                  color: ThemeColors.buttonTextColor,
+                ),
               ),
             ],
           ),
-          child: CircleAvatar(
-            radius: 60,
-            backgroundColor: ThemeColors.primaryColor.withOpacity(0.2),
-            child: Text(
-              initials,
-              style: theme.textTheme.headlineLarge?.copyWith(
-                color: ThemeColors.primaryColor,
+          const SizedBox(height: 16),
+          
+          // User name (with edit option)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                user.name,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: ThemeColors.headlinesTextColor,
+                ),
+              ),
+              const SizedBox(width: 8),
+              InkWell(
+                onTap: () => _showEditNameDialog(context, user.name),
+                child: Icon(
+                  Icons.edit,
+                  size: 18,
+                  color: ThemeColors.primaryColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          
+          // User email (non-editable)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.email, size: 16, color: ThemeColors.bodyTextColor),
+              const SizedBox(width: 6),
+              Text(
+                user.email,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: ThemeColors.bodyTextColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          
+          // User phone (with edit option)
+          InkWell(
+            onTap: () => _showEditPhoneDialog(context, user.phoneNumber),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: ThemeColors.backgroundColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: ThemeColors.backgroundColor.withOpacity(0.5)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.phone, size: 16, color: ThemeColors.headlinesTextColor),
+                  const SizedBox(width: 6),
+                  Text(
+                    user.phoneNumber,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: ThemeColors.headlinesTextColor,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(Icons.edit, size: 14, color: ThemeColors.primaryColor),
+                ],
               ),
             ),
           ),
-        ),
-        CircleAvatar(
-          radius: 18,
-          backgroundColor: ThemeColors.primaryColor,
-          child: Icon(
-            Icons.camera_alt, 
-            size: 18, 
-            color: ThemeColors.buttonTextColor
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildUserName(String name, ThemeData theme, context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          name,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: ThemeColors.headlinesTextColor,
-          ),
-        ),
-        SizedBox(width: 8),
-        InkWell(
-          onTap: () => _showEditNameDialog(context, name),
-          child: Icon(
-            Icons.edit,
-            size: 18,
-            color: ThemeColors.primaryColor,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildUserEmail(String email, ThemeData theme) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(Icons.email, size: 16, color: ThemeColors.headlinesTextColor.withOpacity(0.5)),
-        SizedBox(width: 6),
-        Text(
-          email,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: ThemeColors.headlinesTextColor,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildUserPhone(String phone, BuildContext context) {
-    final theme = Theme.of(context);
-    return InkWell(
-      onTap: () => _showEditPhoneDialog(context, phone),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: ThemeColors.backgroundColor.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: ThemeColors.backgroundColor.withOpacity(0.5)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.phone, size: 16, color: ThemeColors.headlinesTextColor),
-            SizedBox(width: 6),
-            Text(
-              phone,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: ThemeColors.headlinesTextColor,
-              ),
-            ),
-            SizedBox(width: 6),
-            Icon(Icons.edit, size: 14, color: ThemeColors.primaryColor),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -162,70 +156,91 @@ class ProfileHeader extends StatelessWidget {
     return '';
   }
 
+  // Update the dialog methods in ProfileHeader widget
+
   void _showEditNameDialog(BuildContext context, String currentName) {
-    final theme = Theme.of(context);
     final controller = TextEditingController(text: currentName);
     final userProfileBloc = BlocProvider.of<UserProfileBloc>(context);
-    
+    final theme = Theme.of(context);
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Edit Name',
-          style: theme.textTheme.titleLarge,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: ThemeColors.backgroundColor,
+        contentPadding: EdgeInsets.fromLTRB(24.w, 15.h, 24.w, 24.h),
+        titlePadding: EdgeInsets.all(16.h),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.r),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.edit, color: ThemeColors.primaryColor),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Text(
+                    'Edit Name',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: ThemeColors.headlinesTextColor,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.close, color: ThemeColors.primaryColor),
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                ),
+              ],
+            ),
+          ],
         ),
         content: TextField(
           controller: controller,
           decoration: InputDecoration(
-            hintText: 'Enter your name',
-            hintStyle: theme.textTheme.bodySmall?.copyWith(
-              color: ThemeColors.hintTextColor,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.r),
+              borderSide: BorderSide(color: ThemeColors.primaryColor),
             ),
-            border: OutlineInputBorder(),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.r),
+              borderSide: BorderSide(color: ThemeColors.primaryColor),
+            ),
           ),
-          style: theme.textTheme.bodyMedium,
-          autofocus: true,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: ThemeColors.headlinesTextColor,
+          ),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(
               'Cancel',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: ThemeColors.bodyTextColor,
+                color: ThemeColors.primaryColor,
               ),
             ),
           ),
-          BlocConsumer<UserProfileBloc, UserProfileState>(
-            listener: (context, state) {
-              if (state is UserProfileLoaded) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Name updated successfully')),
-                );
-              } else if (state is UserProfileError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Failed to update name')),
-                );
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ThemeColors.primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.r),
+              ),
+            ),
+            onPressed: () {
+              final newName = controller.text.trim();
+              if (newName.isNotEmpty && newName != currentName) {
+                userProfileBloc.add(UpdateUserProfileEvent(name: newName));
               }
+              Navigator.pop(dialogContext);
             },
-            builder: (context, state) {
-              return TextButton(
-                onPressed: state is UserProfileLoading
-                    ? null
-                    : () {
-                        userProfileBloc.add(UpdateUserProfileEvent(name: controller.text));
-                      },
-                child: state is UserProfileLoading
-                    ? CircularProgressIndicator()
-                    : Text(
-                        'Save',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: ThemeColors.primaryColor,
-                        ),
-                      ),
-              );
-            },
+            child: Text(
+              'Save',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: ThemeColors.buttonTextColor,
+              ),
+            ),
           ),
         ],
       ),
@@ -233,74 +248,92 @@ class ProfileHeader extends StatelessWidget {
   }
 
   void _showEditPhoneDialog(BuildContext context, String currentPhone) {
-    final theme = Theme.of(context);
     final controller = TextEditingController(text: currentPhone);
     final userProfileBloc = BlocProvider.of<UserProfileBloc>(context);
+    final theme = Theme.of(context);
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Edit Phone Number',
-          style: theme.textTheme.titleLarge,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: ThemeColors.backgroundColor,
+        contentPadding: EdgeInsets.fromLTRB(24.w, 15.h, 24.w, 24.h),
+        titlePadding: EdgeInsets.all(16.h),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.r),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.phone, color: ThemeColors.primaryColor),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Text(
+                    'Edit Phone Number',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: ThemeColors.headlinesTextColor,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.close, color: ThemeColors.primaryColor),
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                ),
+              ],
+            ),
+          ],
         ),
         content: TextField(
           controller: controller,
-          decoration: InputDecoration(
-            hintText: 'Enter your phone number',
-            hintStyle: theme.textTheme.bodySmall?.copyWith(
-              color: ThemeColors.hintTextColor,
-            ),
-            border: OutlineInputBorder(),
-          ),
-          style: theme.textTheme.bodyMedium,
           keyboardType: TextInputType.phone,
-          autofocus: true,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.r),
+              borderSide: BorderSide(color: ThemeColors.primaryColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.r),
+              borderSide: BorderSide(color: ThemeColors.primaryColor),
+            ),
+          ),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: ThemeColors.headlinesTextColor,
+          ),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(
               'Cancel',
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: ThemeColors.bodyTextColor,
+                color: ThemeColors.primaryColor,
               ),
             ),
           ),
-          BlocConsumer<UserProfileBloc, UserProfileState>(
-            listener: (context, state) {
-              if (state is UserProfileLoaded) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Phone number updated successfully')),
-                );
-              } else if (state is UserProfileError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Failed to update phone number')),
-                );
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ThemeColors.primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.r),
+              ),
+            ),
+            onPressed: () {
+              final newPhone = controller.text.trim();
+              if (newPhone.isNotEmpty && newPhone != currentPhone) {
+                userProfileBloc.add(UpdateUserProfileEvent(phoneNumber: newPhone));
               }
+              Navigator.pop(dialogContext);
             },
-            builder: (context, state) {
-              return TextButton(
-                onPressed: state is UserProfileLoading
-                    ? null
-                    : () {
-                        userProfileBloc.add(UpdateUserProfileEvent(phoneNumber: controller.text));
-                      },
-                child: state is UserProfileLoading
-                    ? CircularProgressIndicator()
-                    : Text(
-                        'Save',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: ThemeColors.primaryColor,
-                        ),
-                      ),
-              );
-            },
+            child: Text(
+              'Save',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: ThemeColors.buttonTextColor,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
-
 }
