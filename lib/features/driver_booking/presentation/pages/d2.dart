@@ -75,96 +75,75 @@ class _D2PageState extends State<D2Page> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<CarPreferencesBloc, CarPreferencesState>(
-          listener: (context, state) {
-            if (state is CarPreferencesLoaded) {
-              _updateLocalState(state.preferences);
-            }
-          },
-        ),
-        BlocListener<CarBloc, CarState>(
-          listener: (context, state) {
-            if (state is CarAdded) {
-              context.read<CarBloc>().add(FetchCars());
-            }
-          },
-        ),
-      ],
-      child: Scaffold(
-        appBar: CustomAppBar(highlightedCircles: 2),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 70.h + 16.h),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              // Ensure the content fills at least the screen's height.
-              minHeight: screenHeight -
-                  kToolbarHeight -
-                  MediaQuery.of(context).padding.top,
-            ),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BlocBuilder<CarBloc, CarState>(
-                    builder: (context, state) {
-                      if (state is CarLoading) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        );
-                      } else if (state is CarError) {
-                        return Center(
-                          child: Text(
-                            "Error loading cars: ${state.message}",
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                        );
-                      } else if (state is CarLoaded) {
-                        return CarSelectionWidget(
-                          selectedCarId: _selectedCarId,
-                          onCarSelected: _updateCarPreference,
-                          onAddCarPressed: _showAddCarModal,
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                  SizedBox(height: 20.h),
-                  SeatsControlWidget(
-                    availableSeats: _availableSeats,
-                    onSeatsChanged: _updateSeats,
-                  ),
-                  SizedBox(height: 20.h),
-                  GenderToggleWidget(
-                    sameGenderOnly: _sameGenderOnly,
-                    onGenderToggled: _updateGenderPreference,
-                  ),
-                  SizedBox(height: 20.h),
-                  PaymentMethodWidget(
-                    selectedPaymentMethod: _selectedPaymentMethod,
-                    onPaymentSelected: _updatePayment,
-                  ),
-                  // Remove Spacer (which doesn't work well in a scrollable layout)
-                  SizedBox(height: 20.h),
-                  GradientButton(
-                    onTap: _handleNextPressed,
-                    text: 'Next',
-                  ),
-                  SizedBox(height: 70.h),
-                ],
-              ),
+Widget build(BuildContext context) {
+  final screenHeight = MediaQuery.of(context).size.height;
+  return MultiBlocListener(
+    listeners: [
+      BlocListener<CarPreferencesBloc, CarPreferencesState>(
+        listener: (context, state) {
+          if (state is CarPreferencesLoaded) {
+            _updateLocalState(state.preferences);
+          }
+        },
+      ),
+      BlocListener<CarBloc, CarState>(
+        listener: (context, state) {
+          if (state is CarAdded) {
+            context.read<CarBloc>().add(FetchCars());
+          }
+        },
+      ),
+    ],
+    child: Scaffold(
+      appBar: CustomAppBar(highlightedCircles: 2),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 70.h + 16.h),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            // Ensure the content fills at least the screen's height.
+            minHeight: screenHeight -
+                kToolbarHeight -
+                MediaQuery.of(context).padding.top,
+          ),
+          child: IntrinsicHeight(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Always show the CarSelectionWidget regardless of state
+                CarSelectionWidget(
+                  selectedCarId: _selectedCarId,
+                  onCarSelected: _updateCarPreference,
+                  onAddCarPressed: _showAddCarModal,
+                ),
+                SizedBox(height: 20.h),
+                SeatsControlWidget(
+                  availableSeats: _availableSeats,
+                  onSeatsChanged: _updateSeats,
+                ),
+                SizedBox(height: 20.h),
+                GenderToggleWidget(
+                  sameGenderOnly: _sameGenderOnly,
+                  onGenderToggled: _updateGenderPreference,
+                ),
+                SizedBox(height: 20.h),
+                PaymentMethodWidget(
+                  selectedPaymentMethod: _selectedPaymentMethod,
+                  onPaymentSelected: _updatePayment,
+                ),
+                SizedBox(height: 20.h),
+                GradientButton(
+                  onTap: _handleNextPressed,
+                  text: 'Next',
+                ),
+                SizedBox(height: 70.h),
+              ],
             ),
           ),
         ),
       ),
-    );
-  }
-
+    ),
+  );
+}
   void _updateLocalState(CarPreferencesEntity preferences) {
     setState(() {
       _selectedCarId = preferences.selectedCar;

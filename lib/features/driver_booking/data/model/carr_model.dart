@@ -26,7 +26,18 @@ class Car {
       mileage: json['mileage']?.toDouble() ?? 0.0,
       isVerified: json['isVerified'] ?? false,
     );
-}
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'company': company,
+      'model': model,
+      'color': color,
+      'number_plate': numberPlate,
+      'mileage': mileage,
+      'isVerified': isVerified,
+    };
+  }
 
   // Add this conversion method
   CarEntity toEntity() => CarEntity(

@@ -5,9 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../core/theme/color/color_theme.dart';
 import '../../../../../../core/theme/font/font_theme.dart';
 import '../../../bloc/bloc/car_bloc.dart';
-import '../../../bloc/bloc/d2_bloc.dart';
 import '../../../bloc/state/car_state.dart';
-import '../../../bloc/state/d2_state.dart';
 
 class CarSelectionWidget extends StatelessWidget {
   final String? selectedCarId;
@@ -42,31 +40,49 @@ class CarSelectionWidget extends StatelessWidget {
             SizedBox(height: 16.h),
             BlocBuilder<CarBloc, CarState>(
               builder: (context, carState) {
-                return BlocBuilder<CarPreferencesBloc, CarPreferencesState>(
-                  builder: (context, prefState) {
-                    if (carState is CarLoaded) {
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              value: selectedCarId,
-                              items: carState.cars.map((car) => DropdownMenuItem(value: car.numberPlate, child: Row(children: [Icon(Icons.directions_car, color: ThemeColors.primaryColor), SizedBox(width: 12.w), Text('${car.company} ${car.model}')]))).toList(),
-                              onChanged: onCarSelected,
-                              decoration: InputDecoration(
-                                hintText: 'Choose your vehicle',
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          _buildAddCarButton(),
-                        ],
-                      );
-                    }
-                    return const SizedBox.shrink();
-                  },
+                return Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        value: carState is CarLoaded ? selectedCarId : null,
+                        items: carState is CarLoaded
+                            ? carState.cars.map((car) => DropdownMenuItem(
+                                value: car.numberPlate, 
+                                child: Row(children: [
+                                  Icon(Icons.directions_car, color: ThemeColors.primaryColor), 
+                                  SizedBox(width: 12.w), 
+                                  Text('${car.company} ${car.model}')
+                                ])
+                              )).toList()
+                            : [],
+                        onChanged: carState is CarLoaded ? onCarSelected : null,
+                        decoration: InputDecoration(
+                          hintText: carState is CarLoading 
+                              ? 'Loading vehicles...' 
+                              : 'Choose your vehicle',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                          suffixIcon: carState is CarLoading
+                              ? Padding(
+                                  padding: EdgeInsets.all(8.w),
+                                  child: SizedBox(
+                                    width: 20.w,
+                                    height: 20.w,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.w,
+                                      color: ThemeColors.primaryColor,
+                                    ),
+                                  ),
+                                )
+                              : null,
+                        ),
+                        icon: carState is CarLoading ? const SizedBox.shrink() : null,
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    _buildAddCarButton(),
+                  ],
                 );
               },
             ),
@@ -75,6 +91,7 @@ class CarSelectionWidget extends StatelessWidget {
       ),
     );
   }
+  
   Widget _buildAddCarButton() {
     return Container(
       decoration: BoxDecoration(
@@ -109,5 +126,4 @@ class CarSelectionWidget extends StatelessWidget {
       ),
     );
   }
-
 }

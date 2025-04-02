@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import '../../../core/router/navigation.dart';
@@ -23,8 +25,10 @@ class D2DependencyInjection {
     final loadPrefsUseCase = LoadCarPreferencesUseCase(d2Repository);
 
     // Car List Dependencies
-    final carDataSource = CarDataSource();
-    final carRepository = CarRepositoryImpl(apiDataSource: carDataSource);
+    final firebaseAuth = FirebaseAuth.instance;
+    final client = http.Client();
+    final carDataSource = CarRemoteDataSourceImpl(client);
+    final carRepository = CarRepositoryImpl(apiDataSource: carDataSource, firebaseAuth: firebaseAuth, );
     final getCarsUseCase = GetCarsUseCase(carRepository);
     final addCarUseCase = AddCarUseCase(carRepository);
 
@@ -40,7 +44,7 @@ class D2DependencyInjection {
       ),
 
       // Car List
-      Provider<CarDataSource>(create: (_) => carDataSource),
+      Provider<CarRemoteDataSource>(create: (_) => carDataSource),
       Provider<CarRepository>(create: (_) => carRepository),
       Provider<GetCarsUseCase>(create: (_) => getCarsUseCase),
       Provider<AddCarUseCase>(create: (_) => addCarUseCase),
