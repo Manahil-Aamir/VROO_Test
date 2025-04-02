@@ -1,117 +1,106 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/utils/constant/api_constants.dart';
-import 'package:android_intent_plus/android_intent.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-
-final FlutterBackgroundService _backgroundService = FlutterBackgroundService();
 
 class SosTrackerService {
   final String sessionId;
+  StreamSubscription<Position>? _positionStream;
+  Timer? _sessionTimer;
 
   SosTrackerService({required this.sessionId});
 
   Future<void> startTracking() async {
-    final LocationService locationService = LocationService();
+    final locationService = LocationService();
     bool hasPermission = await locationService.checkAndRequestPermission();
-
     if (!hasPermission) {
-      print("Location permissions are required to start tracking");
+      print("❌ Location permissions required!");
       return;
     }
 
-    if (!(_backgroundService.isRunning() == true)) {
-      await _initializeBackgroundService();
-      await Future.delayed(const Duration(seconds: 3));
+    await _initializeForegroundService();
+
+    bool isRunning = await FlutterForegroundTask.isRunningService;
+    if (!isRunning) {
+      await FlutterForegroundTask.startService(
+        notificationTitle: 'SOS Tracking Active',
+        notificationText: 'Tracking location...',
+        callback: locationUpdateCallback,
+      );
+      await FlutterForegroundTask.saveData(key: 'sessionId', value: sessionId);
+      print("🚀 Foreground tracking started for session: $sessionId");
     }
 
-    _backgroundService.invoke("startTracking", {"sessionId": sessionId});
-    print("Background tracking started for session: $sessionId");
-  }
+    // Start listening for location updates
+    _positionStream = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 1,
+      ),
+    ).listen((Position position) {
+      sendLocation(sessionId, position);
+    });
 
-  void stopTracking() {
-    _backgroundService.invoke("stopTracking");
-    print("Background tracking stopped for session: $sessionId");
-  }
-}
-
-Future<void> _initializeBackgroundService() async {
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-  await _backgroundService.configure(
-    androidConfiguration: AndroidConfiguration(
-      onStart: onBackgroundServiceStart,
-      isForegroundMode: true,
-      autoStart: true,
-      notificationChannelId: "sos_tracking",
-      initialNotificationTitle: "SOS Tracking Active",
-      initialNotificationContent: "Tracking your location...",
-      foregroundServiceTypes:
-          Platform.isAndroid && androidInfo.version.sdkInt >= 34
-              ? [AndroidForegroundType.location] // Required for Android 14+
-              : null, // Ignore for Android 13 and below
-    ),
-    iosConfiguration: IosConfiguration(
-      onForeground: onBackgroundServiceStart,
-      onBackground: onBackgroundServiceStart,
-    ),
-  );
-
-  await _backgroundService.startService();
-  print("Background service initialized and started");
-}
-
-FutureOr<bool> onBackgroundServiceStart(ServiceInstance service) async {
-  print("Background service started");
-
-  WidgetsFlutterBinding.ensureInitialized();
-
-  try {
-    await Firebase.initializeApp();
-    print("Firebase initialized in background service");
-  } catch (e) {
-    print("Error initializing Firebase in background service: $e");
-  }
-
-  if (service is AndroidServiceInstance) {
-    service.on("stopTracking").listen((event) {
-      print("Stopping tracking");
-      service.stopSelf();
-      print("Background service stopped.");
+    // Check session status every 5 minutes
+    _sessionTimer = Timer.periodic(Duration(minutes: 5), (timer) {
+      checkSessionStatus(sessionId);
     });
   }
 
-  service.on("startTracking").listen((event) {
-    print('Handle startTracking event');
-    String? sessionId = event?["sessionId"];
-    print("Tracking started for session: $sessionId");
+  void stopTracking() {
+    _positionStream?.cancel();
+    _sessionTimer?.cancel();
+    FlutterForegroundTask.stopService();
+    print("🛑 Tracking stopped for session: $sessionId");
+  }
+}
 
-    if (sessionId != null) {
-      Timer.periodic(const Duration(minutes: 6), (timer) async {
-        await checkSessionStatus(sessionId);
-      });
+Future<void> _initializeForegroundService() async {
+  FlutterForegroundTask.init(
+    androidNotificationOptions: AndroidNotificationOptions(
+      channelId: 'sos_foreground_service',
+      channelName: 'SOS Tracking Service',
+      channelDescription: 'This service tracks location in the background.',
+      channelImportance: NotificationChannelImportance.HIGH,
+      priority: NotificationPriority.HIGH,
+      visibility: NotificationVisibility.VISIBILITY_PUBLIC,
+    ),
+    iosNotificationOptions: IOSNotificationOptions(
+      showNotification: true,
+      playSound: false,
+    ),
+    foregroundTaskOptions: ForegroundTaskOptions(
+      eventAction: ForegroundTaskEventAction.repeat(60000), // Runs every 1 min
+      autoRunOnBoot: true,
+      allowWakeLock: true,
+      allowWifiLock: true,
+    ),
+  );
+}
 
-      Timer.periodic(const Duration(minutes: 2), (timer) async {
-        Position? position = await getCurrentLocation();
-        if (position != null) {
-          await sendLocation(sessionId, position);
-        }
-      });
-    }
-  });
+void locationUpdateCallback() async {
+  print("⏳ Foreground task running...");
+  await Firebase.initializeApp();
 
-  return true;
+  final String? sessionId =
+      await FlutterForegroundTask.getData<String>(key: 'sessionId');
+  if (sessionId == null) {
+    print("⚠️ No active session found.");
+    return;
+  }
+
+  print("📍 Tracking for session: $sessionId");
+  // No manual fetching, location updates handled by stream
+  if (DateTime.now().minute % 5 == 0) {
+    checkSessionStatus(sessionId);
+  }
 }
 
 Future<void> checkSessionStatus(String sessionId) async {
-  print('Checking session status...');
+  print("🔄 Checking session status...");
   final DatabaseReference sessionRef = FirebaseDatabase.instanceFor(
     app: Firebase.app(),
     databaseURL: ApiConstants.databaseUrl,
@@ -120,15 +109,15 @@ Future<void> checkSessionStatus(String sessionId) async {
   final sessionSnapshot =
       await sessionRef.child(sessionId).child("status").get();
   if (sessionSnapshot.exists && sessionSnapshot.value != "active") {
-    print("SOS session ended. Stopping tracking");
-    _backgroundService.invoke("stopTracking");
+    print("❌ SOS session ended. Stopping tracking.");
+    FlutterForegroundTask.stopService();
   } else {
-    print('SOS session is still active.');
+    print("✅ SOS session still active.");
   }
 }
 
 Future<void> sendLocation(String sessionId, Position position) async {
-  print('Sending location...');
+  print("📤 Sending location...");
   final DatabaseReference sessionRef = FirebaseDatabase.instanceFor(
     app: Firebase.app(),
     databaseURL: ApiConstants.databaseUrl,
@@ -140,17 +129,5 @@ Future<void> sendLocation(String sessionId, Position position) async {
     "lastUpdated": DateTime.now().toIso8601String(),
   });
 
-  print("Location updated: ${position.latitude}, ${position.longitude}");
-}
-
-Future<Position?> getCurrentLocation() async {
-  print('fetching locationnn');
-  try {
-    return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-  } catch (e) {
-    print("Error getting location: $e");
-    return null;
-  }
+  print("✅ Location updated: ${position.latitude}, ${position.longitude}");
 }
