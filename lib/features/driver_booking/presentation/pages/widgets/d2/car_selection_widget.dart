@@ -40,52 +40,97 @@ class CarSelectionWidget extends StatelessWidget {
             SizedBox(height: 16.h),
             BlocBuilder<CarBloc, CarState>(
               builder: (context, carState) {
-                return Row(
-                  children: [
-                    Expanded(
-                      child: DropdownButtonFormField<String>(
-                        isExpanded: true,
-                        value: carState is CarLoaded ? selectedCarId : null,
-                        items: carState is CarLoaded
-                            ? carState.cars.map((car) => DropdownMenuItem(
-                                value: car.numberPlate, 
-                                child: Row(children: [
-                                  Icon(Icons.directions_car, color: ThemeColors.primaryColor), 
-                                  SizedBox(width: 12.w), 
-                                  Text('${car.company} ${car.model}')
-                                ])
-                              )).toList()
-                            : [],
-                        onChanged: carState is CarLoaded ? onCarSelected : null,
-                        decoration: InputDecoration(
-                          hintText: carState is CarLoading 
-                              ? 'Loading vehicles...' 
-                              : 'Choose your vehicle',
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                          suffixIcon: carState is CarLoading
-                              ? Padding(
-                                  padding: EdgeInsets.all(8.w),
-                                  child: SizedBox(
-                                    width: 20.w,
-                                    height: 20.w,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2.w,
-                                      color: ThemeColors.primaryColor,
-                                    ),
-                                  ),
-                                )
-                              : null,
+                // First check if we have a loaded state with cars
+                if (carState is CarLoaded) {
+                  // Check if the selected car exists in the loaded list
+                  final carExists = carState.cars.any((car) => car.numberPlate == selectedCarId);
+                  
+                  // Only use selectedCarId if it exists in the current list, otherwise null
+                  final effectiveSelectedId = carExists ? selectedCarId : null;
+                  
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          value: effectiveSelectedId,
+                          items: carState.cars.map((car) => DropdownMenuItem(
+                            value: car.numberPlate, 
+                            child: Row(children: [
+                              Icon(Icons.directions_car, color: ThemeColors.primaryColor), 
+                              SizedBox(width: 12.w), 
+                              Text('${car.company} ${car.model}')
+                            ])
+                          )).toList(),
+                          onChanged: onCarSelected,
+                          decoration: InputDecoration(
+                            hintText: 'Choose your vehicle',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                          ),
                         ),
-                        icon: carState is CarLoading ? const SizedBox.shrink() : null,
                       ),
-                    ),
-                    SizedBox(width: 12.w),
-                    _buildAddCarButton(),
-                  ],
-                );
+                      SizedBox(width: 12.w),
+                      _buildAddCarButton(),
+                    ],
+                  );
+                } else if (carState is CarLoading) {
+                  // Show loading state
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          value: null,
+                          items: const [], // Empty list while loading
+                          onChanged: null, // Disable while loading
+                          decoration: InputDecoration(
+                            hintText: 'Loading vehicles...',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                            suffixIcon: Padding(
+                              padding: EdgeInsets.all(8.w),
+                              child: SizedBox(
+                                width: 20.w,
+                                height: 20.w,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.w,
+                                  color: ThemeColors.primaryColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          icon: const SizedBox.shrink(),
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      _buildAddCarButton(),
+                    ],
+                  );
+                } else {
+                  // Error or initial state
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          value: null,
+                          items: const [], 
+                          onChanged: null,
+                          decoration: InputDecoration(
+                            hintText: 'No vehicles available',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      _buildAddCarButton(),
+                    ],
+                  );
+                }
               },
-            ),
+            )
           ],
         ),
       ),

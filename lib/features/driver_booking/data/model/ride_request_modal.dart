@@ -42,7 +42,7 @@ class RideRequestModel extends RideRequest {
         "company": car.company,
         "model": car.model,
         "color": car.color,
-        "number_plate": car.numberPlate,
+        "numberPlate": car.numberPlate,
         "mileage": car.mileage,
         "isVerified": car.isVerified,
       },

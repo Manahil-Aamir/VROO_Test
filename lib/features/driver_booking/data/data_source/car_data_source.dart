@@ -41,6 +41,8 @@ class CarRemoteDataSourceImpl implements CarRemoteDataSource {
 
   @override
   Future<void> addCarToApi(Car car, String token) async {
+    print("Adding car: ${car.toJson()}");
+    print("Token: $token");
     try {
       final response = await client.post(
         Uri.parse(baseUrl),
@@ -50,6 +52,9 @@ class CarRemoteDataSourceImpl implements CarRemoteDataSource {
         },
         body: json.encode(car.toJson()),
       );
+
+      print("Response status: ${response.statusCode}");
+      print("Response body: ${response.body}");
       
       if (response.statusCode != 201) {
         throw Exception("Failed to add car: ${response.statusCode}");

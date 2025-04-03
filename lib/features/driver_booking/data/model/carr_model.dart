@@ -19,12 +19,12 @@ class Car {
 
   factory Car.fromJson(Map<String, dynamic> json) {
     return Car(
-      company: json['company'] ?? 'Unknown', // Handle null
-      model: json['model'] ?? 'Unknown',     // Handle null
-      color: json['color'] ?? 'Unknown',     // Handle null
-      numberPlate: json['number_plate'] ?? 'N/A', // Handle null
-      mileage: json['mileage']?.toDouble() ?? 0.0,
-      isVerified: json['isVerified'] ?? false,
+      company: json['company'] , 
+      model: json['model'],     
+      color: json['color'],     
+      numberPlate: json['numberPlate'], 
+      mileage: json['mileage']?.toDouble() ,
+      isVerified: json['isVerified'],
     );
   }
 
@@ -33,7 +33,7 @@ class Car {
       'company': company,
       'model': model,
       'color': color,
-      'number_plate': numberPlate,
+      'numberPlate': numberPlate,
       'mileage': mileage,
       'isVerified': isVerified,
     };

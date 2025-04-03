@@ -4,11 +4,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import '../../../../../../core/theme/color/color_theme.dart';
 import '../../../../domain/entity/car.dart';
+import '../../../bloc/bloc/car_bloc.dart';
 
 class AddCarModal extends StatefulWidget {
   final Function(CarEntity) onCarAdded;
+  final CarBloc carBloc;  // Add this parameter
 
-  const AddCarModal({Key? key, required this.onCarAdded}) : super(key: key);
+  const AddCarModal({
+    Key? key, 
+    required this.onCarAdded,
+    required this.carBloc,  // Add this parameter
+  }) : super(key: key);
 
   @override
   _AddCarModalState createState() => _AddCarModalState();
@@ -119,7 +125,7 @@ class _AddCarModalState extends State<AddCarModal> {
         isVerified: false,
       );
 
-      widget.onCarAdded(newCar);
+      widget.onCarAdded(newCar);  // This will now use the correctly passed carBloc
       Navigator.pop(context);
     }
   }

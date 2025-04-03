@@ -75,75 +75,89 @@ class _D2PageState extends State<D2Page> {
   }
 
   @override
-Widget build(BuildContext context) {
-  final screenHeight = MediaQuery.of(context).size.height;
-  return MultiBlocListener(
-    listeners: [
-      BlocListener<CarPreferencesBloc, CarPreferencesState>(
-        listener: (context, state) {
-          if (state is CarPreferencesLoaded) {
-            _updateLocalState(state.preferences);
-          }
-        },
-      ),
-      BlocListener<CarBloc, CarState>(
-        listener: (context, state) {
-          if (state is CarAdded) {
-            context.read<CarBloc>().add(FetchCars());
-          }
-        },
-      ),
-    ],
-    child: Scaffold(
-      appBar: CustomAppBar(highlightedCircles: 2),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 70.h + 16.h),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            // Ensure the content fills at least the screen's height.
-            minHeight: screenHeight -
-                kToolbarHeight -
-                MediaQuery.of(context).padding.top,
-          ),
-          child: IntrinsicHeight(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Always show the CarSelectionWidget regardless of state
-                CarSelectionWidget(
-                  selectedCarId: _selectedCarId,
-                  onCarSelected: _updateCarPreference,
-                  onAddCarPressed: _showAddCarModal,
-                ),
-                SizedBox(height: 20.h),
-                SeatsControlWidget(
-                  availableSeats: _availableSeats,
-                  onSeatsChanged: _updateSeats,
-                ),
-                SizedBox(height: 20.h),
-                GenderToggleWidget(
-                  sameGenderOnly: _sameGenderOnly,
-                  onGenderToggled: _updateGenderPreference,
-                ),
-                SizedBox(height: 20.h),
-                PaymentMethodWidget(
-                  selectedPaymentMethod: _selectedPaymentMethod,
-                  onPaymentSelected: _updatePayment,
-                ),
-                SizedBox(height: 20.h),
-                GradientButton(
-                  onTap: _handleNextPressed,
-                  text: 'Next',
-                ),
-                SizedBox(height: 70.h),
-              ],
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<CarPreferencesBloc, CarPreferencesState>(
+          listener: (context, state) {
+            if (state is CarPreferencesLoaded) {
+              _updateLocalState(state.preferences);
+            }
+          },
+        ),
+        BlocListener<CarBloc, CarState>(
+          listener: (context, state) {
+            if (state is CarLoaded) {
+              // If selected car doesn't exist in the loaded list, reset it
+              if (_selectedCarId != null && 
+                  !state.cars.any((car) => car.numberPlate == _selectedCarId)) {
+                setState(() {
+                  _selectedCarId = null;
+                });
+              }
+              // If no car is selected but cars exist, select the first one
+              else if (_selectedCarId == null && state.cars.isNotEmpty) {
+                setState(() {
+                  _selectedCarId = state.cars.first.numberPlate;
+                });
+                _updateCarPreference(state.cars.first.numberPlate);
+              }
+            }
+          },
+        ),
+      ],
+      child: Scaffold(
+        appBar: CustomAppBar(highlightedCircles: 2),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 70.h + 16.h),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              // Ensure the content fills at least the screen's height.
+              minHeight: screenHeight -
+                  kToolbarHeight -
+                  MediaQuery.of(context).padding.top,
+            ),
+            child: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Always show the CarSelectionWidget regardless of state
+                  CarSelectionWidget(
+                    selectedCarId: _selectedCarId,
+                    onCarSelected: _updateCarPreference,
+                    onAddCarPressed: _showAddCarModal,
+                  ),
+                  SizedBox(height: 20.h),
+                  SeatsControlWidget(
+                    availableSeats: _availableSeats,
+                    onSeatsChanged: _updateSeats,
+                  ),
+                  SizedBox(height: 20.h),
+                  GenderToggleWidget(
+                    sameGenderOnly: _sameGenderOnly,
+                    onGenderToggled: _updateGenderPreference,
+                  ),
+                  SizedBox(height: 20.h),
+                  PaymentMethodWidget(
+                    selectedPaymentMethod: _selectedPaymentMethod,
+                    onPaymentSelected: _updatePayment,
+                  ),
+                  SizedBox(height: 20.h),
+                  GradientButton(
+                    onTap: _handleNextPressed,
+                    text: 'Next',
+                  ),
+                  SizedBox(height: 70.h),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
+    
   void _updateLocalState(CarPreferencesEntity preferences) {
     setState(() {
       _selectedCarId = preferences.selectedCar;
@@ -291,13 +305,16 @@ Widget build(BuildContext context) {
   }
 
   void _showAddCarModal() {
+    final carBloc = context.read<CarBloc>();  
+    
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: const Color(0xFF2C2C2C),
       builder: (context) => AddCarModal(
+        carBloc: carBloc,  
         onCarAdded: (newCar) {
-          context.read<CarBloc>().add(AddCar(newCar));
+          carBloc.add(AddCar(newCar)); 
         },
       ),
     );
