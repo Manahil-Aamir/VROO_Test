@@ -1,4 +1,4 @@
-import '../../../../cars/domain/entity/car.dart';
+import '../../../domain/entity/car.dart';
 
 abstract class CarEvent {}
 
@@ -8,4 +8,10 @@ class AddCar extends CarEvent {
   final CarEntity car;
 
   AddCar(this.car);
+}
+
+class DeleteCar extends CarEvent {
+  final String carId;
+
+  DeleteCar(this.carId);
 }

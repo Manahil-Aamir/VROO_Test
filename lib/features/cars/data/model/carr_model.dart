@@ -1,6 +1,7 @@
 import '../../domain/entity/car.dart';
 
 class Car {
+  final String carId;
   final String company;
   final String model;
   final String color;
@@ -9,6 +10,7 @@ class Car {
   final bool isVerified;
 
   Car({
+    required this.carId,
     required this.company,
     required this.model,
     required this.color,
@@ -19,6 +21,7 @@ class Car {
 
   factory Car.fromJson(Map<String, dynamic> json) {
     return Car(
+      carId: json['_id'], 
       company: json['company'] , 
       model: json['model'],     
       color: json['color'],     
@@ -30,6 +33,7 @@ class Car {
 
   Map<String, dynamic> toJson() {
     return {
+      '_id': carId,
       'company': company,
       'model': model,
       'color': color,
@@ -41,6 +45,7 @@ class Car {
 
   // Add this conversion method
   CarEntity toEntity() => CarEntity(
+        carId: carId,
         company: company,
         model: model,
         color: color,

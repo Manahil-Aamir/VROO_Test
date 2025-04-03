@@ -5,6 +5,7 @@ import '../model/carr_model.dart';
 abstract class CarRemoteDataSource {
   Future<List<Car>> fetchCarsFromApi(String token);
   Future<void> addCarToApi(Car car, String token);
+  Future<void> deleteCarFromApi(String carId, String token);
 }
 
 class CarRemoteDataSourceImpl implements CarRemoteDataSource {
@@ -63,4 +64,27 @@ class CarRemoteDataSourceImpl implements CarRemoteDataSource {
       throw Exception("Error adding car: $e");
     }
   }
+
+  @override
+  Future<void> deleteCarFromApi(String carId, String token) async {
+    try {
+      final response = await client.delete(
+        Uri.parse('$baseUrl/$carId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      print("Delete response status: ${response.statusCode}");
+      print("Delete response body: ${response.body}");
+      
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw Exception("Failed to delete car: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Error deleting car: $e");
+    }
+  }
+
 }

@@ -1,4 +1,4 @@
-import '../../../../cars/domain/entity/car.dart';
+import '../../../domain/entity/car.dart';
 
 abstract class CarState {}
 

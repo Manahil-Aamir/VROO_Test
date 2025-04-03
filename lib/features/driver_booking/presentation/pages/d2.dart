@@ -4,16 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/shared/widgets/custom_app_bar.dart';
 import '../../../../core/router/navigation.dart';
-import '../../../cars/domain/entity/car.dart';
 import '../../domain/entity/driver_schedule2_entity.dart';
-import '../bloc/bloc/car_bloc.dart';
+import '../../../cars/presentation/bloc/bloc/car_bloc.dart';
 import '../bloc/bloc/d2_bloc.dart';
-import '../bloc/event/car_event.dart';
+import '../../../cars/presentation/bloc/event/car_event.dart';
 import '../bloc/event/d2_event.dart';
-import '../bloc/state/car_state.dart';
+import '../../../cars/presentation/bloc/state/car_state.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../bloc/state/d2_state.dart';
-import 'widgets/d2/add_car_modal.dart';
+import '../../../cars/presentation/widgets/add_car_modal.dart';
 import 'widgets/d2/car_selection_widget.dart';
 import 'widgets/d2/gender_toggle_widget.dart';
 import 'widgets/d2/payment_option_widget.dart';
@@ -243,15 +242,15 @@ class _D2PageState extends State<D2Page> {
 
     final selectedCar = carState.cars.firstWhere(
       (car) => car.numberPlate == _selectedCarId,
-      orElse: () => CarEntity(
-        // Fallback dummy car
-        company: 'Unknown',
-        model: 'Unknown',
-        color: 'Unknown',
-        numberPlate: 'Unknown',
-        mileage: 0,
-        isVerified: false,
-      ),
+      // orElse: () => CarEntity(
+      //   // Fallback dummy car
+      //   company: 'Unknown',
+      //   model: 'Unknown',
+      //   color: 'Unknown',
+      //   numberPlate: 'Unknown',
+      //   mileage: 0,
+      //   isVerified: false,
+      // ),
     );
 
     print(widget.time);

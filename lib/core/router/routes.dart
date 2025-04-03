@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:vroo_test/features/authentication/dependency_injection/sign_in_di.dart';
 import 'package:vroo_test/features/authentication/presentation/pages/sign_in_page.dart';
+import 'package:vroo_test/features/cars/presentation/pages/cars_screen.dart';
 import 'package:vroo_test/features/chat/domain/entity/chat_user.dart';
 import 'package:vroo_test/features/chat/presentation/pages/chat_detail_screen.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
@@ -77,6 +78,7 @@ class Routes {
   static const String chat = '/chat';
   static const String chat_detail = '/chat_detail';
   static const String user_profile = '/user_profile';
+  static const String car = '/car';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -546,15 +548,16 @@ class Routes {
         final maxArrivalTime =
             args['maxArrivalTime'] as TimeOfDay? ?? TimeOfDay.now();
         final recurrence = args['recurrence'] as String? ?? 'none';
-        final selectedCar = args['selectedCar'] as CarEntity? ??
-            CarEntity(
-              company: 'null',
-              model: 'null',
-              color: 'null',
-              numberPlate: '',
-              mileage: 0,
-              isVerified: false,
-            );
+        final selectedCar = args['selectedCar'] as CarEntity;
+        // ? ??
+        //     CarEntity(
+        //       company: 'null',
+        //       model: 'null',
+        //       color: 'null',
+        //       numberPlate: '',
+        //       mileage: 0,
+        //       isVerified: false,
+        //     );
         final availableSeats = args['availableSeats'] as int? ?? 1;
         final sameGenderOnly = args['sameGenderOnly'] as bool? ?? false;
         final paymentOption =
@@ -713,6 +716,11 @@ class Routes {
              builder: (_) => MultiBlocProvider(
                 providers: UserProfileDi.init(),
                 child: UserProfilePage()));
+      case car:
+        return MaterialPageRoute(
+             builder: (_) => MultiBlocProvider(
+                providers: CarDependencyInjection.init(),
+                child: CarScreen()));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

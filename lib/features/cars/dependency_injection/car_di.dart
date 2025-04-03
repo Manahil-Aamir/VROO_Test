@@ -7,7 +7,7 @@ import '../../cars/data/data_source/car_data_source.dart';
 import '../../cars/data/repository/car_repository_impl.dart';
 import '../../cars/domain/repository/car_repository.dart';
 import '../../cars/domain/usecase/car_usecase.dart';
-import '../../driver_booking/presentation/bloc/bloc/car_bloc.dart';
+import '../presentation/bloc/bloc/car_bloc.dart';
 
 class CarDependencyInjection {
   static List<SingleChildWidget> init() {
@@ -20,6 +20,7 @@ class CarDependencyInjection {
     );
     final getCarsUseCase = GetCarsUseCase(carRepository);
     final addCarUseCase = AddCarUseCase(carRepository);
+    final deleteCarUseCase = DeleteCarUseCase(carRepository);
 
     return [
       Provider<CarRemoteDataSource>(create: (_) => carDataSource),
@@ -27,7 +28,7 @@ class CarDependencyInjection {
       Provider<GetCarsUseCase>(create: (_) => getCarsUseCase),
       Provider<AddCarUseCase>(create: (_) => addCarUseCase),
       BlocProvider<CarBloc>(
-        create: (_) => CarBloc(getCarsUseCase, addCarUseCase),
+        create: (_) => CarBloc(getCarsUseCase, addCarUseCase, deleteCarUseCase),
       ),
     ];
   }

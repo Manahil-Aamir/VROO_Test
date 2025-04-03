@@ -10,6 +10,7 @@ class GetCarsUseCase {
   Future<List<CarEntity>> execute() async {
     final cars = await repository.getCars();
     return cars.map((car) => CarEntity(
+      carId: car.carId,
       company: car.company,
       model: car.model,
       color: car.color,
@@ -27,6 +28,7 @@ class AddCarUseCase {
 
   Future<void> execute(CarEntity car) async {
     await repository.addCar(Car(
+      carId: car.carId, 
       company: car.company,
       model: car.model,
       color: car.color,
@@ -34,5 +36,15 @@ class AddCarUseCase {
       mileage: car.mileage,
       isVerified: false,
     ));
+  }
+}
+
+class DeleteCarUseCase {
+  final CarRepository repository;
+
+  DeleteCarUseCase(this.repository);
+
+  Future<void> execute(String carId) async {
+    await repository.deleteCar(carId);
   }
 }

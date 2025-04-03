@@ -1,4 +1,5 @@
 class CarEntity {
+  final String carId;
   final String company;
   final String model;
   final String color;
@@ -7,6 +8,7 @@ class CarEntity {
   final bool isVerified;
 
   CarEntity({
+    required this.carId,
     required this.company,
     required this.model,
     required this.color,

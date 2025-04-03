@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vroo_test/core/theme/color/color_theme.dart';
 
 class GradientButton extends StatelessWidget {
   final VoidCallback onTap;
   final String text;
+  final Widget? icon;
+  final double gapBetweenIconAndText;
 
   const GradientButton({
     super.key,
     required this.onTap,
     required this.text,
+    this.icon,
+    this.gapBetweenIconAndText = 8.0,
   });
 
   @override
@@ -37,11 +42,18 @@ class GradientButton extends StatelessWidget {
           ],
         ),
         child: Center(
-          child: Text(
-            text,
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: theme.primaryColorDark,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) icon!,
+              if (icon != null) SizedBox(width: gapBetweenIconAndText.w),
+              Text(
+                text,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: ThemeColors.primaryColorDark,
+                ),
+              ),
+            ],
           ),
         ),
       ),

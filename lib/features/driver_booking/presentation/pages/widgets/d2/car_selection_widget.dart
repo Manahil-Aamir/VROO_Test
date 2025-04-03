@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../core/theme/color/color_theme.dart';
 import '../../../../../../core/theme/font/font_theme.dart';
-import '../../../bloc/bloc/car_bloc.dart';
-import '../../../bloc/state/car_state.dart';
+import '../../../../../cars/presentation/bloc/bloc/car_bloc.dart';
+import '../../../../../cars/presentation/bloc/state/car_state.dart';
 
 class CarSelectionWidget extends StatelessWidget {
   final String? selectedCarId;

@@ -34,5 +34,10 @@ class CarRepositoryImpl implements CarRepository {
   Future<void> addCar(Car car) async {
     return apiDataSource.addCarToApi(car, await getToken());
   }
+
+  @override
+  Future<void> deleteCar(String carId) async {
+    return apiDataSource.deleteCarFromApi(carId, await getToken());
+  }
 }
 
