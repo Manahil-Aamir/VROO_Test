@@ -126,7 +126,7 @@ class _CarScreenState extends State<CarScreen> {
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         leading: Icon(
-          Icons.car,
+          Icons.directions_car,
           size: 48.r,
           color: ThemeColors.buttonTextColor,
         ),
