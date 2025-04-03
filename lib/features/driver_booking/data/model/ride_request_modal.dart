@@ -1,4 +1,4 @@
-import '../../domain/entity/car.dart';
+import '../../../cars/domain/entity/car.dart';
 import '../../domain/entity/ride_request.dart';
 
 class RideRequestModel extends RideRequest {

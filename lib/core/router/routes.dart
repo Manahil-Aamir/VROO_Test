@@ -12,13 +12,14 @@ import '../../features/HomeScreens/dependency_injection/home_di.dart';
 import '../../features/HomeScreens/dependency_injection/location_di.dart';
 import '../../features/HomeScreens/presentation/pages/home_screen.dart';
 import '../../features/HomeScreens/presentation/pages/location_selection.dart';
+import '../../features/cars/dependency_injection/car_di.dart';
 import '../../features/chat/dependency_injection/chat_di.dart';
 import '../../features/chat/presentation/pages/chat_screen.dart';
 import '../../features/driver_booking/dependency_injection/booking_di.dart';
 import '../../features/driver_booking/dependency_injection/d1_di.dart';
 import '../../features/driver_booking/dependency_injection/d2_di.dart';
 import '../../features/driver_booking/dependency_injection/d3_di.dart';
-import '../../features/driver_booking/domain/entity/car.dart';
+import '../../features/cars/domain/entity/car.dart';
 import '../../features/driver_booking/presentation/pages/BookingConfirmationDriver.dart';
 import '../../features/driver_booking/presentation/pages/d1.dart';
 import '../../features/driver_booking/presentation/pages/d2.dart';
@@ -510,7 +511,10 @@ class Routes {
         final recurrence = args['recurrence'] as String? ?? 'One Time';
         return MaterialPageRoute(
           builder: (_) => MultiProvider(
-            providers: D2DependencyInjection.init(),
+            providers: [
+              ...D2DependencyInjection.init(),
+              ...CarDependencyInjection.init(),
+            ],
             child: D2Page(
               toPlaceId: toPlaceID,
               fromPlaceId: fromPlaceID,

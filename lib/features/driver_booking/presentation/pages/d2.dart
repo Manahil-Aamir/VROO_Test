@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/shared/widgets/custom_app_bar.dart';
 import '../../../../core/router/navigation.dart';
-import '../../domain/entity/car.dart';
+import '../../../cars/domain/entity/car.dart';
 import '../../domain/entity/driver_schedule2_entity.dart';
 import '../bloc/bloc/car_bloc.dart';
 import '../bloc/bloc/d2_bloc.dart';

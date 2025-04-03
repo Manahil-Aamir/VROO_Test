@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import '../../../../../../core/theme/color/color_theme.dart';
-import '../../../../domain/entity/car.dart';
+import '../../../../../cars/domain/entity/car.dart';
 import '../../../bloc/bloc/car_bloc.dart';
 
 class AddCarModal extends StatefulWidget {

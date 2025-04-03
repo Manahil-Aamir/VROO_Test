@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../driver_booking/domain/entity/car.dart';
+import '../../../cars/domain/entity/car.dart';
 
 class ActiveRideEntity {
   final String id;

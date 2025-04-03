@@ -6,7 +6,7 @@ import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/error_dialog.dart';
 import '../../../../shared/widgets/gradient_button.dart';
-import '../../domain/entity/car.dart';
+import '../../../cars/domain/entity/car.dart';
 import '../../domain/entity/ride_request.dart';
 import '../bloc/bloc/d3_bloc.dart';
 import '../bloc/event/d3_event.dart';
@@ -52,23 +52,19 @@ class D3 extends StatelessWidget {
     required this.routeDuration,
   });
 
+  // init method to print all the variables
+  void init() {
+    printVariables();
+  }  
+
 
   void printVariables() {
-    print('fromDescription: $fromDescription');
-    print('fromPlaceId: $fromPlaceId');
-    print('toDescription: $toDescription');
-    print('toPlaceId: $toPlaceId');
-    print('routeCoords: $routeCoords');
-    print('date: $date');
-    print('time: $time');
-    print('maxArrivalTime: $maxArrivalTime');
-    print('recurrence: $recurrence');
-    print('selectedCar: $selectedCar');
-    print('availableSeats: $availableSeats');
-    print('sameGenderOnly: $sameGenderOnly');
-    print('paymentOption: $paymentOption');
-    print('routeDistance: $routeDistance');
-    print('routeDuration: $routeDuration');
+    print('Selected Car Details:');
+    print('Company: ${selectedCar.company}');
+    print('Model: ${selectedCar.model}');
+    print('Color: ${selectedCar.color}');
+    print('License Plate: ${selectedCar.numberPlate}');
+    // Add any other properties of CarEntity that you want to print
   }
 
   @override

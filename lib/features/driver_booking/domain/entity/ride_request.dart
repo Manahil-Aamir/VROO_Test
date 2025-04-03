@@ -1,4 +1,4 @@
-import 'car.dart';
+import '../../../cars/domain/entity/car.dart';
 
 class RideRequest {
   final String driverId;
