@@ -10,12 +10,26 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
 
   UserProfileRepositoryImpl({required this.remoteDataSource, required this.firebaseAuth});
 
+  Future<String> getToken() async {
+    final user = firebaseAuth.currentUser;
+    if (user != null) {
+      try {
+        final token = await user.getIdToken();
+        return token!;
+      } catch (e) {
+        throw Exception("Failed to get token: ${e.toString()}");
+      }
+    } else {
+      throw Exception("User not logged in");
+    }
+  }
+
   @override
   Future<UserProfile> getUserProfile() async {
-    return await remoteDataSource.getUserProfile(firebaseAuth.currentUser!.uid);
+    return await remoteDataSource.getUserProfile(await getToken());
   }
 
   Future<UserProfile> updateUserProfile({String? name, String? phoneNumber}) async {
-    return await remoteDataSource.updateUserProfile(name: name, phoneNumber: phoneNumber, userId: firebaseAuth.currentUser!.uid);
+    return await remoteDataSource.updateUserProfile(name: name, phoneNumber: phoneNumber, token: await getToken());
   }
 }

@@ -15,18 +15,17 @@ class UserProfileModel extends UserProfile {
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
-    final data = json['data']['userData'];
     return UserProfileModel(
-      name: data['name'],
-      email: data['email'],
-      phoneNumber: data['phoneNumber'],
-      gender: data['gender'],
-      ratingsAsDriver: data['ratings']['asDriver'],
-      ratingsAsRider: data['ratings']['asRider'],
-      co2Saved: data['environmentStats']['CO2Saved'],
-      fuelSaved: data['environmentStats']['fuelSaved'],
-      totalRidesAsDriver: data['totalRides']['asDriver'],
-      totalRidesAsRider: data['totalRides']['asRider'],
+      name: json['name'],
+      email: json['email'],
+      phoneNumber: json['phoneNumber'],
+      gender: json['gender'],
+      ratingsAsDriver: json['ratings']['asDriver'],
+      ratingsAsRider: json['ratings']['asRider'],
+      co2Saved: json['environmentStats']['CO2Saved'],
+      fuelSaved: json['environmentStats']['fuelSaved'],
+      totalRidesAsDriver: json['totalRides']['asDriver'],
+      totalRidesAsRider: json['totalRides']['asRider'],
     );
   }
 }

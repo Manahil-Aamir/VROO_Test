@@ -12,7 +12,7 @@ class CarRepositoryImpl implements CarRepository {
 
   // function to return token
   Future<String> getToken() async {
-  final user = firebaseAuth.currentUser;
+    final user = firebaseAuth.currentUser;
     if (user != null) {
       try {
         final token = await user.getIdToken();
