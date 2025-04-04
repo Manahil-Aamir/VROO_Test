@@ -55,14 +55,30 @@ class _CarScreenState extends State<CarScreen> {
               ),
             );
           } else if (state is CarEmpty) {
-            return Center(
-              child: Text(
-                'No cars added yet',
-                style: TextStyle(
-                  color: ThemeColors.buttonTextColor,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                ),
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  const Spacer(), // Pushes the content down
+                  Center(
+                    child: Text(
+                      'No cars found. Please add a car.',
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        color: ThemeColors.buttonDisabledTextColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const Spacer(), // Pushes the button to near-bottom
+                  GradientButton(
+                    text: 'Add a Car',
+                    onTap: () {
+                      _showAddCarModal(context);
+                    },
+                  ),
+                  SizedBox(height: 32.h), // Give a little bottom spacing if needed
+                ],
               ),
             );
           } else if (state is CarLoaded || state is CarAdded) {
