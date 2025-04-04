@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:vroo_test/shared/widgets/custom_dialog.dart';
 
 import '../../data/models/contact_model.dart';
 import '../bloc/bloc/sos_bloc.dart';
@@ -49,10 +50,27 @@ class ContactList extends StatelessWidget {
             trailing: IconButton(
               icon: Icon(Icons.delete, color: theme.indicatorColor),
               onPressed: () {
-                context.read<SosBloc>().add(DeleteContact(
-                      userId,
-                      contact.id!,
-                    ));
+                showDialog(
+                    context: context,
+                    builder: (dialogContext) => CustomDialog(
+                          title: 'Delete Contact',
+                          message:
+                              'Are you sure you want to delete this contact?',
+                          confirmText: 'Delete',
+                          cancelText: 'Cancel',
+                          confirmColor: theme.indicatorColor,
+                          cancelColor: theme.primaryColorDark,
+                          onConfirm: () {
+                            Navigator.pop(dialogContext);
+                            context.read<SosBloc>().add(DeleteContact(
+                                  userId,
+                                  contact.id!,
+                                ));
+                          },
+                          onCancel: () {
+                            Navigator.pop(dialogContext);
+                          },
+                        ));
               },
             ),
           ),

@@ -43,7 +43,8 @@ class DialogButton extends StatelessWidget {
           child: Text(
             text,
             style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.primaryColorDark, fontWeight: FontWeight.bold),
+                color: theme.scaffoldBackgroundColor,
+                fontWeight: FontWeight.bold),
           ),
         ),
       ),

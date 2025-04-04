@@ -25,8 +25,9 @@ class SosLoaded extends SosState {
 // Successfully triggered SOS
 class SosTriggered extends SosState {
   final String sosLink;
+  final String sessionId;
 
-  SosTriggered(this.sosLink);
+  SosTriggered(this.sosLink, this.sessionId);
 
   @override
   List<Object> get props => [sosLink];

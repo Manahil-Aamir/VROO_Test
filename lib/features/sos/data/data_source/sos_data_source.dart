@@ -139,19 +139,19 @@ class SosDataSourceImpl implements SosDataSource {
       print(message);
       print(sosData.emergencyContacts);
 
-      List<ContactModel> contacts = [];
-      contacts = sosData.emergencyContacts;
+      List<ContactModel> contacts = sosData.emergencyContacts;
       print(contacts.length);
 
       if (contacts.isEmpty) {
         return "No emergency contacts found.";
       }
 
-      // Get response as Map instead of expecting a bool**
+      // Simulated SMS response
       final Map<String, dynamic> smsResponse = {
         'success': true,
         'message': 'SOS sent successfully'
       };
+
       //await _smsService.sendSosMessage(contacts, message);
       if (smsResponse['success'] == true) {
         print("Message sent successfully, starting tracking...");
@@ -160,7 +160,7 @@ class SosDataSourceImpl implements SosDataSource {
           sessionId: sosData.sessionId,
         ).startTracking();
 
-        return "Message sent successfully";
+        return "Message sent successfully | Session ID: ${sosData.sessionId}";
       } else {
         return "Failed to send message: ${smsResponse['message']}";
       }

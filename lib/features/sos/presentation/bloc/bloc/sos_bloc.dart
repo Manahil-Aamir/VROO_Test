@@ -94,10 +94,11 @@ class SosBloc extends Bloc<SosEvent, SosState> {
     try {
       final String message = await triggerSOS.call(event.uid);
 
-      if (message == "Message sent successfully") {
-        emit(SosTriggered(message));
+      if (message.startsWith("Message sent successfully")) {
+        final sessionId = message.split('(').last.replaceAll(')', '').trim();
+        emit(SosTriggered(message, sessionId));
       } else {
-        emit(SosError(message)); // Emit error if the message is not success
+        emit(SosError(message));
       }
     } catch (e) {
       emit(SosError("Failed to trigger SOS: ${e.toString()}"));

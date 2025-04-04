@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/shared/widgets/setting_button.dart';
 import '../../../../core/router/navigation.dart';
 import '../bloc/bloc/home_bloc.dart';
@@ -38,6 +39,9 @@ class SidebarWidget extends StatelessWidget {
                   text: 'SOS',
                   color: Theme.of(context).indicatorColor,
                   textColor: Theme.of(context).scaffoldBackgroundColor),
+              SizedBox(
+                height: 10.h,
+              ),
               SettingButton(
                 onTap: () {
                   Navigator.of(context).pop();

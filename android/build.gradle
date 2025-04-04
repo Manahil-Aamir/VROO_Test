@@ -1,11 +1,11 @@
 buildscript {
-    ext.kotlin_version = '2.1.0'
+    ext.kotlin_version = '2.0.0'
     repositories {
         google()  // Must come first
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.2'
+        classpath 'com.android.tools.build:gradle:8.2.2'
         classpath 'com.google.gms:google-services:4.4.1'  // Google Services plugin
     }
 }
@@ -22,7 +22,9 @@ subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 subprojects {
-    project.evaluationDependsOn(":app")
+    if (project.name != "flutter_plugin_android_lifecycle") {
+        project.evaluationDependsOn(":app")
+    }
 }
 
 tasks.register("clean", Delete) {
