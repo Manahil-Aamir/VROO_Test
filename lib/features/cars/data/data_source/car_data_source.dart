@@ -1,11 +1,13 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+
 import '../model/carr_model.dart';
 
 abstract class CarRemoteDataSource {
   Future<List<Car>> fetchCarsFromApi(String token);
   Future<void> addCarToApi(Car car, String token);
-  Future<void> deleteCarFromApi(String carId, String token);
+  Future<List<Car>> deleteCarFromApi(String carId, String token); // Modified to return String?
 }
 
 class CarRemoteDataSourceImpl implements CarRemoteDataSource {
@@ -66,7 +68,8 @@ class CarRemoteDataSourceImpl implements CarRemoteDataSource {
   }
 
   @override
-  Future<void> deleteCarFromApi(String carId, String token) async {
+  Future<List<Car>> deleteCarFromApi(String carId, String token) async {
+    print("Deleting car with ID: $carId");
     try {
       final response = await client.delete(
         Uri.parse('$baseUrl/$carId'),
@@ -79,12 +82,15 @@ class CarRemoteDataSourceImpl implements CarRemoteDataSource {
       print("Delete response status: ${response.statusCode}");
       print("Delete response body: ${response.body}");
       
-      if (response.statusCode != 200 && response.statusCode != 204) {
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        final Map<String, dynamic> decodedJson = json.decode(response.body);
+        final List<dynamic> carsJson = decodedJson['data']['cars']; 
+        return carsJson.map((car) => Car.fromJson(car)).toList();
+      } else {
         throw Exception("Failed to delete car: ${response.statusCode}");
       }
     } catch (e) {
       throw Exception("Error deleting car: $e");
     }
   }
-
 }
