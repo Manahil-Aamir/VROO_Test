@@ -147,12 +147,8 @@ class SosDataSourceImpl implements SosDataSource {
       }
 
       // Simulated SMS response
-      final Map<String, dynamic> smsResponse = {
-        'success': true,
-        'message': 'SOS sent successfully'
-      };
-
-      //await _smsService.sendSosMessage(contacts, message);
+      final Map<String, dynamic> smsResponse =
+          await _smsService.sendSosMessage(contacts, message);
       if (smsResponse['success'] == true) {
         print("Message sent successfully, starting tracking...");
 
