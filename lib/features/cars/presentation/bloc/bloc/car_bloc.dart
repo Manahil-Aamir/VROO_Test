@@ -18,7 +18,11 @@ class CarBloc extends Bloc<CarEvent, CarState> {
     emit(CarLoading());
     try {
       final cars = await getCarsUseCase.execute();
-      emit(CarLoaded(cars));
+      if (cars.isEmpty) {
+        emit(CarEmpty());
+      } else {
+        emit(CarLoaded(cars));
+      }
     } catch (e) {
       emit(CarError(e.toString()));
     }
@@ -34,11 +38,16 @@ class CarBloc extends Bloc<CarEvent, CarState> {
     }
   }
 
-  void _onDeleteCar(DeleteCar event, Emitter<CarState> emit) async {
+  Future<void> _onDeleteCar(DeleteCar event, Emitter<CarState> emit) async {
+    emit(CarLoading());
     try {
-      await deleteCarUseCase.execute(event.carId);
-      final cars = await getCarsUseCase.execute();
-      emit(CarLoaded(cars));
+      final cars = await deleteCarUseCase.execute(event.carId);
+      // final cars = await getCarsUseCase.execute();
+        if (cars.isEmpty) {
+        emit(CarEmpty());
+      } else {
+        emit(CarLoaded(cars));
+      }
     } catch (e) {
       emit(CarError(e.toString()));
     }

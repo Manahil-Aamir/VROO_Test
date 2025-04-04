@@ -23,3 +23,5 @@ class CarAdded extends CarState {
 
   CarAdded(this.cars);
 }
+
+class CarEmpty extends CarState {}

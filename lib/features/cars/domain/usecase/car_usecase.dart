@@ -44,7 +44,8 @@ class DeleteCarUseCase {
 
   DeleteCarUseCase(this.repository);
 
-  Future<void> execute(String carId) async {
-    await repository.deleteCar(carId);
+  Future<List<CarEntity>> execute(String carId) async {
+    final cars = await repository.deleteCar(carId);
+    return cars.map((car) => car.toEntity()).toList();
   }
 }
