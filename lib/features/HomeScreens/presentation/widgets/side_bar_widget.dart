@@ -12,7 +12,6 @@ class SidebarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get screen size for responsive design
-    final screenWidth = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
 
     return BlocBuilder<RoleBloc, RoleState>(

@@ -29,7 +29,7 @@ class ApprovedRidesTab extends StatelessWidget {
           print('Approved rides loaded: ${state.rides.length} rides found.');
           if (state.rides.isEmpty) {
             print('No approved rides found.');
-            return const Center(child: Text('No pending requests.'));
+            return const Center(child: Text('No approved requests.'));
           }
           return ListView.builder(
             itemCount: state.rides.length,

@@ -45,8 +45,8 @@ class RideRequestModel extends RideRequest {
         "numberPlate": car.numberPlate,
         "mileage": car.mileage,
         "isVerified": car.isVerified,
+        "carId": car.carId,
       },
-      "coords": coords,
       "source": source,
       "destination": destination,
       "preferences": {
@@ -60,6 +60,7 @@ class RideRequestModel extends RideRequest {
       "date": date, // Date only
       "fare": fare,
       "paymentMethod": paymentMethod,
+      "coords": coords,
     };
   }
 }
