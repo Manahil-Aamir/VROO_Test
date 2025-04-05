@@ -3,8 +3,8 @@ class ApprovedRidesEntity {
   final String status;
   final int fare;
   final String rideRequestId;
-  final Location source;
-  final Location destination;
+  final String source;          // Changed from Location to String
+  final String destination;     // Changed from Location to String
   final DateTime date;
   final TimeRange pickupTimeRange;
   final DateTime maxArrivalTime;
@@ -19,20 +19,6 @@ class ApprovedRidesEntity {
     required this.date,
     required this.pickupTimeRange,
     required this.maxArrivalTime,
-  });
-}
-
-class Location {
-  final String address;
-  final String cellId;
-  final List<double> coords;
-  final String placeId;
-
-  Location({
-    required this.address,
-    required this.cellId,
-    required this.coords,
-    required this.placeId,
   });
 }
 

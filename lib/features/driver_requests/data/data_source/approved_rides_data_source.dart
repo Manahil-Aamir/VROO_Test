@@ -5,7 +5,7 @@ import '../../../../core/utils/constant/api_constants.dart';
 import '../model/approved_rides_model.dart';
 
 abstract class ApprovedRidesDataSource {
-  Future<List<ApprovedRidesModel>> getApprovedRides(String driverId, String token);
+  Future<List<ApprovedRidesModel>> getApprovedRides(String rideId, String token);
 }
 
 class ApprovedRidesRemoteDataSource implements ApprovedRidesDataSource {
@@ -33,18 +33,21 @@ class ApprovedRidesRemoteDataSource implements ApprovedRidesDataSource {
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
 
-        // Print the full response for debugging
+        // Debug full API response
         print('Full API response: $jsonResponse');
 
         if (jsonResponse['data'] is List) {
           final List<dynamic> data = jsonResponse['data'];
 
-          // Print the first item to see its structure
-          if (data.isNotEmpty) {
-            print('First ride detail: ${data[0]}');
+          // Flatten passengers from each wrapper
+          List<ApprovedRidesModel> allPassengers = [];
+
+          for (var item in data) {
+            final wrapper = ApprovedRidesWrapperModel.fromJson(item);
+            allPassengers.addAll(wrapper.passengers);
           }
 
-          return data.map((json) => ApprovedRidesModel.fromJson(json)).toList();
+          return allPassengers;
         } else {
           throw Exception('Unexpected data format: ${jsonResponse['data']}');
         }

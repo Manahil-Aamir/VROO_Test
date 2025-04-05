@@ -1,12 +1,35 @@
 import '../../domain/entity/approved_rides.dart';
 
+class ApprovedRidesWrapperModel {
+  final int numOfSeats;
+  final int passengersLength;
+  final List<ApprovedRidesModel> passengers;
+
+  ApprovedRidesWrapperModel({
+    required this.numOfSeats,
+    required this.passengersLength,
+    required this.passengers,
+  });
+
+  factory ApprovedRidesWrapperModel.fromJson(Map<String, dynamic> json) {
+    return ApprovedRidesWrapperModel(
+      numOfSeats: json['numOfSeats'] ?? 0,
+      passengersLength: json['passengersLength'] ?? 0,
+      passengers: (json['passengers'] as List<dynamic>?)
+              ?.map((p) => ApprovedRidesModel.fromJson(p))
+              .toList() ??
+          [],
+    );
+  }
+}
+
 class ApprovedRidesModel {
   final String riderId;
   final String status;
   final int fare;
   final String rideRequestId;
-  final LocationModel source;
-  final LocationModel destination;
+  final String source;
+  final String destination;
   final DateTime date;
   final TimeRangeModel pickupTimeRange;
   final DateTime maxArrivalTime;
@@ -29,8 +52,8 @@ class ApprovedRidesModel {
       status: json['status'] ?? '',
       fare: json['fare']?.toInt() ?? 0,
       rideRequestId: json['rideRequestId'] ?? '',
-      source: LocationModel.fromJson(json['source'] ?? {}),
-      destination: LocationModel.fromJson(json['destination'] ?? {}),
+      source: json['source'] ?? '',
+      destination: json['destination'] ?? '',
       date: DateTime.parse(json['date']),
       pickupTimeRange: TimeRangeModel.fromJson(json['pickupTimeRange'] ?? {}),
       maxArrivalTime: DateTime.parse(json['maxArrivalTime']),
@@ -43,42 +66,13 @@ class ApprovedRidesModel {
       status: status,
       fare: fare,
       rideRequestId: rideRequestId,
-      source: source.toEntity(),
-      destination: destination.toEntity(),
+      source: source,
+      destination: destination,
       date: date,
       pickupTimeRange: pickupTimeRange.toEntity(),
       maxArrivalTime: maxArrivalTime,
     );
   }
-}
-class LocationModel {
-  final String address;
-  final String cellId;
-  final List<double> coords;
-  final String placeId;
-
-  LocationModel({
-    required this.address,
-    required this.cellId,
-    required this.coords,
-    required this.placeId,
-  });
-
-  factory LocationModel.fromJson(Map<String, dynamic> json) {
-    return LocationModel(
-      address: json['address'] ?? 'Unknown address',
-      cellId: json['cellId'] ?? '',
-      coords: List<double>.from((json['coords'] ?? []).map((x) => x.toDouble())),
-      placeId: json['placeId'] ?? '',
-    );
-  }
-
-  Location toEntity() => Location(
-        address: address,
-        cellId: cellId,
-        coords: coords,
-        placeId: placeId,
-      );
 }
 
 class TimeRangeModel {

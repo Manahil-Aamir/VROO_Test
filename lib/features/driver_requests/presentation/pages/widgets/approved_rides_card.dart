@@ -61,7 +61,7 @@ class ApprovedRideCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Ayesha',
+              ride.riderId,
               style: textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -105,9 +105,9 @@ class ApprovedRideCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildLocationText(ride.source.address, textTheme),
+                  _buildLocationText(ride.source, textTheme),
                   SizedBox(height: 4.h),
-                  _buildLocationText(ride.destination.address, textTheme),
+                  _buildLocationText(ride.destination, textTheme),
                 ],
               ),
             ),

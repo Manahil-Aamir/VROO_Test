@@ -40,7 +40,8 @@ class R3DataSource {
       body: jsonEncode(requestData),
     );
 
-    print('Response: ${response.statusCode}');
+    print('Respone body: ${response.body}');
+    print('Response status: ${response.statusCode}');
 
     if (response.statusCode == 201 || response.statusCode == 200) {
       final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
