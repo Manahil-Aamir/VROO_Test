@@ -13,11 +13,11 @@ class SidebarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get screen size for responsive design
     final screenWidth = MediaQuery.of(context).size.width;
-    
+    final theme = Theme.of(context);
+
     return BlocBuilder<RoleBloc, RoleState>(
       builder: (context, roleState) {
         return Drawer(
-          width: screenWidth * 0.75.clamp(250, 350).toDouble(),
           elevation: 5,
           child: Container(
             decoration: BoxDecoration(
@@ -48,8 +48,11 @@ class SidebarWidget extends StatelessWidget {
                         SizedBox(height: 10.h),
                         Text(
                           '${roleState.role} Menu',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                color: theme.scaffoldBackgroundColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20.sp,
                               ),
@@ -134,10 +137,14 @@ class SidebarWidget extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: TextStyle(
-          fontSize: 16.sp,
-          fontWeight: FontWeight.w500,
-        ),
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).primaryColorDark,
+            ),
+      ),
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        color: Theme.of(context).primaryColorDark,
+        size: 16.r,
       ),
       onTap: onTap,
       dense: true,

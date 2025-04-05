@@ -4,17 +4,19 @@ import '../model/user_profile_model.dart.dart';
 
 abstract class UserProfileRemoteDataSource {
   Future<UserProfileModel> getUserProfile(String token);
-  Future<UserProfileModel> updateUserProfile({String? name, String? phoneNumber, required String token});
+  Future<UserProfileModel> updateUserProfile(
+      {String? name, String? phoneNumber, required String token});
 }
 
 class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   final http.Client client;
-  final String baseUrl = "http://10.0.2.2:8080/users/profile";
+  final String baseUrl = "http://10.0.2.2:3000/users/profile";
 
   UserProfileRemoteDataSourceImpl({required this.client});
 
   @override
   Future<UserProfileModel> getUserProfile(String token) async {
+    print('Token: $token');
     final response = await client.get(
       Uri.parse(baseUrl),
       headers: {
@@ -28,7 +30,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      final userData = jsonData['data']; 
+      final userData = jsonData['data'];
       return UserProfileModel.fromJson(userData);
     } else {
       throw Exception('Failed to load user profile');
@@ -36,10 +38,11 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   }
 
   @override
-  Future<UserProfileModel> updateUserProfile({String? name, String? phoneNumber, required String token}) async {
+  Future<UserProfileModel> updateUserProfile(
+      {String? name, String? phoneNumber, required String token}) async {
     print('[Profile] New name: $name');
     print('[Profile] New phone number: $phoneNumber');
-    
+
     final response = await client.patch(
       Uri.parse(baseUrl),
       headers: {
@@ -57,7 +60,7 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      final userData = jsonData['data']; 
+      final userData = jsonData['data'];
       return UserProfileModel.fromJson(userData);
     } else {
       throw Exception('Failed to update user profile');

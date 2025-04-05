@@ -4,23 +4,23 @@ import '../../../../core/theme/color/color_theme.dart';
 
 class StatCards extends StatelessWidget {
   final dynamic user;
-  
+
   const StatCards({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       children: [
         Row(
           children: [
             Expanded(
               child: _buildStatCard(
-                'Driver Rating',  
+                'Driver Rating',
                 '${user.ratingsAsDriver}',
-                Icons.directions_car,
-                ThemeColors.secondaryColor,
+                Icons.star,
+                Colors.yellow,
                 theme,
               ),
             ),
@@ -67,14 +67,13 @@ class StatCards extends StatelessWidget {
   }
 
   Widget _buildStatCard(
-    String title, 
-    String value, 
-    IconData icon, 
-    Color color, 
+    String title,
+    String value,
+    IconData icon,
+    Color color,
     ThemeData theme, {
-      String? subtitle,
-    }
-  ) {
+    String? subtitle,
+  }) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -121,4 +120,3 @@ class StatCards extends StatelessWidget {
     );
   }
 }
-
