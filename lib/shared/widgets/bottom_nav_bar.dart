@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomBottomNavBar extends StatelessWidget {
   final int selectedIndex;
 
-  CustomBottomNavBar({required this.selectedIndex});
+  const CustomBottomNavBar({super.key, required this.selectedIndex});
 
   void _onItemTapped(BuildContext context, int index) {
     String route;

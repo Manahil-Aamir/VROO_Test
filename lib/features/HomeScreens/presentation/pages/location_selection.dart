@@ -13,7 +13,8 @@ class LocationSelectionScreen extends StatefulWidget {
   const LocationSelectionScreen({super.key});
 
   @override
-  _LocationSelectionScreenState createState() => _LocationSelectionScreenState();
+  _LocationSelectionScreenState createState() =>
+      _LocationSelectionScreenState();
 }
 
 class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
@@ -142,15 +143,11 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
       fromDescription: fromDescription!,
       toPlaceId: toPlaceId!,
       toDescription: toDescription!,
-  );
+    );
 
-    final route = role == 'Driver' 
-        ? '/route_display_page' 
-        : '/r1_page';
+    final route = role == 'Driver' ? '/route_display_page' : '/r1_page';
 
-    final arguments = role == 'Driver' 
-        ? args 
-        : {'location': location};;
+    final arguments = role == 'Driver' ? args : {'location': location};
 
     context.read<Navigation>().navigateTo(route, arguments: arguments);
   }

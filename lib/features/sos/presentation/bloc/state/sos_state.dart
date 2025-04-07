@@ -1,0 +1,45 @@
+import 'package:equatable/equatable.dart';
+import 'package:vroo_test/features/sos/data/models/contact_model.dart';
+
+abstract class SosState extends Equatable {
+  @override
+  List<Object> get props => [];
+}
+
+class SosInitial extends SosState {}
+
+class SosLoading extends SosState {}
+
+class SosTemp extends SosState {}
+
+// Successfully loaded contacts
+class SosLoaded extends SosState {
+  final List<ContactModel> contacts;
+
+  SosLoaded(this.contacts);
+
+  @override
+  List<Object> get props => [contacts];
+}
+
+// Successfully triggered SOS
+class SosTriggered extends SosState {
+  final String sosLink;
+  final String sessionId;
+
+  SosTriggered(this.sosLink, this.sessionId);
+
+  @override
+  List<Object> get props => [sosLink];
+}
+
+class SosError extends SosState {
+  final String message;
+  final List<ContactModel> previousContacts;
+
+  SosError(this.message, [List<ContactModel>? previousContacts])
+      : previousContacts = previousContacts ?? [];
+
+  @override
+  List<Object> get props => [message, previousContacts];
+}

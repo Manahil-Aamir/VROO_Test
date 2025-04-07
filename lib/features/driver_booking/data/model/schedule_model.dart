@@ -3,24 +3,15 @@ import '../../domain/entity/schedule_entity.dart';
 
 class ScheduleModel extends ScheduleEntity {
   const ScheduleModel({
-    required String fromDescription,
-    required String toDescription,
-    required DateTime date,
-    required TimeOfDay time,
-    required TimeOfDay maxArrivalTime,
-    required String recurrenceType,
-    List<String>? selectedDays,
-    DateTime? endDate,
-  }) : super(
-          fromDescription: fromDescription,
-          toDescription: toDescription,
-          date: date,
-          time: time,
-          maxArrivalTime: maxArrivalTime,
-          recurrenceType: recurrenceType,
-          selectedDays: selectedDays,
-          endDate: endDate,
-        );
+    required super.fromDescription,
+    required super.toDescription,
+    required super.date,
+    required super.time,
+    required super.maxArrivalTime,
+    required super.recurrenceType,
+    super.selectedDays,
+    super.endDate,
+  });
 
   factory ScheduleModel.fromMap(Map<String, dynamic> map) {
     return ScheduleModel(

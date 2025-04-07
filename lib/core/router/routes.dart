@@ -9,6 +9,8 @@ import 'package:vroo_test/features/chat/presentation/pages/chat_detail_screen.da
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import 'package:vroo_test/features/user_profile/presentation/pages/user_profile_page.dart';
+import 'package:vroo_test/features/sos/dependancy_injection/sos_di.dart';
+import 'package:vroo_test/features/sos/presentation/pages/sos_page.dart';
 import '../../features/HomeScreens/dependency_injection/home_di.dart';
 import '../../features/HomeScreens/dependency_injection/location_di.dart';
 import '../../features/HomeScreens/presentation/pages/home_screen.dart';
@@ -74,11 +76,12 @@ class Routes {
   static const String emailVerification = '/email-verification';
   static const String profile = '/profile';
   static const String home = '/home';
-  static const String location = '/location';
+  static const String location  = '/location';
   static const String chat = '/chat';
   static const String chat_detail = '/chat_detail';
   static const String user_profile = '/user_profile';
   static const String car = '/car';
+  static const String sos = '/sos';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -88,7 +91,8 @@ class Routes {
         );
       case home:
         return MaterialPageRoute(
-          builder: (_) => MultiBlocProvider( // Use MultiBlocProvider instead of MultiProvider
+          builder: (_) => MultiBlocProvider(
+            // Use MultiBlocProvider instead of MultiProvider
             providers: HomeDependencyInjection.init(),
             child: const HomeScreen(),
           ),
@@ -700,6 +704,11 @@ class Routes {
             builder: (_) => MultiProvider(
                 providers: SignInDependencyInjection.init(),
                 child: const SignInPage()));
+      case sos:
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: SosDependencyInjection.init(),
+                child: const SosScreen()));
       case chat:
         return MaterialPageRoute(
              builder: (_) => MultiBlocProvider(

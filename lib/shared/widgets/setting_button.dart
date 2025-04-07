@@ -5,12 +5,14 @@ class SettingButton extends StatelessWidget {
   final VoidCallback onTap;
   final String text;
   final Color color;
+  final Color textColor;
 
   const SettingButton({
     super.key,
     required this.onTap,
     required this.text,
     required this.color,
+    required this.textColor,
   });
 
   @override
@@ -40,7 +42,7 @@ class SettingButton extends StatelessWidget {
           child: Text(
             text,
             style: theme.textTheme.labelLarge?.copyWith(
-              color: theme.primaryColorDark,
+              color: textColor,
             ),
           ),
         ),

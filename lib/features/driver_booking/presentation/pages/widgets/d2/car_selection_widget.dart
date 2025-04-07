@@ -13,11 +13,11 @@ class CarSelectionWidget extends StatelessWidget {
   final VoidCallback onAddCarPressed;
 
   const CarSelectionWidget({
-    Key? key,
+    super.key,
     required this.selectedCarId,
     required this.onCarSelected,
     required this.onAddCarPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
