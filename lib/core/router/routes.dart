@@ -82,6 +82,7 @@ class Routes {
   static const String user_profile = '/user_profile';
   static const String car = '/car';
   static const String sos = '/sos';
+  static const String emergency_contacts= '/emergency_contacts';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {

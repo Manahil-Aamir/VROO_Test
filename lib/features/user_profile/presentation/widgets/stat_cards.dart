@@ -103,7 +103,7 @@ class StatCards extends StatelessWidget {
           Text(
             title,
             style: theme.textTheme.bodySmall?.copyWith(
-              color: ThemeColors.bodyTextColor,
+              color: ThemeColors.appBarIconsColor,
             ),
           ),
           if (subtitle != null) ...[
@@ -111,7 +111,7 @@ class StatCards extends StatelessWidget {
               subtitle,
               style: theme.textTheme.bodySmall?.copyWith(
                 fontSize: 12.sp,
-                color: ThemeColors.captionTextColor,
+                color: ThemeColors.appBarIconsColor,
               ),
             ),
           ],

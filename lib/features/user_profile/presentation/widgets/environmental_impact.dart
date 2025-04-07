@@ -57,7 +57,7 @@ class EnvironmentalImpact extends StatelessWidget {
               Text(
                 'CO₂ Saved',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: ThemeColors.bodyTextColor,
+                  color: ThemeColors.appBarIconsColor,
                 ),
               ),
             ],
@@ -87,7 +87,7 @@ class EnvironmentalImpact extends StatelessWidget {
               Text(
                 'Fuel Saved',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: ThemeColors.bodyTextColor,
+                  color: ThemeColors.appBarIconsColor,
                 ),
               ),
             ],

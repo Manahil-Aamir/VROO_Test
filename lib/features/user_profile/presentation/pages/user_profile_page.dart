@@ -27,7 +27,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    
     return Scaffold(
       backgroundColor: ThemeColors.scaffoldBackgroundColor,
       body: BlocBuilder<UserProfileBloc, UserProfileState>(

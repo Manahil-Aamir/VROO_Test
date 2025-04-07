@@ -33,7 +33,8 @@ class SidebarWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(15.r),
+                      bottomLeft: Radius.circular(20.r),
+                      bottomRight: Radius.circular(20.r),
                     ),
                   ),
                   child: Center(
@@ -47,7 +48,7 @@ class SidebarWidget extends StatelessWidget {
                         ),
                         SizedBox(height: 10.h),
                         Text(
-                          '${roleState.role} Menu',
+                          '${roleState.role}',
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall
@@ -76,7 +77,7 @@ class SidebarWidget extends StatelessWidget {
                       _buildMenuItem(
                         context,
                         icon: Icons.directions_car,
-                        title: 'My Cars',
+                        title: 'Cars',
                         onTap: () {
                           Navigator.of(context).pop();
                           Navigator.of(context).pushNamed('/car');
@@ -84,10 +85,11 @@ class SidebarWidget extends StatelessWidget {
                       ),
                       _buildMenuItem(
                         context,
-                        icon: Icons.notifications,
-                        title: 'Notifications',
+                        icon: Icons.contact_phone,
+                        title: 'Emergency Contacts',
                         onTap: () {
                           Navigator.of(context).pop();
+                          // Navigator.of(context).pushNamed('/car');
                         },
                       ),
                       _buildMenuItem(
@@ -96,24 +98,35 @@ class SidebarWidget extends StatelessWidget {
                         title: 'Settings',
                         onTap: () {
                           Navigator.of(context).pop();
+                          final homeBloc = context.read<HomeBloc>();
+                          LogoutDialog().showLogoutDialog(context, homeBloc);
+                        },
+                      ),
+                      _buildMenuItem(
+                        context,
+                        icon: Icons.logout,
+                        title: 'Logout',
+                        onTap: () {
+                          Navigator.of(context).pop();
                         },
                       ),
                       Divider(thickness: 1),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(16.r),
-                  child: SettingButton(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      final homeBloc = context.read<HomeBloc>();
-                      LogoutDialog().showLogoutDialog(context, homeBloc);
-                    },
-                    text: 'Logout',
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.all(16.r),
+                //   child: SettingButton(
+                //     onTap: () {
+                //       Navigator.of(context).pop();
+                //       final homeBloc = context.read<HomeBloc>();
+                //       LogoutDialog().showLogoutDialog(context, homeBloc);
+                //     },
+                //     text: 'Logout',
+                //     color: Theme.of(context).primaryColor,
+                //   ),
+                // ),
+                
                 SizedBox(height: 10.h),
                 SettingButton(
                   onTap: () {
@@ -139,18 +152,26 @@ class SidebarWidget extends StatelessWidget {
     return ListTile(
       leading: Icon(
         icon,
-        color: Theme.of(context).primaryColor,
+        color: title == 'Logout'
+            ? Theme.of(context).indicatorColor
+            : Theme.of(context).primaryColorDark,
         size: 24.r,
       ),
       title: Text(
         title,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).primaryColorDark,
-            ),
+        style: title == 'Logout'
+            ? Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).indicatorColor,
+              )
+            : Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).primaryColorDark,
+              ),
       ),
       trailing: Icon(
         Icons.arrow_forward_ios,
-        color: Theme.of(context).primaryColorDark,
+        color: title == 'Logout'
+            ? Theme.of(context).indicatorColor
+            : Theme.of(context).primaryColor,
         size: 16.r,
       ),
       onTap: onTap,

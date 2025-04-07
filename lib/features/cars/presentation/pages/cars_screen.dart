@@ -72,7 +72,7 @@ class _CarScreenState extends State<CarScreen> {
                   ),
                   const Spacer(), // Pushes the button to near-bottom
                   GradientButton(
-                    text: 'Add a Car',
+                    text: 'Add Car',
                     onTap: () {
                       _showAddCarModal(context);
                     },
@@ -102,7 +102,7 @@ class _CarScreenState extends State<CarScreen> {
                   padding: EdgeInsets.all(16.w),
                   child: GradientButton(
                     onTap: () => _showAddCarModal(context),
-                    text: 'Add a car',
+                    text: 'Add car',
                     icon: Icon(
                       Icons.add_circle_outline_rounded,
                       color: ThemeColors.primaryColorDark,

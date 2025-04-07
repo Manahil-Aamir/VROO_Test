@@ -25,9 +25,13 @@ class ProfileHeader extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            ThemeColors.primaryColor.withOpacity(0.8), 
-            ThemeColors.primaryColor.withOpacity(0.1)
+            ThemeColors.primaryColor, 
+            ThemeColors.primaryColor.withOpacity(0.5)
           ],
+        ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(25.r),
+          bottomRight: Radius.circular(25.r),
         ),
       ),
       child: Column(
@@ -101,12 +105,12 @@ class ProfileHeader extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.email, size: 16, color: ThemeColors.bodyTextColor),
+              Icon(Icons.email, size: 16, color: ThemeColors.appBarIconsColor),
               const SizedBox(width: 6),
               Text(
                 user.email,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: ThemeColors.bodyTextColor,
+                  color: ThemeColors.appBarIconsColor,
                 ),
               ),
             ],

@@ -34,7 +34,7 @@ class BookingConfirmationDriverScreen extends StatelessWidget {
                 onTap: () {
                   context.read<Navigation>().navigateTo('/home');
                 },
-                text: "Go to Home",
+                text: "Home",
               ),
             ),
           ],

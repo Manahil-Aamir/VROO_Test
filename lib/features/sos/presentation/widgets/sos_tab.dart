@@ -18,7 +18,6 @@ class SosTab extends StatefulWidget {
 }
 
 class _SosTabState extends State<SosTab> with SingleTickerProviderStateMixin {
-  final bool _isPressed = false;
 
   String _latestSessionId = '';
 
