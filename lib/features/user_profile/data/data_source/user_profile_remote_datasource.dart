@@ -10,13 +10,14 @@ abstract class UserProfileRemoteDataSource {
 
 class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   final http.Client client;
-  final String baseUrl = "http://10.0.2.2:3000/users/profile";
+  final String baseUrl = "http://10.0.2.2:8080/users/profile";
 
   UserProfileRemoteDataSourceImpl({required this.client});
 
   @override
   Future<UserProfileModel> getUserProfile(String token) async {
     print('Token: $token');
+    print('in getUserProfile method');
     final response = await client.get(
       Uri.parse(baseUrl),
       headers: {
