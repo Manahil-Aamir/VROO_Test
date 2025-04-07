@@ -5,7 +5,7 @@ class DeleteEmergencyContact {
 
   DeleteEmergencyContact(this.repository);
 
-  Future<bool> call(String uid, String contactId) {
-    return repository.deleteEmergencyContact(uid, contactId);
+  Future<bool> call(String uid, String contactId, String token) {
+    return repository.deleteEmergencyContact(uid, contactId, token);
   }
 }

@@ -4,37 +4,39 @@ import 'package:vroo_test/features/sos/data/models/contact_model.dart';
 import '../../../../core/services/permission_handler.dart';
 import '../../../../core/services/sms_service.dart';
 import '../models/sos_model.dart';
-import '../../../../core/utils/constant/api_constants.dart';
 import 'tracking_data_source.dart';
 
 abstract class SosDataSource {
   Future<Map<String, dynamic>> addEmergencyContact(
-      ContactModel contact, String uid);
-  Future<List<ContactModel>> getEmergencyContacts(String uid);
-  Future<bool> deleteEmergencyContact(String uid, String contactId);
-  Future<String> triggerSOS(String uid);
+      ContactModel contact, String token);
+  Future<List<ContactModel>> getEmergencyContacts(String token);
+  Future<bool> deleteEmergencyContact(String contactId, String token);
+  Future<String> triggerSOS(String token);
 }
 
 class SosDataSourceImpl implements SosDataSource {
-  static const String baseUrl = "${ApiConstants.baseUrl}emergency";
+  static const String baseUrl = "http://10.0.2.2:3000/emergency";
   final SmsService _smsService = SmsService();
   final PermissionService _permissionService = PermissionService();
 
   @override
   Future<Map<String, dynamic>> addEmergencyContact(
-      ContactModel contact, String uid) async {
+      ContactModel contact, String token) async {
     final response = await http.post(
       Uri.parse('$baseUrl/addEmergencyContact'),
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
       body: jsonEncode({
         "name": contact.name,
         "phoneNumber": contact.number,
-        "uid": uid,
       }),
     );
-    print(response.body);
 
+    print(response.body);
     final data = jsonDecode(response.body);
+
     if (data['success']) {
       print("Successfully added emergency contact.");
     } else {
@@ -43,6 +45,7 @@ class SosDataSourceImpl implements SosDataSource {
         print("Error: ${data['error']}");
       }
     }
+
     return {
       "message": data['message'],
       "success": data['success'],
@@ -51,17 +54,18 @@ class SosDataSourceImpl implements SosDataSource {
   }
 
   @override
-  Future<List<ContactModel>> getEmergencyContacts(String uid) async {
-    print('getting contacts datasource');
-    //print("Sending UID: $uid");
+  Future<List<ContactModel>> getEmergencyContacts(String token) async {
+    print('Fetching emergency contacts...');
 
     final response = await http.get(
-      Uri.parse('$baseUrl/getEmergencyContacts?uid=$uid'),
-      headers: {"Content-Type": "application/json"},
+      Uri.parse('$baseUrl/getEmergencyContacts'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
     );
 
     print("Response Status Code: ${response.statusCode}");
-    print("Response Headers: ${response.headers}");
     print("Response Body: ${response.body}");
 
     if (!response.headers["content-type"]!.contains("application/json")) {
@@ -77,8 +81,6 @@ class SosDataSourceImpl implements SosDataSource {
       return [];
     }
 
-    print("Parsed Data: $data");
-
     if (data['success']) {
       print("Successfully retrieved emergency contacts.");
       return (data['data']['emergencyContacts'] as List)
@@ -91,26 +93,31 @@ class SosDataSourceImpl implements SosDataSource {
   }
 
   @override
-  Future<bool> deleteEmergencyContact(String uid, String contactId) async {
+  Future<bool> deleteEmergencyContact(String contactId, String token) async {
+    print(' HI I AM THE TOKEN: $token');
     final response = await http.post(
       Uri.parse('$baseUrl/deleteEmergencyContact'),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"uid": uid, "contactId": contactId}),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+      body: jsonEncode({"contactId": contactId}),
     );
-    print('delete response');
-    print(response.body);
 
+    print('Delete response: ${response.body}');
     final data = jsonDecode(response.body);
+
     if (data['success']) {
       print("Successfully deleted emergency contact.");
     } else {
       print("Failed to delete emergency contact.");
     }
+
     return data['success'];
   }
 
   @override
-  Future<String> triggerSOS(String uid) async {
+  Future<String> triggerSOS(String token) async {
     bool smsPermissionGranted = await _permissionService.requestSmsPermission();
     if (!smsPermissionGranted) {
       return "SMS permission denied";
@@ -118,8 +125,11 @@ class SosDataSourceImpl implements SosDataSource {
 
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/triggerSOS?uid=$uid'),
-        headers: {"Content-Type": "application/json"},
+        Uri.parse('$baseUrl/triggerSOS'),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
@@ -133,14 +143,12 @@ class SosDataSourceImpl implements SosDataSource {
       }
 
       final SosModel sosData = SosModel.fromMap(data['data']);
-
       String message =
           "SOS Triggered!\nSession ID: ${sosData.sessionId}\nLink: ${sosData.sosLink}";
       print(message);
       print(sosData.emergencyContacts);
 
       List<ContactModel> contacts = sosData.emergencyContacts;
-      print(contacts.length);
 
       if (contacts.isEmpty) {
         return "No emergency contacts found.";

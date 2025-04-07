@@ -10,22 +10,23 @@ class SosRepositoryImpl implements SosRepository {
 
   @override
   Future<Map<String, dynamic>> addEmergencyContact(
-      ContactModel contact, String uid) {
-    return remoteDataSource.addEmergencyContact(contact, uid);
+      ContactModel contact, String uid, String token) {
+    return remoteDataSource.addEmergencyContact(contact, token);
   }
 
   @override
-  Future<List<ContactModel>> getEmergencyContacts(String uid) {
-    return remoteDataSource.getEmergencyContacts(uid);
+  Future<List<ContactModel>> getEmergencyContacts(String uid, String token) {
+    return remoteDataSource.getEmergencyContacts(token);
   }
 
   @override
-  Future<bool> deleteEmergencyContact(String uid, String contactId) {
-    return remoteDataSource.deleteEmergencyContact(uid, contactId);
+  Future<bool> deleteEmergencyContact(
+      String uid, String contactId, String token) {
+    return remoteDataSource.deleteEmergencyContact(contactId, token);
   }
 
   @override
-  Future<String> triggerSOS(String uid) {
-    return remoteDataSource.triggerSOS(uid);
+  Future<String> triggerSOS(String uid, String token) {
+    return remoteDataSource.triggerSOS(token);
   }
 }
