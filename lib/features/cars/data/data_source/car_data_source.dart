@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../../../../core/utils/constant/api_constants.dart';
 import '../model/carr_model.dart';
 
 abstract class CarRemoteDataSource {
@@ -12,8 +13,9 @@ abstract class CarRemoteDataSource {
 
 class CarRemoteDataSourceImpl implements CarRemoteDataSource {
   final http.Client client;
-  final String baseUrl = "http://10.0.2.2:8080/users/cars";
-
+  // final String baseUrl = "http://10.0.2.2:8080/users/cars";
+  final String baseUrl = "${ApiConstants.baseUrl}users/cars";
+  
   CarRemoteDataSourceImpl(this.client);
 
   @override

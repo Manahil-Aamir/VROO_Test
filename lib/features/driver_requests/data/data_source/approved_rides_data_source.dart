@@ -19,7 +19,8 @@ class ApprovedRidesRemoteDataSource implements ApprovedRidesDataSource {
       print('Fetching approved ride details for ride ID: $rideId');
       final response = await client.get(
         Uri.parse(
-          'http://10.0.2.2:8080/driver/approved-requests/$rideId',
+          // 'http://10.0.2.2:8080/driver/approved-requests/$rideId',
+          '${ApiConstants.baseUrl}driver/approved-requests/$rideId',
         ),
         headers: {
           'Authorization': 'Bearer $token',

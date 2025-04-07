@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../../../core/utils/constant/api_constants.dart';
 import '../model/user_profile_model.dart.dart';
 
 abstract class UserProfileRemoteDataSource {
@@ -10,7 +11,8 @@ abstract class UserProfileRemoteDataSource {
 
 class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   final http.Client client;
-  final String baseUrl = "http://10.0.2.2:3000/users/profile";
+  // final String baseUrl = "http://10.0.2.2:3000/users/profile";
+  final String baseUrl = "${ApiConstants.baseUrl}users/profile";
 
   UserProfileRemoteDataSourceImpl({required this.client});
 
