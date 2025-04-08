@@ -14,7 +14,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return PreferredSize(
-      preferredSize: Size.fromHeight(120.h),
+      preferredSize: Size.fromHeight(105.h),
       child: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -76,5 +76,5 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(120.h); // Responsive height
+  Size get preferredSize => Size.fromHeight(105.h); // Responsive height
 }

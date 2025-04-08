@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'input_field.dart';
 
+import 'package:flutter/material.dart';
 import 'input_field.dart';
 
 class CustomDatePicker extends StatelessWidget {
@@ -18,10 +20,12 @@ class CustomDatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('i am here');
+    final theme = Theme.of(context);
     return InputField(
       labelText: labelText,
       readOnly: true,
-      icon: Icons.calendar_today,
+      suffixIcon: Icon(Icons.calendar_today),
       controller: TextEditingController(
         text: selectedDate == null
             ? ''
@@ -33,9 +37,11 @@ class CustomDatePicker extends StatelessWidget {
           initialDate: DateTime.now(),
           firstDate: DateTime.now(),
           lastDate: DateTime(2100),
+          initialEntryMode:
+              DatePickerEntryMode.calendar, // Calendar mode by default
           builder: (BuildContext context, Widget? child) {
             return Theme(
-              data: Theme.of(context).copyWith(
+              data: theme.copyWith(
                 colorScheme: ColorScheme.light(
                   primary: const Color(0xFFEC8825),
                   onPrimary: Colors.white,
@@ -44,6 +50,19 @@ class CustomDatePicker extends StatelessWidget {
                 textButtonTheme: TextButtonThemeData(
                   style: TextButton.styleFrom(
                     foregroundColor: const Color(0xFFEC8825),
+                    textStyle:
+                        theme.textTheme.bodyLarge, // Ensuring proper text style
+                  ),
+                ),
+                dialogTheme: DialogTheme(
+                  titleTextStyle: theme.textTheme.displayMedium?.copyWith(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: theme.primaryColor,
+                  ),
+                  contentTextStyle: theme.textTheme.bodyLarge?.copyWith(
+                    fontSize: 18,
+                    color: theme.primaryColorDark,
                   ),
                 ),
               ),
@@ -51,6 +70,7 @@ class CustomDatePicker extends StatelessWidget {
             );
           },
         );
+
         if (pickedDate != null) {
           onDateSelected(pickedDate);
         }
