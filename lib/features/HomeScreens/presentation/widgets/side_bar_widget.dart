@@ -48,7 +48,7 @@ class SidebarWidget extends StatelessWidget {
                         ),
                         SizedBox(height: 10.h),
                         Text(
-                          '${roleState.role}',
+                          roleState.role,
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall
@@ -74,6 +74,10 @@ class SidebarWidget extends StatelessWidget {
                           Navigator.of(context).pop();
                         },
                       ),
+                      Divider(
+                        thickness: 1,
+                        color: theme.primaryColorLight,
+                      ),
                       _buildMenuItem(
                         context,
                         icon: Icons.directions_car,
@@ -83,14 +87,24 @@ class SidebarWidget extends StatelessWidget {
                           Navigator.of(context).pushNamed('/car');
                         },
                       ),
+                      Divider(
+                        thickness: 1,
+                        color: theme.primaryColorLight,
+                      ),
                       _buildMenuItem(
                         context,
                         icon: Icons.contact_phone,
                         title: 'Emergency Contacts',
                         onTap: () {
                           Navigator.of(context).pop();
-                          // Navigator.of(context).pushNamed('/car');
+                          context
+                              .read<Navigation>()
+                              .navigateTo('/emergency_contacts');
                         },
+                      ),
+                      Divider(
+                        thickness: 1,
+                        color: theme.primaryColorLight,
                       ),
                       _buildMenuItem(
                         context,
@@ -102,15 +116,24 @@ class SidebarWidget extends StatelessWidget {
                           LogoutDialog().showLogoutDialog(context, homeBloc);
                         },
                       ),
+                      Divider(
+                        thickness: 1,
+                        color: theme.primaryColorLight,
+                      ),
                       _buildMenuItem(
                         context,
                         icon: Icons.logout,
                         title: 'Logout',
                         onTap: () {
                           Navigator.of(context).pop();
+                          final homeBloc = context.read<HomeBloc>();
+                          LogoutDialog().showLogoutDialog(context, homeBloc);
                         },
                       ),
-                      Divider(thickness: 1),
+                      Divider(
+                        thickness: 1,
+                        color: theme.primaryColorLight,
+                      ),
                     ],
                   ),
                 ),
@@ -126,7 +149,7 @@ class SidebarWidget extends StatelessWidget {
                 //     color: Theme.of(context).primaryColor,
                 //   ),
                 // ),
-                
+
                 SizedBox(height: 10.h),
                 SettingButton(
                   onTap: () {
@@ -161,11 +184,11 @@ class SidebarWidget extends StatelessWidget {
         title,
         style: title == 'Logout'
             ? Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).indicatorColor,
-              )
+                  color: Theme.of(context).indicatorColor,
+                )
             : Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).primaryColorDark,
-              ),
+                  color: Theme.of(context).primaryColorDark,
+                ),
       ),
       trailing: Icon(
         Icons.arrow_forward_ios,

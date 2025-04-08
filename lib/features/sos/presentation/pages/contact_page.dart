@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/features/sos/presentation/widgets/add_dialog.dart';
 import 'package:vroo_test/features/sos/presentation/widgets/contact_list.dart';
+import 'package:vroo_test/shared/widgets/Appbar.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../bloc/event/sos_event.dart';
@@ -10,8 +11,7 @@ import '../bloc/state/sos_state.dart';
 import '../bloc/bloc/sos_bloc.dart';
 
 class ContactScreen extends StatefulWidget {
-  final String userId;
-  const ContactScreen({super.key, required this.userId});
+  const ContactScreen({super.key});
 
   @override
   _ContactScreenState createState() => _ContactScreenState();
@@ -24,7 +24,7 @@ class _ContactScreenState extends State<ContactScreen> {
     // Use Future.microtask so the bloc is found in the widget tree.
     Future.microtask(() {
       if (mounted) {
-        context.read<SosBloc>().add(FetchContacts(widget.userId));
+        context.read<SosBloc>().add(FetchContacts());
       }
     });
   }
@@ -43,17 +43,12 @@ class _ContactScreenState extends State<ContactScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
+      appBar: appBar(heading: 'Emergency Contacts'),
       body: Padding(
         padding: EdgeInsets.all(30.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Text("Emergency Contacts",
-                  style: theme.textTheme.displayLarge?.copyWith(
-                    color: ThemeColors.primaryColorDark,
-                  )),
-            ),
             SizedBox(height: 10.h),
             Expanded(
               child: BlocConsumer<SosBloc, SosState>(
@@ -69,13 +64,12 @@ class _ContactScreenState extends State<ContactScreen> {
                   if (state is SosLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is SosLoaded) {
-                    return ContactList(
-                        contacts: state.contacts, userId: widget.userId);
+                    return ContactList(contacts: state.contacts);
                   } else if (state is SosError) {
                     // Preserve previous contacts & show the Snackbar message
                     return ContactList(
-                        contacts: state.previousContacts,
-                        userId: widget.userId);
+                      contacts: state.previousContacts,
+                    );
                   }
                   return const Center(child: Text("No contacts added yet."));
                 },
@@ -88,7 +82,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   builder: (dialogContext) {
                     return BlocProvider.value(
                       value: context.read<SosBloc>(), // Provide existing bloc
-                      child: AddContactDialog(userId: widget.userId),
+                      child: AddContactDialog(),
                     );
                   },
                 );

@@ -19,13 +19,13 @@ class DialogButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 40.h,
-        width: 75.w,
+        height: 45.h,
+        width: 80.w,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
               color,
-              color.withOpacity(0.5),
+              color.withOpacity(0.7),
             ],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,

@@ -30,7 +30,7 @@ abstract class ThemeColors {
 
   //TEXT
   static const bodyTextColor = Color(0xFF979899);
-  static const headlinesTextColor = Color(0xFF06161C);
+  static const headlinesTextColor = Color(0xFF434143);
   static const headlinesTextColorTwo = Color(0xFF617986);
   static const captionTextColor = Colors.grey;
   static const hintTextColor = Color(0xFF979899);

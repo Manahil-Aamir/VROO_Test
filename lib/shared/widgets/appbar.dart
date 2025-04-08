@@ -26,7 +26,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
               gradient: LinearGradient(
                 colors: [
                   theme.primaryColor,
-                  theme.primaryColor.withOpacity(0.5),
+                  theme.primaryColor.withOpacity(0.7),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -34,7 +34,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             child: SafeArea(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
                 child: Row(
                   children: [
                     // Back button
@@ -52,7 +52,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                     ),
                     // Spacer to push the heading to the center
-                    SizedBox(width: 60.w),
+                    SizedBox(width: 10.w),
                     // Heading
                     Align(
                       alignment: Alignment.center,

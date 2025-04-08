@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../core/theme/font/font_theme.dart';
+import '../../../../shared/widgets/dialog_button.dart';
 import '../bloc/role_bloc.dart';
 
 class TopBarWidget extends StatelessWidget {
@@ -84,44 +85,60 @@ class TopBarWidget extends StatelessWidget {
 
   void _showRoleSwitchDialog(BuildContext context, String currentRole) {
     final roleBloc = BlocProvider.of<RoleBloc>(context);
+    final theme = Theme.of(context);
+
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(
-          'Switch Role',
-          style: Theme.of(context).textTheme.displayLarge,
-          textAlign: TextAlign.center,
+      builder: (dialogContext) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
         ),
-        content: Text(
-          'Do you want to switch role?',
-          style: Theme.of(context).textTheme.bodyMedium,
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        child: Padding(
+          padding: EdgeInsets.all(20.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'No',
-                  style: TextStyle(color: Theme.of(context).primaryColor),
+              Text(
+                'Switch Role',
+                style: theme.textTheme.displayMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.primaryColorDark,
                 ),
+                textAlign: TextAlign.center,
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  roleBloc.add(SwitchRoleEvent());
-                  // context.read<RoleBloc>().add(SwitchRoleEvent());
-                },
-                child: Text(
-                  'Yes',
-                  style: TextStyle(color: Theme.of(context).primaryColor),
+              SizedBox(height: 12.h),
+              Text(
+                'Do you want to switch role?',
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.primaryColorDark,
+                  fontWeight: FontWeight.w700,
                 ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  DialogButton(
+                    text: 'No',
+                    color: theme.primaryColorDark,
+                    onTap: () => Navigator.pop(dialogContext),
+                  ),
+                  DialogButton(
+                    text: 'Yes',
+                    color: theme.primaryColor,
+                    onTap: () {
+                      Navigator.pop(dialogContext);
+                      roleBloc.add(SwitchRoleEvent());
+                    },
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

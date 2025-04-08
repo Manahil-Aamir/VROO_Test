@@ -6,8 +6,8 @@ class GetEmergencyContacts {
 
   GetEmergencyContacts(this.repository);
 
-  Future<List<ContactModel>> call(String uid, String token) {
+  Future<List<ContactModel>> call(String token) {
     print('GetEmergencyContacts called');
-    return repository.getEmergencyContacts(uid, token);
+    return repository.getEmergencyContacts(token);
   }
 }

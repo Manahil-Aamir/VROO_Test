@@ -10,9 +10,7 @@ import '../bloc/event/sos_event.dart';
 import '../bloc/state/sos_state.dart';
 
 class AddContactDialog extends StatefulWidget {
-  final String userId;
-
-  const AddContactDialog({super.key, required this.userId});
+  const AddContactDialog({super.key});
 
   @override
   _AddContactDialogState createState() => _AddContactDialogState();
@@ -36,7 +34,7 @@ class _AddContactDialogState extends State<AddContactDialog> {
         name: nameController.text,
         number: numberController.text,
       );
-      context.read<SosBloc>().add(AddContact(newContact, widget.userId));
+      context.read<SosBloc>().add(AddContact(newContact));
     }
   }
 

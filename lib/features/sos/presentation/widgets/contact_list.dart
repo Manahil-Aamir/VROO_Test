@@ -9,12 +9,10 @@ import '../bloc/event/sos_event.dart';
 
 class ContactList extends StatelessWidget {
   final List<ContactModel> contacts;
-  final String userId;
 
   const ContactList({
     super.key,
     required this.contacts,
-    required this.userId,
   });
 
   @override
@@ -63,7 +61,6 @@ class ContactList extends StatelessWidget {
                           onConfirm: () {
                             Navigator.pop(dialogContext);
                             context.read<SosBloc>().add(DeleteContact(
-                                  userId,
                                   contact.id!,
                                 ));
                           },

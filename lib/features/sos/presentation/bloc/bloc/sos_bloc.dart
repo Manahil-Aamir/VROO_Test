@@ -41,7 +41,7 @@ class SosBloc extends Bloc<SosEvent, SosState> {
         return;
       }
 
-      final contacts = await getEmergencyContacts.call(event.uid, token);
+      final contacts = await getEmergencyContacts.call(token);
       final contactsString =
           contacts.map((contact) => contact.toString()).join(', ');
       print('Contacts: $contactsString');
@@ -60,11 +60,10 @@ class SosBloc extends Bloc<SosEvent, SosState> {
         return;
       }
 
-      final result =
-          await addEmergencyContact.call(event.contact, event.uid, token);
+      final result = await addEmergencyContact.call(event.contact, token);
 
       if (result['success'] == true) {
-        add(FetchContacts(event.uid));
+        add(FetchContacts());
       } else {
         print('Failed to add contact');
         String errorMessage = result['error'] != null &&
@@ -101,11 +100,10 @@ class SosBloc extends Bloc<SosEvent, SosState> {
         return;
       }
 
-      final success =
-          await deleteEmergencyContact.call(event.uid, event.contactId, token);
+      final success = await deleteEmergencyContact.call(event.contactId, token);
       print('Contact Id: ${event.contactId}');
       if (success) {
-        add(FetchContacts(event.uid));
+        add(FetchContacts());
       } else {
         emit(SosError("Failed to delete contact"));
       }
@@ -124,7 +122,7 @@ class SosBloc extends Bloc<SosEvent, SosState> {
         return;
       }
 
-      final String message = await triggerSOS.call(event.uid, token);
+      final String message = await triggerSOS.call(token);
 
       if (message.startsWith("Message sent successfully")) {
         final sessionId = message.split('(').last.replaceAll(')', '').trim();

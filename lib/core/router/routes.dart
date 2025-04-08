@@ -50,6 +50,7 @@ import '../../features/authentication/dependency_injection/create_user_di.dart';
 import '../../features/authentication/presentation/pages/email_verification_screen.dart';
 import '../../features/authentication/presentation/pages/create_user_screen.dart';
 import '../../features/authentication/presentation/pages/signup_screen.dart';
+import '../../features/sos/presentation/pages/contact_page.dart';
 import '../../features/user_profile/dependency_injection/user_profile_di.dart';
 import '../../splash.dart';
 
@@ -76,13 +77,13 @@ class Routes {
   static const String emailVerification = '/email-verification';
   static const String profile = '/profile';
   static const String home = '/home';
-  static const String location  = '/location';
+  static const String location = '/location';
   static const String chat = '/chat';
   static const String chat_detail = '/chat_detail';
   static const String user_profile = '/user_profile';
   static const String car = '/car';
   static const String sos = '/sos';
-  static const String emergency_contacts= '/emergency_contacts';
+  static const String emergency_contacts = '/emergency_contacts';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -107,8 +108,10 @@ class Routes {
         );
       case routeDisplayPage:
         final args = settings.arguments as Map<String, dynamic>? ?? {};
-        final toPlaceID = args['toPlaceId'] as String? ?? 'ChIJ9SEZ0Lw4sz4RhAdTxTaH2V8';
-        final fromPlaceID = args['fromPlaceId'] as String? ?? 'ChIJOyUu0UQ-sz4RzFgD4rLU7PI';
+        final toPlaceID =
+            args['toPlaceId'] as String? ?? 'ChIJ9SEZ0Lw4sz4RhAdTxTaH2V8';
+        final fromPlaceID =
+            args['fromPlaceId'] as String? ?? 'ChIJOyUu0UQ-sz4RzFgD4rLU7PI';
         final toDescription = args['toDescription'] as String? ??
             'IBA, University Rd, University Of Karachi, Karachi, Pakistan';
         final fromDescription = args['fromDescription'] as String? ??
@@ -597,8 +600,7 @@ class Routes {
             settings.arguments as String? ?? 'driver 86'; // Default to 'driver'
         return MaterialPageRoute(
           builder: (_) => MultiProvider(
-              providers: ActiveRideDi.init(), 
-              child: ActiveRidesScreen(id: id)),
+              providers: ActiveRideDi.init(), child: ActiveRidesScreen(id: id)),
         );
       case '/booking_confirm_driver':
         return MaterialPageRoute(
@@ -608,12 +610,12 @@ class Routes {
           ),
         );
       case ride_request_status:
-        final id = settings.arguments as String? ?? 
+        final id = settings.arguments as String? ??
             '6799bec18972ba4dbd99374a'; // Default ride ID
         return MaterialPageRoute(
           builder: (_) => MultiProvider(
             providers: [
-              ...PendingRideDi.init(), 
+              ...PendingRideDi.init(),
               ...ApproveRidesDi.init(),
             ],
             child: RideRequestStatusScreen(rideId: id),
@@ -710,27 +712,30 @@ class Routes {
             builder: (_) => MultiProvider(
                 providers: SosDependencyInjection.init(),
                 child: const SosScreen()));
+      case emergency_contacts:
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: SosDependencyInjection.init(),
+                child: const ContactScreen()));
       case chat:
         return MaterialPageRoute(
-             builder: (_) => MultiBlocProvider(
+            builder: (_) => MultiBlocProvider(
                 providers: ChatDependencyInjection.init(),
                 child: ChatScreen()));
       case chat_detail:
         final user = settings.arguments as ChatUser;
         return MaterialPageRoute(
-             builder: (_) => MultiBlocProvider(
+            builder: (_) => MultiBlocProvider(
                 providers: ChatDependencyInjection.init(),
                 child: ChatDetailScreen(user: user)));
       case user_profile:
         return MaterialPageRoute(
-             builder: (_) => MultiBlocProvider(
-                providers: UserProfileDi.init(),
-                child: UserProfilePage()));
+            builder: (_) => MultiBlocProvider(
+                providers: UserProfileDi.init(), child: UserProfilePage()));
       case car:
         return MaterialPageRoute(
-             builder: (_) => MultiBlocProvider(
-                providers: CarDependencyInjection.init(),
-                child: CarScreen()));
+            builder: (_) => MultiBlocProvider(
+                providers: CarDependencyInjection.init(), child: CarScreen()));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

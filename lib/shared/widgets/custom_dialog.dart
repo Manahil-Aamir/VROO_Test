@@ -48,9 +48,8 @@ class CustomDialog extends StatelessWidget {
             SizedBox(height: 12.h),
             Text(
               message,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.primaryColorDark,
-              ),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.primaryColorDark, fontWeight: FontWeight.w700),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20.h),

@@ -18,7 +18,6 @@ class SosTab extends StatefulWidget {
 }
 
 class _SosTabState extends State<SosTab> with SingleTickerProviderStateMixin {
-
   String _latestSessionId = '';
 
   @override
@@ -54,8 +53,8 @@ class _SosTabState extends State<SosTab> with SingleTickerProviderStateMixin {
             children: [
               // SOS Button
               InkResponse(
-                onTap: () => BlocProvider.of<SosBloc>(context)
-                    .add(TriggerSos(widget.uid)),
+                onTap: () =>
+                    BlocProvider.of<SosBloc>(context).add(TriggerSos()),
                 borderRadius: BorderRadius.circular(90),
                 splashColor: theme.indicatorColor.withOpacity(0.3),
                 highlightColor: theme.indicatorColor.withOpacity(0.2),

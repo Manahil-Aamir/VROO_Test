@@ -7,43 +7,27 @@ abstract class SosEvent extends Equatable {
 }
 
 // Fetch all contacts
-class FetchContacts extends SosEvent {
-  final String uid;
-
-  FetchContacts(this.uid);
-
-  @override
-  List<Object> get props => [uid];
-}
+class FetchContacts extends SosEvent {}
 
 // Add a new contact
 class AddContact extends SosEvent {
   final ContactModel contact;
-  final String uid;
 
-  AddContact(this.contact, this.uid);
+  AddContact(this.contact);
 
   @override
-  List<Object> get props => [contact, uid];
+  List<Object> get props => [contact];
 }
 
 // Delete a contact
 class DeleteContact extends SosEvent {
-  final String uid;
   final String contactId;
 
-  DeleteContact(this.uid, this.contactId);
+  DeleteContact(this.contactId);
 
   @override
-  List<Object> get props => [uid, contactId];
+  List<Object> get props => [contactId];
 }
 
 // Trigger SOS event
-class TriggerSos extends SosEvent {
-  final String uid;
-
-  TriggerSos(this.uid);
-
-  @override
-  List<Object> get props => [uid];
-}
+class TriggerSos extends SosEvent {}

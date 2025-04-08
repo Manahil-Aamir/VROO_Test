@@ -26,7 +26,7 @@ class AppBarNoIcon extends StatelessWidget implements PreferredSizeWidget {
               gradient: LinearGradient(
                 colors: [
                   theme.primaryColor,
-                  theme.primaryColor.withOpacity(0.5),
+                  theme.primaryColor.withOpacity(0.7),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,

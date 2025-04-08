@@ -55,7 +55,7 @@ class SosScreen extends StatelessWidget {
               child: TabBarView(
                 children: [
                   SosTab(uid: uid),
-                  ContactScreen(userId: uid),
+                  ContactScreen(),
                 ],
               ),
             ),
