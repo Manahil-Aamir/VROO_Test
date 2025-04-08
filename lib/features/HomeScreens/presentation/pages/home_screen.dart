@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
+import '../../../../shared/widgets/custom_dialog.dart';
 import '../bloc/bloc/home_bloc.dart';
 import '../bloc/state/home_state.dart';
 import '../widgets/location_selection_button_widget.dart';
@@ -38,18 +39,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: const SidebarWidget(),
-      body: Stack(
-        children: [
-          _buildMapContent(),
-          TopBarWidget(scaffoldKey: _scaffoldKey),
-          const LocationSelectionButtonsWidget(),
-        ],
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 0,
+    return WillPopScope(
+      onWillPop: () async {
+        bool exitApp = await _showExitDialog(context);
+        if (exitApp) {
+          SystemNavigator.pop(); // Closes the app
+        }
+        return false; // Prevents the default back action
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: const SidebarWidget(),
+        body: Stack(
+          children: [
+            _buildMapContent(),
+            TopBarWidget(scaffoldKey: _scaffoldKey),
+            const LocationSelectionButtonsWidget(),
+          ],
+        ),
+        bottomNavigationBar: CustomBottomNavBar(
+          selectedIndex: 0,
+        ),
       ),
     );
   }
@@ -67,6 +77,27 @@ class _HomeScreenState extends State<HomeScreen> {
         return const NativeGoogleMap();
       },
     );
+  }
+
+  Future<bool> _showExitDialog(BuildContext context) async {
+    return await showDialog(
+          context: context,
+          builder: (context) => CustomDialog(
+            title: "Exit App",
+            message: "Are you sure you want to exit?",
+            confirmText: "Yes",
+            cancelText: "No",
+            confirmColor: Theme.of(context).indicatorColor,
+            cancelColor: Theme.of(context).primaryColorDark,
+            onConfirm: () {
+              Navigator.of(context).pop(true);
+            },
+            onCancel: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+        ) ??
+        false;
   }
 }
 

@@ -95,7 +95,11 @@ class Routes {
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             // Use MultiBlocProvider instead of MultiProvider
-            providers: HomeDependencyInjection.init(),
+            providers: [
+              ...HomeDependencyInjection.init(),
+              ...SosDependencyInjection.init(),
+            ],
+
             child: const HomeScreen(),
           ),
         );

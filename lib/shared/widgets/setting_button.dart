@@ -23,7 +23,7 @@ class SettingButton extends StatelessWidget {
         height: 50.h,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [color.withOpacity(0.5), color],
+            colors: [color, color.withOpacity(0.7)],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
@@ -40,7 +40,7 @@ class SettingButton extends StatelessWidget {
           child: Text(
             text,
             style: theme.textTheme.labelLarge?.copyWith(
-              color: theme.primaryColorDark,
+              color: theme.scaffoldBackgroundColor,
             ),
           ),
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'input_field.dart';
 
 class CustomTimePicker extends StatelessWidget {
@@ -22,7 +21,7 @@ class CustomTimePicker extends StatelessWidget {
     return InputField(
       labelText: labelText,
       readOnly: true,
-      icon: Icons.access_time,
+      suffixIcon: const Icon(Icons.access_time),
       controller: TextEditingController(
         text: selectedTime == null
             ? ''
@@ -32,26 +31,56 @@ class CustomTimePicker extends StatelessWidget {
         TimeOfDay? pickedTime = await showTimePicker(
           context: context,
           initialTime: TimeOfDay.now(),
+          initialEntryMode: TimePickerEntryMode.input,
           builder: (BuildContext context, Widget? child) {
             return Theme(
-              data: Theme.of(context).copyWith(
-                  colorScheme: ColorScheme.light(
-                    primary: theme.primaryColor,
-                    onPrimary: theme.scaffoldBackgroundColor,
-                    onSurface: theme.primaryColorDark,
+              data: theme.copyWith(
+                colorScheme: ColorScheme.light(
+                  primary: const Color(0xFFEC8825),
+                  onPrimary: Colors.white,
+                  onSurface: const Color(0xFF434143),
+                ),
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: theme.primaryColor,
+                    textStyle: theme.textTheme.bodyLarge, // Apply text style
                   ),
-                  textButtonTheme: TextButtonThemeData(
-                    style: TextButton.styleFrom(
-                      foregroundColor: theme.primaryColor,
+                ),
+                timePickerTheme: TimePickerThemeData(
+                  dayPeriodColor: theme.primaryColor,
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  hourMinuteTextStyle: theme.textTheme.displayMedium?.copyWith(
+                    color: theme.primaryColorDark,
+                  ),
+                  dialTextStyle: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.primaryColorDark,
+                  ),
+                  helpTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.primaryColorDark,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                  ),
+                  confirmButtonStyle: TextButton.styleFrom(
+                    foregroundColor:
+                        theme.primaryColorDark, // Confirm button text color
+                    textStyle: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  timePickerTheme: TimePickerThemeData(
-                    dayPeriodColor: theme.primaryColor,
-                  )),
+                  cancelButtonStyle: TextButton.styleFrom(
+                    foregroundColor:
+                        theme.indicatorColor, // Cancel button text color
+                    textStyle: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
               child: child!,
             );
           },
         );
+
         if (pickedTime != null) {
           onTimeSelected(pickedTime);
         }
