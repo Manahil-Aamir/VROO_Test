@@ -96,11 +96,20 @@ class _SidebarWidgetState extends State<SidebarWidget> {
               child: Column(
                 children: [
                   DrawerHeader(
+                    curve: Curves.easeInQuart,
+                    margin: EdgeInsets.zero,
+                    padding: EdgeInsets.zero,
                     decoration: BoxDecoration(
-                      color: theme.primaryColor,
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(20.r),
-                        bottomRight: Radius.circular(20.r),
+                        topRight: Radius.circular(15.r),
+                      ),
+                      gradient: LinearGradient(
+                        colors: [
+                          theme.primaryColor,
+                          theme.primaryColor.withOpacity(0.7),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
                     ),
                     child: Center(
