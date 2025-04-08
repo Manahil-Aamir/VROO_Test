@@ -184,11 +184,15 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                     ),
                   ),
                   SizedBox(height: 10.h),
-                  SettingButton(
-                    onTap: toggleTracking,
-                    text: isTracking ? 'Stop Tracking' : 'SOS',
-                    color:
-                        isTracking ? theme.primaryColor : theme.indicatorColor,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 48.0),
+                    child: SettingButton(
+                      onTap: toggleTracking,
+                      text: isTracking ? 'Stop Tracking' : 'SOS',
+                      color: isTracking
+                          ? theme.primaryColor
+                          : theme.indicatorColor,
+                    ),
                   ),
                 ],
               ),
