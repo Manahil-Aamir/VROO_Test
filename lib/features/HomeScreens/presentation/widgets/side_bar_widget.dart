@@ -113,27 +113,27 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                         end: Alignment.bottomRight,
                       ),
                     ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.account_circle,
-                            color: Colors.white,
-                            size: 50.r,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InitialsCircleAvatar(
+                          initials: 'HR', // Replace with dynamic initials if needed
+                          radius: 28, // Will be scaled using .r internally
+                          showCameraIcon: false,
+                        ),
+                        SizedBox(height: 10.h),
+                        Text(
+                          roleState.role,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: theme.scaffoldBackgroundColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.sp,
                           ),
-                          SizedBox(height: 10.h),
-                          Text(
-                            roleState.role,
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              color: theme.scaffoldBackgroundColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.sp,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                  ),
                   ),
                   Expanded(
                     child: ListView(
@@ -145,7 +145,11 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                           title: 'Home',
                           onTap: () => Navigator.of(context).pop(),
                         ),
-                        Divider(thickness: 1, color: theme.primaryColorLight),
+                        Divider(
+                          thickness: 1,
+                          height: 8.h,
+                          color: theme.primaryColorLight,
+                        ),
                         _buildMenuItem(
                           context,
                           icon: Icons.directions_car,
@@ -155,7 +159,11 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                             Navigator.of(context).pushNamed('/car');
                           },
                         ),
-                        Divider(thickness: 1, color: theme.primaryColorLight),
+                        Divider(
+                          thickness: 1,
+                          height: 8.h,
+                          color: theme.primaryColorLight,
+                        ),
                         _buildMenuItem(
                           context,
                           icon: Icons.contact_phone,
@@ -167,7 +175,11 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                                 .navigateTo('/emergency_contacts');
                           },
                         ),
-                        Divider(thickness: 1, color: theme.primaryColorLight),
+                        Divider(
+                          thickness: 1,
+                          height: 8.h,
+                          color: theme.primaryColorLight,
+                        ),
                         _buildMenuItem(
                           context,
                           icon: Icons.settings,
@@ -178,7 +190,11 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                             LogoutDialog().showLogoutDialog(context, homeBloc);
                           },
                         ),
-                        Divider(thickness: 1, color: theme.primaryColorLight),
+                        Divider(
+                          thickness: 1,
+                          height: 8.h,
+                          color: theme.primaryColorLight,
+                        ),
                         _buildMenuItem(
                           context,
                           icon: Icons.logout,
@@ -189,7 +205,11 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                             LogoutDialog().showLogoutDialog(context, homeBloc);
                           },
                         ),
-                        Divider(thickness: 1, color: theme.primaryColorLight),
+                        Divider(
+                          thickness: 1,
+                          height: 8.h,
+                          color: theme.primaryColorLight,
+                        ),
                       ],
                     ),
                   ),

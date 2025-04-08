@@ -8,7 +8,6 @@ import 'package:vroo_test/shared/widgets/appbar_no_icon.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/styles/app_styles.dart';
 import '../../../../core/theme/color/color_theme.dart';
-import '../../../../shared/widgets/appbar.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../../shared/widgets/custom_dialog.dart';
 import '../../../HomeScreens/presentation/bloc/role_bloc.dart';
@@ -16,7 +15,6 @@ import '../bloc/bloc/chat_bloc.dart';
 import '../bloc/event/chat_event.dart';
 import '../bloc/state/chat_state.dart';
 import '../widgets/chat_list_item.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class ChatScreen extends StatelessWidget {
