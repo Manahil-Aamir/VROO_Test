@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,46 +13,36 @@ class ActiveRideCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme; 
+    final textTheme = Theme.of(context).textTheme;
 
     return GestureDetector(
       onTap: () {
-        print('ride id: ${ride.id}');
-        print('ride id: ${ride.status}');
         context.read<Navigation>().navigateTo(
-        '/ride_request_status',
-        arguments: ride.id.toString(),
-    );
-
+          '/ride_request_status',
+          arguments: ride.id.toString(),
+        );
       },
       child: Card(
-        margin: EdgeInsets.all(12.w),
+        elevation: 2,
+        margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(14.r),
         ),
         color: ThemeColors.primaryColorDark,
         child: Padding(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top Row with Driver Info and Date/Time
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildDriverInfo(textTheme),
-                  _buildDateTime(textTheme, ride, context),
-                ],
-              ),
-              SizedBox(height: 12.h),
-              
-              // Centered Route Information with aligned locations
-              _buildRouteInfo(textTheme, ride),
-              SizedBox(height: 16.h),
-              
-              // Car Details
-              _buildCarDetails(textTheme, ride),
+              _buildDateTimeRow(context, textTheme),
+              Divider(
+                color: ThemeColors.buttonTextColor.withOpacity(0.15),
+                height: 16.h,
+                thickness: 0.5,
+              ),              
+              _buildRouteInfo(textTheme),
+              SizedBox(height: 12.h),              
+              _buildCarDetails(textTheme),
             ],
           ),
         ),
@@ -62,139 +50,38 @@ class ActiveRideCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDriverInfo(TextTheme textTheme) {
-    final user = FirebaseAuth.instance.currentUser;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CircleAvatar(
-          radius: 28.r,
-          backgroundColor: Colors.white.withOpacity(0.2),
-          child: Icon(Icons.person, color: Colors.white, size: 32.r),
-        ),
-        SizedBox(width: 16.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              // 'Ali Ahmed 4',
-              user!.uid,
-              style: textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
-            SizedBox(height: 2.h),
-            Row(
-              children: [
-                Icon(Icons.star, color: ThemeColors.primaryColor, size: 18.r),
-                SizedBox(width: 6.w),
-                Text(
-                  '4.3',
-                  style: textTheme.bodyMedium?.copyWith(color: Colors.white),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
+  Widget _buildDateTimeRow(BuildContext context, TextTheme textTheme) {
+    // Calculate max arrival time (assuming it's 30 minutes after departure)
+    final maxArrival = TimeOfDay(
+      hour: (ride.time.hour + ((ride.time.minute + 30) ~/ 60)) % 24,
+      minute: (ride.time.minute + 30) % 60
     );
-  }
-
-  Widget _buildRouteInfo(TextTheme textTheme, ActiveRideEntity ride) {
-  return Center(
-    child: SizedBox(
-      width: 0.8.sw,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Transform.rotate(
-            angle: -math.pi / 2,
-            child: Icon(
-              Icons.u_turn_left_rounded,
-              color: ThemeColors.buttonTextColor,
-              size: 60.r, // Maintain original icon size
-            ),
-          ),
-          SizedBox(width: 4.w),
-          Expanded( // <-- Add Expanded here
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildLocationText(ride.source.address, textTheme),
-                SizedBox(height: 4.h),
-                _buildLocationText(ride.destination.address, textTheme),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-  Widget _buildLocationText(String text, TextTheme textTheme) {
-    return Text(
-      text,
-      style: textTheme.bodyMedium?.copyWith(
-        color: ThemeColors.buttonTextColor,
-        fontWeight: FontWeight.w600,
-        fontSize: 16.sp,
-      ),
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-    );
-  }
-
-  Widget _buildCarDetails(TextTheme textTheme, ActiveRideEntity ride) {
-    print('ride total seats: ${ride.totalSeats}');
-    print('passenger length: ${ride.passengers.length}');
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Icon(Icons.directions_car, color: ThemeColors.primaryColor, size: 34.r),
-        SizedBox(width: 10.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        // Date info
+        Text(
+          DateFormat('dd MMM yyyy').format(ride.date),
+          style: textTheme.bodySmall?.copyWith(
+            color: ThemeColors.buttonTextColor,
+            fontSize: 12.sp,
+          ),
+        ),
+        
+        // Time info with arrival estimate
+        Row(
           children: [
+            Icon(Icons.access_time_rounded, color: ThemeColors.primaryColor, size: 16.r),
+            SizedBox(width: 4.w),
             Text(
-              '${ride.car.company} ${ride.car.model}',
+              "${MaterialLocalizations.of(context).formatTimeOfDay(ride.time)} - "
+              "${MaterialLocalizations.of(context).formatTimeOfDay(maxArrival)}",
               style: textTheme.bodyMedium?.copyWith(
                 color: ThemeColors.buttonTextColor,
                 fontWeight: FontWeight.w500,
-                fontSize: 16.sp,
+                fontSize: 13.sp,
               ),
-            ),
-            Row(
-              children: [
-                Text(
-                  ride.car.numberPlate,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: ThemeColors.buttonTextColor,
-                    fontSize: 16.sp,
-                  ),
-                ),
-                SizedBox(width: 10.w),
-                // Seat icons using for loop
-                Row(
-                  children: [
-                    for (int i = 0; i < ride.passengers.length; i++)
-                      Icon(
-                        Icons.event_seat,
-                        color: ThemeColors.primaryColor, // Same color for all seats
-                        size: 18.r,
-                      ),
-                    for (int i = 0; i < ride.totalSeats; i++)
-                      Icon(
-                        Icons.event_seat,
-                        color: ThemeColors.backgroundColor, // Same color for all seats
-                        size: 18.r,
-                      ),
-                  ],
-                ),
-              ],
             ),
           ],
         ),
@@ -202,35 +89,170 @@ class ActiveRideCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDateTime(TextTheme textTheme, ActiveRideEntity ride, BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+  Widget _buildRouteInfo(TextTheme textTheme) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          DateFormat('dd/MM/yyyy').format(ride.date),
-          style: textTheme.bodySmall?.copyWith(
-            color: ThemeColors.buttonTextColor,
-            fontWeight: FontWeight.w500,
-            fontSize: 14.sp
+        Column(
+          children: [
+            Icon(
+              Icons.circle_outlined,
+              color: ThemeColors.primaryColor,
+              size: 16.r,
+            ),
+            Container(
+              height: 8.h, // Reduced height
+              width: 1.w,
+              color: ThemeColors.primaryColor.withOpacity(0.6),
+            ),
+            Icon(
+              Icons.location_on,
+              color: ThemeColors.primaryColor,
+              size: 16.r,
+            ),
+          ],
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Source location in single line
+              Text(
+                ride.source.address,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: ThemeColors.buttonTextColor,
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 6.h), // Reduced space between locations
+              
+              // Destination in single line - now matching source style
+              Text(
+                ride.destination.address,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: ThemeColors.buttonTextColor,
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
-        SizedBox(height: 4.h),
-        Row(
-          children: [
-            Icon(Icons.access_time, color: ThemeColors.primaryColor, size: 16.r),
-            SizedBox(width: 6.w),
-            Text(
-              MaterialLocalizations.of(context).formatTimeOfDay(ride.time), 
-              style: textTheme.bodySmall?.copyWith(
-                color: ThemeColors.buttonTextColor,
-                fontWeight: FontWeight.w500,
-                fontSize: 14.sp
+      ],
+    );
+  }
+
+  Widget _buildCarDetails(TextTheme textTheme) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Car info
+        Expanded(
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(4.r),
+                decoration: BoxDecoration(
+                  color: ThemeColors.primaryColor.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(6.r),
+                ),
+                child: Icon(
+                  Icons.directions_car_filled,
+                  color: ThemeColors.primaryColor,
+                  size: 16.r,
+                ),
               ),
-            ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Row(
+                  children: [
+                    Text(
+                      '${ride.car.company} ${ride.car.model}',
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: ThemeColors.buttonTextColor,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    Text(
+                      ' • ',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: ThemeColors.buttonTextColor.withOpacity(0.7),
+                        fontSize: 12.sp,
+                      ),
+                    ),
+                    Text(
+                      ride.car.numberPlate,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: ThemeColors.buttonTextColor.withOpacity(0.7),
+                        fontSize: 12.sp,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        
+        SizedBox(width: 8.w),
+        
+        // Seats available indicator - more compact
+        // Container(
+        //   padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+        //   decoration: BoxDecoration(
+        //     color: ThemeColors.primaryColor.withOpacity(0.15),
+        //     borderRadius: BorderRadius.circular(12.r),
+        //   ),
+        //   child: Row(
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       Icon(
+        //         Icons.event_seat,
+        //         color: ThemeColors.primaryColor,
+        //         size: 14.r,
+        //       ),
+        //       SizedBox(width: 2.w),
+        //       Text(
+        //         "${ride.passengers.length}/${ride.totalSeats + ride.passengers.length}",
+        //         style: textTheme.bodySmall?.copyWith(
+        //           color: ThemeColors.buttonTextColor,
+        //           fontSize: 12.sp,
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Filled seats (passengers)
+            for (int i = 0; i < ride.passengers.length; i++)
+              Icon(
+                Icons.event_seat,
+                color: ThemeColors.primaryColor, 
+                size: 16.r,
+              ),
+            // Empty seats (available)
+            for (int i = 0; i < ride.totalSeats; i++)
+              Icon(
+                Icons.event_seat,
+                color: ThemeColors.backgroundColor, 
+                size: 16.r,
+              ),
           ],
         ),
       ],
     );
   }
-
 }

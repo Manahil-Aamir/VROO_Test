@@ -9,6 +9,7 @@ class ActiveRideModel {
   final Car car;
   final DateTime date;
   final TimeOfDay time;
+  final TimeOfDay maxArrivalTime;
   // final int fare;
   final int totalSeats;
   final LocationModel source;
@@ -23,6 +24,7 @@ class ActiveRideModel {
     required this.date,
     required this.time,
     // required this.fare,
+    required this.maxArrivalTime,
     required this.totalSeats,
     required this.source,
     required this.destination,
@@ -38,6 +40,7 @@ class ActiveRideModel {
     date: DateTime.parse(json['date']),
     time: TimeOfDay.fromDateTime(DateTime.parse(json['departureTime'])),
     // fare: json['fare']?.toInt() ?? 0,
+    maxArrivalTime: TimeOfDay.fromDateTime(DateTime.parse(json['maxArrivalTime'])),
     totalSeats: json['numOfSeats']?.toInt() ?? 0,
     source: LocationModel.fromJson(json['source'] ?? {}),
     destination: LocationModel.fromJson(json['destination'] ?? {}),
@@ -55,6 +58,7 @@ class ActiveRideModel {
         date: date,
         time: time,
         // fare: fare,
+        maxArrivalTime: maxArrivalTime,
         totalSeats: totalSeats,
         source: source.toEntity(),
         destination: destination.toEntity(),

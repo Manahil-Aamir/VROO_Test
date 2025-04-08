@@ -7,6 +7,7 @@ class ActiveRideEntity {
   final CarEntity car;
   final DateTime date;
   final TimeOfDay time;
+  final TimeOfDay maxArrivalTime;
   // final int fare;
   final int totalSeats;
   final LocationEntity source;
@@ -20,6 +21,7 @@ class ActiveRideEntity {
     required this.car,
     required this.date,
     required this.time,
+    required this.maxArrivalTime,
     // required this.fare,
     required this.totalSeats,
     required this.source,
