@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,12 +14,12 @@ class PendingRideCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme; // Get the text theme
+    final textTheme = Theme.of(context).textTheme;
 
     return Card(
-      margin: EdgeInsets.all(12.w),
+      margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(14.r),
       ),
       color: ThemeColors.primaryColorDark,
       child: Padding(
@@ -28,52 +27,147 @@ class PendingRideCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Row with Driver Info and Date/Time
+            // Top row: Avatar, name, rating, date/time
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _buildDriverInfo(textTheme, ride),
-                _buildDateTime(textTheme, ride, context),
+                CircleAvatar(
+                  radius: 20.r,
+                  backgroundColor: Colors.white.withOpacity(0.2),
+                  child: Icon(Icons.person, color: Colors.white, size: 22.r),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        ride.request.riderId, // Will be replaced with name later
+                        style: textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 15.sp,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 4.h),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.star, color: ThemeColors.primaryColor, size: 14.r),
+                          SizedBox(width: 4.w),
+                          Text(
+                            '4.3',
+                            style: textTheme.bodySmall?.copyWith(
+                              color: Colors.white,
+                              fontSize: 13.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 18.w),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      DateFormat('dd/MMM/yyyy').format(ride.date),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: ThemeColors.buttonTextColor,
+                        fontSize: 13.sp,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.access_time_rounded, color: ThemeColors.primaryColor, size: 14.r),
+                        SizedBox(width: 4.w),
+                        Text(
+                          DateFormat('h:mm a').format(ride.eta),
+                          style: textTheme.bodySmall?.copyWith(
+                            color: ThemeColors.buttonTextColor,
+                            fontSize: 13.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ],
             ),
-            SizedBox(height: 12.h),
-
-            // Centered Route Information with aligned locations
-            _buildRouteInfo(textTheme, ride),
-            SizedBox(height: 10.h),
-
-            // Buttons aligned to bottom right
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildIconButton(Icons.close, () {
-                    print("Reject tapped");
-                    final request = ride.request;
-                    context.read<PendingRidesBloc>().add(
-                      RejectRideRequestEvent(
-                        rideRequestId: request.id,
-                        rideId: request.rideId,
+            SizedBox(height: 16.h),
+            // Route section
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Icon(Icons.circle_outlined, color: ThemeColors.primaryColor, size: 16.r),
+                    Container(
+                      height: 12.h,
+                      width: 1.w,
+                      color: ThemeColors.primaryColor.withOpacity(0.6),
+                    ),
+                    Icon(Icons.location_on, color: ThemeColors.primaryColor, size: 16.r),
+                  ],
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        ride.source.address,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: ThemeColors.buttonTextColor,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    );
-                    print("Reject Completed");
-                  }),
-                  SizedBox(width: 16.w),
-                  _buildIconButton(Icons.check, () {
-                    print("Accept tapped");
-                    final request = ride.request;
+                      SizedBox(height: 8.h),
+                      Text(
+                        ride.destination.address,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: ThemeColors.buttonTextColor,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 18.w),
+                Row(
+                  children: [
+                    _buildIconButton(Icons.close, () {
+                      final request = ride.request;
+                      context.read<PendingRidesBloc>().add(
+                        RejectRideRequestEvent(
+                          rideRequestId: request.id,
+                          rideId: request.rideId,
+                        ),
+                      );
+                    }),
+                    SizedBox(width: 12.w),
+                    _buildIconButton(Icons.check, () {
+                      final request = ride.request;
                       context.read<PendingRidesBloc>().add(
                         ApproveRideRequestEvent(
                           rideRequestId: request.id,
                           rideId: request.rideId,
                         ),
                       );
-                    print("Accept Completed");
-                  }),
-                ],
-              ),
+                    }),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
@@ -85,127 +179,13 @@ class PendingRideCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(5.r),
+        padding: EdgeInsets.all(6.r),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(color: Colors.orange, width: 2),
         ),
-        child: Icon(icon, color: Colors.orange, size: 24.r),
+        child: Icon(icon, color: Colors.orange, size: 18.r),
       ),
-    );
-  }
-
-  Widget _buildDriverInfo(TextTheme textTheme, PendingRidesEntity ride) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CircleAvatar(
-          radius: 28.r,
-          backgroundColor: Colors.white.withOpacity(0.2),
-          child: Icon(Icons.person, color: Colors.white, size: 32.r),
-        ),
-        SizedBox(width: 16.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Ayesha',
-              style: textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                // fontSize: 18.sp,
-              ),
-            ),
-            SizedBox(height: 2.h),
-            Row(
-              children: [
-                Icon(Icons.star, color: ThemeColors.primaryColor, size: 18.r),
-                SizedBox(width: 6.w),
-                Text(
-                  '4.3',
-                  style: textTheme.bodyMedium?.copyWith(color: Colors.white),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRouteInfo(TextTheme textTheme, PendingRidesEntity ride) {
-    return Center(
-      child: SizedBox(
-        width: 0.8.sw,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Transform.rotate(
-              angle: -math.pi / 2,
-              child: Icon(
-                Icons.u_turn_left_rounded,
-                color: ThemeColors.buttonTextColor,
-                size: 60.r,
-              ),
-            ),
-            SizedBox(width: 4.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildLocationText(ride.source.address, textTheme),
-                  SizedBox(height: 4.h),
-                  _buildLocationText(ride.destination.address, textTheme),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLocationText(String text, TextTheme textTheme) {
-    return Text(
-      text,
-      style: textTheme.bodyMedium?.copyWith(
-        color: ThemeColors.buttonTextColor,
-        fontWeight: FontWeight.w600,
-        fontSize: 16.sp,
-      ),
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-    );
-  }
-
-  Widget _buildDateTime(TextTheme textTheme, PendingRidesEntity ride, BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          DateFormat('dd/MM/yyyy').format(ride.date),
-          style: textTheme.bodySmall?.copyWith(
-            color: ThemeColors.buttonTextColor,
-            fontWeight: FontWeight.w500,
-            fontSize: 14.sp,
-          ),
-        ),
-        SizedBox(height: 4.h),
-        Row(
-          children: [
-            Icon(Icons.access_time, color: ThemeColors.primaryColor, size: 16.r),
-            SizedBox(width: 6.w),
-            Text(
-              DateFormat('h:mm a').format(ride.eta),
-              style: textTheme.bodySmall?.copyWith(
-                color: ThemeColors.buttonTextColor,
-                fontWeight: FontWeight.w500,
-                fontSize: 14.sp,
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }
