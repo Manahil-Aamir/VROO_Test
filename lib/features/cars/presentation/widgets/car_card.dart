@@ -20,10 +20,10 @@ class CarCardWidget extends StatelessWidget {
       ),
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        leading: Icon(
-          Icons.directions_car,
-          size: 48.r,
-          color: ThemeColors.buttonTextColor,
+        leading: Image.asset(
+          'assets/images/car.png', // Replace icon with the image
+          width: 48.r,
+          height: 48.r,
         ),
         title: Text(
           '${car.company} ${car.model} - ${car.numberPlate}',

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/shared/widgets/setting_button.dart';
 import '../../../../core/router/navigation.dart';
+import '../../../../shared/widgets/initials_circle_avatar.dart';
 import '../bloc/bloc/home_bloc.dart';
 import '../bloc/role_bloc.dart';
 import 'logout_dialog.dart';
@@ -12,26 +13,28 @@ class SidebarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen size for responsive design
+    // Get theme for consistent styling
     final theme = Theme.of(context);
 
     return BlocBuilder<RoleBloc, RoleState>(
       builder: (context, roleState) {
         return Drawer(
           elevation: 5,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(15.r),
-                bottomRight: Radius.circular(15.r),
-              ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(15.r),
+              bottomRight: Radius.circular(15.r),
             ),
+          ),
+          child: Container(
+            color: Colors.white,
             child: Column(
               children: [
                 DrawerHeader(
+                  padding: EdgeInsets.zero,
+                  margin: EdgeInsets.zero,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
+                    color: theme.primaryColor,
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(20.r),
                       bottomRight: Radius.circular(20.r),
@@ -41,18 +44,16 @@ class SidebarWidget extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.account_circle,
-                          color: Colors.white,
-                          size: 50.r,
+                        InitialsCircleAvatar(
+                          initials: "HR", 
+                          radius: 40.r,
+                          textScaleFactor: 0.8,
+                          showCameraIcon: false,
                         ),
                         SizedBox(height: 10.h),
                         Text(
                           roleState.role,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
+                          style: theme.textTheme.headlineSmall?.copyWith(
                                 color: theme.scaffoldBackgroundColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20.sp,
@@ -64,7 +65,7 @@ class SidebarWidget extends StatelessWidget {
                 ),
                 Expanded(
                   child: ListView(
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    padding: EdgeInsets.symmetric(vertical: 5.h),
                     children: [
                       _buildMenuItem(
                         context,
@@ -76,6 +77,7 @@ class SidebarWidget extends StatelessWidget {
                       ),
                       Divider(
                         thickness: 1,
+                        height: 8.h,
                         color: theme.primaryColorLight,
                       ),
                       _buildMenuItem(
@@ -89,6 +91,7 @@ class SidebarWidget extends StatelessWidget {
                       ),
                       Divider(
                         thickness: 1,
+                        height: 8.h,
                         color: theme.primaryColorLight,
                       ),
                       _buildMenuItem(
@@ -104,6 +107,7 @@ class SidebarWidget extends StatelessWidget {
                       ),
                       Divider(
                         thickness: 1,
+                        height: 8.h,
                         color: theme.primaryColorLight,
                       ),
                       _buildMenuItem(
@@ -112,12 +116,12 @@ class SidebarWidget extends StatelessWidget {
                         title: 'Settings',
                         onTap: () {
                           Navigator.of(context).pop();
-                          final homeBloc = context.read<HomeBloc>();
-                          LogoutDialog().showLogoutDialog(context, homeBloc);
+                          Navigator.of(context).pushNamed('/settings');
                         },
                       ),
                       Divider(
                         thickness: 1,
+                        height: 8.h,
                         color: theme.primaryColorLight,
                       ),
                       _buildMenuItem(
@@ -132,32 +136,21 @@ class SidebarWidget extends StatelessWidget {
                       ),
                       Divider(
                         thickness: 1,
+                        height: 8.h,
                         color: theme.primaryColorLight,
                       ),
                     ],
                   ),
                 ),
-                // Padding(
-                //   padding: EdgeInsets.all(16.r),
-                //   child: SettingButton(
-                //     onTap: () {
-                //       Navigator.of(context).pop();
-                //       final homeBloc = context.read<HomeBloc>();
-                //       LogoutDialog().showLogoutDialog(context, homeBloc);
-                //     },
-                //     text: 'Logout',
-                //     color: Theme.of(context).primaryColor,
-                //   ),
-                // ),
-
                 SizedBox(height: 10.h),
                 SettingButton(
                   onTap: () {
                     context.read<Navigation>().navigateTo('/sos');
                   },
                   text: 'SOS',
-                  color: Theme.of(context).indicatorColor,
+                  color: theme.indicatorColor,
                 ),
+                SizedBox(height: 10.h),
               ],
             ),
           ),
@@ -172,29 +165,31 @@ class SidebarWidget extends StatelessWidget {
     required String title,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
+    
     return ListTile(
       leading: Icon(
         icon,
         color: title == 'Logout'
-            ? Theme.of(context).indicatorColor
-            : Theme.of(context).primaryColorDark,
+            ? theme.indicatorColor
+            : theme.primaryColorDark,
         size: 24.r,
       ),
       title: Text(
         title,
         style: title == 'Logout'
-            ? Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).indicatorColor,
+            ? theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.indicatorColor,
                 )
-            : Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).primaryColorDark,
+            : theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.primaryColorDark,
                 ),
       ),
       trailing: Icon(
         Icons.arrow_forward_ios,
         color: title == 'Logout'
-            ? Theme.of(context).indicatorColor
-            : Theme.of(context).primaryColor,
+            ? theme.indicatorColor
+            : theme.primaryColor,
         size: 16.r,
       ),
       onTap: onTap,
@@ -203,7 +198,7 @@ class SidebarWidget extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.r),
       ),
-      hoverColor: Theme.of(context).primaryColor.withOpacity(0.1),
+      hoverColor: theme.primaryColor.withOpacity(0.1),
     );
   }
 }

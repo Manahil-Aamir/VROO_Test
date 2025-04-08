@@ -81,10 +81,9 @@ flutter:
   assets:
     - assets/images/down-arrow.png
     - assets/images/down-arrow.svg
-    - assets/images/car.svg
+    - assets/images/car.png
     - assets/images/arrow.svg
     - assets/images/splash.png
-  #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

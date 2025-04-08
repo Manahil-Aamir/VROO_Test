@@ -5,7 +5,6 @@ import 'package:vroo_test/features/sos/presentation/widgets/add_dialog.dart';
 import 'package:vroo_test/features/sos/presentation/widgets/contact_list.dart';
 import 'package:vroo_test/shared/widgets/Appbar.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
-import '../../../../core/theme/color/color_theme.dart';
 import '../bloc/event/sos_event.dart';
 import '../bloc/state/sos_state.dart';
 import '../bloc/bloc/sos_bloc.dart';
@@ -41,7 +40,6 @@ class _ContactScreenState extends State<ContactScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       appBar: appBar(heading: 'Emergency Contacts'),
       body: Padding(

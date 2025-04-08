@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/color/color_theme.dart';
+import '../../../../shared/widgets/initials_circle_avatar.dart';
 import '../bloc/bloc/user_profile_bloc.dart';
 import '../bloc/event/user_profile_event.dart';
 
 class ProfileHeader extends StatelessWidget {
   final dynamic user;
-  
+
   const ProfileHeader({
     super.key,
     required this.user,
@@ -17,15 +18,15 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     String initials = _getInitials(user.name);
-    
+
     return Container(
-      padding: const EdgeInsets.only(top: 40, bottom: 16),
+      padding: const EdgeInsets.only(top: 50, bottom: 16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            ThemeColors.primaryColor, 
+            ThemeColors.primaryColor,
             ThemeColors.primaryColor.withOpacity(0.5)
           ],
         ),
@@ -36,48 +37,13 @@ class ProfileHeader extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Profile image with edit button
-          Stack(
-            alignment: Alignment.bottomRight,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: ThemeColors.backgroundColor,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: ThemeColors.headlinesTextColor.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundColor: ThemeColors.primaryColor.withOpacity(0.2),
-                  child: Text(
-                    initials,
-                    style: theme.textTheme.headlineLarge?.copyWith(
-                      color: ThemeColors.primaryColor,
-                    ),
-                  ),
-                ),
-              ),
-              CircleAvatar(
-                radius: 18,
-                backgroundColor: ThemeColors.primaryColor,
-                child: Icon(
-                  Icons.camera_alt, 
-                  size: 18, 
-                  color: ThemeColors.buttonTextColor,
-                ),
-              ),
-            ],
+          InitialsCircleAvatar(
+            initials: initials,
+            textScaleFactor: 0.7,      
+            radius: 45,
+            showCameraIcon: true,
           ),
           const SizedBox(height: 16),
-          
-          // User name (with edit option)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -100,7 +66,7 @@ class ProfileHeader extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          
+
           // User email (non-editable)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -116,7 +82,7 @@ class ProfileHeader extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          
+
           // User phone (with edit option)
           InkWell(
             onTap: () => _showEditPhoneDialog(context, user.phoneNumber),
@@ -126,7 +92,8 @@ class ProfileHeader extends StatelessWidget {
                 color: ThemeColors.backgroundColor.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: ThemeColors.backgroundColor.withOpacity(0.5)),
+                  color: ThemeColors.backgroundColor.withOpacity(0.5),
+                ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -160,8 +127,6 @@ class ProfileHeader extends StatelessWidget {
     return '';
   }
 
-  // Update the dialog methods in ProfileHeader widget
-
   void _showEditNameDialog(BuildContext context, String currentName) {
     final controller = TextEditingController(text: currentName);
     final userProfileBloc = BlocProvider.of<UserProfileBloc>(context);
@@ -176,26 +141,21 @@ class ProfileHeader extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.r),
         ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: Row(
           children: [
-            Row(
-              children: [
-                Icon(Icons.edit, color: ThemeColors.primaryColor),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: Text(
-                    'Edit Name',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: ThemeColors.headlinesTextColor,
-                    ),
-                  ),
+            Icon(Icons.edit, color: ThemeColors.primaryColor),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: Text(
+                'Edit Name',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: ThemeColors.headlinesTextColor,
                 ),
-                IconButton(
-                  icon: Icon(Icons.close, color: ThemeColors.primaryColor),
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                ),
-              ],
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.close, color: ThemeColors.primaryColor),
+              onPressed: () => Navigator.of(dialogContext).pop(),
             ),
           ],
         ),
@@ -265,26 +225,21 @@ class ProfileHeader extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.r),
         ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: Row(
           children: [
-            Row(
-              children: [
-                Icon(Icons.phone, color: ThemeColors.primaryColor),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: Text(
-                    'Edit Phone Number',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: ThemeColors.headlinesTextColor,
-                    ),
-                  ),
+            Icon(Icons.phone, color: ThemeColors.primaryColor),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: Text(
+                'Edit Phone Number',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: ThemeColors.headlinesTextColor,
                 ),
-                IconButton(
-                  icon: Icon(Icons.close, color: ThemeColors.primaryColor),
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                ),
-              ],
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.close, color: ThemeColors.primaryColor),
+              onPressed: () => Navigator.of(dialogContext).pop(),
             ),
           ],
         ),

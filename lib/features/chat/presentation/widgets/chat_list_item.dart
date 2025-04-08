@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theme/color/color_theme.dart';
+import '../../../../shared/widgets/initials_circle_avatar.dart';
 import '../../domain/entity/chat_user.dart';
 
 class ChatListItem extends StatelessWidget {
@@ -30,18 +31,10 @@ class ChatListItem extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
             child: Row(
               children: [
-                // Smaller Profile Avatar
-                CircleAvatar(
-                  radius: 20.r,
-                  backgroundColor: ThemeColors.primaryColor.withOpacity(0.2),
-                  child: Text(
-                    user.name.isNotEmpty ? user.name[0].toUpperCase() : "?",
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: ThemeColors.primaryColor,
-                          fontSize: 14.sp,
-                        ),
-                  ),
+                InitialsCircleAvatar(
+                  initials: user.name.isNotEmpty ? user.name[0].toUpperCase() : "?",
+                  radius: 20.r, 
+                  showCameraIcon: false,
                 ),
                 SizedBox(width: 12.w),
 
