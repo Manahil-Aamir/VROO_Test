@@ -14,7 +14,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return PreferredSize(
-      preferredSize: Size.fromHeight(105.h),
+      preferredSize: Size.fromHeight(120.h),
       child: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -26,7 +26,7 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
               gradient: LinearGradient(
                 colors: [
                   theme.primaryColor,
-                  theme.primaryColor.withOpacity(0.7),
+                  theme.primaryColor.withOpacity(0.5),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -76,5 +76,5 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(105.h); // Responsive height
+  Size get preferredSize => Size.fromHeight(120.h); // Responsive height
 }
