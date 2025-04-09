@@ -81,13 +81,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.error_outline,
-                        size: 60.w, color: ThemeColors.accentColor),
+                    Image.asset(
+                      'assets/images/error.png',
+                      width: 200.w,
+                      height: 200.h,
+                      fit: BoxFit.contain,
+                    ),
                     SizedBox(height: 16.h),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24.w),
                       child: Text(
-                        state.message,
+                        'Failed to load profile information. Please try again later.',
                         style: textTheme.bodyMedium?.copyWith(
                           color: ThemeColors.accentColor,
                           fontSize: 14.sp,
@@ -95,35 +99,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(height: 16.h),
-                    ElevatedButton(
-                      onPressed: () {
-                        BlocProvider.of<UserProfileBloc>(context)
-                            .add(LoadUserProfile());
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: ThemeColors.buttonColor,
-                        foregroundColor: ThemeColors.buttonTextColor,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 24.w,
-                          vertical: 12.h,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24.r),
-                        ),
-                      ),
-                      child: Text(
-                        'Try Again',
-                        style: textTheme.labelLarge?.copyWith(
-                          fontSize: 14.sp,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               );
             }
-            return SizedBox();
+            return const SizedBox();
           },
         ),
         bottomNavigationBar: CustomBottomNavBar(selectedIndex: 3),

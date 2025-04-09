@@ -41,15 +41,23 @@ class _CarScreenState extends State<CarScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Error: ${state.message}',
-                    style: TextStyle(color: ThemeColors.buttonTextColor),
-                    textAlign: TextAlign.center,
+                  Image.asset(
+                    'assets/images/error.png',
+                    width: 400.w,
+                    height: 400.h,
+                    fit: BoxFit.contain,
                   ),
                   SizedBox(height: 16.h),
-                  ElevatedButton(
-                    onPressed: () => context.read<CarBloc>().add(FetchCars()),
-                    child: const Text('Retry'),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 32.w),
+                    child: Text(
+                      'Failed to load cars. Please try again later.',
+                      style: TextStyle(
+                        color: ThemeColors.buttonTextColor,
+                        fontSize: 16.sp,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ],
               ),
@@ -59,7 +67,7 @@ class _CarScreenState extends State<CarScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  const Spacer(), // Pushes the content down
+                  const Spacer(),
                   Center(
                     child: Text(
                       'No cars found. Please add a car.',
@@ -70,14 +78,14 @@ class _CarScreenState extends State<CarScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const Spacer(), // Pushes the button to near-bottom
+                  const Spacer(),
                   GradientButton(
                     text: 'Add Car',
                     onTap: () {
                       _showAddCarModal(context);
                     },
                   ),
-                  SizedBox(height: 32.h), // Give a little bottom spacing if needed
+                  SizedBox(height: 32.h),
                 ],
               ),
             );
@@ -102,7 +110,7 @@ class _CarScreenState extends State<CarScreen> {
                   padding: EdgeInsets.all(16.w),
                   child: GradientButton(
                     onTap: () => _showAddCarModal(context),
-                    text: 'Add New car',
+                    text: 'Add car',
                     icon: Icon(
                       Icons.add_circle_outline_rounded,
                       color: ThemeColors.primaryColorDark,
@@ -114,19 +122,28 @@ class _CarScreenState extends State<CarScreen> {
               ],
             );
           }
-
+          // return Center(
+          //   child: Image.asset(
+          //     'assets/images/error.png',
+          //     width: 200.w,
+          //     height: 200.h,
+          //     fit: BoxFit.contain,
+          //   ),
+          // );
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'No cars available',
-                  style: TextStyle(color: ThemeColors.buttonTextColor),
+                Image.asset(
+                  'assets/images/error.png',
+                  width: 400.w,
+                  height: 400.h,
+                  fit: BoxFit.contain,
                 ),
                 SizedBox(height: 16.h),
-                ElevatedButton(
-                  onPressed: () => context.read<CarBloc>().add(FetchCars()),
-                  child: const Text('Load Cars'),
+                Text(
+                  'Unable to load car information',
+                  style: TextStyle(color: ThemeColors.buttonTextColor),
                 ),
               ],
             ),

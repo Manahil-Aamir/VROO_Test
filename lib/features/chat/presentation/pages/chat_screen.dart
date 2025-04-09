@@ -4,9 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vroo_test/shared/widgets/appbar_no_icon.dart';
-
 import '../../../../core/router/navigation.dart';
-import '../../../../core/styles/app_styles.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../../shared/widgets/custom_dialog.dart';
@@ -106,29 +104,23 @@ class ChatScreen extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(state.message,
-                                style: AppStyles.getTextTheme()
-                                    .headlineMedium
-                                    ?.copyWith(color: ThemeColors.accentColor)),
-                            SizedBox(height: 10.h),
-                            ElevatedButton(
-                              onPressed: () {
-                                context
-                                    .read<ChatBloc>()
-                                    .add(LoadChatUsers(roleState.role));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: ThemeColors.buttonColor,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 20.w, vertical: 12.h),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.r)),
+                            Image.asset(
+                              'assets/images/error.png',
+                              width: 200.w,
+                              height: 200.h,
+                              fit: BoxFit.contain,
+                            ),
+                            SizedBox(height: 16.h),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 24.w),
+                              child: Text(
+                                'Failed to load profile information. Please try again later.',
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: ThemeColors.accentColor,
+                                  fontSize: 14.sp,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              child: Text('Retry',
-                                  style: AppStyles.getTextTheme()
-                                      .labelLarge
-                                      ?.copyWith(
-                                          color: ThemeColors.buttonTextColor)),
                             ),
                           ],
                         ),
