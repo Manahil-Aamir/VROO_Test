@@ -13,7 +13,6 @@ class ChatInitial extends ChatState {}
 /// Loading state for fetching users or messages
 class ChatLoading extends ChatState {}
 
-/// Successfully loaded chat users
 class ChatUsersLoaded extends ChatState {
   final List<ChatUser> users;
   final Map<String, Map<String, dynamic>> lastMessagesInfo;
@@ -33,10 +32,28 @@ class ChatUsersLoaded extends ChatState {
     );
   }
 
+  // Helper method to get sorted users
+  List<ChatUser> get sortedUsers {
+    final usersCopy = List<ChatUser>.from(users);
+    usersCopy.sort((a, b) {
+      final aTime = lastMessagesInfo[a.id]?['lastMessageTime'] ?? '';
+      final bTime = lastMessagesInfo[b.id]?['lastMessageTime'] ?? '';
+      
+      if (aTime.isNotEmpty && bTime.isNotEmpty) {
+        return DateTime.parse(bTime).compareTo(DateTime.parse(aTime));
+      } else if (aTime.isNotEmpty) {
+        return -1;
+      } else if (bTime.isNotEmpty) {
+        return 1;
+      }
+      return 0;
+    });
+    return usersCopy;
+  }
+
   @override
   List<Object> get props => [users, lastMessagesInfo];
 }
-
 /// Successfully loaded chat messages
 class ChatMessagesLoaded extends ChatState {
   final List<ChatMessage> messages;

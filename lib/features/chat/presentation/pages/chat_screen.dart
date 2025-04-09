@@ -61,7 +61,8 @@ class ChatScreen extends StatelessWidget {
                               horizontal: 16.w, vertical: 10.h),
                           itemCount: state.users.length,
                           itemBuilder: (context, index) {
-                            final user = state.users[index];
+                            // final user = state.users[index];
+                            final user = state.sortedUsers[index];
                             final chatId = _getChatId(
                                 FirebaseAuth.instance.currentUser?.uid ?? '',
                                 user.id);

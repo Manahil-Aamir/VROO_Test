@@ -99,13 +99,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ) {
     if (state is ChatUsersLoaded) {
       final currentState = state as ChatUsersLoaded;
+      final updatedInfo = Map<String, Map<String, dynamic>>.from(currentState.lastMessagesInfo)
+        ..[event.userId] = event.lastMessageInfo;
+      
       emit(currentState.copyWith(
-        lastMessagesInfo: Map<String, Map<String, dynamic>>.from(currentState.lastMessagesInfo)
-          ..[event.userId] = event.lastMessageInfo,
+        lastMessagesInfo: updatedInfo,
       ));
     }
   }
-  
+
   Future<void> _onSendMessage(
     SendMessageEvent event,
     Emitter<ChatState> emit,
