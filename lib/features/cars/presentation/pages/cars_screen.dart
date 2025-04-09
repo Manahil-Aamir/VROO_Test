@@ -102,7 +102,7 @@ class _CarScreenState extends State<CarScreen> {
                   padding: EdgeInsets.all(16.w),
                   child: GradientButton(
                     onTap: () => _showAddCarModal(context),
-                    text: 'Add car',
+                    text: 'Add New car',
                     icon: Icon(
                       Icons.add_circle_outline_rounded,
                       color: ThemeColors.primaryColorDark,
