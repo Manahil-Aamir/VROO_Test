@@ -33,7 +33,6 @@ class _RideRequestStatusScreenState extends State<RideRequestStatusScreen>
     
     // Fetch both pending and approved rides when screen loads
     context.read<PendingRidesBloc>().add(FetchPendingRides(widget.rideId));
-    // TODO: Add event for fetching approved rides
     context.read<ApprovedRidesBloc>().add(FetchApprovedRides(widget.rideId));
   }
 

@@ -1,3 +1,5 @@
+import 'ratings.dart';
+
 class PendingRidesEntity {
   final DateTime date;
   final Location source;
@@ -7,6 +9,7 @@ class PendingRidesEntity {
   final TimeRange pickupTimeRange;
   final Preferences preferences;
   final Request request;
+  final RiderDetails riderDetails;
 
   PendingRidesEntity({
     required this.date,
@@ -17,6 +20,7 @@ class PendingRidesEntity {
     required this.pickupTimeRange,
     required this.preferences,
     required this.request,
+    required this.riderDetails,
   });
 }
 
@@ -70,5 +74,15 @@ class Request {
     required this.rideRequestId,
     required this.riderId,
     required this.status,
+  });
+}
+
+class RiderDetails {
+  final String name;
+  final Ratings ratings;
+
+  RiderDetails({
+    required this.name,
+    required this.ratings,
   });
 }

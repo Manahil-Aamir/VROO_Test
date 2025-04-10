@@ -42,7 +42,7 @@ class PendingRideCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        ride.request.riderId, // Will be replaced with name later
+                        ride.riderDetails.name,
                         style: textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -57,7 +57,7 @@ class PendingRideCard extends StatelessWidget {
                           Icon(Icons.star, color: ThemeColors.primaryColor, size: 14.r),
                           SizedBox(width: 4.w),
                           Text(
-                            '4.3',
+                            ride.riderDetails.ratings.asRider.toString(),
                             style: textTheme.bodySmall?.copyWith(
                               color: Colors.white,
                               fontSize: 13.sp,

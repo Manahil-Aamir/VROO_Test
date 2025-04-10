@@ -21,8 +21,8 @@ class PendingRidesRemoteDataSource implements PendingRidesDataSource {
       print('Fetching ride details for ride ID: $rideId');
       final response = await client.get(
       Uri.parse(
-        // 'http://10.0.2.2:8080/driver/ride-requests/$rideId',
-        '${ApiConstants.baseUrl}driver/ride-requests/$rideId'
+        // 'http://10.0.2.2:8080/driver/v2/ride-requests/$rideId',
+        '${ApiConstants.baseUrl}driver/v2/ride-requests/$rideId'
       ),);
 
       print('Response status: ${response.statusCode}');
@@ -36,12 +36,6 @@ class PendingRidesRemoteDataSource implements PendingRidesDataSource {
 
         if (jsonResponse['data'] is List) {
           final List<dynamic> data = jsonResponse['data'];
-
-          // Print the first item to see its structure
-          if (data.isNotEmpty) {
-            print('First ride detail: ${data[0]}');
-          }
-
           return data.map((json) => PendingRidesModel.fromJson(json)).toList();
         } else {
           throw Exception('Unexpected data format: ${jsonResponse['data']}');

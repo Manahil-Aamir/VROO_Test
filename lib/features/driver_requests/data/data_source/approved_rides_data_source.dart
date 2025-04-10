@@ -28,8 +28,8 @@ class ApprovedRidesRemoteDataSource implements ApprovedRidesDataSource {
         },
       );
 
-      print('Response status approved rides: ${response.statusCode}');
-      print('Response body for approved rides: ${response.body}');
+      // print('Response status approved rides: ${response.statusCode}');
+      // print('Response body for approved rides: ${response.body}');
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);

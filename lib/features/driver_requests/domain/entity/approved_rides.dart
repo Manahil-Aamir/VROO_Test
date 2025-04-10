@@ -1,3 +1,5 @@
+import 'ratings.dart';
+
 class ApprovedRidesEntity {
   final String riderId;
   final String riderName;      
@@ -33,12 +35,4 @@ class TimeRange {
   TimeRange({required this.min, required this.max});
 }
 
-class Ratings {
-  final int asDriver;
-  final int asRider;
 
-  Ratings({
-    required this.asDriver,
-    required this.asRider,
-  });
-}
