@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/widgets/error_dialog.dart';
+import '../bloc/bloc/approved_rides_bloc.dart';
 import '../bloc/bloc/pending_rides_bloc.dart';
+import '../bloc/event/approved_rides_event.dart';
 import '../bloc/state/pending_rides_state.dart';
 import 'widgets/pending_rides_card.dart';
 
@@ -14,6 +16,9 @@ class PendingRidesTab extends StatelessWidget {
     return BlocConsumer<PendingRidesBloc, PendingRidesState>(
       listener: (context, state) {
         if (state is RideApprovalSuccess) {
+          // Refresh the approved rides list when a ride is approved
+          context.read<ApprovedRidesBloc>().add(FetchApprovedRides(rideId));
+          
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Ride approved successfully!'),

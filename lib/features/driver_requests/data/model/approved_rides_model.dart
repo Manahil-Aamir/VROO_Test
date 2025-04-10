@@ -25,6 +25,7 @@ class ApprovedRidesWrapperModel {
 
 class ApprovedRidesModel {
   final String riderId;
+  final String riderName;
   final String status;
   final int fare;
   final String rideRequestId;
@@ -33,9 +34,11 @@ class ApprovedRidesModel {
   final DateTime date;
   final TimeRangeModel pickupTimeRange;
   final DateTime maxArrivalTime;
+  final RatingsModel ratings; 
 
   ApprovedRidesModel({
     required this.riderId,
+    required this.riderName,
     required this.status,
     required this.fare,
     required this.rideRequestId,
@@ -44,11 +47,13 @@ class ApprovedRidesModel {
     required this.date,
     required this.pickupTimeRange,
     required this.maxArrivalTime,
+    required this.ratings, 
   });
 
   factory ApprovedRidesModel.fromJson(Map<String, dynamic> json) {
     return ApprovedRidesModel(
       riderId: json['riderId'] ?? '',
+      riderName: json['riderName'] ?? '',
       status: json['status'] ?? '',
       fare: json['fare']?.toInt() ?? 0,
       rideRequestId: json['rideRequestId'] ?? '',
@@ -57,12 +62,14 @@ class ApprovedRidesModel {
       date: DateTime.parse(json['date']),
       pickupTimeRange: TimeRangeModel.fromJson(json['pickupTimeRange'] ?? {}),
       maxArrivalTime: DateTime.parse(json['maxArrivalTime']),
+      ratings: RatingsModel.fromJson(json['ratings'] ?? {}), 
     );
   }
 
   ApprovedRidesEntity toEntity() {
     return ApprovedRidesEntity(
       riderId: riderId,
+      riderName: riderName,
       status: status,
       fare: fare,
       rideRequestId: rideRequestId,
@@ -71,6 +78,7 @@ class ApprovedRidesModel {
       date: date,
       pickupTimeRange: pickupTimeRange.toEntity(),
       maxArrivalTime: maxArrivalTime,
+      ratings: ratings.toEntity(),
     );
   }
 }
@@ -94,5 +102,27 @@ class TimeRangeModel {
   TimeRange toEntity() => TimeRange(
         min: min,
         max: max,
+      );
+}
+
+class RatingsModel {
+  final int asDriver;
+  final int asRider;
+
+  RatingsModel({
+    required this.asDriver,
+    required this.asRider,
+  });
+
+  factory RatingsModel.fromJson(Map<String, dynamic> json) {
+    return RatingsModel(
+      asDriver: json['asDriver']?.toInt() ?? 0, // Handle null and type conversion
+      asRider: json['asRider']?.toInt() ?? 0,
+    );
+  }
+
+  Ratings toEntity() => Ratings(
+        asDriver: asDriver,
+        asRider: asRider,
       );
 }

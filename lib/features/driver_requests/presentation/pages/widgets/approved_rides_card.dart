@@ -43,7 +43,7 @@ class ApprovedRideCard extends StatelessWidget {
                     children: [
                       // Name with proper width
                       Text(
-                        ride.riderId, // Will be replaced with name later
+                        ride.riderName,
                         style: textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -60,7 +60,7 @@ class ApprovedRideCard extends StatelessWidget {
                           Icon(Icons.star, color: ThemeColors.primaryColor, size: 14.r),
                           SizedBox(width: 4.w),
                           Text(
-                            '4.3',
+                            '${ride.ratings.asRider}',
                             style: textTheme.bodySmall?.copyWith(
                               color: Colors.white,
                               fontSize: 13.sp,
