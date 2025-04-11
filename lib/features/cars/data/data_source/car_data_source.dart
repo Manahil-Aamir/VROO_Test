@@ -8,7 +8,8 @@ import '../model/carr_model.dart';
 abstract class CarRemoteDataSource {
   Future<List<Car>> fetchCarsFromApi(String token);
   Future<void> addCarToApi(Car car, String token);
-  Future<List<Car>> deleteCarFromApi(String carId, String token); // Modified to return String?
+  Future<List<Car>> deleteCarFromApi(String carId, String token); 
+  Future<Car> updateCarToApi(String carId, double mileage, String token);
 }
 
 class CarRemoteDataSourceImpl implements CarRemoteDataSource {
@@ -93,6 +94,37 @@ class CarRemoteDataSourceImpl implements CarRemoteDataSource {
       }
     } catch (e) {
       throw Exception("Error deleting car: $e");
+    }
+  }
+
+  @override
+  Future<Car> updateCarToApi(String carId, double mileage, String token) async {
+    print("Updating car mileage: carId=$carId, mileage=$mileage");
+    try {
+      final response = await client.put(
+        Uri.parse('$baseUrl'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'carId': carId,
+          'mileage': mileage
+        }),
+      );
+
+      print("Update mileage response status: ${response.statusCode}");
+      print("Update mileage response body: ${response.body}");
+      
+      if (response.statusCode == 200) {
+        final decoded = json.decode(response.body);
+        final carJson = decoded['data']['cars'];
+        return Car.fromJson(carJson);
+      } else {
+        throw Exception("Failed to update car mileage: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Error updating car mileage: $e");
     }
   }
 }

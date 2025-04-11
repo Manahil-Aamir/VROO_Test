@@ -7,11 +7,13 @@ class CarBloc extends Bloc<CarEvent, CarState> {
   final GetCarsUseCase getCarsUseCase;
   final AddCarUseCase addCarUseCase;
   final DeleteCarUseCase deleteCarUseCase;
+  final UpdateCarUseCase updateCarUseCase;
 
-  CarBloc(this.getCarsUseCase, this.addCarUseCase, this.deleteCarUseCase) : super(CarInitial()) {
+  CarBloc(this.getCarsUseCase, this.addCarUseCase, this.deleteCarUseCase, this.updateCarUseCase) : super(CarInitial()) {
     on<FetchCars>(_onFetchCars);
     on<AddCar>(_onAddCar);
     on<DeleteCar>(_onDeleteCar);
+    on<UpdateCar>(_onUpdateCar);
   }
 
   void _onFetchCars(FetchCars event, Emitter<CarState> emit) async {
@@ -46,6 +48,23 @@ class CarBloc extends Bloc<CarEvent, CarState> {
         if (cars.isEmpty) {
         emit(CarEmpty());
       } else {
+        emit(CarLoaded(cars));
+      }
+    } catch (e) {
+      emit(CarError(e.toString()));
+    }
+  }
+
+  // Future<void> _onUpdateCar(UpdateCar event, Emitter<CarState> emit) async {
+  void _onUpdateCar(UpdateCar event, Emitter<CarState> emit) async {
+    try {
+      final updatedCar = await updateCarUseCase.execute(event.carId, event.mileage);
+      
+      if (state is CarLoaded) {
+        final cars = (state as CarLoaded).cars.map((c) => 
+          c.carId == updatedCar.carId ? updatedCar.toEntity() : c
+        ).toList();
+        
         emit(CarLoaded(cars));
       }
     } catch (e) {

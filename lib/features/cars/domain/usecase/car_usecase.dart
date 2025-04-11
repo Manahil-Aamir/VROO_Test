@@ -49,3 +49,13 @@ class DeleteCarUseCase {
     return cars.map((car) => car.toEntity()).toList();
   }
 }
+
+class UpdateCarUseCase {
+  final CarRepository repository;
+
+  UpdateCarUseCase(this.repository);
+
+  Future<Car> execute(String carId, double mileage) async {
+    return await repository.updateCar(carId, mileage);
+  }
+}

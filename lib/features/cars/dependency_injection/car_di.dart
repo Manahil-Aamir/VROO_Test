@@ -21,6 +21,7 @@ class CarDependencyInjection {
     final getCarsUseCase = GetCarsUseCase(carRepository);
     final addCarUseCase = AddCarUseCase(carRepository);
     final deleteCarUseCase = DeleteCarUseCase(carRepository);
+    final updateCarUseCase = UpdateCarUseCase(carRepository);
 
     return [
       Provider<CarRemoteDataSource>(create: (_) => carDataSource),
@@ -28,7 +29,7 @@ class CarDependencyInjection {
       Provider<GetCarsUseCase>(create: (_) => getCarsUseCase),
       Provider<AddCarUseCase>(create: (_) => addCarUseCase),
       BlocProvider<CarBloc>(
-        create: (_) => CarBloc(getCarsUseCase, addCarUseCase, deleteCarUseCase),
+        create: (_) => CarBloc(getCarsUseCase, addCarUseCase, deleteCarUseCase, updateCarUseCase),
       ),
     ];
   }

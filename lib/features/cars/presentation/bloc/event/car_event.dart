@@ -15,3 +15,10 @@ class DeleteCar extends CarEvent {
 
   DeleteCar(this.carId);
 }
+
+class UpdateCar extends CarEvent {
+  final String carId;
+  final double mileage;
+
+  UpdateCar(this.carId, this.mileage);
+}
