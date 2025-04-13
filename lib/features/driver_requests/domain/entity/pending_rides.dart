@@ -1,7 +1,7 @@
 import 'package:vroo_test/features/driver_requests/domain/entity/location_entity.dart';
 
+import 'driver_rider_detail.dart';
 import 'preferences.dart';
-import 'ratings.dart';
 import 'time_range.dart';
 
 class PendingRidesEntity {
@@ -13,7 +13,7 @@ class PendingRidesEntity {
   final TimeRange pickupTimeRange;
   final Preferences preferences;
   final Request request;
-  final RiderDetails riderDetails;
+  final DriverRiderDetail riderDetails;
 
   PendingRidesEntity({
     required this.date,
@@ -48,12 +48,4 @@ class Request {
   });
 }
 
-class RiderDetails {
-  final String name;
-  final Ratings ratings;
 
-  RiderDetails({
-    required this.name,
-    required this.ratings,
-  });
-}

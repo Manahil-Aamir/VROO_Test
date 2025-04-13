@@ -1,7 +1,7 @@
 import '../../domain/entity/pending_rides.dart';
+import 'driver_rider_detail_model.dart';
 import 'location_modal.dart';
 import 'preferences_modal.dart';
-import 'ratings_modal.dart';
 import 'time_range_model.dart';
 
 class PendingRidesModel {
@@ -13,7 +13,7 @@ class PendingRidesModel {
   final TimeRangeModel pickupTimeRange;
   final PreferencesModel preferences;
   final RequestModel request;
-  final RiderDetailsModel riderDetails;
+  final DriverRiderDetailModel riderDetails;
 
   PendingRidesModel({
     required this.date,
@@ -37,7 +37,7 @@ class PendingRidesModel {
       pickupTimeRange: TimeRangeModel.fromJson(json['pickupTimeRange'] ?? {}),
       preferences: PreferencesModel.fromJson(json['preferences'] ?? {}),
       request: RequestModel.fromJson(json['request'] ?? {}),
-      riderDetails: RiderDetailsModel.fromJson(json['riderDetails'] ?? {}),
+      riderDetails: DriverRiderDetailModel.fromJson(json['riderDetails'] ?? {}),
     );
   }
 
@@ -96,24 +96,4 @@ class RequestModel {
       );
 }
 
-class RiderDetailsModel {
-  final String name;
-  final RatingsModel ratings;
 
-  RiderDetailsModel({
-    required this.name,
-    required this.ratings,
-  });
-
-  factory RiderDetailsModel.fromJson(Map<String, dynamic> json) {
-    return RiderDetailsModel(
-      name: json['name'] ?? 'Unknown Rider',
-      ratings: RatingsModel.fromJson(json['ratings'] ?? {}),
-    );
-  }
-
-  RiderDetails toEntity() => RiderDetails(
-        name: name,
-        ratings: ratings.toEntity(),
-      );
-}
