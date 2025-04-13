@@ -1,9 +1,13 @@
+import 'package:vroo_test/features/driver_requests/domain/entity/location_entity.dart';
+
+import 'preferences.dart';
 import 'ratings.dart';
+import 'time_range.dart';
 
 class PendingRidesEntity {
   final DateTime date;
-  final Location source;
-  final Location destination;
+  final LocationEntity source;
+  final LocationEntity destination;
   final DateTime eta;
   final int fare;
   final TimeRange pickupTimeRange;
@@ -21,39 +25,6 @@ class PendingRidesEntity {
     required this.preferences,
     required this.request,
     required this.riderDetails,
-  });
-}
-
-class Location {
-  final String address;
-  final String cellId;
-  final List<double> coords;
-  final String placeId;
-
-  Location({
-    required this.address,
-    required this.cellId,
-    required this.coords,
-    required this.placeId,
-  });
-}
-
-class TimeRange {
-  final DateTime min;
-  final DateTime max;
-
-  TimeRange({required this.min, required this.max});
-}
-
-class Preferences {
-  final bool canWalk;
-  final bool femaleOnly;
-  final bool maleOnly;
-
-  Preferences({
-    required this.canWalk,
-    required this.femaleOnly,
-    required this.maleOnly,
   });
 }
 

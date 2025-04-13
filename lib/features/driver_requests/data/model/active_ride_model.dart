@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../../domain/entity/active_ride.dart';
 import '../../../cars/data/model/carr_model.dart';
+import 'location_modal.dart';
 
 class ActiveRideModel {
   final String id;
@@ -64,36 +64,6 @@ class ActiveRideModel {
         destination: destination.toEntity(),
         passengers: passengers.map((p) => p.toEntity()).toList(),
         status: status,
-      );
-}
-
-class LocationModel {
-  final String address;
-  final String cellId;
-  final List<double> coords;
-  final String placeId;
-
-  LocationModel({
-    required this.address,
-    required this.cellId,
-    required this.coords,
-    required this.placeId,
-  });
-
-  factory LocationModel.fromJson(Map<String, dynamic> json) {
-  return LocationModel(
-    address: json['address'] ?? 'Unknown address',
-    cellId: json['cellId'] ?? '',
-    coords: List<double>.from((json['coords'] ?? []).map((x) => x.toDouble())),
-    placeId: json['placeId'] ?? '',
-  );
-}
-
-  LocationEntity toEntity() => LocationEntity(
-        address: address,
-        cellId: cellId,
-        coords: coords,
-        placeId: placeId,
       );
 }
 

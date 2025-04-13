@@ -1,4 +1,5 @@
 import 'ratings.dart';
+import 'time_range.dart';
 
 class ApprovedRidesEntity {
   final String riderId;
@@ -27,12 +28,3 @@ class ApprovedRidesEntity {
     required this.ratings,
   });
 }
-
-class TimeRange {
-  final DateTime min;
-  final DateTime max;
-
-  TimeRange({required this.min, required this.max});
-}
-
-

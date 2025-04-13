@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../cars/domain/entity/car.dart';
+import 'location_entity.dart';
 
 class ActiveRideEntity {
   final String id;
@@ -31,19 +32,6 @@ class ActiveRideEntity {
   });
 }
 
-class LocationEntity {
-  final String address;
-  final String cellId;
-  final List<double> coords;
-  final String placeId;
-
-  LocationEntity({
-    required this.address,
-    required this.cellId,
-    required this.coords,
-    required this.placeId,
-  });
-}
 
 class PassengerEntity {
   final int fare;

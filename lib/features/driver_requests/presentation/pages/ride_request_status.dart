@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/widgets/appbar.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
-import '../../../../shared/widgets/custom_top_bar.dart';
+import '../../../../shared/widgets/custom_tab_bar.dart';
 import '../bloc/bloc/approved_rides_bloc.dart';
 import '../bloc/bloc/pending_rides_bloc.dart';
 import '../bloc/event/approved_rides_event.dart';

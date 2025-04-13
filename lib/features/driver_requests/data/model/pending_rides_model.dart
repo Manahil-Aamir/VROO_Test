@@ -1,5 +1,8 @@
 import '../../domain/entity/pending_rides.dart';
+import 'location_modal.dart';
+import 'preferences_modal.dart';
 import 'ratings_modal.dart';
+import 'time_range_model.dart';
 
 class PendingRidesModel {
   final DateTime date;
@@ -48,84 +51,6 @@ class PendingRidesModel {
         preferences: preferences.toEntity(),
         request: request.toEntity(),
         riderDetails: riderDetails.toEntity(),
-      );
-}
-
-class LocationModel {
-  final String address;
-  final String cellId;
-  final List<double> coords;
-  final String placeId;
-
-  LocationModel({
-    required this.address,
-    required this.cellId,
-    required this.coords,
-    required this.placeId,
-  });
-
-  factory LocationModel.fromJson(Map<String, dynamic> json) {
-    return LocationModel(
-      address: json['address'] ?? 'Unknown address',
-      cellId: json['cellId'] ?? '',
-      coords: List<double>.from((json['coords'] ?? []).map((x) => x.toDouble())),
-      placeId: json['placeId'] ?? '',
-    );
-  }
-
-  Location toEntity() => Location(
-        address: address,
-        cellId: cellId,
-        coords: coords,
-        placeId: placeId,
-      );
-}
-
-class TimeRangeModel {
-  final DateTime min;
-  final DateTime max;
-
-  TimeRangeModel({
-    required this.min,
-    required this.max,
-  });
-
-  factory TimeRangeModel.fromJson(Map<String, dynamic> json) {
-    return TimeRangeModel(
-      min: DateTime.parse(json['min']),
-      max: DateTime.parse(json['max']),
-    );
-  }
-
-  TimeRange toEntity() => TimeRange(
-        min: min,
-        max: max,
-      );
-}
-
-class PreferencesModel {
-  final bool canWalk;
-  final bool femaleOnly;
-  final bool maleOnly;
-
-  PreferencesModel({
-    required this.canWalk,
-    required this.femaleOnly,
-    required this.maleOnly,
-  });
-
-  factory PreferencesModel.fromJson(Map<String, dynamic> json) {
-    return PreferencesModel(
-      canWalk: json['canWalk'] ?? false,
-      femaleOnly: json['femaleOnly'] ?? false,
-      maleOnly: json['maleOnly'] ?? false,
-    );
-  }
-
-  Preferences toEntity() => Preferences(
-        canWalk: canWalk,
-        femaleOnly: femaleOnly,
-        maleOnly: maleOnly,
       );
 }
 
