@@ -1,19 +1,19 @@
 import '../../../domain/entity/active_ride.dart';
 
-abstract class ActiveRidesState {}
+abstract class ActiveRidesDriverState {}
 
-class ActiveRidesInitial extends ActiveRidesState {}
+class ActiveRidesDriverInitial extends ActiveRidesDriverState {}
 
-class ActiveRidesLoading extends ActiveRidesState {}
+class ActiveRidesDriverLoading extends ActiveRidesDriverState {}
 
-class ActiveRidesLoaded extends ActiveRidesState {
+class ActiveRidesDriverLoaded extends ActiveRidesDriverState {
   final List<ActiveRideEntity> rides;
   final List<ActiveRideEntity> filteredRides;
   final DateTime? selectedDate;
   final String? errorMessage;
   final String? successMessage;  // Add this field for success messages
 
-  ActiveRidesLoaded({
+  ActiveRidesDriverLoaded({
     required this.rides,
     this.filteredRides = const [],
     this.selectedDate,
@@ -21,14 +21,14 @@ class ActiveRidesLoaded extends ActiveRidesState {
     this.successMessage,  // Add this parameter
   });
 
-  ActiveRidesLoaded copyWith({
+  ActiveRidesDriverLoaded copyWith({
     List<ActiveRideEntity>? rides,
     List<ActiveRideEntity>? filteredRides,
     DateTime? selectedDate,
     String? errorMessage,
     String? successMessage,
   }) {
-    return ActiveRidesLoaded(
+    return ActiveRidesDriverLoaded(
       rides: rides ?? this.rides,
       filteredRides: filteredRides ?? this.filteredRides,
       selectedDate: selectedDate ?? this.selectedDate,
@@ -38,8 +38,8 @@ class ActiveRidesLoaded extends ActiveRidesState {
   }
 }
 
-class ActiveRidesError extends ActiveRidesState {
+class ActiveRidesDriverError extends ActiveRidesDriverState {
   final String message;
 
-  ActiveRidesError(this.message);
+  ActiveRidesDriverError(this.message);
 }

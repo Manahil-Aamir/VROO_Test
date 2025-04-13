@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../features/HomeScreens/presentation/bloc/role_bloc.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -9,10 +12,15 @@ class CustomBottomNavBar extends StatelessWidget {
     String route;
     switch (index) {
       case 0:
-        route = '/home'; // Driver's home
+        route = '/home'; 
         break;
       case 1:
-        route = '/active_ride_page'; // Active requests
+        // Get the current role from RoleBloc
+        final role = context.read<RoleBloc>().state.role;
+        print(role);
+        route = role == 'Driver' 
+            ? '/active_ride_driver'  // Driver sees active requests
+            : '/ride_request_rider'; // Rider sees their requests
         break;
       case 2:
         route = '/chat';
@@ -31,32 +39,36 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: selectedIndex,
-      onTap: (index) => _onItemTapped(context, index),
-      selectedItemColor: Theme.of(context).primaryColor,
-      unselectedItemColor: Theme.of(context).unselectedWidgetColor,
-      showUnselectedLabels: true,
-      iconSize: 24,
-      type: BottomNavigationBarType.fixed,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.list),
-          label: 'Requests',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.chat),
-          label: 'Chat',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-        ),
-      ],
+    return BlocBuilder<RoleBloc, RoleState>(
+      builder: (context, state) {
+        return BottomNavigationBar(
+          currentIndex: selectedIndex,
+          onTap: (index) => _onItemTapped(context, index),
+          selectedItemColor: Theme.of(context).primaryColor,
+          unselectedItemColor: Theme.of(context).unselectedWidgetColor,
+          showUnselectedLabels: true,
+          iconSize: 24,
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: 'Requests',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat),
+              label: 'Chat',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        );
+      },
     );
   }
 }

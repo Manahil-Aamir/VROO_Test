@@ -3,11 +3,11 @@ import 'package:vroo_test/features/driver_requests/domain/entity/active_ride.dar
 import '../../domain/repository/active_rides_repository.dart';
 import '../data_source/active_rides_data_source.dart';
 
-class ActiveRidesRepositoryImpl implements ActiveRidesRepository {
-  final ActiveRidesDataSource dataSource;
+class ActiveRidesDriverRepositoryImpl implements ActiveRidesDriverRepository {
+  final ActiveRidesDriverDataSource dataSource;
   final FirebaseAuth firebaseAuth;
 
-  ActiveRidesRepositoryImpl(this.dataSource, this.firebaseAuth);
+  ActiveRidesDriverRepositoryImpl(this.dataSource, this.firebaseAuth);
 
   // get user token after successful login
   Future<String> getUserToken() async {
@@ -17,8 +17,8 @@ class ActiveRidesRepositoryImpl implements ActiveRidesRepository {
   }
 
   @override
-  Future<List<ActiveRideEntity>> getActiveRides() async {
-    final rides = await dataSource.getActiveRides(await getUserToken());
+  Future<List<ActiveRideEntity>> getActiveRidesDriver() async {
+    final rides = await dataSource.getActiveRidesDriver(await getUserToken());
     return rides.map((model) => model.toEntity()).toList();
   }
 

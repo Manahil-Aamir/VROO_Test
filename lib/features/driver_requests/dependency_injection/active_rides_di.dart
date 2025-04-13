@@ -15,20 +15,20 @@ class ActiveRideDi {
   static List<SingleChildWidget> init() {
     final httpClient = http.Client();
     final firebaseAuth = FirebaseAuth.instance; 
-    final dataSource = ActiveRidesRemoteDataSource(httpClient);
-    final repository = ActiveRidesRepositoryImpl(dataSource, firebaseAuth);
-    final getActiveRides = GetActiveRides(repository);
+    final dataSource = ActiveRidesDriverRemoteDataSource(httpClient);
+    final repository = ActiveRidesDriverRepositoryImpl(dataSource, firebaseAuth);
+    final getActiveRidesDriver = GetActiveRidesDriver(repository);
     final cancelRide = CancelRide(repository);
     final navigationProvider = Navigation();
 
     return [
-      Provider<ActiveRidesDataSource>(create: (_) => dataSource),
-      Provider<ActiveRidesRepository>(create: (_) => repository),
-      Provider<GetActiveRides>(create: (_) => getActiveRides),
+      Provider<ActiveRidesDriverDataSource>(create: (_) => dataSource),
+      Provider<ActiveRidesDriverRepository>(create: (_) => repository),
+      Provider<GetActiveRidesDriver>(create: (_) => getActiveRidesDriver),
       Provider<CancelRide>(create: (_) => cancelRide),
       Provider<Navigation>(create: (_) => navigationProvider),
-      BlocProvider<ActiveRidesBloc>(
-        create: (_) => ActiveRidesBloc(getActiveRides: getActiveRides, cancelRide: cancelRide),
+      BlocProvider<ActiveRidesDriverBloc>(
+        create: (_) => ActiveRidesDriverBloc(getActiveRidesDriver: getActiveRidesDriver, cancelRide: cancelRide),
       ),
     ];
   }

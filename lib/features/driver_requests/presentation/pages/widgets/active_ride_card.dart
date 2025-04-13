@@ -317,7 +317,7 @@ class ActiveRideCard extends StatelessWidget {
   }
 
   void _showCancelConfirmation(BuildContext context) {
-    final bloc = context.read<ActiveRidesBloc>();
+    final bloc = context.read<ActiveRidesDriverBloc>();
     showDialog(
       context: context,
       builder: (context) => CustomDialog(

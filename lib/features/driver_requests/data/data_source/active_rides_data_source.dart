@@ -4,18 +4,18 @@ import 'package:http/http.dart' as http;
 import '../../../../core/utils/constant/api_constants.dart';
 import '../model/active_ride_model.dart';
 
-abstract class ActiveRidesDataSource {
-  Future<List<ActiveRideModel>> getActiveRides(String token);
+abstract class ActiveRidesDriverDataSource {
+  Future<List<ActiveRideModel>> getActiveRidesDriver(String token);
   Future<void> cancelRide(String rideId, String token);
 }
 
-class ActiveRidesRemoteDataSource implements ActiveRidesDataSource {
+class ActiveRidesDriverRemoteDataSource implements ActiveRidesDriverDataSource {
   final http.Client client;
 
-  ActiveRidesRemoteDataSource(this.client);
+  ActiveRidesDriverRemoteDataSource(this.client);
 
   @override
-  Future<List<ActiveRideModel>> getActiveRides(String token) async {
+  Future<List<ActiveRideModel>> getActiveRidesDriver(String token) async {
     // print('Driver ID: $driverId');
     print('Token: $token');
     final response = await client.get(

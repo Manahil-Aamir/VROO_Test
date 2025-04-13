@@ -1,7 +1,7 @@
 import '../repository/active_rides_repository.dart';
 
 class CancelRide {
-  final ActiveRidesRepository repository;
+  final ActiveRidesDriverRepository repository;
 
   CancelRide(this.repository);
 

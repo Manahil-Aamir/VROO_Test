@@ -12,19 +12,19 @@ import '../bloc/state/active_rides_state.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import 'widgets/active_ride_card.dart';
 
-class ActiveRidesScreen extends StatefulWidget {
+class ActiveRidesDriverScreen extends StatefulWidget {
   final String id;
-  const ActiveRidesScreen({super.key, required this.id});
+  const ActiveRidesDriverScreen({super.key, required this.id});
 
   @override
-  State<ActiveRidesScreen> createState() => _ActiveRidesScreenState();
+  State<ActiveRidesDriverScreen> createState() => _ActiveRidesDriverScreenState();
 }
 
-class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
+class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ActiveRidesBloc>().add(FetchActiveRides());
+    context.read<ActiveRidesDriverBloc>().add(FetchActiveRidesDriver());
   }
 
   // Function to show date picker
@@ -49,7 +49,7 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
     );
 
     if (picked != null) {
-      context.read<ActiveRidesBloc>().add(FilterRidesByDate(picked));
+      context.read<ActiveRidesDriverBloc>().add(FilterRidesByDate(picked));
     }
   }
 
@@ -63,21 +63,21 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
         }
         return false; // Prevents the default back action
       },
-      child: BlocListener<ActiveRidesBloc, ActiveRidesState>(
+      child: BlocListener<ActiveRidesDriverBloc, ActiveRidesDriverState>(
         listener: (context, state) {
-          if (state is ActiveRidesLoaded) {
+          if (state is ActiveRidesDriverLoaded) {
             // Show error snackbar if there's an error message
             if (state.errorMessage != null) {
               _showSnackBar(context, state.errorMessage!, isError: true);
               // Clear the error message to prevent showing it multiple times
-              context.read<ActiveRidesBloc>().add(ClearErrorEvent());
+              context.read<ActiveRidesDriverBloc>().add(ClearErrorEvent());
             }
             
             // Show success snackbar if there's a success message
             if (state.successMessage != null) {
               _showSnackBar(context, state.successMessage!, isError: false);
               // Clear the success message to prevent showing it multiple times
-              context.read<ActiveRidesBloc>().add(ClearErrorEvent());
+              context.read<ActiveRidesDriverBloc>().add(ClearErrorEvent());
             }
           }
         },
@@ -89,13 +89,13 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
               _buildDateFilter(),
               // Rides list
               Expanded(
-                child: BlocBuilder<ActiveRidesBloc, ActiveRidesState>(
+                child: BlocBuilder<ActiveRidesDriverBloc, ActiveRidesDriverState>(
                   builder: (context, state) {
-                    if (state is ActiveRidesLoading) {
+                    if (state is ActiveRidesDriverLoading) {
                       return const Center(child: CircularProgressIndicator());
-                    } else if (state is ActiveRidesError) {
+                    } else if (state is ActiveRidesDriverError) {
                       return Center(child: Text(state.message));
-                    } else if (state is ActiveRidesLoaded) {
+                    } else if (state is ActiveRidesDriverLoaded) {
                       if (state.filteredRides.isEmpty) {
                         return Center(
                           child: Column(
@@ -110,7 +110,7 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
                               if (state.selectedDate != null)
                                 TextButton(
                                   onPressed: () {
-                                    context.read<ActiveRidesBloc>().add(ClearDateFilter());
+                                    context.read<ActiveRidesDriverBloc>().add(ClearDateFilter());
                                   },
                                   child: Text(
                                     'Show all rides',
@@ -174,9 +174,9 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
   }
 
   Widget _buildDateFilter() {
-    return BlocBuilder<ActiveRidesBloc, ActiveRidesState>(
+    return BlocBuilder<ActiveRidesDriverBloc, ActiveRidesDriverState>(
       builder: (context, state) {
-        final selectedDate = state is ActiveRidesLoaded ? state.selectedDate : null;
+        final selectedDate = state is ActiveRidesDriverLoaded ? state.selectedDate : null;
         
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -242,7 +242,7 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
                         if (selectedDate != null)
                           GestureDetector(
                             onTap: () {
-                              context.read<ActiveRidesBloc>().add(ClearDateFilter());
+                              context.read<ActiveRidesDriverBloc>().add(ClearDateFilter());
                             },
                             child: Container(
                               padding: EdgeInsets.all(4.r),

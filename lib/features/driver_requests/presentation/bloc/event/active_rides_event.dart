@@ -1,23 +1,23 @@
-abstract class ActiveRidesEvent {}
+abstract class ActiveRidesDriverEvent {}
 
-class FetchActiveRides extends ActiveRidesEvent {
+class FetchActiveRidesDriver extends ActiveRidesDriverEvent {
   // final String driverId;
 
-  // FetchActiveRides(this.driverId);
+  // FetchActiveRidesDriver(this.driverId);
 }
 
-class FilterRidesByDate extends ActiveRidesEvent {
+class FilterRidesByDate extends ActiveRidesDriverEvent {
   final DateTime? selectedDate;
 
   FilterRidesByDate(this.selectedDate);
 }
 
-class ClearDateFilter extends ActiveRidesEvent {}
+class ClearDateFilter extends ActiveRidesDriverEvent {}
 
-class CancelRideEvent extends ActiveRidesEvent {
+class CancelRideEvent extends ActiveRidesDriverEvent {
   final String rideId;
 
   CancelRideEvent(this.rideId);
 }
 
-class ClearErrorEvent extends ActiveRidesEvent {}
+class ClearErrorEvent extends ActiveRidesDriverEvent {}

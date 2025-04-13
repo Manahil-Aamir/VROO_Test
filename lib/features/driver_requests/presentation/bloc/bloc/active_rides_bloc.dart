@@ -4,21 +4,21 @@ import '../../../domain/usecases/get_active_rides.dart';
 import '../event/active_rides_event.dart';
 import '../state/active_rides_state.dart';
 
-class ActiveRidesBloc extends Bloc<ActiveRidesEvent, ActiveRidesState> {
-  final GetActiveRides getActiveRides;
+class ActiveRidesDriverBloc extends Bloc<ActiveRidesDriverEvent, ActiveRidesDriverState> {
+  final GetActiveRidesDriver getActiveRidesDriver;
   final CancelRide cancelRide;
 
-  ActiveRidesBloc({
-    required this.getActiveRides,
+  ActiveRidesDriverBloc({
+    required this.getActiveRidesDriver,
     required this.cancelRide,
-  }) : super(ActiveRidesInitial()) {
-    on<FetchActiveRides>(_onFetchActiveRides);
+  }) : super(ActiveRidesDriverInitial()) {
+    on<FetchActiveRidesDriver>(_onFetchActiveRidesDriver);
     on<FilterRidesByDate>(_onFilterRidesByDate);
     on<ClearDateFilter>(_onClearDateFilter);
     on<CancelRideEvent>(_onCancelRideEvent);
     on<ClearErrorEvent>((event, emit) {
-      if (state is ActiveRidesLoaded) {
-        emit((state as ActiveRidesLoaded).copyWith(
+      if (state is ActiveRidesDriverLoaded) {
+        emit((state as ActiveRidesDriverLoaded).copyWith(
           errorMessage: null,
           successMessage: null,  
         ));
@@ -26,29 +26,29 @@ class ActiveRidesBloc extends Bloc<ActiveRidesEvent, ActiveRidesState> {
     });
   }
 
-  Future<void> _onFetchActiveRides(
-    FetchActiveRides event,
-    Emitter<ActiveRidesState> emit,
+  Future<void> _onFetchActiveRidesDriver(
+    FetchActiveRidesDriver event,
+    Emitter<ActiveRidesDriverState> emit,
   ) async {
-    emit(ActiveRidesLoading());
+    emit(ActiveRidesDriverLoading());
     try {
-      final rides = await getActiveRides.execute();
-      emit(ActiveRidesLoaded(rides: rides, filteredRides: rides));
+      final rides = await getActiveRidesDriver.execute();
+      emit(ActiveRidesDriverLoaded(rides: rides, filteredRides: rides));
     } catch (e) {
-      emit(ActiveRidesError(e.toString()));
+      emit(ActiveRidesDriverError(e.toString()));
     }
   }
 
   void _onFilterRidesByDate(
     FilterRidesByDate event,
-    Emitter<ActiveRidesState> emit,
+    Emitter<ActiveRidesDriverState> emit,
   ) {
-    if (state is ActiveRidesLoaded) {
-      final currentState = state as ActiveRidesLoaded;
+    if (state is ActiveRidesDriverLoaded) {
+      final currentState = state as ActiveRidesDriverLoaded;
       
       if (event.selectedDate == null) {
         // No date filter, show all rides
-        emit(ActiveRidesLoaded(
+        emit(ActiveRidesDriverLoaded(
           rides: currentState.rides,
           filteredRides: currentState.rides,
           selectedDate: null,
@@ -61,7 +61,7 @@ class ActiveRidesBloc extends Bloc<ActiveRidesEvent, ActiveRidesState> {
                  ride.date.day == event.selectedDate!.day;
         }).toList();
         
-        emit(ActiveRidesLoaded(
+        emit(ActiveRidesDriverLoaded(
           rides: currentState.rides,
           filteredRides: filteredRides,
           selectedDate: event.selectedDate,
@@ -72,11 +72,11 @@ class ActiveRidesBloc extends Bloc<ActiveRidesEvent, ActiveRidesState> {
 
   void _onClearDateFilter(
     ClearDateFilter event,
-    Emitter<ActiveRidesState> emit,
+    Emitter<ActiveRidesDriverState> emit,
   ) {
-    if (state is ActiveRidesLoaded) {
-      final currentState = state as ActiveRidesLoaded;
-      emit(ActiveRidesLoaded(
+    if (state is ActiveRidesDriverLoaded) {
+      final currentState = state as ActiveRidesDriverLoaded;
+      emit(ActiveRidesDriverLoaded(
         rides: currentState.rides,
         filteredRides: currentState.rides,
         selectedDate: null,
@@ -86,12 +86,12 @@ class ActiveRidesBloc extends Bloc<ActiveRidesEvent, ActiveRidesState> {
 
   Future<void> _onCancelRideEvent(
     CancelRideEvent event,
-    Emitter<ActiveRidesState> emit,
+    Emitter<ActiveRidesDriverState> emit,
   ) async {
     try {
-      if (state is! ActiveRidesLoaded) return;
+      if (state is! ActiveRidesDriverLoaded) return;
 
-      final currentState = state as ActiveRidesLoaded;
+      final currentState = state as ActiveRidesDriverLoaded;
       
       // Optimistically remove the ride
       final updatedRides = currentState.rides.where((r) => r.id != event.rideId).toList();
@@ -107,14 +107,14 @@ class ActiveRidesBloc extends Bloc<ActiveRidesEvent, ActiveRidesState> {
       await cancelRide.execute(event.rideId);
       
       // Show success message
-      emit((state as ActiveRidesLoaded).copyWith(
+      emit((state as ActiveRidesDriverLoaded).copyWith(
         successMessage: 'Ride cancelled successfully'
       ));
 
     } catch (e) {
       // Revert on error and show error message
-      if (state is ActiveRidesLoaded) {
-        emit((state as ActiveRidesLoaded).copyWith(
+      if (state is ActiveRidesDriverLoaded) {
+        emit((state as ActiveRidesDriverLoaded).copyWith(
           errorMessage: 'Failed to cancel ride: ${e.toString()}'
         ));
       }

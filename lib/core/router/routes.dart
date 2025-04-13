@@ -62,7 +62,7 @@ class Routes {
   static const String d1 = '/d1';
   static const String d2 = '/d2';
   static const String d3 = '/d3';
-  static const String activeRides = '/active_ride_page';
+  static const String active_rides_driver = '/active_ride_driver';
   static const String booking_confirm = '/booking_confirm_driver';
   static const String ride_request_status = '/ride_request_status';
   static const String riderhome = '/riderhome';
@@ -599,12 +599,12 @@ class Routes {
             ),
           ),
         );
-      case activeRides:
+      case active_rides_driver:
         final id =
             settings.arguments as String? ?? 'driver 86'; // Default to 'driver'
         return MaterialPageRoute(
           builder: (_) => MultiProvider(
-              providers: ActiveRideDi.init(), child: ActiveRidesScreen(id: id)),
+              providers: ActiveRideDi.init(), child: ActiveRidesDriverScreen(id: id)),
         );
       case '/booking_confirm_driver':
         return MaterialPageRoute(
