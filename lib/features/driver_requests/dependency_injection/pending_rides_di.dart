@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -14,8 +15,9 @@ import '../presentation/bloc/bloc/pending_rides_bloc.dart';
 class PendingRideDi {
   static List<SingleChildWidget> init() {
     final httpClient = http.Client();
+    final firebaseAuth = FirebaseAuth.instance;
     final dataSource = PendingRidesRemoteDataSource(httpClient);
-    final repository = PendingRidesRepositoryImpl(dataSource);
+    final repository = PendingRidesRepositoryImpl(dataSource, firebaseAuth);
     final getPendingRides = GetPendingRides(repository);
     final approveRideRequest = ApproveRideRequest(repository);
     final rejectRideRequest = RejectRideRequest(repository);

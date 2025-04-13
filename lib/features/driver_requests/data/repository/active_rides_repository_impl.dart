@@ -1,15 +1,29 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vroo_test/features/driver_requests/domain/entity/active_ride.dart';
 import '../../domain/repository/active_rides_repository.dart';
 import '../data_source/active_rides_data_source.dart';
 
 class ActiveRidesRepositoryImpl implements ActiveRidesRepository {
   final ActiveRidesDataSource dataSource;
+  final FirebaseAuth firebaseAuth;
 
-  ActiveRidesRepositoryImpl(this.dataSource);
+  ActiveRidesRepositoryImpl(this.dataSource, this.firebaseAuth);
+
+  // get user token after successful login
+  Future<String> getUserToken() async {
+    final user = firebaseAuth.currentUser!;
+    final token = await user.getIdToken();
+    return token!;
+  }
 
   @override
-  Future<List<ActiveRideEntity>> getActiveRides(String driverId) async {
-    final rides = await dataSource.getActiveRides(driverId);
+  Future<List<ActiveRideEntity>> getActiveRides() async {
+    final rides = await dataSource.getActiveRides(await getUserToken());
     return rides.map((model) => model.toEntity()).toList();
+  }
+
+  @override
+  Future<void> cancelRide(String rideId) async {
+    await dataSource.cancelRide(rideId, await getUserToken());
   }
 }

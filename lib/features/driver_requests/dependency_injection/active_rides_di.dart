@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -6,24 +7,28 @@ import '../../../core/router/navigation.dart';
 import '../data/data_source/active_rides_data_source.dart';
 import '../data/repository/active_rides_repository_impl.dart';
 import '../domain/repository/active_rides_repository.dart';
+import '../domain/usecases/cancel_ride.dart';
 import '../domain/usecases/get_active_rides.dart';
 import '../presentation/bloc/bloc/active_rides_bloc.dart';
 
 class ActiveRideDi {
   static List<SingleChildWidget> init() {
     final httpClient = http.Client();
+    final firebaseAuth = FirebaseAuth.instance; 
     final dataSource = ActiveRidesRemoteDataSource(httpClient);
-    final repository = ActiveRidesRepositoryImpl(dataSource);
+    final repository = ActiveRidesRepositoryImpl(dataSource, firebaseAuth);
     final getActiveRides = GetActiveRides(repository);
+    final cancelRide = CancelRide(repository);
     final navigationProvider = Navigation();
 
     return [
       Provider<ActiveRidesDataSource>(create: (_) => dataSource),
       Provider<ActiveRidesRepository>(create: (_) => repository),
       Provider<GetActiveRides>(create: (_) => getActiveRides),
+      Provider<CancelRide>(create: (_) => cancelRide),
       Provider<Navigation>(create: (_) => navigationProvider),
       BlocProvider<ActiveRidesBloc>(
-        create: (_) => ActiveRidesBloc(getActiveRides),
+        create: (_) => ActiveRidesBloc(getActiveRides: getActiveRides, cancelRide: cancelRide),
       ),
     ];
   }

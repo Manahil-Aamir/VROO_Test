@@ -4,8 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import '../../../../../core/router/navigation.dart';
 import '../../../../../core/theme/color/color_theme.dart';
+import '../../../../../shared/widgets/custom_dialog.dart';
 import '../../../../../shared/widgets/dialog_button.dart';
 import '../../../domain/entity/active_ride.dart';
+import '../../bloc/bloc/active_rides_bloc.dart';
+import '../../bloc/event/active_rides_event.dart';
 
 class ActiveRideCard extends StatelessWidget {
   final ActiveRideEntity ride;
@@ -53,45 +56,45 @@ class ActiveRideCard extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
-    return Row(
-      children: [
-        // Cancel Ride Button (now first)
-        Expanded(
-          child: SizedBox(
-            height: 33.h, // Constrain the height to be smaller
-            child: DialogButton(
-              onTap: () {
-                // Show cancel confirmation dialog
-                // _showCancelConfirmation(context);
-              },
-              text: 'Cancel',
-              color: ThemeColors.accentColor,
-            ),
-          ),
-        ),
+  // Widget _buildActionButtons(BuildContext context) {
+  //   return Row(
+  //     children: [
+  //       // Cancel Ride Button (now first)
+  //       Expanded(
+  //         child: SizedBox(
+  //           height: 33.h, // Constrain the height to be smaller
+  //           child: DialogButton(
+  //             onTap: () {
+  //               // Show cancel confirmation dialog
+  //               // _showCancelConfirmation(context);
+  //             },
+  //             text: 'Cancel',
+  //             color: ThemeColors.accentColor,
+  //           ),
+  //         ),
+  //       ),
         
-        SizedBox(width: 10.w),
+  //       SizedBox(width: 10.w),
         
-        // Start Ride Button (now second)
-        Expanded(
-          child: SizedBox(
-            height: 33.h, // Constrain the height to be smaller
-            child: DialogButton(
-              onTap: () {
-                context.read<Navigation>().navigateTo(
-                  '/start_ride',
-                  arguments: ride.id.toString(),
-                );
-              },
-              text: 'Start',
-              color: ThemeColors.primaryColor,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  //       // Start Ride Button (now second)
+  //       Expanded(
+  //         child: SizedBox(
+  //           height: 33.h, // Constrain the height to be smaller
+  //           child: DialogButton(
+  //             onTap: () {
+  //               context.read<Navigation>().navigateTo(
+  //                 '/start_ride',
+  //                 arguments: ride.id.toString(),
+  //               );
+  //             },
+  //             text: 'Start',
+  //             color: ThemeColors.primaryColor,
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildDateTimeRow(BuildContext context, TextTheme textTheme) {
     final maxArrival = TimeOfDay(
@@ -272,5 +275,70 @@ class ActiveRideCard extends StatelessWidget {
       ],
     );
   }
+
+  Widget _buildActionButtons(BuildContext context) {
+    return Row(
+      children: [
+        // Cancel Ride Button (now first)
+        Expanded(
+          child: SizedBox(
+            height: 33.h, // Constrain the height to be smaller
+            child: DialogButton(
+              onTap: () {
+                // Show cancel confirmation dialog
+                _showCancelConfirmation(context);
+              },
+              text: 'Cancel',
+              color: ThemeColors.accentColor,
+            ),
+          ),
+        ),
+        
+        SizedBox(width: 10.w),
+        
+        // Start Ride Button (now second)
+        Expanded(
+          child: SizedBox(
+            height: 33.h, // Constrain the height to be smaller
+            child: DialogButton(
+              onTap: () {
+                context.read<Navigation>().navigateTo(
+                  '/start_ride',
+                  arguments: ride.id.toString(),
+                );
+              },
+              text: 'Start',
+              color: ThemeColors.primaryColor,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showCancelConfirmation(BuildContext context) {
+    final bloc = context.read<ActiveRidesBloc>();
+    showDialog(
+      context: context,
+      builder: (context) => CustomDialog(
+        title: "Cancel Ride",
+        message: "Are you sure you want to cancel this ride?",
+        confirmText: "Yes",
+        cancelText: "No",
+        confirmColor: ThemeColors.accentColor,
+        cancelColor: ThemeColors.primaryColor,
+        onConfirm: () {
+          // Dispatch the event
+          bloc.add(CancelRideEvent(ride.id.toString()));
+          Navigator.of(context).pop();
+        },
+        onCancel: () {
+          // Close the dialog without canceling
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+  }
+
 }
 

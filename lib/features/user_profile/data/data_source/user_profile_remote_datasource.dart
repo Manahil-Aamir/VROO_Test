@@ -11,7 +11,7 @@ abstract class UserProfileRemoteDataSource {
 
 class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
   final http.Client client;
-  // final String baseUrl = "http://10.0.2.2:3000/users/profile";
+  // final String baseUrl = "http://10.0.2.2:8080/users/profile";
   final String baseUrl = "${ApiConstants.baseUrl}users/profile";
 
   UserProfileRemoteDataSourceImpl({required this.client});

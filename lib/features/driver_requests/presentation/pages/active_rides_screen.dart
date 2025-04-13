@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,8 +24,7 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
   @override
   void initState() {
     super.initState();
-    final user = FirebaseAuth.instance.currentUser;
-    context.read<ActiveRidesBloc>().add(FetchActiveRides(user!.uid));
+    context.read<ActiveRidesBloc>().add(FetchActiveRides());
   }
 
   // Function to show date picker
@@ -65,64 +63,111 @@ class _ActiveRidesScreenState extends State<ActiveRidesScreen> {
         }
         return false; // Prevents the default back action
       },
-      child: Scaffold(
-        appBar: AppBarNoIcon(heading: 'Your Rides'),
-        body: Column(
-        children: [
-          // Date filter section
-          _buildDateFilter(),
-          // Rides list
-          Expanded(
-            child: BlocBuilder<ActiveRidesBloc, ActiveRidesState>(
-                builder: (context, state) {
-                  if (state is ActiveRidesLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is ActiveRidesError) {
-                    return Center(child: Text(state.message));
-                  } else if (state is ActiveRidesLoaded) {
-                    if (state.filteredRides.isEmpty) {
-                      return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                          Text(
-                              state.selectedDate != null
-                                ? 'No rides found for this date'
-                                : 'Please create a ride',
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                            ),
-                          if (state.selectedDate != null)
-                            TextButton(
-                              onPressed: () {
-                                context.read<ActiveRidesBloc>().add(ClearDateFilter());
-                              },
-                              child: Text(
-                                'Show all rides',
-                                style: TextStyle(
-                                  color: ThemeColors.primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
+      child: BlocListener<ActiveRidesBloc, ActiveRidesState>(
+        listener: (context, state) {
+          if (state is ActiveRidesLoaded) {
+            // Show error snackbar if there's an error message
+            if (state.errorMessage != null) {
+              _showSnackBar(context, state.errorMessage!, isError: true);
+              // Clear the error message to prevent showing it multiple times
+              context.read<ActiveRidesBloc>().add(ClearErrorEvent());
+            }
+            
+            // Show success snackbar if there's a success message
+            if (state.successMessage != null) {
+              _showSnackBar(context, state.successMessage!, isError: false);
+              // Clear the success message to prevent showing it multiple times
+              context.read<ActiveRidesBloc>().add(ClearErrorEvent());
+            }
+          }
+        },
+        child: Scaffold(
+          appBar: AppBarNoIcon(heading: 'Your Rides'),
+          body: Column(
+            children: [
+              // Date filter section
+              _buildDateFilter(),
+              // Rides list
+              Expanded(
+                child: BlocBuilder<ActiveRidesBloc, ActiveRidesState>(
+                  builder: (context, state) {
+                    if (state is ActiveRidesLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is ActiveRidesError) {
+                      return Center(child: Text(state.message));
+                    } else if (state is ActiveRidesLoaded) {
+                      if (state.filteredRides.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                state.selectedDate != null
+                                  ? 'No rides found for this date'
+                                  : 'Please create a ride',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                               ),
-                            ),
-                        ],
-                      ),
+                              if (state.selectedDate != null)
+                                TextButton(
+                                  onPressed: () {
+                                    context.read<ActiveRidesBloc>().add(ClearDateFilter());
+                                  },
+                                  child: Text(
+                                    'Show all rides',
+                                    style: TextStyle(
+                                      color: ThemeColors.primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                        itemCount: state.filteredRides.length,
+                        itemBuilder: (context, index) => ActiveRideCard(
+                          ride: state.filteredRides[index],
+                        ),
                       );
                     }
-                    return ListView.builder(
-                      itemCount: state.filteredRides.length,
-                      itemBuilder: (context, index) => ActiveRideCard(
-                        ride: state.filteredRides[index],
-                      ),
-                    );
-                  }
-                  return const Center(child: Text('Fetching rides...'));
-                },
+                    return const Center(child: Text('Fetching rides...'));
+                  },
+                ),
               ),
+            ],
           ),
-        ],
+          bottomNavigationBar: CustomBottomNavBar(
+            selectedIndex: 1,
+          ),
+        ),
       ),
-        bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 1,
+    );
+  }
+
+  // Add this method to show snackbars
+  void _showSnackBar(BuildContext context, String message, {required bool isError}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            color: ThemeColors.buttonTextColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        backgroundColor: isError 
+            ? Colors.red  // Red background for errors
+            : Colors.green,  // Green background for success
+        duration: Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(
+          bottom: 70.h,  // Positioning above bottom nav bar
+          left: 16.w,
+          right: 16.w,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.r),
         ),
       ),
     );

@@ -6,7 +6,7 @@ class GetActiveRides {
 
   GetActiveRides(this.repository);
 
-  Future<List<ActiveRideEntity>> execute(String driverId) async {
-    return await repository.getActiveRides(driverId);
+  Future<List<ActiveRideEntity>> execute() async {
+    return await repository.getActiveRides();
   }
 }

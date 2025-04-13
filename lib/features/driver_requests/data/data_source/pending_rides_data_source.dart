@@ -5,9 +5,9 @@ import '../../../../core/utils/constant/api_constants.dart';
 import '../model/pending_rides_model.dart';
 
 abstract class PendingRidesDataSource {
-  Future<List<PendingRidesModel>> getPendingRides(String driverId);
-  Future<void> approveRideRequest(String rideRequestId, String rideId);
-  Future<void> rejectRideRequest(String rideRequestId, String rideId);
+  Future<List<PendingRidesModel>> getPendingRides(String driverId, String token);
+  Future<void> approveRideRequest(String rideRequestId, String rideId, String token);
+  Future<void> rejectRideRequest(String rideRequestId, String rideId, String token);
 }
 
 class PendingRidesRemoteDataSource implements PendingRidesDataSource {
@@ -16,14 +16,19 @@ class PendingRidesRemoteDataSource implements PendingRidesDataSource {
   PendingRidesRemoteDataSource(this.client);
 
   @override
-  Future<List<PendingRidesModel>> getPendingRides(String rideId) async {
+  Future<List<PendingRidesModel>> getPendingRides(String rideId, String token) async {
     try {
       print('Fetching ride details for ride ID: $rideId');
       final response = await client.get(
-      Uri.parse(
-        // 'http://10.0.2.2:8080/driver/v2/ride-requests/$rideId',
-        '${ApiConstants.baseUrl}driver/v2/ride-requests/$rideId'
-      ),);
+        Uri.parse(
+          // 'http://10.0.2.2:8080/driver/v2/ride-requests/$rideId',
+          '${ApiConstants.baseUrl}driver/v2/ride-requests/$rideId'
+        ),
+        headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      );
 
       print('Response status: ${response.statusCode}');
       print('Response body for pending rides: ${response.body}');
@@ -51,24 +56,36 @@ class PendingRidesRemoteDataSource implements PendingRidesDataSource {
   }
 
   @override
-  Future<void> approveRideRequest(String rideRequestId, String rideId) async {
+  Future<void> approveRideRequest(String rideRequestId, String rideId, String token) async {
     final url =
       // 'http://10.0.2.2:8080/ride/ride-request/join/$rideRequestId/approve'
-      '${ApiConstants.baseUrl}ride/ride-request/join/$rideRequestId/approve'
-    ;
-    final response = await client.post(Uri.parse(url));
+      '${ApiConstants.baseUrl}ride/ride-request/join/$rideRequestId/approve';
+
+    final response = await client.post(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
     if (response.statusCode != 200 && response.statusCode != 201){
       throw Exception('Approval failed: ${response.statusCode}');
     }
   }
 
   @override
-  Future<void> rejectRideRequest(String rideRequestId, String rideId) async {
+  Future<void> rejectRideRequest(String rideRequestId, String rideId, String token) async {
     final url = 
       // 'http://10.0.2.2:8080/ride/ride-request/join/$rideRequestId/reject'
       '${ApiConstants.baseUrl}ride/ride-request/join/$rideRequestId/reject'
     ;
-    final response = await client.post(Uri.parse(url));
+    final response = await client.post(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
     print('Rejection response: ${response.body}');
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception('Rejection failed: ${response.statusCode}');
