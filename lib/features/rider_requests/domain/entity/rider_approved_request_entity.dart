@@ -1,8 +1,9 @@
 import '../../../cars/domain/entity/car.dart';
 import '../../../driver_requests/domain/entity/location_entity.dart';
 import '../../../driver_requests/domain/entity/ratings.dart';
+import '../../../driver_requests/domain/entity/driver_rider_detail.dart';
 
-class ApprovedRideEntity {
+class RiderApprovedRequest {
   final String id;
   final String driverId;
   final LocationEntity source;
@@ -10,10 +11,10 @@ class ApprovedRideEntity {
   final DateTime date;
   final DateTime departureTime;
   final CarEntity car;
-  final List<PassengerInfoEntity> passengerInfo;
+  final List<DriverRiderDetail> passengers;  
   final DriverEntity driver;
 
-  ApprovedRideEntity({
+  RiderApprovedRequest({
     required this.id,
     required this.driverId,
     required this.source,
@@ -21,18 +22,8 @@ class ApprovedRideEntity {
     required this.date,
     required this.departureTime,
     required this.car,
-    required this.passengerInfo,
+    required this.passengers,
     required this.driver,
-  });
-}
-
-class PassengerInfoEntity {
-  final String name;
-  final Ratings ratings;
-
-  PassengerInfoEntity({
-    required this.name,
-    required this.ratings,
   });
 }
 

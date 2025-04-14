@@ -2,7 +2,7 @@ import '../../../driver_requests/domain/entity/location_entity.dart';
 import '../../../driver_requests/domain/entity/preferences.dart';
 import '../../../driver_requests/domain/entity/time_range.dart';
 
-class RiderPendingRequestEntity {
+class RiderPendingRequest {
   final String id;
   final LocationEntity source;
   final LocationEntity destination;
@@ -14,7 +14,7 @@ class RiderPendingRequestEntity {
   final Preferences preferences;
   final int numOfPassengers;
 
-  RiderPendingRequestEntity({
+  RiderPendingRequest({
     required this.id,
     required this.source,
     required this.destination,

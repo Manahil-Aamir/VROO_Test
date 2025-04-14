@@ -21,7 +21,7 @@ class Car {
 
   factory Car.fromJson(Map<String, dynamic> json) {
     return Car(
-      carId: json['_id'], 
+      carId: json['carId'] ?? json['_id'] ?? '',      
       company: json['company'] , 
       model: json['model'],     
       color: json['color'],     
