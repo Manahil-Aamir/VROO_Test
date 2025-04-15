@@ -26,7 +26,7 @@ class RiderApprovedTab extends StatelessWidget {
             return const Center(child: Text('No approved requests found'));
           }
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            // padding: const EdgeInsets.all(16),
             itemCount: state.requests.length,
             itemBuilder: (context, index) => ApprovedRequestCard(
               request: state.requests[index],
