@@ -17,30 +17,32 @@ class ApprovedRequestCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {},
-      child: Card(
-        elevation: 2,
-        margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14.r),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: ThemeColors.primaryColorDark,
+          borderRadius: BorderRadius.circular(16.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6,
+              offset: Offset(0, 3),
+            )
+          ],
         ),
-        color: ThemeColors.primaryColorDark,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+          padding: EdgeInsets.all(14.r),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDateTimeRow(context, textTheme),
-              Divider(
-                color: ThemeColors.buttonTextColor.withOpacity(0.15),
-                height: 16.h,
-                thickness: 0.5,
-              ),
+              _buildDateTimeRow(textTheme),
+              Divider(color: ThemeColors.buttonTextColor.withOpacity(0.2), height: 18.h),
               _buildDriverAndCarInfo(context, textTheme),
-              SizedBox(height: 10.h),
+              SizedBox(height: 12.h),
               _buildRouteInfo(textTheme),
-              SizedBox(height: 10.h),
+              SizedBox(height: 12.h),
               _buildPassengerInfo(textTheme),
-              SizedBox(height: 10.h),
+              SizedBox(height: 14.h),
               _buildActionButtons(context),
             ],
           ),
@@ -49,41 +51,33 @@ class ApprovedRequestCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDateTimeRow(BuildContext context, TextTheme textTheme) {
+  Widget _buildDateTimeRow(TextTheme textTheme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Date info
         Row(
           children: [
-            SizedBox(width: 2.w),
-            Icon(Icons.calendar_today, size: 14.r, color: ThemeColors.primaryColor),
+            Icon(Icons.calendar_today_rounded, size: 14.r, color: ThemeColors.primaryColor),
             SizedBox(width: 6.w),
             Text(
               DateFormat('dd MMM yyyy').format(request.date),
-              style: textTheme.bodySmall?.copyWith(
+              style: textTheme.labelMedium?.copyWith(
+                fontSize: 13.sp,
                 color: ThemeColors.buttonTextColor,
-                fontSize: 12.sp,
               ),
             ),
           ],
         ),
-        
-        // Departure time info
         Row(
           children: [
-            Icon(
-              Icons.access_time_rounded, 
-              color: ThemeColors.primaryColor, 
-              size: 16.r
-            ),
+            Icon(Icons.access_time_rounded, size: 16.r, color: ThemeColors.primaryColor),
             SizedBox(width: 4.w),
             Text(
               DateFormat('h:mm a').format(request.departureTime),
               style: textTheme.bodyMedium?.copyWith(
-                color: ThemeColors.buttonTextColor,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 fontSize: 13.sp,
+                color: ThemeColors.buttonTextColor,
               ),
             ),
           ],
@@ -153,127 +147,80 @@ class ApprovedRequestCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(10.r),
       decoration: BoxDecoration(
-        color: ThemeColors.primaryColor.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(
-          color: ThemeColors.primaryColor.withOpacity(0.2),
-          width: 1,
-        ),
+        color: ThemeColors.primaryColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
         children: [
-          // Driver info
+          CircleAvatar(
+            radius: 22.r,
+            backgroundColor: ThemeColors.primaryColor,
+            child: Text(
+              request.driver.name[0].toUpperCase(),
+              style: textTheme.titleMedium?.copyWith(
+                color: ThemeColors.buttonTextColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 16.sp,
+              ),
+            ),
+          ),
+          SizedBox(width: 10.w),
           Expanded(
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundColor: ThemeColors.primaryColor,
-                  radius: 16.r,
-                  child: Text(
-                    request.driver.name.substring(0, 1).toUpperCase(),
-                    style: textTheme.titleMedium?.copyWith(
-                      fontSize: 14.sp,
+                Text(
+                  request.driver.name,
+                  style: textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.sp,
+                    color: ThemeColors.buttonTextColor,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Row(
+                  children: [
+                    Icon(Icons.star_rounded, color: Colors.amber, size: 14.r),
+                    SizedBox(width: 3.w),
+                    Text(
+                      '${request.driver.rating.asDriver} · ${request.driver.totalRides.asDriver} rides',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: ThemeColors.buttonTextColor.withOpacity(0.7),
+                        fontSize: 11.sp,
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(height: 4.h),
+              Row(
+                children: [
+                  Icon(Icons.directions_car_filled_rounded, color: ThemeColors.primaryColor, size: 18.r),
+                  SizedBox(width: 4.w),
+                  Text(
+                    '${request.car.company} ${request.car.model}',
+                    style: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.bold,
+                      fontSize: 13.sp,
                       color: ThemeColors.buttonTextColor,
                     ),
                   ),
+                ],
+              ),
+              Text(
+                '${request.car.color} · ${request.car.numberPlate}',
+                style: textTheme.bodySmall?.copyWith(
+                  fontSize: 11.sp,
+                  color: ThemeColors.buttonTextColor.withOpacity(0.8),
                 ),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        request.driver.name,
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13.sp,
-                          color: ThemeColors.buttonTextColor,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.amber, size: 12.r),
-                          SizedBox(width: 2.w),
-                          Text(
-                            '${request.driver.rating.asDriver} · ${request.driver.totalRides.asDriver} rides',
-                            style: textTheme.bodySmall?.copyWith(
-                              fontSize: 11.sp,
-                              color: ThemeColors.buttonTextColor.withOpacity(0.8),
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  padding: EdgeInsets.all(6.r),
-                  child: Icon(
-                    Icons.phone,
-                    color: Colors.green,
-                    size: 14.r,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
-          // Divider
-          SizedBox(width: 8.w),
-          Container(
-            height: 36.h,
-            width: 1,
-            color: ThemeColors.primaryColor.withOpacity(0.2),
-          ),
-          SizedBox(width: 8.w),
-          
-          // Car info
-          Expanded(
-            child: Row(
-              children: [
-                Icon(
-                  Icons.directions_car, 
-                  size: 20.r, 
-                  color: ThemeColors.primaryColor
-                ),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${request.car.company} ${request.car.model}',
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13.sp,
-                          color: ThemeColors.buttonTextColor,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        '${request.car.color} · ${request.car.numberPlate}',
-                        style: textTheme.bodySmall?.copyWith(
-                          fontSize: 11.sp,
-                          color: ThemeColors.buttonTextColor.withOpacity(0.8),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
@@ -281,46 +228,44 @@ class ApprovedRequestCard extends StatelessWidget {
   }
 
   Widget _buildPassengerInfo(TextTheme textTheme) {
-    if (request.passengers.isEmpty) {
-      return SizedBox.shrink();
-    }
-    
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          Text(
-            'Passengers: ',
-            style: textTheme.bodySmall?.copyWith(
-              fontSize: 12.sp,
-              color: ThemeColors.buttonTextColor,
-              fontWeight: FontWeight.w500,
-            ),
+    if (request.passengers.isEmpty) return SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Passengers:',
+          style: textTheme.bodySmall?.copyWith(
+            fontWeight: FontWeight.w500,
+            fontSize: 12.sp,
+            color: ThemeColors.buttonTextColor,
           ),
-          ...request.passengers.map((passenger) {
-            return Container(
-              margin: EdgeInsets.only(right: 6.w),
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: ThemeColors.primaryColor.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(10.r),
-                border: Border.all(
-                  color: ThemeColors.primaryColor.withOpacity(0.3),
-                  width: 1,
+        ),
+        SizedBox(height: 6.h),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: request.passengers.map((passenger) {
+              return Container(
+                margin: EdgeInsets.only(right: 6.w),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                decoration: BoxDecoration(
+                  color: ThemeColors.primaryColor.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
-              ),
-              child: Text(
-                passenger.name,
-                style: textTheme.bodySmall?.copyWith(
-                  fontSize: 12.sp,
-                  color: ThemeColors.buttonTextColor,
-                  fontWeight: FontWeight.w500,
+                child: Text(
+                  passenger.name,
+                  style: textTheme.bodySmall?.copyWith(
+                    fontSize: 12.sp,
+                    color: ThemeColors.buttonTextColor,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            );
-          }).toList(),
-        ],
-      ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -329,50 +274,42 @@ class ApprovedRequestCard extends StatelessWidget {
       children: [
         Expanded(
           child: SizedBox(
-            height: 36.h,
+            height: 38.h,
             child: DialogButton(
-              onTap: () {
-                // For messaging functionality
-              },
+              onTap: () {},
               text: 'Message',
               color: ThemeColors.primaryColor,
             ),
           ),
         ),
-        SizedBox(width: 10.w),
+        SizedBox(width: 12.w),
         Expanded(
           child: SizedBox(
-            height: 36.h,
+            height: 38.h,
             child: DialogButton(
-              onTap: () {
-                _showCancelConfirmation(context);
-              },
+              onTap: () => _showCancelConfirmation(context),
               text: 'Cancel',
               color: ThemeColors.accentColor,
+              // radius: 12.r,
             ),
           ),
         ),
       ],
     );
   }
-  
+
   void _showCancelConfirmation(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => CustomDialog(
+      builder: (_) => CustomDialog(
         title: "Cancel Ride",
         message: "Are you sure you want to cancel this approved ride?",
         confirmText: "Yes",
         cancelText: "No",
         confirmColor: ThemeColors.accentColor,
         cancelColor: ThemeColors.primaryColor,
-        onConfirm: () {
-          // Functionality to be added later
-          Navigator.of(context).pop();
-        },
-        onCancel: () {
-          Navigator.of(context).pop();
-        },
+        onConfirm: () => Navigator.of(context).pop(),
+        onCancel: () => Navigator.of(context).pop(),
       ),
     );
   }
