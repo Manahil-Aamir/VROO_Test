@@ -18,6 +18,8 @@ class LocationSelectionBloc
     on<FetchSuggestionsEvent>(_onFetchSuggestions);
     on<SaveLocationEvent>(_onSaveLocation);
     on<GetLocationEvent>(_onGetLocation);
+    on<FetchPlaceIdFromLatLngEvent>(
+        _onFetchPlaceIdFromLatLng); // 👈 New event handler
   }
 
   Future<void> _onFetchSuggestions(
@@ -47,6 +49,23 @@ class LocationSelectionBloc
     final location = await getLocation.execute(event.role);
     if (location != null) {
       emit(LocationSelectionLoaded([location]));
+    }
+  }
+
+  Future<void> _onFetchPlaceIdFromLatLng(
+    FetchPlaceIdFromLatLngEvent event,
+    Emitter<LocationSelectionState> emit,
+  ) async {
+    emit(LocationSelectionLoading());
+    try {
+      final placeId = await fetchSuggestions.getPlaceId(event.lat, event.lng);
+      if (placeId != null) {
+        emit(PlaceIdLoaded(placeId));
+      } else {
+        emit(LocationSelectionError('Place ID not found'));
+      }
+    } catch (e) {
+      emit(LocationSelectionError(e.toString()));
     }
   }
 }

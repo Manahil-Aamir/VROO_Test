@@ -4,13 +4,13 @@ import '../../../../core/theme/color/color_theme.dart';
 
 class EnvironmentalImpact extends StatelessWidget {
   final dynamic user;
-  
-  const EnvironmentalImpact({Key? key, required this.user}) : super(key: key);
+
+  const EnvironmentalImpact({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -107,8 +107,8 @@ class EnvironmentalImpact extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            Icons.insights, 
-            color: ThemeColors.secondaryColor, 
+            Icons.insights,
+            color: ThemeColors.secondaryColor,
             size: 24.w,
           ),
           SizedBox(width: 12.w),

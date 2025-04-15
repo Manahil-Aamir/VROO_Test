@@ -18,7 +18,7 @@ class ChatFirestoreDataSourceImpl implements ChatFirestoreDataSource {
   @override
   Future<void> sendMessage(ChatMessageModel message) async {
     String chatId = _getChatId(message.senderId, message.receiverId);
-    
+
     print('Sending message to chatId: $chatId');
     print('Message details: ${message.toJson()}');
 
@@ -28,37 +28,40 @@ class ChatFirestoreDataSourceImpl implements ChatFirestoreDataSource {
           .doc(chatId)
           .collection('messages')
           .add(message.toJson());
-      
+
       // Update last message info
       await updateLastMessage(message);
-      
+
       print('Message sent successfully');
     } catch (e) {
       print('Error sending message: $e');
-      throw e;
+      rethrow;
     }
   }
 
   @override
   Future<void> updateLastMessage(ChatMessageModel message) async {
     String chatId = _getChatId(message.senderId, message.receiverId);
-    
+
     // Get current unread count if exists
     final chatDoc = await firestore.collection('chats').doc(chatId).get();
     int currentUnreadCount = 0;
-    
+
     if (chatDoc.exists) {
       final data = chatDoc.data();
-      if (data != null && data.containsKey('unreadCount_${message.receiverId}')) {
+      if (data != null &&
+          data.containsKey('unreadCount_${message.receiverId}')) {
         currentUnreadCount = data['unreadCount_${message.receiverId}'] as int;
       }
     }
-    
+
     await firestore.collection('chats').doc(chatId).set({
       'lastMessage': message.message,
-      'lastMessageTime': message.timestamp.toIso8601String(), // Store as ISO string for consistency
+      'lastMessageTime': message.timestamp
+          .toIso8601String(), // Store as ISO string for consistency
       'participants': [message.senderId, message.receiverId],
-      'unreadCount_${message.receiverId}': currentUnreadCount + 1, // Increment unread count for receiver
+      'unreadCount_${message.receiverId}':
+          currentUnreadCount + 1, // Increment unread count for receiver
       'lastSender': message.senderId, // Track who sent the last message
     }, SetOptions(merge: true));
 
@@ -68,9 +71,14 @@ class ChatFirestoreDataSourceImpl implements ChatFirestoreDataSource {
 
   @override
   Stream<Map<String, dynamic>?> streamLastMessageInfo(String chatId) {
-    return firestore.collection('chats').doc(chatId).snapshots().map((snapshot) {
+    return firestore
+        .collection('chats')
+        .doc(chatId)
+        .snapshots()
+        .map((snapshot) {
       if (!snapshot.exists) return null;
-      return snapshot.data()!..['chatId'] = chatId; // Include chatId in the data
+      return snapshot.data()!
+        ..['chatId'] = chatId; // Include chatId in the data
     });
   }
 
@@ -83,7 +91,7 @@ class ChatFirestoreDataSourceImpl implements ChatFirestoreDataSource {
       print('Marked messages as read for user: $userId in chat: $chatId');
     } catch (e) {
       print('Error marking messages as read: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -97,41 +105,42 @@ class ChatFirestoreDataSourceImpl implements ChatFirestoreDataSource {
       return null;
     } catch (e) {
       print('Error getting chat info: $e');
-      throw e;
+      rethrow;
     }
   }
 
   @override
   Stream<List<ChatMessageModel>> getMessages(String chatId, [int limit = 20]) {
     print('Getting messages for chatId: $chatId, limit: $limit');
-    
+
     return firestore
         .collection('chats')
         .doc(chatId)
         .collection('messages')
-        .orderBy('timestamp', descending: true) // Get newest first for pagination
+        .orderBy('timestamp',
+            descending: true) // Get newest first for pagination
         .limit(limit)
         .snapshots()
         .map((snapshot) {
-          final messages = snapshot.docs
-              .map((doc) {
-                try {
-                  return ChatMessageModel.fromJson(doc.data());
-                } catch (e) {
-                  print('Error parsing message: $e');
-                  return null;
-                }
-              })
-              .where((message) => message != null)
-              .cast<ChatMessageModel>()
-              .toList();
-          
-          // Reverse the list to get oldest first for display
-          messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-          
-          print('Retrieved ${messages.length} messages');
-          return messages;
-        });
+      final messages = snapshot.docs
+          .map((doc) {
+            try {
+              return ChatMessageModel.fromJson(doc.data());
+            } catch (e) {
+              print('Error parsing message: $e');
+              return null;
+            }
+          })
+          .where((message) => message != null)
+          .cast<ChatMessageModel>()
+          .toList();
+
+      // Reverse the list to get oldest first for display
+      messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+      print('Retrieved ${messages.length} messages');
+      return messages;
+    });
   }
 
   String _getChatId(String user1, String user2) {

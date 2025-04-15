@@ -105,7 +105,7 @@ class MatchCard extends StatelessWidget {
                           "rideId": rideId,
                           "rideRequestId": id,
                           "driverId": driverName,
-                          "riderId": user!.uid,
+                          "riderId": user.uid,
                           // "riderId": "new2"
                         };
                         context

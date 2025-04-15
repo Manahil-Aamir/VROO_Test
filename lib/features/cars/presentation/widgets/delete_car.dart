@@ -10,7 +10,7 @@ import '../bloc/event/car_event.dart';
 class DeleteCarWidget extends StatelessWidget {
   final CarEntity car;
 
-  const DeleteCarWidget({Key? key, required this.car}) : super(key: key);
+  const DeleteCarWidget({super.key, required this.car});
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,7 @@ class DeleteCarWidget extends StatelessWidget {
   void _deleteCar(BuildContext context) {
     final carBloc = BlocProvider.of<CarBloc>(context);
     carBloc.add(DeleteCar(car.carId));
-    
+
     // Show a progress indicator while the car is being deleted
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

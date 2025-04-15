@@ -8,7 +8,8 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
   final UserProfileRemoteDataSource remoteDataSource;
   final FirebaseAuth firebaseAuth;
 
-  UserProfileRepositoryImpl({required this.remoteDataSource, required this.firebaseAuth});
+  UserProfileRepositoryImpl(
+      {required this.remoteDataSource, required this.firebaseAuth});
 
   Future<String> getToken() async {
     final user = firebaseAuth.currentUser;
@@ -29,7 +30,10 @@ class UserProfileRepositoryImpl implements UserProfileRepository {
     return await remoteDataSource.getUserProfile(await getToken());
   }
 
-  Future<UserProfile> updateUserProfile({String? name, String? phoneNumber}) async {
-    return await remoteDataSource.updateUserProfile(name: name, phoneNumber: phoneNumber, token: await getToken());
+  @override
+  Future<UserProfile> updateUserProfile(
+      {String? name, String? phoneNumber}) async {
+    return await remoteDataSource.updateUserProfile(
+        name: name, phoneNumber: phoneNumber, token: await getToken());
   }
 }

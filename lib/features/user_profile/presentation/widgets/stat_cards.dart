@@ -5,7 +5,7 @@ import '../../../../core/theme/color/color_theme.dart';
 class StatCards extends StatelessWidget {
   final dynamic user;
 
-  const StatCards({Key? key, required this.user}) : super(key: key);
+  const StatCards({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {

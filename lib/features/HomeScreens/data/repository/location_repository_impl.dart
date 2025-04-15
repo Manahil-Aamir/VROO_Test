@@ -27,4 +27,8 @@ class LocationRepositoryImpl implements LocationRepository {
     final model = await dataSource.getSelectedLocation(role);
     return model?.toEntity();
   }
+
+  Future<String?> getPlaceId(double lat, double lng) async {
+    return dataSource.getPlaceId(lat, lng);
+  }
 }

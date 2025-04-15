@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../../shared/widgets/dialog_button.dart';
 import '../bloc/bloc/home_bloc.dart';
 import '../bloc/event/home_event.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LogoutDialog {

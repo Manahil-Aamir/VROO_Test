@@ -8,6 +8,7 @@ import io.flutter.plugin.common.StandardMessageCodec
 
 class NativeMapFactory(private val messenger: BinaryMessenger) : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
     override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
-        return NativeMapView(context, messenger, viewId)
+        val creationParams = args as? Map<String, Any>
+        return NativeMapView(context, messenger, viewId, creationParams)
     }
 }

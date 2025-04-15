@@ -7,11 +7,13 @@ import '../bloc/bloc/user_profile_bloc.dart';
 import '../bloc/event/user_profile_event.dart';
 import '../bloc/state/user_profile_state.dart';
 import '../widgets/environmental_impact.dart';
-import '../widgets/profile_header.dart';  
+import '../widgets/profile_header.dart';
 import '../widgets/section_title.dart';
 import '../widgets/stat_cards.dart';
 
 class UserProfilePage extends StatefulWidget {
+  const UserProfilePage({super.key});
+
   @override
   _UserProfilePageState createState() => _UserProfilePageState();
 }
@@ -45,7 +47,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 children: [
                   // Header with profile info
                   ProfileHeader(user: state.userProfile),
-                  
+
                   // Stats sections
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -60,7 +62,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         SizedBox(height: 24.h),
                       ],
                     ),
-                  ),             
+                  ),
                 ],
               ),
             );
@@ -69,11 +71,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline, 
-                    size: 60.w, 
-                    color: ThemeColors.accentColor
-                  ),
+                  Icon(Icons.error_outline,
+                      size: 60.w, color: ThemeColors.accentColor),
                   SizedBox(height: 16.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -89,7 +88,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   SizedBox(height: 16.h),
                   ElevatedButton(
                     onPressed: () {
-                      BlocProvider.of<UserProfileBloc>(context).add(LoadUserProfile());
+                      BlocProvider.of<UserProfileBloc>(context)
+                          .add(LoadUserProfile());
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: ThemeColors.buttonColor,
@@ -103,7 +103,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       ),
                     ),
                     child: Text(
-                      'Try Again', 
+                      'Try Again',
                       style: textTheme.labelLarge?.copyWith(
                         fontSize: 14.sp,
                       ),

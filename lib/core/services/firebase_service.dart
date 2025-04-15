@@ -6,12 +6,14 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class FirebaseService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
-  
-  bool _isInitialized = false;
-  Function(String)? _onTokenUpdate;
+  final FlutterLocalNotificationsPlugin _notifications =
+      FlutterLocalNotificationsPlugin();
 
-  FirebaseService({Function(String)? onTokenUpdate}) : _onTokenUpdate = onTokenUpdate {
+  bool _isInitialized = false;
+  final Function(String)? _onTokenUpdate;
+
+  FirebaseService({Function(String)? onTokenUpdate})
+      : _onTokenUpdate = onTokenUpdate {
     initializeFCM();
   }
 
@@ -27,14 +29,14 @@ class FirebaseService {
 
     // Request permissions
     final settings = await _messaging.requestPermission(
-      alert: true, 
-      badge: true, 
+      alert: true,
+      badge: true,
       sound: true,
       provisional: true, // For iOS - allows temporary permission
     );
     print("[FCM] Permission status: ${settings.authorizationStatus}");
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized || 
+    if (settings.authorizationStatus == AuthorizationStatus.authorized ||
         settings.authorizationStatus == AuthorizationStatus.provisional) {
       _setupTokenMonitoring();
       _setupNotifications();
@@ -94,7 +96,7 @@ class FirebaseService {
     // Initialize notifications
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    
+
     _notifications.initialize(
       const InitializationSettings(
         android: initializationSettingsAndroid,
@@ -130,8 +132,10 @@ class FirebaseService {
       showBadge: true,
     );
 
-    await _notifications.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+    await _notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
   }
 
   Future<void> _showNotification(RemoteMessage message) async {
@@ -168,9 +172,9 @@ class FirebaseService {
   static Future<void> handleBackgroundMessage(RemoteMessage message) async {
     await Firebase.initializeApp();
     print("[BACKGROUND] Handling message: ${message.messageId}");
-    
+
     final notifications = FlutterLocalNotificationsPlugin();
-    
+
     // Create notification channel
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'default_channel',
@@ -179,8 +183,10 @@ class FirebaseService {
       importance: Importance.max,
     );
 
-    await notifications.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+    await notifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
 
     // Initialize notifications
     await notifications.initialize(

@@ -11,7 +11,7 @@ class LocationDataSource {
 
   Future<List<PredictionModel>> fetchSuggestions(String input) async {
     final url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?'
-                'input=$input&key=$apiKey&language=en&components=country:pk';
+        'input=$input&key=$apiKey&language=en&components=country:pk';
 
     final response = await client.get(Uri.parse(url));
 
@@ -29,17 +29,36 @@ class LocationDataSource {
     required String role,
   }) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('${role}_selected_location', jsonEncode({
-      'description': prediction.description,
-      'place_id': prediction.placeId,
-    }));
+    await prefs.setString(
+        '${role}_selected_location',
+        jsonEncode({
+          'description': prediction.description,
+          'place_id': prediction.placeId,
+        }));
   }
 
   Future<PredictionModel?> getSelectedLocation(String role) async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString('${role}_selected_location');
-    return jsonString != null 
+    return jsonString != null
         ? PredictionModel.fromJson(jsonDecode(jsonString))
         : null;
+  }
+
+  Future<String?> getPlaceId(double lat, double lng) async {
+    final url =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=$apiKey';
+
+    final response = await client.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final results = data['results'] as List;
+
+      if (results.isNotEmpty) {
+        return results.first['place_id'];
+      }
+    }
+    throw Exception('Failed to fetch place_id from lat/lng');
   }
 }

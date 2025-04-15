@@ -12,7 +12,8 @@ class ChatRepositoryImpl implements ChatRepository {
   final ChatRemoteDataSource remoteDataSource;
   final ChatFirestoreDataSource firestoreDataSource;
 
-  ChatRepositoryImpl(this.remoteDataSource, this.firebaseAuth, this.firestoreDataSource);
+  ChatRepositoryImpl(
+      this.remoteDataSource, this.firebaseAuth, this.firestoreDataSource);
 
   @override
   Future<void> sendMessage(ChatMessage message) {
@@ -26,14 +27,16 @@ class ChatRepositoryImpl implements ChatRepository {
 
   @override
   Stream<List<ChatMessage>> getMessages(String chatId, [int limit = 20]) {
-    return firestoreDataSource.getMessages(chatId, limit).map((messages) => messages
-        .map((message) => ChatMessage(
-              senderId: message.senderId,
-              receiverId: message.receiverId,
-              message: message.message,
-              timestamp: message.timestamp,
-            ))
-        .toList());
+    return firestoreDataSource
+        .getMessages(chatId, limit)
+        .map((messages) => messages
+            .map((message) => ChatMessage(
+                  senderId: message.senderId,
+                  receiverId: message.receiverId,
+                  message: message.message,
+                  timestamp: message.timestamp,
+                ))
+            .toList());
   }
 
   @override
@@ -43,13 +46,13 @@ class ChatRepositoryImpl implements ChatRepository {
 
   @override
   Future<List<ChatUser>> getChatUsers(String role) async {
-    final current_user = firebaseAuth.currentUser;
-    if (current_user == null) {
+    final currentUser = firebaseAuth.currentUser;
+    if (currentUser == null) {
       throw Exception("User not found after login");
     }
 
     // Get ID token
-    final token = await current_user.getIdToken();
+    final token = await currentUser.getIdToken();
 
     final users = await remoteDataSource.getChatUsers(role, token!);
     return users
@@ -64,6 +67,7 @@ class ChatRepositoryImpl implements ChatRepository {
         .toList();
   }
 
+  @override
   Stream<Map<String, dynamic>?> streamLastMessageInfo(String chatId) {
     return firestoreDataSource.streamLastMessageInfo(chatId);
   }
