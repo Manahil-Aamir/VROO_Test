@@ -163,8 +163,49 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     setState(() {
       activeMarker = type == 'start' ? 'start' : 'dest';
     });
+
+    // Request place details for this location
+    _methodChannel.invokeMethod('getPlaceDetails', {
+      'lat': lat,
+      'lng': lng,
+      'type': type,
+    });
   }
 
+  // Add this new method to better handle place ID loaded from the bloc
+  void _handlePlaceIdLoaded(String placeId) {
+    // Only update if we have an active marker
+    if (activeMarker == null) return;
+
+    setState(() {
+      if (activeMarker == 'start') {
+        fromPlaceId = placeId;
+        // Request address details for this location
+        if (fromPosition != null) {
+          _methodChannel.invokeMethod('getPlaceDetails', {
+            'lat': fromPosition!.latitude,
+            'lng': fromPosition!.longitude,
+            'type': 'start',
+          });
+        }
+      } else if (activeMarker == 'dest') {
+        toPlaceId = placeId;
+        // Request address details for this location
+        if (toPosition != null) {
+          _methodChannel.invokeMethod('getPlaceDetails', {
+            'lat': toPosition!.latitude,
+            'lng': toPosition!.longitude,
+            'type': 'dest',
+          });
+        }
+      }
+    });
+
+    // Update markers on the map to reflect the changes
+    _updateMapMarkers();
+  }
+
+  // Improve the _handlePlaceInfo method to properly update the text controllers
   Future<void> _handlePlaceInfo(Map<String, dynamic> data) async {
     final type = data['type'] as String;
     final placeName = data['placeName'] as String? ?? '';
@@ -177,15 +218,15 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
           if (placeId != null && placeId.isNotEmpty) {
             fromPlaceId = placeId;
           }
-          print("from description: $fromDescription");
-          _fromController.text = fromDescription ?? '';
+          // Update the text controller directly
+          _fromController.text = placeName;
         } else {
           toDescription = placeName;
           if (placeId != null && placeId.isNotEmpty) {
             toPlaceId = placeId;
           }
-          print("to description: $toDescription");
-          _toController.text = toDescription ?? '';
+          // Update the text controller directly
+          _toController.text = placeName;
         }
       });
 
@@ -200,6 +241,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     }
   }
 
+  // Improve _handleEnhancedPlaceInfo similarly
   Future<void> _handleEnhancedPlaceInfo(Map<String, dynamic> data) async {
     final type = data['type'] as String;
     final address = data['address'] as String? ?? '';
@@ -210,13 +252,13 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
         if (type == 'start') {
           fromDescription = address;
           if (placeId.isNotEmpty) fromPlaceId = placeId;
-          print("from description: $fromDescription");
-          _fromController.text = fromDescription ?? '';
+          // Update the controller text directly
+          _fromController.text = address;
         } else {
           toDescription = address;
           if (placeId.isNotEmpty) toPlaceId = placeId;
-          print("to description: $toDescription");
-          _toController.text = toDescription ?? '';
+          // Update the controller text directly
+          _toController.text = address;
         }
       });
 
@@ -229,6 +271,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     }
   }
 
+  // Improve _handleMapTap to update controllers directly
   Future<void> _handleMapTap(Map<String, dynamic> data) async {
     final key = data['key'] as String;
     final lat = data['lat'] as double;
@@ -238,14 +281,18 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     setState(() {
       if (key == 'from') {
         fromPosition = LatLng(lat, lng);
-        fromDescription = placeName ?? fromDescription;
+        if (placeName != null) {
+          fromDescription = placeName;
+          _fromController.text = placeName;
+        }
         activeMarker = 'start';
-        _fromController.text = fromDescription ?? '';
       } else {
         toPosition = LatLng(lat, lng);
-        toDescription = placeName ?? toDescription;
+        if (placeName != null) {
+          toDescription = placeName;
+          _toController.text = placeName;
+        }
         activeMarker = 'dest';
-        _toController.text = toDescription ?? '';
       }
     });
 
@@ -253,6 +300,13 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     context.read<LocationSelectionBloc>().add(
           FetchPlaceIdFromLatLngEvent(lat, lng),
         );
+
+    // Also request the address details directly from the map
+    _methodChannel.invokeMethod('getPlaceDetails', {
+      'lat': lat,
+      'lng': lng,
+      'type': key == 'from' ? 'start' : 'dest',
+    });
 
     _updateMapMarkers();
   }
@@ -272,38 +326,6 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     });
   }
 
-  void _updatePlaceIdForActiveMarker(String placeId) {
-    // Only update if we have an active marker
-    if (activeMarker == null) return;
-
-    setState(() {
-      if (activeMarker == 'start') {
-        fromPlaceId = placeId;
-        if (fromPosition != null) {
-          _saveLocation(
-            keyPrefix: 'from',
-            placeId: placeId,
-            description: fromDescription ?? 'Selected location',
-            position: fromPosition,
-          );
-        }
-      } else if (activeMarker == 'dest') {
-        toPlaceId = placeId;
-        if (toPosition != null) {
-          _saveLocation(
-            keyPrefix: 'to',
-            placeId: placeId,
-            description: toDescription ?? 'Selected location',
-            position: toPosition,
-          );
-        }
-      }
-    });
-
-    // Update markers on the map to reflect the changes
-    _updateMapMarkers();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -313,7 +335,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
         child: BlocListener<LocationSelectionBloc, LocationSelectionState>(
           listener: (context, state) {
             if (state is PlaceIdLoaded) {
-              _updatePlaceIdForActiveMarker(state.placeId);
+              _handlePlaceIdLoaded(state.placeId);
             }
           },
           child: BlocBuilder<RoleBloc, RoleState>(
