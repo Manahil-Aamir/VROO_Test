@@ -269,9 +269,8 @@ class ApprovedRequestCard extends StatelessWidget {
     );
   }
 
-// Widget _buildPassengerInfo(TextTheme textTheme) {
+  // Widget _buildPassengerInfo(TextTheme textTheme) {
 //   if (request.passengers.isEmpty) return SizedBox.shrink();
-
 //   return Container(
 //     padding: EdgeInsets.symmetric(vertical: 4.h), // Add some vertical padding
 //     child: Row(
@@ -288,8 +287,7 @@ class ApprovedRequestCard extends StatelessWidget {
 //               color: ThemeColors.buttonTextColor,
 //             ),
 //           ),
-//         ),
-        
+//         ),      
 //         // Scrollable passenger list
 //         Expanded(
 //           child: SingleChildScrollView(

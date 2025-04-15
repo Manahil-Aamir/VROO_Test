@@ -37,13 +37,17 @@ class PendingRequestCard extends StatelessWidget {
                 thickness: 0.5,
               ),
               _buildRouteInfo(textTheme),
-              // if (_hasPreferences) SizedBox(height: 12.h),
-              // if (_hasPreferences) _buildPreferences(textTheme),
-              SizedBox(height: 12.h),
-              Row(
+              if (_hasPreferences) SizedBox(height: 12.h),
+              if (_hasPreferences) Row(
                 children: [
                   Expanded(child: _buildPreferences(textTheme)),
                   SizedBox(width: 6.h),
+                  _buildCancelButton(context),
+                ],
+              ),
+              if (!_hasPreferences) Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
                   _buildCancelButton(context),
                 ],
               ),
@@ -52,6 +56,10 @@ class PendingRequestCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool get _hasPreferences {
+    return request.preferences.femaleOnly || request.preferences.maleOnly || request.preferences.canWalk;
   }
 
   Widget _buildDateTimeRow(BuildContext context, TextTheme textTheme) {
