@@ -269,6 +269,58 @@ class ApprovedRequestCard extends StatelessWidget {
     );
   }
 
+// Widget _buildPassengerInfo(TextTheme textTheme) {
+//   if (request.passengers.isEmpty) return SizedBox.shrink();
+
+//   return Container(
+//     padding: EdgeInsets.symmetric(vertical: 4.h), // Add some vertical padding
+//     child: Row(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         // Passenger label
+//         Padding(
+//           padding: EdgeInsets.only(top: 6.h, right: 8.w), // Align with first row of names
+//           child: Text(
+//             'Passengers:',
+//             style: textTheme.bodySmall?.copyWith(
+//               fontWeight: FontWeight.w500,
+//               fontSize: 12.sp,
+//               color: ThemeColors.buttonTextColor,
+//             ),
+//           ),
+//         ),
+        
+//         // Scrollable passenger list
+//         Expanded(
+//           child: SingleChildScrollView(
+//             scrollDirection: Axis.horizontal,
+//             child: Row(
+//               children: request.passengers.map((passenger) {
+//                 return Container(
+//                   margin: EdgeInsets.only(right: 6.w),
+//                   padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+//                   decoration: BoxDecoration(
+//                     color: ThemeColors.primaryColor.withOpacity(0.15),
+//                     borderRadius: BorderRadius.circular(8.r),
+//                   ),
+//                   child: Text(
+//                     passenger.name,
+//                     style: textTheme.bodySmall?.copyWith(
+//                       fontSize: 12.sp,
+//                       color: ThemeColors.buttonTextColor,
+//                       fontWeight: FontWeight.w500,
+//                     ),
+//                   ),
+//                 );
+//               }).toList(),
+//             ),
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
+
   Widget _buildActionButtons(BuildContext context) {
     return Row(
       children: [
