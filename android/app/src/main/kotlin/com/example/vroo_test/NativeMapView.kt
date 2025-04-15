@@ -34,6 +34,14 @@ class NativeMapView(
     private val pendingOperations = mutableListOf<() -> Unit>()
 
     // Marker colors
+    private val routeColors = listOf(
+    Color.parseColor("#8B008B"), // Dark magenta
+    Color.parseColor("#008B8B"), // Dark cyan
+    Color.parseColor("#B8860B"), // Dark goldenrod
+    Color.parseColor("#8B0000"), // Dark red
+    Color.parseColor("#00008B"), // Dark blue
+    Color.parseColor("#006400")  // Dark green
+)
     private val START_MARKER_COLOR = BitmapDescriptorFactory.HUE_GREEN
     private val DEST_MARKER_COLOR = BitmapDescriptorFactory.HUE_RED
     private val SELECTED_MARKER_COLOR = BitmapDescriptorFactory.HUE_ORANGE
@@ -53,6 +61,7 @@ class NativeMapView(
     private var movingMarkers = mutableMapOf<String, Marker>()
     private var showMarkers: Boolean = false
     private var markerUpdateCallback: ((String, LatLng) -> Unit)? = null
+    private var bestRoute: Map<String, Any>? = null
 
     init {
         // Create a Bundle to properly handle the map's lifecycle
@@ -317,67 +326,93 @@ class NativeMapView(
         ))
     }
 
-    private fun onPolylineClick(polyline: Polyline) {
-        (polyline.tag as? Map<*, *>)?.let { route ->
-            allPolylines.forEach { it.color = Color.parseColor("#4285F4") }
+private fun onPolylineClick(polyline: Polyline) {
+    (polyline.tag as? Map<*, *>)?.let { clickedRoute ->
+        // Reset all polylines to their original colors
+        allPolylines.forEachIndexed { index, line ->
+            val routeData = line.tag as? Map<*, *>
             
-            polyline.color = SELECTED_ROUTE_COLOR
-            selectedPolyline = polyline
-
-            showRouteInfoMarker(route as Map<String, Any>, "Selected Route")
-            
-            methodChannel.invokeMethod("routeSelected", route.mapKeys { it.key.toString() })
+            if (routeData != null && line != polyline) {
+                // If not the clicked polyline, set to index-based color
+                if (routeData == bestRoute) {
+                    // Keep best route color if this is the best route
+                    line.color = SELECTED_ROUTE_COLOR
+                } else {
+                    line.color = routeColors[index % routeColors.size]
+                }
+                line.zIndex = 1f
+            }
         }
+        
+        // Highlight selected polyline
+        polyline.color = SELECTED_ROUTE_COLOR
+        polyline.zIndex = 2f
+        selectedPolyline = polyline
+
+        showRouteInfoMarker(clickedRoute as Map<String, Any>, "Selected Route")
+        
+        methodChannel.invokeMethod("routeSelected", clickedRoute.mapKeys { it.key.toString() })
+    }
+}
+
+private fun drawRoutes() {
+    if (!isMapReady || routeData.isEmpty() || startMarker == null || destMarker == null) {
+        return
     }
 
-    private fun drawRoutes() {
-        if (!isMapReady || routeData.isEmpty() || startMarker == null || destMarker == null) {
-            return
-        }
+    clearRouteElements()
 
-        clearRouteElements()
+    val builder = LatLngBounds.Builder().apply {
+        include(startMarker!!.position)
+        include(destMarker!!.position)
+    }
 
-        val builder = LatLngBounds.Builder().apply {
-            include(startMarker!!.position)
-            include(destMarker!!.position)
-        }
+    val bestRoute = routeData.minWithOrNull(compareBy(
+        { (it["duration"] as? Number)?.toDouble() ?: Double.MAX_VALUE },
+        { (it["distance"] as? Number)?.toDouble() ?: Double.MAX_VALUE }
+    ))
 
-        val bestRoute = routeData.minWithOrNull(compareBy(
-            { (it["duration"] as? Number)?.toDouble() ?: Double.MAX_VALUE },
-            { (it["distance"] as? Number)?.toDouble() ?: Double.MAX_VALUE }
-        ))
+    // Use index for coloring instead of trying to sort
+    routeData.forEachIndexed { index, route ->
+        (route["coords"] as? List<List<Double>>)?.let { coords ->
+            // Use color from the list, cycling if needed
+            val routeColor = if (route == bestRoute) {
+                SELECTED_ROUTE_COLOR
+            } else {
+                routeColors[index % routeColors.size]
+            }
+            
+            val isHighlighted = route == bestRoute
+            
+            googleMap?.addPolyline(
+                PolylineOptions()
+                    .color(routeColor)
+                    .width(if (isHighlighted) 12f else 8f)
+                    .geodesic(true)
+                    .clickable(true)
+                    // Apply z-index to ensure visibility when routes overlap
+                    .zIndex(if (isHighlighted) 2f else 1f)
+                    .addAll(coords.map { LatLng(it[0], it[1]) })
+            )?.apply {
+                tag = route
+                allPolylines.add(this)
+                
+                coords.forEach { builder.include(LatLng(it[0], it[1])) }
 
-        routeData.forEach { route ->
-            (route["coords"] as? List<List<Double>>)?.let { coords ->
-                googleMap?.addPolyline(
-                    PolylineOptions()
-                        .color(Color.parseColor("#4285F4"))
-                        .width(if (route == bestRoute) 10f else 7f)
-                        .geodesic(true)
-                        .clickable(true)
-                        .addAll(coords.map { LatLng(it[0], it[1]) })
-                )?.apply {
-                    tag = route
-                    allPolylines.add(this)
-                    
-                    coords.forEach { builder.include(LatLng(it[0], it[1])) }
-
-                    if (route == bestRoute) {
-                        color = SELECTED_ROUTE_COLOR
-                        width = 12f
-                        selectedPolyline = this
-                        showRouteInfoMarker(route, "Best Route")
-                    }
+                if (isHighlighted) {
+                    selectedPolyline = this
+                    showRouteInfoMarker(route, "Best Route")
                 }
             }
         }
-
-        try {
-            safeAnimateCameraWithBounds(builder.build(), 100)
-        } catch (e: Exception) {
-            Log.e("NativeMapView", "Camera update failed", e)
-        }
     }
+
+    try {
+        safeAnimateCameraWithBounds(builder.build(), 100)
+    } catch (e: Exception) {
+        Log.e("NativeMapView", "Camera update failed", e)
+    }
+}
 
     private fun showRouteInfoMarker(route: Map<String, Any>, title: String) {
         selectedMarker?.remove()
