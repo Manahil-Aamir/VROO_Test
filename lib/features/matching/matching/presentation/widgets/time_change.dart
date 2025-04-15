@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TimeAdjustmentWidget extends StatelessWidget {
-  final String label;
-  final TimeOfDay time;
-  final String timeType;
+  final TimeOfDay startTime;
+  final TimeOfDay endTime;
   final Function(String, int) onTimeChanged;
 
   const TimeAdjustmentWidget({
     super.key,
-    required this.label,
-    required this.time,
-    required this.timeType,
+    required this.startTime,
+    required this.endTime,
     required this.onTimeChanged,
   });
 
@@ -19,75 +17,136 @@ class TimeAdjustmentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Container(
+      padding: EdgeInsets.all(12.r),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Heading for the entire section
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.access_time_rounded,
+                size: 20.sp,
+                color: theme.scaffoldBackgroundColor,
+              ),
+              SizedBox(width: 8.w),
+              Text('Pickup Between',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.scaffoldBackgroundColor,
+                  )),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          // Time range row with two adjustment widgets and an arrow in between
+          Row(
+            children: [
+              // Start time widget
+              Expanded(
+                child: _buildTimeAdjustment(
+                  context,
+                  startTime,
+                  'startTime',
+                  theme,
+                ),
+              ),
+
+              SizedBox(width: 8.w),
+
+              // Arrow icon
+              Icon(
+                Icons.arrow_forward_rounded,
+                size: 24.sp,
+                color: theme.scaffoldBackgroundColor,
+              ),
+
+              SizedBox(width: 8.w),
+
+              // End time widget
+              Expanded(
+                child: _buildTimeAdjustment(
+                  context,
+                  endTime,
+                  'endTime',
+                  theme,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTimeAdjustment(
+      BuildContext context, TimeOfDay time, String timeType, ThemeData theme) {
+    return Row(
       children: [
-        Text(
-          label,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: theme.primaryColorDark,
+        // Decrease button
+        _buildButton(
+          Icons.remove,
+          () => onTimeChanged(timeType, -5),
+          theme,
+        ),
+
+        SizedBox(width: 8.w),
+
+        // Time display
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.r),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              color: theme.scaffoldBackgroundColor,
+              child: Center(
+                child: Text(_formatTime(time),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.primaryColorDark,
+                      fontWeight: FontWeight.w600,
+                    )),
+              ),
+            ),
           ),
         ),
-        SizedBox(height: 8.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Decrease button
-            ElevatedButton(
-              onPressed: () => onTimeChanged(timeType, -5),
-              style: ElevatedButton.styleFrom(
-                shape: CircleBorder(
-                  side: BorderSide(color: theme.primaryColorDark, width: 1.5.w),
-                ),
-                padding: EdgeInsets.all(8),
-              ),
-              child: Icon(
-                Icons.remove,
-                size: 24.sp,
-                color: theme.primaryColor,
-              ),
-            ),
-            SizedBox(width: 10.w),
-            // Time Display
-            Container(
-              width: 100,
-              padding: EdgeInsets.symmetric(vertical: 8),
-              decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
-                border: Border.all(color: theme.primaryColor, width: 1.5),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Text(
-                  time.format(context),
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.primaryColorDark,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 10.w),
-            // Increase button
-            ElevatedButton(
-              onPressed: () => onTimeChanged(timeType, 5),
-              style: ElevatedButton.styleFrom(
-                shape: CircleBorder(
-                  side: BorderSide(color: theme.primaryColorDark, width: 1.5.w),
-                ),
-                padding: EdgeInsets.all(8),
-                backgroundColor: theme.scaffoldBackgroundColor,
-              ),
-              child: Icon(
-                Icons.add,
-                size: 24.sp,
-                color: theme.primaryColor,
-              ),
-            ),
-          ],
+
+        SizedBox(width: 8.w),
+
+        // Increase button
+        _buildButton(
+          Icons.add,
+          () => onTimeChanged(timeType, 5),
+          theme,
         ),
       ],
     );
+  }
+
+  Widget _buildButton(IconData icon, VoidCallback onPressed, ThemeData theme) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(
+          35.r), // Make border radius large for a circular shape
+      child: Container(
+        padding: EdgeInsets.all(
+            4.r), // Adjust padding for better circular appearance
+        decoration: BoxDecoration(
+          color: theme.primaryColor, // Move color inside BoxDecoration
+          shape: BoxShape.circle, // Use BoxShape.circle for circular background
+        ),
+        child: Icon(
+          icon,
+          color: theme.scaffoldBackgroundColor,
+          size: 18.sp,
+        ),
+      ),
+    );
+  }
+
+  String _formatTime(TimeOfDay time) {
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hour:$minute $period';
   }
 }

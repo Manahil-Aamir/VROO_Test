@@ -38,7 +38,7 @@ class _TimeWindowWidgetState extends State<TimeWindowWidget> {
 
   void _modifyPickupTime(String timeType, int adjustment) {
     setState(() {
-      if (timeType == "min") {
+      if (timeType == "startTime" || timeType == "min") {
         final totalMinutes =
             minPickupTime.hour * 60 + minPickupTime.minute + adjustment;
         minPickupTime = TimeOfDay(
@@ -50,7 +50,7 @@ class _TimeWindowWidgetState extends State<TimeWindowWidget> {
             _calculateMinutes(maxPickupTime)) {
           maxPickupTime = minPickupTime;
         }
-      } else if (timeType == "max") {
+      } else if (timeType == "endTime" || timeType == "max") {
         final totalMinutes =
             maxPickupTime.hour * 60 + maxPickupTime.minute + adjustment;
         maxPickupTime = TimeOfDay(
@@ -71,9 +71,6 @@ class _TimeWindowWidgetState extends State<TimeWindowWidget> {
         "max": formatISO8601DateTime(widget.scheduleDate, maxPickupTime),
       },
     };
-
-    print('modify data');
-    print(modifyData);
 
     context.read<MatchingBloc>().add(
           ModifyTimeWindowEvent(
@@ -98,64 +95,17 @@ class _TimeWindowWidgetState extends State<TimeWindowWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.access_time, color: theme.primaryColor, size: 24.sp),
-            SizedBox(width: 8.w),
-            Text(
-              'Pickup Time Window',
-              style: theme.textTheme.displayMedium?.copyWith(
-                color: theme.primaryColorDark,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 16.h),
-
         // Card-based UI for better structure
         Card(
+          color: theme.primaryColorDark,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.r),
           ),
           elevation: 4.h,
-          child: Container(
-            width: 310.w,
-            height: 215.h, // Adjust the height as needed
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  theme.primaryColorLight,
-                  theme.primaryColorLight.withOpacity(0.1)
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(16.r),
-              child: Column(
-                children: [
-                  TimeAdjustmentWidget(
-                    label: "Min Pickup Time",
-                    time: minPickupTime,
-                    timeType: "min",
-                    onTimeChanged: _modifyPickupTime,
-                  ),
-                  Divider(
-                    color: theme.primaryColorDark,
-                    thickness: 1.5,
-                  ),
-                  TimeAdjustmentWidget(
-                    label: "Max Pickup Time",
-                    time: maxPickupTime,
-                    timeType: "max",
-                    onTimeChanged: _modifyPickupTime,
-                  ),
-                ],
-              ),
-            ),
+          child: TimeAdjustmentWidget(
+            startTime: minPickupTime,
+            endTime: maxPickupTime,
+            onTimeChanged: _modifyPickupTime,
           ),
         ),
       ],
