@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../domain/entity/prediction.dart';
 
@@ -39,4 +40,13 @@ class PlaceIdLoaded extends LocationSelectionState {
 
   @override
   List<Object> get props => [placeId];
+}
+
+class LatLngLoaded extends LocationSelectionState {
+  final LatLng latLng;
+
+  const LatLngLoaded(this.latLng);
+
+  @override
+  List<Object> get props => [latLng];
 }

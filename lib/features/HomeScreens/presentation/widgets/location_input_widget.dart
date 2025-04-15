@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -181,9 +183,26 @@ class _LocationInputFieldState extends State<LocationInputField> {
   }
 
   Future<LatLng> _getPlacePosition(String placeId) async {
-    // Implement your logic to get LatLng from placeId
-    // This might involve calling Google Places API or your backend
-    // For now returning a default position
-    return const LatLng(0, 0);
+    print('Fetching position for placeId: $placeId');
+    final bloc = context.read<LocationSelectionBloc>();
+    final completer = Completer<LatLng>();
+
+    late final StreamSubscription subscription;
+
+    subscription = bloc.stream.listen((state) {
+      if (state is LatLngLoaded) {
+        print('LatLngLoaded state received: ${state.latLng}');
+        completer.complete(state.latLng);
+        subscription.cancel();
+      } else if (state is LocationSelectionError) {
+        print('Error state received: ${state.message}');
+        completer.completeError(Exception(state.message));
+        subscription.cancel();
+      }
+    });
+
+    print('Dispatching FetchLatLngFromPlaceIdEvent for placeId: $placeId');
+    bloc.add(FetchLatLngFromPlaceIdEvent(placeId));
+    return completer.future;
   }
 }

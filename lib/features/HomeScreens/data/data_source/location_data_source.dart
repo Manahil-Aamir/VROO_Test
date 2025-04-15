@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../models/prediction_model.dart';
@@ -60,5 +61,27 @@ class LocationDataSource {
       }
     }
     throw Exception('Failed to fetch place_id from lat/lng');
+  }
+
+  Future<LatLng> getPlacePosition(String placeId) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'https://maps.googleapis.com/maps/api/place/details/json?placeid=$placeId&key=$apiKey',
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final location = data['result']['geometry']['location'];
+        print('location: $location');
+        return LatLng(location['lat'], location['lng']);
+      } else {
+        throw Exception('Failed to fetch location');
+      }
+    } catch (e) {
+      print('Error fetching lat/lng from placeId: $e');
+      return const LatLng(0, 0);
+    }
   }
 }

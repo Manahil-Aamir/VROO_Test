@@ -1,3 +1,5 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import '../../domain/entity/prediction.dart';
 import '../../domain/repository/location_repository.dart';
 import '../data_source/location_data_source.dart';
@@ -28,7 +30,13 @@ class LocationRepositoryImpl implements LocationRepository {
     return model?.toEntity();
   }
 
+  @override
   Future<String?> getPlaceId(double lat, double lng) async {
     return dataSource.getPlaceId(lat, lng);
+  }
+
+  @override
+  Future<LatLng> getLatLng(String placeId) async {
+    return dataSource.getPlacePosition(placeId);
   }
 }

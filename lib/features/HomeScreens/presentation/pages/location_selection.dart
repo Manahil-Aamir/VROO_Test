@@ -139,6 +139,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   }
 
   Future<void> _handleMarkerUpdate(Map<String, dynamic> data) async {
+    print('Marker update data: $data');
     final type = data['type'] as String;
     final lat = data['lat'] as double;
     final lng = data['lng'] as double;

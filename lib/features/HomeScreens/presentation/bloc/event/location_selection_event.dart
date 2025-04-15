@@ -40,3 +40,13 @@ class FetchPlaceIdFromLatLngEvent extends LocationSelectionEvent {
   @override
   List<Object> get props => [lat, lng];
 }
+
+// Add to your existing events
+class FetchLatLngFromPlaceIdEvent extends LocationSelectionEvent {
+  final String placeId;
+
+  const FetchLatLngFromPlaceIdEvent(this.placeId);
+
+  @override
+  List<Object> get props => [placeId];
+}

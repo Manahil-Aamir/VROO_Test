@@ -217,6 +217,9 @@ class NativeMapView(
         startMarker?.remove()
         startMarker = safeCreateMarker(position, title, START_MARKER_COLOR, "start")
         startMarker?.let { updateMarkerTitle(it, "start") }
+        
+        // Show the marker on the map after updating
+        updateCameraForMarkers()
     }
 
     private fun updateDestMarker(position: LatLng, title: String = "Destination") {
@@ -228,6 +231,27 @@ class NativeMapView(
         destMarker?.remove()
         destMarker = safeCreateMarker(position, title, DEST_MARKER_COLOR, "dest")
         destMarker?.let { updateMarkerTitle(it, "dest") }
+        
+        // Show the marker on the map after updating
+        updateCameraForMarkers()
+    }
+    
+    // New function to update camera to show both markers
+    private fun updateCameraForMarkers() {
+        if (startMarker != null && destMarker != null) {
+            try {
+                val builder = LatLngBounds.Builder()
+                builder.include(startMarker!!.position)
+                builder.include(destMarker!!.position)
+                safeAnimateCameraWithBounds(builder.build(), 100)
+            } catch (e: Exception) {
+                Log.e("NativeMapView", "Camera update for markers failed", e)
+            }
+        } else if (startMarker != null) {
+            googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(startMarker!!.position, 15f))
+        } else if (destMarker != null) {
+            googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(destMarker!!.position, 15f))
+        }
     }
 
     private fun safeCreateMarker(position: LatLng, title: String, color: Float, type: String? = null): Marker? {
@@ -316,6 +340,8 @@ class NativeMapView(
                 sendMarkerUpdate("dest", position)
             }
         }
+        // Update camera to show the updated markers
+        updateCameraForMarkers()
     }
 
     private fun sendMarkerUpdate(type: String, position: LatLng) {
@@ -349,7 +375,7 @@ private fun onPolylineClick(polyline: Polyline) {
         polyline.zIndex = 2f
         selectedPolyline = polyline
 
-        showRouteInfoMarker(clickedRoute as Map<String, Any>, "Selected Route")
+        showRouteInfoMarker(clickedRoute as Map<String, Any>)
         
         methodChannel.invokeMethod("routeSelected", clickedRoute.mapKeys { it.key.toString() })
     }
@@ -371,6 +397,8 @@ private fun drawRoutes() {
         { (it["duration"] as? Number)?.toDouble() ?: Double.MAX_VALUE },
         { (it["distance"] as? Number)?.toDouble() ?: Double.MAX_VALUE }
     ))
+    
+    this.bestRoute = bestRoute
 
     // Use index for coloring instead of trying to sort
     routeData.forEachIndexed { index, route ->
@@ -401,7 +429,7 @@ private fun drawRoutes() {
 
                 if (isHighlighted) {
                     selectedPolyline = this
-                    showRouteInfoMarker(route, "Best Route")
+                    showRouteInfoMarker(route)
                 }
             }
         }
@@ -414,25 +442,23 @@ private fun drawRoutes() {
     }
 }
 
-    private fun showRouteInfoMarker(route: Map<String, Any>, title: String) {
+    // Updated to show only distance and duration in the title
+    private fun showRouteInfoMarker(route: Map<String, Any>) {
         selectedMarker?.remove()
         (route["coords"] as? List<List<Double>>)?.let { coords ->
             val position = coords[coords.size / 2].let { LatLng(it[0], it[1]) }
+            
+            // Format the distance and duration
+            val distance = route["distance"]?.toString() ?: "N/A"
+            val duration = route["duration"]?.toString() ?: "N/A"
+            
             selectedMarker = googleMap?.addMarker(
                 MarkerOptions()
                     .position(position)
-                    .title(title)
-                    .snippet("Distance: ${route["distance"]}\nDuration: ${route["duration"]}")
+                    .title("Distance: $distance, Duration: $duration")
                     .icon(BitmapDescriptorFactory.defaultMarker(SELECTED_MARKER_COLOR))
             )?.apply { 
                 showInfoWindow()
-                getAddressFromLocation(position) { address ->
-                    handler.post {
-                        this.title = "$title: ${address ?: "${position.latitude}, ${position.longitude}"}"
-                        this.snippet = "Distance: ${route["distance"]}\nDuration: ${route["duration"]}\n${position.latitude}, ${position.longitude}"
-                        showInfoWindow()
-                    }
-                }
             }
         }
     }
@@ -541,6 +567,8 @@ private fun drawRoutes() {
                         updateDestMarker(LatLng(lat as Double, lng as Double))
                     }
                 }
+                // Update camera after marker positions change
+                updateCameraForMarkers()
                 result.success(null)
             }
             "clearMarkers" -> {
