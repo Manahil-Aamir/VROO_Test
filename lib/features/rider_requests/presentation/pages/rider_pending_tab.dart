@@ -27,7 +27,7 @@ class RiderPendingTab extends StatelessWidget {
             return const Center(child: Text('No pending requests found'));
           }
           return ListView.builder(
-            padding: const EdgeInsets.all(16),
+            // padding: const EdgeInsets.all(16),
             itemCount: state.requests.length,
             itemBuilder: (context, index) => PendingRequestCard(
               request: state.requests[index],

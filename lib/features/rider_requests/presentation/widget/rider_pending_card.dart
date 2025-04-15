@@ -1,8 +1,10 @@
 // lib/presentation/widgets/pending_request_card.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-
 import '../../../../core/theme/color/color_theme.dart';
+import '../../../../shared/widgets/custom_dialog.dart';
+import '../../../../shared/widgets/dialog_button.dart';
 import '../../domain/entity/rider_pending_request_entity.dart';
 
 class PendingRequestCard extends StatelessWidget {
@@ -12,160 +14,228 @@ class PendingRequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with date and time
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  DateFormat('EEE, MMM d, yyyy').format(request.date),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: ThemeColors.primaryColor.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    'Pending',
-                    style: TextStyle(
-                      color: ThemeColors.primaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            
-            // Source location
-            Row(
-              children: [
-                const Icon(Icons.place_outlined, color: Colors.green, size: 20),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'From: ${request.source.address}',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            
-            // Destination location
-            Row(
-              children: [
-                const Icon(Icons.place, color: Colors.red, size: 20),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'To: ${request.destination.address}',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            
-            // Ride details
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildDetailItem(
-                  Icons.schedule,
-                  'Pickup',
-                  '${DateFormat('h:mm a').format(request.pickupTimeRange.min)} - ${DateFormat('h:mm a').format(request.pickupTimeRange.max)}',
-                ),
-                _buildDetailItem(
-                  Icons.timer_outlined,
-                  'Duration',
-                  '${(request.duration / 60).round()} min',
-                ),
-                _buildDetailItem(
-                  Icons.straighten,
-                  'Distance',
-                  '${(request.distance / 1000).toStringAsFixed(1)} km',
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            
-            // Preferences
-            Row(
-              children: [
-                const Icon(Icons.settings_outlined, size: 16, color: Colors.grey),
-                const SizedBox(width: 4),
-                const Text(
-                  'Preferences:',
-                  style: TextStyle(color: Colors.grey, fontSize: 13),
-                ),
-                const SizedBox(width: 8),
-                if (request.preferences.femaleOnly)
-                  _buildPreferenceTag('Female Only', Colors.pink.shade100),
-                if (request.preferences.maleOnly)
-                  _buildPreferenceTag('Male Only', Colors.blue.shade100),
-                if (request.preferences.canWalk)
-                  _buildPreferenceTag('Can Walk', Colors.green.shade100),
-              ],
-            ),
-          ],
+    final textTheme = Theme.of(context).textTheme;
+
+    return GestureDetector(
+      onTap: () {},
+      child: Card(
+        elevation: 2,
+        margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14.r),
+        ),
+        color: ThemeColors.primaryColorDark,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDateTimeRow(context, textTheme),
+              Divider(
+                color: ThemeColors.buttonTextColor.withOpacity(0.15),
+                height: 16.h,
+                thickness: 0.5,
+              ),
+              _buildRouteInfo(textTheme),
+              // if (_hasPreferences) SizedBox(height: 12.h),
+              // if (_hasPreferences) _buildPreferences(textTheme),
+              SizedBox(height: 12.h),
+              Row(
+                children: [
+                  Expanded(child: _buildPreferences(textTheme)),
+                  SizedBox(width: 6.h),
+                  _buildCancelButton(context),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildDetailItem(IconData icon, String label, String value) {
-    return Column(
+  Widget _buildDateTimeRow(BuildContext context, TextTheme textTheme) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Icon(icon, size: 18, color: Colors.grey),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
+        // Date info
+        Row(
+          children: [
+            SizedBox(width: 2.w),
+            Icon(Icons.calendar_today, size: 14.r, color: ThemeColors.primaryColor),
+            SizedBox(width: 6.w),
+            Text(
+              DateFormat('dd MMM yyyy').format(request.date),
+              style: textTheme.bodySmall?.copyWith(
+                color: ThemeColors.buttonTextColor,
+                fontSize: 12.sp,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+        
+        // Time info
+        Row(
+          children: [
+            Icon(
+              Icons.access_time_rounded, 
+              color: ThemeColors.primaryColor, 
+              size: 16.r
+            ),
+            SizedBox(width: 4.w),
+            Text(
+              "${DateFormat('h:mm a').format(request.pickupTimeRange.min)} - "
+              "${DateFormat('h:mm a').format(request.pickupTimeRange.max)}",
+              style: textTheme.bodyMedium?.copyWith(
+                color: ThemeColors.buttonTextColor,
+                fontWeight: FontWeight.w500,
+                fontSize: 13.sp,
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 
-  Widget _buildPreferenceTag(String text, Color color) {
-    return Container(
-      margin: const EdgeInsets.only(right: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 11,
-          color: color.withRed(color.red - 100).withGreen(color.green - 100).withBlue(color.blue - 100),
+  Widget _buildRouteInfo(TextTheme textTheme) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Column(
+          children: [
+            Icon(
+              Icons.circle_outlined,
+              color: ThemeColors.primaryColor,
+              size: 16.r,
+            ),
+            Container(
+              height: 8.h,
+              width: 1.w,
+              color: ThemeColors.primaryColor.withOpacity(0.6),
+            ),
+            Icon(
+              Icons.location_on,
+              color: ThemeColors.primaryColor,
+              size: 16.r,
+            ),
+          ],
         ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Source location in single line
+              Text(
+                request.source.address,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: ThemeColors.buttonTextColor,
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 6.h),
+              
+              // Destination in single line
+              Text(
+                request.destination.address,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: ThemeColors.buttonTextColor,
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPreferences(TextTheme textTheme) {
+    return Wrap(
+      spacing: 8.w,
+      runSpacing: 8.h,
+      children: [
+        if (request.preferences.femaleOnly)
+          _buildPreferenceChip('Female Only', Icons.female, textTheme),
+        if (request.preferences.maleOnly)
+          _buildPreferenceChip('Male Only', Icons.male, textTheme),
+        if (request.preferences.canWalk)
+          _buildPreferenceChip('Can Walk', Icons.directions_walk, textTheme),
+      ],
+    );
+  }
+
+  Widget _buildPreferenceChip(String text, IconData icon, TextTheme textTheme) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: ThemeColors.primaryColor.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(30.r),
+        border: Border.all(
+          color: ThemeColors.primaryColor.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 14.r,
+            color: ThemeColors.buttonTextColor,
+          ),
+          SizedBox(width: 4.w),
+          Text(
+            text,
+            style: textTheme.bodySmall?.copyWith(
+              fontSize: 12.sp,
+              color: ThemeColors.buttonTextColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCancelButton(BuildContext context) {
+    return SizedBox(
+      height: 33.h,
+      child: DialogButton(
+        onTap: () {
+          _showCancelConfirmation(context);
+        },
+        text: 'Cancel',
+        color: ThemeColors.accentColor,
+      ),
+    );
+  }
+  
+  void _showCancelConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => CustomDialog(
+        title: "Cancel Request",
+        message: "Are you sure you want to cancel this ride request?",
+        confirmText: "Yes",
+        cancelText: "No",
+        confirmColor: ThemeColors.accentColor,
+        cancelColor: ThemeColors.primaryColor,
+        onConfirm: () {
+          // Functionality to be added later
+          Navigator.of(context).pop();
+        },
+        onCancel: () {
+          Navigator.of(context).pop();
+        },
       ),
     );
   }
 }
-
-// lib/presentation/widgets/approved_request_card.dart
