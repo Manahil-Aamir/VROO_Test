@@ -37,7 +37,6 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
         // body: jsonEncode(user.toJson()),
         body: jsonEncode(userJson),
       );
-      print(jsonEncode(user.toJson()));
 
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');

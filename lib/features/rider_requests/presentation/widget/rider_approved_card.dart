@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/services/phone_service.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/custom_dialog.dart';
 import '../../../../shared/widgets/dialog_button.dart';
@@ -169,13 +170,22 @@ class ApprovedRequestCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  request.driver.name,
-                  style: textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    color: ThemeColors.buttonTextColor,
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        request.driver.name,
+                        style: textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.sp,
+                          color: ThemeColors.buttonTextColor,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    _buildCallIcon(context),
+                  ],
                 ),
                 SizedBox(height: 2.h),
                 Row(
@@ -201,7 +211,8 @@ class ApprovedRequestCard extends StatelessWidget {
               SizedBox(height: 4.h),
               Row(
                 children: [
-                  Icon(Icons.directions_car_filled_rounded, color: ThemeColors.primaryColor, size: 18.r),
+                  Icon(Icons.directions_car_filled_rounded, 
+                      color: ThemeColors.primaryColor, size: 18.r),
                   SizedBox(width: 4.w),
                   Text(
                     '${request.car.company} ${request.car.model}',
@@ -227,6 +238,23 @@ class ApprovedRequestCard extends StatelessWidget {
     );
   }
 
+  Widget _buildCallIcon(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(left: 4.w), // Reduced from 8.w to 4.w
+      child: GestureDetector(
+        onTap: () => _showCallConfirmation(context),
+        child: Tooltip(
+          message: 'Call driver',
+          child: Icon(
+            Icons.call_rounded,
+            size: 18.r,
+            color: ThemeColors.primaryColor,
+          ),
+        ),
+      ),
+    );
+  }
+    
   Widget _buildPassengerInfo(TextTheme textTheme) {
     if (request.passengers.isEmpty) return SizedBox.shrink();
 
@@ -269,56 +297,6 @@ class ApprovedRequestCard extends StatelessWidget {
     );
   }
 
-  // Widget _buildPassengerInfo(TextTheme textTheme) {
-//   if (request.passengers.isEmpty) return SizedBox.shrink();
-//   return Container(
-//     padding: EdgeInsets.symmetric(vertical: 4.h), // Add some vertical padding
-//     child: Row(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         // Passenger label
-//         Padding(
-//           padding: EdgeInsets.only(top: 6.h, right: 8.w), // Align with first row of names
-//           child: Text(
-//             'Passengers:',
-//             style: textTheme.bodySmall?.copyWith(
-//               fontWeight: FontWeight.w500,
-//               fontSize: 12.sp,
-//               color: ThemeColors.buttonTextColor,
-//             ),
-//           ),
-//         ),      
-//         // Scrollable passenger list
-//         Expanded(
-//           child: SingleChildScrollView(
-//             scrollDirection: Axis.horizontal,
-//             child: Row(
-//               children: request.passengers.map((passenger) {
-//                 return Container(
-//                   margin: EdgeInsets.only(right: 6.w),
-//                   padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-//                   decoration: BoxDecoration(
-//                     color: ThemeColors.primaryColor.withOpacity(0.15),
-//                     borderRadius: BorderRadius.circular(8.r),
-//                   ),
-//                   child: Text(
-//                     passenger.name,
-//                     style: textTheme.bodySmall?.copyWith(
-//                       fontSize: 12.sp,
-//                       color: ThemeColors.buttonTextColor,
-//                       fontWeight: FontWeight.w500,
-//                     ),
-//                   ),
-//                 );
-//               }).toList(),
-//             ),
-//           ),
-//         ),
-//       ],
-//     ),
-//   );
-// }
-
   Widget _buildActionButtons(BuildContext context) {
     return Row(
       children: [
@@ -340,7 +318,6 @@ class ApprovedRequestCard extends StatelessWidget {
               onTap: () => _showCancelConfirmation(context),
               text: 'Cancel',
               color: ThemeColors.accentColor,
-              // radius: 12.r,
             ),
           ),
         ),
@@ -359,6 +336,31 @@ class ApprovedRequestCard extends StatelessWidget {
         confirmColor: ThemeColors.accentColor,
         cancelColor: ThemeColors.primaryColor,
         onConfirm: () => Navigator.of(context).pop(),
+        onCancel: () => Navigator.of(context).pop(),
+      ),
+    );
+  }
+
+  void _showCallConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => CustomDialog(
+        title: "Call Driver",
+        message: "Do you want to call ${request.driver.name}?",
+        confirmText: "Call",
+        cancelText: "Cancel",
+        confirmColor: ThemeColors.primaryColor,
+        cancelColor: ThemeColors.accentColor,
+        onConfirm: () async {
+          Navigator.of(context).pop();
+          try {
+            await PhoneService.makePhoneCall(request.driver.phoneNumber);
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Failed to make call: $e')),
+            );
+          }
+        },
         onCancel: () => Navigator.of(context).pop(),
       ),
     );

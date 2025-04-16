@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../shared/widgets/appbar.dart';
+import '../../../../shared/widgets/appbar_no_icon.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../../shared/widgets/custom_tab_bar.dart';
 import '../bloc/bloc/rider_approved_requests_bloc.dart';
@@ -75,7 +75,7 @@ class _RiderRequestsScreenState extends State<RiderRequestsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(heading: 'Ride Requests'),
+      appBar: AppBarNoIcon(heading: 'Ride Requests'),
       body: Column(
         children: [
           CustomTabBar(

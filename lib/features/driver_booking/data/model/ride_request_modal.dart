@@ -14,7 +14,6 @@ class RideRequestModel extends RideRequest {
     required super.distance,
     required super.duration,
     required super.date,
-    required super.fare,
     required super.paymentMethod,
   });
 
@@ -42,7 +41,6 @@ class RideRequestModel extends RideRequest {
       "distance": distance,
       "duration": duration,
       "date": date, // Date only
-      "fare": fare,
       "paymentMethod": paymentMethod,
       "coords": coords,
     };

@@ -13,7 +13,7 @@ class RideRequest {
   final double distance;
   final int duration;
   final String date;
-  final double fare;
+  // final double fare;
   final List<String> paymentMethod;
 
   RideRequest({
@@ -29,7 +29,7 @@ class RideRequest {
     required this.distance,
     required this.duration,
     required this.date,
-    required this.fare,
+    // required this.fare,
     required this.paymentMethod,
   });
 }

@@ -23,7 +23,6 @@ class RideRepositoryImpl implements RideRepository {
       distance: request.distance,
       duration: request.duration,
       date: request.date,
-      fare: request.fare,
       paymentMethod: request.paymentMethod,
     );
     return remoteDataSource.submitRideRequest(rideRequestModel);

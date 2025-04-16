@@ -234,7 +234,6 @@ class D3 extends StatelessWidget {
       distance: _parseDistance(routeDistance),
       duration: _parseDuration(routeDuration),
       date: date.toIso8601String(),
-      fare: 100,
       paymentMethod: paymentOption,
     );
 
