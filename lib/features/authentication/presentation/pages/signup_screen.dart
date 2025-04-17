@@ -33,40 +33,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
+  String? _emailError;
+  String? _passwordError;
+  String? _confirmPasswordError;
+
   void _signUp(BuildContext context) {
-    final theme = Theme.of(context);
-    final emailError = AuthValidators.validateEmail(_emailController.text);
-    final passwordError =
-        AuthValidators.validatePassword(_passwordController.text);
-    final confirmPasswordError = AuthValidators.validatePasswordsMatch(
-      _passwordController.text,
-      _confirmPasswordController.text,
-    );
-
-    String? errorMessage;
-    if (emailError != null) {
-      errorMessage = emailError;
-    } else if (passwordError != null) {
-      errorMessage = passwordError;
-    } else if (confirmPasswordError != null) {
-      errorMessage = confirmPasswordError;
-    }
-
-    if (errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: theme.indicatorColor,
-          duration: Duration(seconds: 3),
-        ),
+    print('Signing up...');
+    setState(() {
+      _emailError = AuthValidators.validateEmail(_emailController.text);
+      _passwordError =
+          AuthValidators.validatePassword(_passwordController.text);
+      _confirmPasswordError = AuthValidators.validatePasswordsMatch(
+        _passwordController.text,
+        _confirmPasswordController.text,
       );
-      return;
-    }
+    });
 
-    context.read<SignUpBloc>().add(SignUpSubmitted(
-          _emailController.text,
-          _passwordController.text,
-        ));
+    if (_emailError == null &&
+        _passwordError == null &&
+        _confirmPasswordError == null) {
+      context.read<SignUpBloc>().add(SignUpSubmitted(
+            _emailController.text,
+            _passwordController.text,
+          ));
+    }
   }
 
   @override
@@ -98,12 +88,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   InputField(
                     controller: _emailController,
+                    errorText: _emailError,
                     labelText: 'Email',
                   ),
                   SizedBox(height: 20.h),
                   InputField(
                     labelText: 'Password',
                     controller: _passwordController,
+                    errorText: _passwordError,
                     obscure: _obscurePassword,
                     suffixIcon: GestureDetector(
                       onTap: () =>
@@ -121,7 +113,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   InputField(
                     labelText: 'Confirm Password',
                     controller: _confirmPasswordController,
-                    obscure: _obscurePassword2,
+                    errorText: _confirmPasswordError,
                     suffixIcon: GestureDetector(
                       onTap: () => setState(
                           () => _obscurePassword2 = !_obscurePassword2),

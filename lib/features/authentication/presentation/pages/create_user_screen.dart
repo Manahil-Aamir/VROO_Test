@@ -25,31 +25,23 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
   final TextEditingController phoneController = TextEditingController();
   String selectedGender = 'Male';
 
+  String? firstNameError;
+  String? lastNameError;
+  String? phoneError;
+
   void _validate(BuildContext context) {
-    final theme = Theme.of(context);
-    final firstNameError =
-        AuthValidators.validateName(firstNameController.text);
-    final lastNameError = AuthValidators.validateName(lastNameController.text);
-    final mobileError =
-        AuthValidators.validateMobileNumber(phoneController.text);
+    final firstNameErr = AuthValidators.validateName(firstNameController.text);
+    final lastNameErr = AuthValidators.validateName(lastNameController.text);
+    final phoneErr = AuthValidators.validateMobileNumber(phoneController.text);
 
-    String? errorMessage;
-    if (firstNameError != null) {
-      errorMessage = firstNameError;
-    } else if (lastNameError != null) {
-      errorMessage = lastNameError;
-    } else
-      errorMessage = mobileError;
+    setState(() {
+      firstNameError = firstNameErr;
+      lastNameError = lastNameErr;
+      phoneError = phoneErr;
+    });
 
-    if (errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: theme.indicatorColor,
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return;
+    if (firstNameErr != null || lastNameErr != null || phoneErr != null) {
+      return; // Do not proceed if there are errors
     }
 
     _submitCreateUser(context);
@@ -78,11 +70,13 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
               InputField(
                 labelText: 'First Name',
                 controller: firstNameController,
+                errorText: firstNameError,
               ),
               const SizedBox(height: 20),
               InputField(
                 labelText: 'Last Name',
                 controller: lastNameController,
+                errorText: lastNameError,
               ),
               const SizedBox(height: 20),
               GenderDropdown(
@@ -103,6 +97,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                 controller: phoneController,
                 keyboardType: TextInputType.phone,
                 hintText: '+923001234567',
+                errorText: phoneError,
               ),
               const SizedBox(height: 30),
               GradientButton(

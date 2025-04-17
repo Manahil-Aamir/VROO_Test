@@ -7,6 +7,7 @@ import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import '../../../../../core/router/navigation.dart';
 import '../../../../../shared/widgets/appbar.dart';
+import '../../../../HomeScreens/presentation/widgets/appbarmatching.dart';
 import '../bloc/bloc/matching_bloc.dart';
 import '../bloc/state/matching_state.dart';
 import '../widgets/matching_card.dart';
@@ -67,20 +68,18 @@ class _MatchingPageState extends State<MatchingPage> {
     print("maxPickupTime: ${widget.maxPickupTime}");
 
     return Scaffold(
-      appBar: appBar(
+      appBar: appBarMatching(
         heading: 'Matching Rides',
       ),
       body: Padding(
-        padding: EdgeInsets.all(12.0.sp),
+        padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
         child: Column(
           children: [
-            Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TimeWindowWidget(
-                    minPickupTime: widget.minPickupTime,
-                    maxPickupTime: widget.maxPickupTime,
-                    rideRequestId: widget.rideRequestId,
-                    scheduleDate: widget.schedule.date)),
+            TimeWindowWidget(
+                minPickupTime: widget.minPickupTime,
+                maxPickupTime: widget.maxPickupTime,
+                rideRequestId: widget.rideRequestId,
+                scheduleDate: widget.schedule.date),
             Expanded(
               child: BlocListener<MatchingBloc, MatchingState>(
                 listener: (context, state) {

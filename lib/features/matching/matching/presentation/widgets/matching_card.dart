@@ -94,7 +94,7 @@ class MatchCard extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: SizedBox(
-                  width: 120.w,
+                  width: 125.w,
                   height: 34.h,
                   child: ElevatedButton(
                     onPressed: () {

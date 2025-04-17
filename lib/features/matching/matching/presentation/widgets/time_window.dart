@@ -96,16 +96,19 @@ class _TimeWindowWidgetState extends State<TimeWindowWidget> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Card-based UI for better structure
-        Card(
-          color: theme.primaryColorDark,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          elevation: 4.h,
-          child: TimeAdjustmentWidget(
-            startTime: minPickupTime,
-            endTime: maxPickupTime,
-            onTimeChanged: _modifyPickupTime,
+        SizedBox(
+          width: 400.w, // Assigning width to the Card
+          child: Card(
+            color: theme.primaryColorDark,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            elevation: 4.h,
+            child: TimeAdjustmentWidget(
+              startTime: minPickupTime,
+              endTime: maxPickupTime,
+              onTimeChanged: _modifyPickupTime,
+            ),
           ),
         ),
       ],

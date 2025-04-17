@@ -377,8 +377,8 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 20),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.w, vertical: 100.h),
                       child: _buildNextButton(context, roleState.role),
                     ),
                   ),
@@ -394,7 +394,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                           width: 350.w,
                           padding: EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: theme.primaryColorDark.withOpacity(0.95),
+                            color: theme.primaryColorDark.withOpacity(0.9),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Column(
