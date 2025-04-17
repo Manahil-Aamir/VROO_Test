@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../domain/entity/schedule_entity.dart';
 
 abstract class R1State {}
@@ -33,10 +32,14 @@ class ScheduleInputState extends R1State {
   final TimeOfDay? minPickUpTime;
   final TimeOfDay? maxPickUpTime;
   final TimeOfDay? maxArrivalTime;
-  final bool dateError;
-  final bool minTimeError;
-  final bool maxTimeError;
-  final bool arrivalTimeError;
+
+  final String? dateErrorText;
+  final String? minTimeErrorText;
+  final String? maxTimeErrorText;
+  final String? arrivalTimeErrorText;
+  final String? minMaxTimeErrorText;
+  final String? maxArrivalTimeErrorText;
+
   final Set<String>? selectedDays;
   final DateTime? endDate;
   final String? recurrenceType;
@@ -46,10 +49,12 @@ class ScheduleInputState extends R1State {
     this.minPickUpTime,
     this.maxPickUpTime,
     this.maxArrivalTime,
-    this.dateError = false,
-    this.minTimeError = false,
-    this.maxTimeError = false,
-    this.arrivalTimeError = false,
+    this.dateErrorText,
+    this.minTimeErrorText,
+    this.maxTimeErrorText,
+    this.arrivalTimeErrorText,
+    this.minMaxTimeErrorText,
+    this.maxArrivalTimeErrorText,
     this.selectedDays,
     this.endDate,
     this.recurrenceType,
@@ -63,10 +68,12 @@ class ScheduleInputState extends R1State {
     Set<String>? selectedDays,
     String? recurrenceType,
     DateTime? endDate,
-    bool? dateError,
-    bool? minTimeError,
-    bool? maxTimeError,
-    bool? arrivalTimeError,
+    String? dateErrorText,
+    String? minTimeErrorText,
+    String? maxTimeErrorText,
+    String? arrivalTimeErrorText,
+    String? minMaxTimeErrorText,
+    String? maxArrivalTimeErrorText,
   }) {
     return ScheduleInputState(
       selectedDate: selectedDate ?? this.selectedDate,
@@ -76,10 +83,13 @@ class ScheduleInputState extends R1State {
       selectedDays: selectedDays ?? this.selectedDays,
       recurrenceType: recurrenceType ?? this.recurrenceType,
       endDate: endDate ?? this.endDate,
-      dateError: dateError ?? this.dateError,
-      minTimeError: minTimeError ?? this.minTimeError,
-      maxTimeError: maxTimeError ?? this.maxTimeError,
-      arrivalTimeError: arrivalTimeError ?? this.arrivalTimeError,
+      dateErrorText: dateErrorText ?? this.dateErrorText,
+      minTimeErrorText: minTimeErrorText ?? this.minTimeErrorText,
+      maxTimeErrorText: maxTimeErrorText ?? this.maxTimeErrorText,
+      arrivalTimeErrorText: arrivalTimeErrorText ?? this.arrivalTimeErrorText,
+      minMaxTimeErrorText: minMaxTimeErrorText ?? this.minMaxTimeErrorText,
+      maxArrivalTimeErrorText:
+          maxArrivalTimeErrorText ?? this.maxArrivalTimeErrorText,
     );
   }
 }

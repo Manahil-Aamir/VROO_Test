@@ -6,6 +6,7 @@ class DriverAndFare extends StatelessWidget {
   final double rating;
   final int trips;
   final double fare;
+  final String estimatedArrivalTime;
 
   const DriverAndFare({
     super.key,
@@ -13,6 +14,7 @@ class DriverAndFare extends StatelessWidget {
     required this.rating,
     required this.trips,
     required this.fare,
+    required this.estimatedArrivalTime,
   });
 
   @override
@@ -24,11 +26,11 @@ class DriverAndFare extends StatelessWidget {
         Row(
           children: [
             CircleAvatar(
-              radius: 24.r,
+              radius: 20.r,
               backgroundColor: theme.scaffoldBackgroundColor,
               child: CircleAvatar(
                 radius: 22.r,
-                backgroundColor: theme.primaryColorDark,
+                backgroundColor: theme.primaryColorDark.withOpacity(0.8),
                 child: Icon(
                   Icons.person_outline_rounded,
                   color: theme.primaryColor,
@@ -41,13 +43,17 @@ class DriverAndFare extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  driverName,
+                  driverName.length > 20
+                      ? '${driverName.substring(0, 17)}...'
+                      : driverName,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.scaffoldBackgroundColor,
+                    fontWeight: FontWeight.bold,
                   ),
-                   overflow: TextOverflow.ellipsis,
-                   maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
+                SizedBox(height: 4.h),
                 Row(
                   children: [
                     Icon(Icons.star_rounded,
@@ -56,8 +62,8 @@ class DriverAndFare extends StatelessWidget {
                     Text(
                       '$rating • $trips Trips',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.scaffoldBackgroundColor,
-                      ),
+                          color: theme.scaffoldBackgroundColor,
+                          fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -65,12 +71,33 @@ class DriverAndFare extends StatelessWidget {
             ),
           ],
         ),
-        Text(
-          'Rs $fare',
-          style: theme.textTheme.displayMedium?.copyWith(
-              color: theme.primaryColor,
-              fontFamily: 'Montserrat',
-              fontWeight: FontWeight.bold),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              'Rs $fare',
+              style: theme.textTheme.displayMedium?.copyWith(
+                  color: theme.primaryColor,
+                  fontSize: 21.sp,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 4.h),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Text(
+                'ETA: $estimatedArrivalTime', // example: 2:53 PM
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.scaffoldBackgroundColor,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );

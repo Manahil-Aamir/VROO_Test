@@ -14,7 +14,6 @@ class InputField extends StatelessWidget {
   final TextInputType? keyboardType;
   final Widget? suffixIcon; // Changed to use proper suffixIcon parameter
 
-
   const InputField({
     super.key,
     required this.labelText,
@@ -48,7 +47,8 @@ class InputField extends StatelessWidget {
         errorText: errorText,
         hintText: hintText ?? '',
         hintStyle: TextStyle(color: Theme.of(context).primaryColorLight),
-        errorStyle: TextStyle(color: Theme.of(context).indicatorColor),
+        errorStyle: TextStyle(
+            color: Theme.of(context).indicatorColor, fontSize: 10.0.sp),
         suffixIcon: suffixIcon, // Directly use provided suffixIcon widget
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0.r),

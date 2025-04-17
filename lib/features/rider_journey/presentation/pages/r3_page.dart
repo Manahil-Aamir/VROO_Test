@@ -67,7 +67,8 @@ class _R3PageState extends State<R3Page> {
   }
 
   String getRiderId() {
-    final FirebaseAuth firebaseAuth = FirebaseAuth.instance; // Initialize FirebaseAuth
+    final FirebaseAuth firebaseAuth =
+        FirebaseAuth.instance; // Initialize FirebaseAuth
     final User user = firebaseAuth.currentUser!; // Get current user
     return user.uid; // Return UID or null if user is not logged in
   }
@@ -75,18 +76,9 @@ class _R3PageState extends State<R3Page> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // Wrap the Scaffold with a MultiProvider so that DI is available.
     print('walk: ${widget.preferences.walk}');
     print('gender: ${widget.preferences.sameGender}');
-    // print('fromPlaceId: ${widget.schedule.fromPlaceId}');
-    // print('toPlaceId: ${widget.schedule.toPlaceId}');
-    // print('fromDescription: ${widget.schedule.fromDescription}');
-    // print('toDescription: ${widget.schedule.toDescription}');
-    // print('date: ${widget.schedule.date}');
-    // print('minTime: ${widget.schedule.minTime}');
-    // print('maxTime: ${widget.schedule.maxTime}');
-    // print('arrivalTime: ${widget.schedule.arrivalTime}');
-    // print('recurrenceType: ${widget.schedule.recurrenceType}');
+
     return Scaffold(
       appBar: CustomAppBar(
         highlightedCircles: 3,
@@ -109,8 +101,7 @@ class _R3PageState extends State<R3Page> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                   backgroundColor: theme.secondaryHeaderColor,
-                  content:
-                      Text('Ride created successfully! ID: $rideRequestId')),
+                  content: Text('Ride created successfully!')),
             );
             print('schedule: ${widget.schedule.toMap()}');
             context
@@ -127,6 +118,13 @@ class _R3PageState extends State<R3Page> {
             //   SnackBar(content: Text('Error: ${runtimeType.toString()}')),
             // );
             print('Error: ${state.error}');
+          } else if (state is RideRequestLoading) {
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
           }
         },
         child: Column(
@@ -198,12 +196,8 @@ class _R3PageState extends State<R3Page> {
                           // Ensure coordinates have been loaded.
                           if (widget.location.sourceCoordinates == null ||
                               widget.location.destCoordinates == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text('Coordinates are not yet loaded.')),
-                            );
-                            return;
+                            Future.delayed(const Duration(seconds: 40), () {});
+                            // return;
                           }
                           // final formattedMinTime = formatISO8601DateTime(
                           //   widget.schedule.date,

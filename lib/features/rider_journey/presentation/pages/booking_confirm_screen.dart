@@ -32,6 +32,10 @@ class BookingConfirmationScreen extends StatelessWidget {
     print('Matching Rides: $matchingRides');
     print('Min Pickup Time: ${minPickupTime.format(context)}');
     print('Max Pickup Time: ${maxPickupTime.format(context)}');
+    for (var ride in matchingRides) {
+      print('Estimated Arrival Time: ${ride.expectedArrivalTime}');
+    }
+
     return BlocListener<BookingConfirmationBloc, BookingConfirmationState>(
       listener: (context, state) {
         if (state is BookingConfirmationSuccess) {

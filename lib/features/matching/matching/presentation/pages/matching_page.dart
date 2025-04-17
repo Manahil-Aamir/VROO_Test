@@ -55,22 +55,6 @@ class _MatchingPageState extends State<MatchingPage> {
   }
 
   /// Parses and formats an arrival time string.
-  String formatArrivalTime(String? arrivalTime) {
-    if (arrivalTime == null) return 'Unknown';
-    try {
-      // Define the input format to match the ISO 8601 format
-      DateFormat inputFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
-      // Parse the input string as a UTC datetime
-      DateTime parsedDate = inputFormat.parse(arrivalTime, true).toUtc();
-
-      // Convert UTC time to local time and format it
-      return DateFormat.jm().format(parsedDate.toLocal());
-    } catch (e) {
-      print('Error parsing expectedArrivalTime: $e');
-      return 'Unknown';
-    }
-  }
 
   @override
   @override
@@ -132,6 +116,9 @@ class _MatchingPageState extends State<MatchingPage> {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is RiderRequestLoaded) {
                       print('loadinggggggggggg');
+                      if (state.matchingRides.isEmpty) {
+                        return const Center(child: Text('No rides found.'));
+                      }
                       return ListView.builder(
                         itemCount: state.matchingRides.length,
                         itemBuilder: (context, index) {
@@ -147,8 +134,8 @@ class _MatchingPageState extends State<MatchingPage> {
                               carModel: ride.car.model,
                               totalSeats: ride.numOfSeats.toInt(),
                               filledSeats: ride.passengers.length,
-                              estimatedArrivalTime:
-                                  formatArrivalTime(ride.expectedArrivalTime),
+                              estimatedArrivalTime: DateFormat.jm().format(
+                                  DateTime.parse(ride.expectedArrivalTime)),
                               id: widget.rideRequestId,
                               carCompany: ride.car.company,
                               rideId: ride.id,
@@ -184,8 +171,8 @@ class _MatchingPageState extends State<MatchingPage> {
                               carModel: ride.car.model,
                               totalSeats: ride.numOfSeats.toInt(),
                               filledSeats: ride.passengers.length,
-                              estimatedArrivalTime:
-                                  formatArrivalTime(ride.expectedArrivalTime),
+                              estimatedArrivalTime: DateFormat.jm().format(
+                                  DateTime.parse(ride.expectedArrivalTime)),
                               id: widget.rideRequestId,
                               carCompany: ride.car.company,
                               rideId: ride.id,

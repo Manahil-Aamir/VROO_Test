@@ -9,22 +9,19 @@ class R1Bloc extends Bloc<R1Event, R1State> {
 
   R1Bloc(this.saveScheduleUseCase, this.loadScheduleUseCase)
       : super(ScheduleInitial()) {
-    // Ensure we start with ScheduleInputState
-
+    // Save schedule event
     on<SaveScheduleEvent>((event, emit) async {
       emit(ScheduleSaving());
       try {
         await saveScheduleUseCase.execute(event.schedule);
-        emit(ScheduleSaved(
-            event.schedule)); // Emit saved state with the schedule
+        emit(ScheduleSaved(event.schedule));
       } catch (e) {
-        emit(ScheduleError(e.toString())); // Handle errors
+        emit(ScheduleError(e.toString()));
       }
     });
 
-    void onUpdateRecurrence(
-        UpdateRecurrenceEvent event, Emitter<R1State> emit) {
-      // We update the state only if the current state is ScheduleInputState
+    // Update recurrence info
+    on<UpdateRecurrenceEvent>((event, emit) {
       if (state is ScheduleInputState) {
         final currentState = state as ScheduleInputState;
         emit(currentState.copyWith(
@@ -33,90 +30,90 @@ class R1Bloc extends Bloc<R1Event, R1State> {
           endDate: event.endDate,
         ));
       }
-    }
+    });
 
-    on<UpdateRecurrenceEvent>(onUpdateRecurrence);
-
-    // Handling date selection event
+    // Select date
     on<SelectDateEvent>((event, emit) {
       final currentState = state;
       if (currentState is ScheduleInputState) {
         emit(currentState.copyWith(
-            selectedDate: event.selectedDate,
-            dateError: false)); // Update selectedDate and clear error
+          selectedDate: event.selectedDate,
+          dateErrorText: null, // clear error on success
+        ));
       }
     });
 
-    // Handling time selection event for different fields
+    // Select time
     on<SelectTimeEvent>((event, emit) {
       final currentState = state;
       if (currentState is ScheduleInputState) {
-        print(
-            "Selected time for ${event.field}: ${event.selectedTime}"); // Debugging line
         switch (event.field) {
           case "minPickUpTime":
             emit(currentState.copyWith(
-                minPickUpTime: event.selectedTime,
-                minTimeError: false)); // Update minPickUpTime and clear error
+              minPickUpTime: event.selectedTime,
+              minTimeErrorText: null,
+              minMaxTimeErrorText: null,
+            ));
             break;
           case "maxPickUpTime":
             emit(currentState.copyWith(
-                maxPickUpTime: event.selectedTime,
-                maxTimeError: false)); // Update maxPickUpTime and clear error
+              maxPickUpTime: event.selectedTime,
+              maxTimeErrorText: null,
+              minMaxTimeErrorText: null,
+            ));
             break;
           case "maxArrivalTime":
             emit(currentState.copyWith(
-                maxArrivalTime: event.selectedTime,
-                arrivalTimeError:
-                    false)); // Update maxArrivalTime and clear error
+              maxArrivalTime: event.selectedTime,
+              arrivalTimeErrorText: null,
+              maxArrivalTimeErrorText: null,
+            ));
             break;
         }
       }
     });
 
-    // Handling validation and error display event
+    // Show validation errors
     on<ShowErrorEvent>((event, emit) {
       final currentState = state;
       if (currentState is ScheduleInputState) {
         emit(currentState.copyWith(
-          dateError: event.dateError ??
-              currentState.dateError, // Update dateError with new value
-          minTimeError: event.minTimeError ??
-              currentState.minTimeError, // Update minTimeError
-          maxTimeError: event.maxTimeError ??
-              currentState.maxTimeError, // Update maxTimeError
-          arrivalTimeError: event.arrivalTimeError ??
-              currentState.arrivalTimeError, // Update arrivalTimeError
+          dateErrorText: event.dateErrorText ?? currentState.dateErrorText,
+          minTimeErrorText:
+              event.minTimeErrorText ?? currentState.minTimeErrorText,
+          maxTimeErrorText:
+              event.maxTimeErrorText ?? currentState.maxTimeErrorText,
+          arrivalTimeErrorText:
+              event.arrivalTimeErrorText ?? currentState.arrivalTimeErrorText,
+          minMaxTimeErrorText:
+              event.minMaxTimeErrorText ?? currentState.minMaxTimeErrorText,
+          maxArrivalTimeErrorText: event.maxArrivalTimeErrorText ??
+              currentState.maxArrivalTimeErrorText,
         ));
       }
     });
 
-    // Handling loading event
+    // Load saved schedule or use defaults
     on<LoadScheduleEvent>((event, emit) async {
       emit(ScheduleLoading());
       try {
         final schedule = await loadScheduleUseCase.execute();
         if (schedule != null) {
-          // Emit ScheduleInputState with the loaded schedule
           emit(ScheduleInputState(
             selectedDate: schedule.date,
             minPickUpTime: schedule.minTime,
             maxPickUpTime: schedule.maxTime,
             maxArrivalTime: schedule.arrivalTime,
-            dateError: false,
-            minTimeError: false,
-            maxTimeError: false,
-            arrivalTimeError: false,
           ));
         } else {
-          // Emit ScheduleInputState with default values if no schedule is loaded
-          emit(ScheduleInputState());
+          emit(ScheduleInputState()); // default blank state
         }
       } catch (e) {
         emit(ScheduleError(e.toString()));
       }
     });
 
+    // Update schedule fields directly
     on<UpdateScheduleEvent>((event, emit) {
       final currentState = state;
       if (currentState is ScheduleInputState) {
@@ -129,6 +126,7 @@ class R1Bloc extends Bloc<R1Event, R1State> {
       }
     });
 
+    // Reset to initial
     on<ResetStateEvent>((event, emit) {
       emit(ScheduleInitial());
     });

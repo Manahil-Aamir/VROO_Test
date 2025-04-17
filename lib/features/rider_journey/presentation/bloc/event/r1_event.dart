@@ -28,20 +28,20 @@ class SelectTimeEvent extends R1Event {
 }
 
 class ShowErrorEvent extends R1Event {
-  final bool? dateError;
-  final bool? minTimeError;
-  final bool? maxTimeError;
-  final bool? arrivalTimeError;
-  final bool? minMaxTimeError;
-  final bool? maxArrivalTimeError;
+  final String? dateErrorText;
+  final String? minTimeErrorText;
+  final String? maxTimeErrorText;
+  final String? arrivalTimeErrorText;
+  final String? minMaxTimeErrorText;
+  final String? maxArrivalTimeErrorText;
 
   ShowErrorEvent({
-    this.dateError,
-    this.minTimeError,
-    this.maxTimeError,
-    this.arrivalTimeError,
-    this.minMaxTimeError,
-    this.maxArrivalTimeError,
+    this.dateErrorText,
+    this.minTimeErrorText,
+    this.maxTimeErrorText,
+    this.arrivalTimeErrorText,
+    this.minMaxTimeErrorText,
+    this.maxArrivalTimeErrorText,
   });
 }
 
