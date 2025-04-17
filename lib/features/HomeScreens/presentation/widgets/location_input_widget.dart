@@ -98,20 +98,20 @@ class _LocationInputFieldState extends State<LocationInputField> {
               controller: _controller,
               focusNode: _focusNode,
               cursorColor: theme.primaryColor,
-              style: AppFonts.bodyTextStyle.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: AppFonts.body2TextSize,
-              ),
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: theme.scaffoldBackgroundColor),
               decoration: InputDecoration(
                 hintText: widget.label,
+                hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.scaffoldBackgroundColor.withOpacity(0.5)),
                 prefixIcon: Icon(Icons.search, color: theme.primaryColor),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.r),
-                  borderSide: BorderSide(color: theme.primaryColor),
+                  borderSide: BorderSide(color: theme.primaryColor, width: 2.0),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.r),
-                  borderSide: BorderSide(color: theme.primaryColor),
+                  borderSide: BorderSide(color: theme.primaryColor, width: 2.0),
                 ),
               ),
               onChanged: (value) {
@@ -149,17 +149,24 @@ class _LocationInputFieldState extends State<LocationInputField> {
   }
 
   Widget _buildSuggestionsListItems(LocationSelectionLoaded state) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: state.predictions.length,
-      itemBuilder: (context, index) {
-        final suggestion = state.predictions[index];
-        return ListTile(
-          leading: Icon(Icons.place, color: Theme.of(context).primaryColor),
-          title: Text(suggestion.description),
-          onTap: () => _handleSuggestionTap(suggestion),
-        );
-      },
+    return SizedBox(
+      height: 500.0.h, // Set a fixed height for the scrollable area
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: state.predictions.length,
+        itemBuilder: (context, index) {
+          final suggestion = state.predictions[index];
+          return ListTile(
+            leading: Icon(Icons.place, color: Theme.of(context).primaryColor),
+            title: Text(
+              suggestion.description,
+              style:
+                  TextStyle(color: Theme.of(context).scaffoldBackgroundColor),
+            ),
+            onTap: () => _handleSuggestionTap(suggestion),
+          );
+        },
+      ),
     );
   }
 

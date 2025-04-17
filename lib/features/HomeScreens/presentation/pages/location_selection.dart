@@ -328,7 +328,9 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: appBar(heading: "Select Location"),
       body: BlocProvider(
@@ -341,88 +343,112 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
           },
           child: BlocBuilder<RoleBloc, RoleState>(
             builder: (context, roleState) {
-              return SingleChildScrollView(
-                padding: EdgeInsets.all(16.0),
-                child: GestureDetector(
-                  onTap: () => FocusScope.of(context).unfocus(),
-                  child: Column(
-                    children: [
-                      LocationInputField(
-                        label: 'From where would you go?',
-                        controller: _fromController,
-                        focusNode: _fromFocusNode,
-                        onPlaceSelected: (placeId, description, position) {
-                          setState(() {
-                            fromPlaceId = placeId;
-                            fromDescription = description;
-                            fromPosition = position;
-                            activeMarker = 'start';
-                          });
-                          _saveLocation(
-                            keyPrefix: 'from',
-                            placeId: placeId,
-                            description: description,
-                            position: position,
-                          );
+              return Stack(
+                children: [
+                  // Map background
+                  Positioned.fill(
+                    child: AndroidView(
+                      viewType: 'native_google_map',
+                      layoutDirection: TextDirection.ltr,
+                      creationParams: {
+                        'initialStartPos': fromPosition?.toMap() ??
+                            const LatLng(24.9412, 67.1139).toMap(),
+                        'initialDestPos': toPosition?.toMap() ??
+                            const LatLng(24.9312, 67.1239).toMap(),
+                        'initialActiveMarker': activeMarker,
+                        'showMarkersByDefault': true,
+                        'showMarkers': true,
+                        'showLabels': true,
+                        'forceShowLabels': true,
+                      },
+                      creationParamsCodec: const StandardMessageCodec(),
+                      onPlatformViewCreated: (id) {
+                        _methodChannel = MethodChannel('native_google_map_$id');
+                        _methodChannel
+                            .setMethodCallHandler(_handleMapMethodCall);
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
                           _updateMapMarkers();
-                        },
-                      ),
-                      SizedBox(height: 10.h),
-                      LocationInputField(
-                        label: 'Where would you go?',
-                        controller: _toController,
-                        focusNode: _toFocusNode,
-                        onPlaceSelected: (placeId, description, position) {
-                          setState(() {
-                            toPlaceId = placeId;
-                            toDescription = description;
-                            toPosition = position;
-                            activeMarker = 'dest';
-                          });
-                          _saveLocation(
-                            keyPrefix: 'to',
-                            placeId: placeId,
-                            description: description,
-                            position: position,
-                          );
-                          _updateMapMarkers();
-                        },
-                      ),
-                      SizedBox(height: 20.h),
-                      SizedBox(
-                        height: 300.h,
-                        child: AndroidView(
-                          viewType: 'native_google_map',
-                          layoutDirection: TextDirection.ltr,
-                          creationParams: {
-                            'initialStartPos': fromPosition?.toMap() ??
-                                const LatLng(24.9412, 67.1139).toMap(),
-                            'initialDestPos': toPosition?.toMap() ??
-                                const LatLng(24.9312, 67.1239).toMap(),
-                            'initialActiveMarker': activeMarker,
-                            'showMarkersByDefault': true,
-                            'showMarkers': true,
-                            'showLabels': true,
-                            'forceShowLabels': true,
-                          },
-                          creationParamsCodec: const StandardMessageCodec(),
-                          onPlatformViewCreated: (id) {
-                            _methodChannel =
-                                MethodChannel('native_google_map_$id');
-                            _methodChannel
-                                .setMethodCallHandler(_handleMapMethodCall);
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              _updateMapMarkers();
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 20.h),
-                      _buildNextButton(context, roleState.role),
-                      SizedBox(height: 60.h),
-                    ],
+                        });
+                      },
+                    ),
                   ),
-                ),
+
+                  // Fixed Next Button
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 20),
+                      child: _buildNextButton(context, roleState.role),
+                    ),
+                  ),
+
+                  // Scrollable Input Fields
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 16.h),
+                          width: 350.w,
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: theme.primaryColorDark.withOpacity(0.95),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Column(
+                            children: [
+                              LocationInputField(
+                                label: 'From where would you go?',
+                                controller: _fromController,
+                                focusNode: _fromFocusNode,
+                                onPlaceSelected:
+                                    (placeId, description, position) {
+                                  setState(() {
+                                    fromPlaceId = placeId;
+                                    fromDescription = description;
+                                    fromPosition = position;
+                                    activeMarker = 'start';
+                                  });
+                                  _saveLocation(
+                                    keyPrefix: 'from',
+                                    placeId: placeId,
+                                    description: description,
+                                    position: position,
+                                  );
+                                  _updateMapMarkers();
+                                },
+                              ),
+                              SizedBox(height: 10.h),
+                              LocationInputField(
+                                label: 'Where would you go?',
+                                controller: _toController,
+                                focusNode: _toFocusNode,
+                                onPlaceSelected:
+                                    (placeId, description, position) {
+                                  setState(() {
+                                    toPlaceId = placeId;
+                                    toDescription = description;
+                                    toPosition = position;
+                                    activeMarker = 'dest';
+                                  });
+                                  _saveLocation(
+                                    keyPrefix: 'to',
+                                    placeId: placeId,
+                                    description: description,
+                                    position: position,
+                                  );
+                                  _updateMapMarkers();
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               );
             },
           ),
