@@ -31,7 +31,7 @@ class CustomTimePicker extends StatelessWidget {
         TimeOfDay? pickedTime = await showTimePicker(
           context: context,
           initialTime: TimeOfDay.now(),
-          initialEntryMode: TimePickerEntryMode.input,
+          initialEntryMode: TimePickerEntryMode.dial,
           builder: (BuildContext context, Widget? child) {
             return Theme(
               data: theme.copyWith(
@@ -46,9 +46,14 @@ class CustomTimePicker extends StatelessWidget {
                     textStyle: theme.textTheme.bodyLarge, // Apply text style
                   ),
                 ),
+                textSelectionTheme: TextSelectionThemeData(
+                  cursorColor: theme.primaryColorDark,
+                ),
                 timePickerTheme: TimePickerThemeData(
                   dayPeriodColor: theme.primaryColor,
                   backgroundColor: theme.scaffoldBackgroundColor,
+                  timeSelectorSeparatorColor:
+                      WidgetStateProperty.all(theme.primaryColor),
                   hourMinuteTextStyle: theme.textTheme.displayMedium?.copyWith(
                     color: theme.primaryColorDark,
                   ),

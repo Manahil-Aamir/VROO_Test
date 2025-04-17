@@ -14,6 +14,7 @@ import 'package:vroo_test/shared/widgets/custom_app_bar.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/expandable_detail_tile.dart';
 import '../../../../shared/widgets/gradient_button.dart';
+import '../../../../shared/widgets/overlay.dart';
 import '../../data/model/preferences_model.dart';
 import '../../data/model/schedule_model.dart';
 import '../bloc/event/r3_event.dart';
@@ -83,192 +84,190 @@ class _R3PageState extends State<R3Page> {
       appBar: CustomAppBar(
         highlightedCircles: 3,
       ),
-      body: BlocListener<R3Bloc, R3State>(
-        listener: (context, state) {
-          if (state is CoordinatesLoaded) {
-            setState(() {
-              if (state.isSource) {
-                widget.location.sourceCoordinates = state.coordinates;
-              } else {
-                widget.location.destCoordinates = state.coordinates;
-              }
-            });
-          } else if (state is RideRequestSuccess) {
-            RideResponseModel response = state.response;
-            final rideRequestId = response.rideRequestId;
-            final List<MatchingRideModel> matchingRides =
-                response.matchingRides;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  backgroundColor: theme.secondaryHeaderColor,
-                  content: Text('Ride created successfully!')),
-            );
-            print('schedule: ${widget.schedule.toMap()}');
-            context
-                .read<Navigation>()
-                .navigateTo('/booking_confirm', arguments: {
-              'rideRequestId': rideRequestId,
-              'matchingRides': matchingRides,
-              'schedule': widget.schedule,
-              'maxPickupTime': widget.schedule.maxTime,
-              'minPickupTime': widget.schedule.minTime,
-            });
-          } else if (state is RideRequestFailure) {
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   SnackBar(content: Text('Error: ${runtimeType.toString()}')),
-            // );
-            print('Error: ${state.error}');
-          } else if (state is RideRequestLoading) {
-            Container(
-              color: Colors.black.withOpacity(0.5),
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(16.0.w),
-                  child: Column(
-                    children: [
-                      DetailCard(
-                        title: 'Trip Details',
-                        details: [
-                          ExpandableDetailTile(
-                            icon: Icons.location_on,
-                            label: 'From',
-                            value: widget.location.fromDescription,
-                          ),
-                          ExpandableDetailTile(
-                            icon: Icons.flag,
-                            label: 'To',
-                            value: widget.location.toDescription,
-                          ),
-                          DetailTile(
-                            icon: Icons.calendar_today,
-                            label: 'Date',
-                            value:
-                                '${widget.schedule.date.day}/${widget.schedule.date.month}/${widget.schedule.date.year}',
-                          ),
-                          DetailTile(
-                            icon: Icons.access_time,
-                            label: 'Pick Up Time',
-                            value:
-                                '${widget.schedule.minTime.hour}:${widget.schedule.minTime.minute.toString().padLeft(2, '0')} - ${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute.toString().padLeft(2, '0')}',
-                          ),
-                          DetailTile(
-                            icon: Icons.access_time,
-                            label: 'Max Arrival Time',
-                            value:
-                                '${widget.schedule.arrivalTime.hour}:${widget.schedule.arrivalTime.minute == 0 ? '00' : widget.schedule.arrivalTime.minute}',
-                          ),
-                          // DetailTile(
-                          //   icon: Icons.repeat,
-                          //   label: 'Recurrence',
-                          //   value: widget.schedule.recurrenceType,
-                          // ),
-                        ],
-                      ),
-                      SizedBox(height: 16.h),
-                      DetailCard(
-                        title: 'Preferences',
-                        details: [
-                          DetailTile(
-                            icon: Icons.person,
-                            label: 'Same Gender',
-                            value: widget.preferences.sameGender ? 'Yes' : 'No',
-                          ),
-                          DetailTile(
-                            icon: Icons.directions_walk,
-                            label: 'Prefer Walk',
-                            value: widget.preferences.walk ? 'Yes' : 'No',
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 60.h),
-                      GradientButton(
-                        onTap: () {
-                          // Ensure coordinates have been loaded.
-                          if (widget.location.sourceCoordinates == null ||
-                              widget.location.destCoordinates == null) {
-                            Future.delayed(const Duration(seconds: 40), () {});
-                            // return;
-                          }
-                          // final formattedMinTime = formatISO8601DateTime(
-                          //   widget.schedule.date,
-                          //   widget.schedule.minTime,
-                          // );
-                          // final formattedMaxTime = formatISO8601DateTime(
-                          //   widget.schedule.date,
-                          //   widget.schedule.maxTime,
-                          // );
-                          rideDetails = RiderJourneyModel(
-                            riderId: getRiderId(),
-                            source: RideLocationModel(
-                              coords: [
-                                widget.location.sourceCoordinates!.latitude,
-                                widget.location.sourceCoordinates!.longitude
-                              ],
-                              placeId: widget.location.fromPlaceId,
-                              address: widget.location.fromDescription,
-                            ),
-                            destination: RideLocationModel(
-                              coords: [
-                                widget.location.destCoordinates!.latitude,
-                                widget.location.destCoordinates!.longitude
-                              ],
-                              placeId: widget.location.toPlaceId,
-                              address: widget.location.toDescription,
-                            ),
-                            date: DateFormat("yyyy-MM-dd").format(
-                              DateTime(
-                                widget.schedule.date.year,
-                                widget.schedule.date.month,
-                                widget.schedule.date.day,
+      body: BlocBuilder<R3Bloc, R3State>(
+        builder: (context, state) {
+          return Stack(
+            children: [
+              BlocListener<R3Bloc, R3State>(
+                listener: (context, state) {
+                  if (state is CoordinatesLoaded) {
+                    setState(() {
+                      if (state.isSource) {
+                        widget.location.sourceCoordinates = state.coordinates;
+                      } else {
+                        widget.location.destCoordinates = state.coordinates;
+                      }
+                    });
+                  } else if (state is RideRequestSuccess) {
+                    RideResponseModel response = state.response;
+                    final rideRequestId = response.rideRequestId;
+                    final List<MatchingRideModel> matchingRides =
+                        response.matchingRides;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          backgroundColor: theme.secondaryHeaderColor,
+                          content: Text('Ride created successfully!')),
+                    );
+                    print('schedule: ${widget.schedule.toMap()}');
+                    context
+                        .read<Navigation>()
+                        .navigateTo('/booking_confirm', arguments: {
+                      'rideRequestId': rideRequestId,
+                      'matchingRides': matchingRides,
+                      'schedule': widget.schedule,
+                      'maxPickupTime': widget.schedule.maxTime,
+                      'minPickupTime': widget.schedule.minTime,
+                    });
+                  } else if (state is RideRequestFailure) {
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   SnackBar(content: Text('Error: ${runtimeType.toString()}')),
+                    // );
+                    print('Error: ${state.error}');
+                  }
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0.w),
+                          child: Column(
+                            children: [
+                              DetailCard(
+                                title: 'Trip Details',
+                                details: [
+                                  ExpandableDetailTile(
+                                    icon: Icons.location_on,
+                                    label: 'From',
+                                    value: widget.location.fromDescription,
+                                  ),
+                                  ExpandableDetailTile(
+                                    icon: Icons.flag,
+                                    label: 'To',
+                                    value: widget.location.toDescription,
+                                  ),
+                                  DetailTile(
+                                    icon: Icons.calendar_today,
+                                    label: 'Date',
+                                    value:
+                                        '${widget.schedule.date.day}/${widget.schedule.date.month}/${widget.schedule.date.year}',
+                                  ),
+                                  DetailTile(
+                                    icon: Icons.access_time,
+                                    label: 'Pick Up Time',
+                                    value:
+                                        '${widget.schedule.minTime.hour}:${widget.schedule.minTime.minute.toString().padLeft(2, '0')} - ${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute.toString().padLeft(2, '0')}',
+                                  ),
+                                  DetailTile(
+                                    icon: Icons.access_time,
+                                    label: 'Max Arrival Time',
+                                    value:
+                                        '${widget.schedule.arrivalTime.hour}:${widget.schedule.arrivalTime.minute == 0 ? '00' : widget.schedule.arrivalTime.minute}',
+                                  ),
+                                ],
                               ),
-                            ),
-                            pickupTimeRange: PickupTimeRangeModel(
-                              min: formatISO8601DateTime(
-                                widget.schedule.date,
-                                widget.schedule.minTime,
+                              SizedBox(height: 16.h),
+                              DetailCard(
+                                title: 'Preferences',
+                                details: [
+                                  DetailTile(
+                                    icon: Icons.person,
+                                    label: 'Same Gender',
+                                    value: widget.preferences.sameGender
+                                        ? 'Yes'
+                                        : 'No',
+                                  ),
+                                  DetailTile(
+                                    icon: Icons.directions_walk,
+                                    label: 'Prefer Walk',
+                                    value:
+                                        widget.preferences.walk ? 'Yes' : 'No',
+                                  ),
+                                ],
                               ),
-                              max: formatISO8601DateTime(
-                                widget.schedule.date,
-                                widget.schedule.maxTime,
-                              ),
-                            ),
-                            maxArrivalTime: formatISO8601DateTime(
-                              widget.schedule.date,
-                              widget.schedule.arrivalTime,
-                            ),
-                            preferences: RidePreferencesModel(
-                              maleOnly: !widget.preferences.sameGender,
-                              femaleOnly: widget.preferences.sameGender,
-                              canWalk: widget.preferences.walk,
-                            ),
-                            isRecurring: false,
-                          );
+                              SizedBox(height: 60.h),
+                              GradientButton(
+                                onTap: () {
+                                  // Ensure coordinates have been loaded.
+                                  if (widget.location.sourceCoordinates ==
+                                          null ||
+                                      widget.location.destCoordinates == null) {
+                                    Future.delayed(
+                                        const Duration(seconds: 40), () {});
+                                  }
+                                  rideDetails = RiderJourneyModel(
+                                    riderId: getRiderId(),
+                                    source: RideLocationModel(
+                                      coords: [
+                                        widget.location.sourceCoordinates!
+                                            .latitude,
+                                        widget.location.sourceCoordinates!
+                                            .longitude
+                                      ],
+                                      placeId: widget.location.fromPlaceId,
+                                      address: widget.location.fromDescription,
+                                    ),
+                                    destination: RideLocationModel(
+                                      coords: [
+                                        widget
+                                            .location.destCoordinates!.latitude,
+                                        widget
+                                            .location.destCoordinates!.longitude
+                                      ],
+                                      placeId: widget.location.toPlaceId,
+                                      address: widget.location.toDescription,
+                                    ),
+                                    date: DateFormat("yyyy-MM-dd").format(
+                                      DateTime(
+                                        widget.schedule.date.year,
+                                        widget.schedule.date.month,
+                                        widget.schedule.date.day,
+                                      ),
+                                    ),
+                                    pickupTimeRange: PickupTimeRangeModel(
+                                      min: formatISO8601DateTime(
+                                        widget.schedule.date,
+                                        widget.schedule.minTime,
+                                      ),
+                                      max: formatISO8601DateTime(
+                                        widget.schedule.date,
+                                        widget.schedule.maxTime,
+                                      ),
+                                    ),
+                                    maxArrivalTime: formatISO8601DateTime(
+                                      widget.schedule.date,
+                                      widget.schedule.arrivalTime,
+                                    ),
+                                    preferences: RidePreferencesModel(
+                                      maleOnly: !widget.preferences.sameGender,
+                                      femaleOnly: widget.preferences.sameGender,
+                                      canWalk: widget.preferences.walk,
+                                    ),
+                                    isRecurring: false,
+                                  );
 
-                          print('Ride data: ${rideDetails.toMap()}');
-                          // Dispatch the ride request event.
-                          context
-                              .read<R3Bloc>()
-                              .add(SendRideRequestEvent(rideDetails));
-                        },
-                        text: 'Confirm and Proceed',
+                                  print('Ride data: ${rideDetails.toMap()}');
+                                  // Dispatch the ride request event.
+                                  context
+                                      .read<R3Bloc>()
+                                      .add(SendRideRequestEvent(rideDetails));
+                                },
+                                text: 'Confirm and Proceed',
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
-        ),
+              // Show loading overlay when state is RideRequestLoading
+              if (state is RideRequestLoading) const CustomOverlay(),
+            ],
+          );
+        },
       ),
     );
   }
