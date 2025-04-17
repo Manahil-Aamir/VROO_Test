@@ -45,7 +45,7 @@ class _RideRequestStatusScreenState extends State<RideRequestStatusScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(heading: 'Ride Requests'),
+      appBar: appBar(heading: 'Requests'),
       body: Column(
         children: [
           CustomTabBar(
