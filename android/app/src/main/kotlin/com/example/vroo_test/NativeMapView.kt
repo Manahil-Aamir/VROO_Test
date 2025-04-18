@@ -353,31 +353,32 @@ class NativeMapView(
     }
 
 private fun onPolylineClick(polyline: Polyline) {
-    (polyline.tag as? Map<*, *>)?.let { clickedRoute ->
-        // Reset all polylines to their original colors
-        allPolylines.forEachIndexed { index, line ->
-            val routeData = line.tag as? Map<*, *>
-            
-            if (routeData != null && line != polyline) {
-                // If not the clicked polyline, set to index-based color
-                if (routeData == bestRoute) {
-                    // Keep best route color if this is the best route
-                    line.color = SELECTED_ROUTE_COLOR
-                } else {
-                    line.color = routeColors[index % routeColors.size]
+    (polyline.tag as? Map<*, *>)?.let { clickedTag ->
+        val clickedRoute = clickedTag["route"] as? Map<*, *>
+
+        allPolylines.forEach { line ->
+            val tagMap = line.tag as? Map<*, *>
+            val route = tagMap?.get("route") as? Map<*, *>
+            val originalColor = tagMap?.get("originalColor") as? Int
+
+            if (line == polyline) {
+                // Highlight selected polyline
+                line.color = SELECTED_ROUTE_COLOR
+                line.zIndex = 2f
+                selectedPolyline = line
+            } else {
+                // Restore to original color (even if it's the best route)
+                originalColor?.let {
+                    line.color = it
                 }
                 line.zIndex = 1f
             }
         }
-        
-        // Highlight selected polyline
-        polyline.color = SELECTED_ROUTE_COLOR
-        polyline.zIndex = 2f
-        selectedPolyline = polyline
 
-        showRouteInfoMarker(clickedRoute as Map<String, Any>)
-        
-        methodChannel.invokeMethod("routeSelected", clickedRoute.mapKeys { it.key.toString() })
+        if (clickedRoute != null) {
+            showRouteInfoMarker(clickedRoute as Map<String, Any>)
+            methodChannel.invokeMethod("routeSelected", clickedRoute.mapKeys { it.key.toString() })
+        }
     }
 }
 
@@ -400,36 +401,37 @@ private fun drawRoutes() {
     
     this.bestRoute = bestRoute
 
-    // Use index for coloring instead of trying to sort
     routeData.forEachIndexed { index, route ->
         (route["coords"] as? List<List<Double>>)?.let { coords ->
-            // Use color from the list, cycling if needed
-            val routeColor = if (route == bestRoute) {
-                SELECTED_ROUTE_COLOR
-            } else {
-                routeColors[index % routeColors.size]
-            }
+            // Assign a color based on index (always store original color)
+            val originalColor = routeColors[index % routeColors.size]
+            val isBestRoute = route == bestRoute
+            val polylineColor = if (isBestRoute) SELECTED_ROUTE_COLOR else originalColor
             
-            val isHighlighted = route == bestRoute
-            
-            googleMap?.addPolyline(
+            val polyline = googleMap?.addPolyline(
                 PolylineOptions()
-                    .color(routeColor)
-                    .width(if (isHighlighted) 12f else 8f)
+                    .color(polylineColor)
+                    .width(if (isBestRoute) 12f else 8f)
                     .geodesic(true)
                     .clickable(true)
-                    // Apply z-index to ensure visibility when routes overlap
-                    .zIndex(if (isHighlighted) 2f else 1f)
+                    .zIndex(if (isBestRoute) 2f else 1f)
                     .addAll(coords.map { LatLng(it[0], it[1]) })
-            )?.apply {
-                tag = route
+            )
+
+            polyline?.apply {
+                // Store both route data and original color
+                tag = mapOf(
+                    "route" to route,
+                    "originalColor" to originalColor
+                )
+
                 allPolylines.add(this)
-                
                 coords.forEach { builder.include(LatLng(it[0], it[1])) }
 
-                if (isHighlighted) {
+                if (isBestRoute) {
                     selectedPolyline = this
                     showRouteInfoMarker(route)
+                    methodChannel.invokeMethod("routeSelected", route.mapKeys { it.key.toString() })
                 }
             }
         }
@@ -442,26 +444,35 @@ private fun drawRoutes() {
     }
 }
 
+
+
+
     // Updated to show only distance and duration in the title
-    private fun showRouteInfoMarker(route: Map<String, Any>) {
-        selectedMarker?.remove()
-        (route["coords"] as? List<List<Double>>)?.let { coords ->
-            val position = coords[coords.size / 2].let { LatLng(it[0], it[1]) }
-            
-            // Format the distance and duration
-            val distance = route["distance"]?.toString() ?: "N/A"
-            val duration = route["duration"]?.toString() ?: "N/A"
-            
-            selectedMarker = googleMap?.addMarker(
-                MarkerOptions()
-                    .position(position)
-                    .title("Distance: $distance, Duration: $duration")
-                    .icon(BitmapDescriptorFactory.defaultMarker(SELECTED_MARKER_COLOR))
-            )?.apply { 
-                showInfoWindow()
-            }
+private fun showRouteInfoMarker(route: Map<String, Any>) {
+    selectedMarker?.remove()
+    (route["coords"] as? List<List<Double>>)?.let { coords ->
+        val position = coords[coords.size / 2].let { LatLng(it[0], it[1]) }
+
+        val distance = route["distance"]?.toString() ?: "N/A"
+        val duration = route["duration"]?.toString() ?: "N/A"
+
+        val title = if (route == bestRoute) {
+            "Best Route -> Distance: $distance, Duration: $duration"
+        } else {
+            "Distance: $distance, Duration: $duration"
+        }
+
+        selectedMarker = googleMap?.addMarker(
+            MarkerOptions()
+                .position(position)
+                .title(title)
+                .icon(BitmapDescriptorFactory.defaultMarker(SELECTED_MARKER_COLOR))
+        )?.apply {
+            showInfoWindow()
         }
     }
+}
+
 
     private fun clearRouteElements() {
         allPolylines.forEach { it.remove() }
