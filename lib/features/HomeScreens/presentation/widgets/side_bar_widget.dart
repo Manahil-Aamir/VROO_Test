@@ -137,7 +137,7 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20.sp,
                                 ),
-                              ),SizedBox(height: 10.h),
+                              ),
                               Text(
                                 '(${roleState.role})',
                                 style: theme.textTheme.headlineSmall?.copyWith(
