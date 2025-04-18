@@ -11,10 +11,9 @@ class MatchingDataSource {
   MatchingDataSource({required this.client});
 
   Future<Map<String, dynamic>> sendJoinRequest(
-    Map<String, String> rideData) async {
+      Map<String, String> rideData) async {
     print('matching data source');
-    final url = Uri.parse(
-    '${ApiConstants.baseUrl}ride/ride-request/join'
+    final url = Uri.parse('${ApiConstants.baseUrl}ride/ride-request/join'
         // 'http://10.0.2.2:8080/ride/ride-request/join'
         );
 

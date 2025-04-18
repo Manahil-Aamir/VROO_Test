@@ -106,10 +106,13 @@ class NativeGoogleMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AndroidView(
+    return AndroidView(
       viewType: 'native_google_map',
       layoutDirection: TextDirection.ltr,
-      creationParamsCodec: StandardMessageCodec(),
+      creationParams: {
+        'showMarkersByDefault': false, // Explicitly disable markers
+      },
+      creationParamsCodec: const StandardMessageCodec(), // Add this line
     );
   }
 }

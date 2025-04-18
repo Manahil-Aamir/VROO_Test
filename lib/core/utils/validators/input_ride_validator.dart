@@ -46,7 +46,7 @@ class InputRideValidator {
         maxPickupTime.hour * 60 + maxPickupTime.minute;
     final arrivalTimeInMinutes = arrivalTime.hour * 60 + arrivalTime.minute;
     if (arrivalTimeInMinutes < maxPickupTimeInMinutes) {
-      return 'Arrival time must be equal to or later than maximum pickup time.';
+      return 'Arrival time must be equal to or later than Max pickup time.';
     }
     return null;
   }

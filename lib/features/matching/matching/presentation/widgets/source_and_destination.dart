@@ -15,50 +15,57 @@ class SourceAndDestinationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.w),
-      child: Row(
-        children: [
-          Transform.rotate(
-            angle: -math.pi / 2,
-            child: Icon(
-              Icons.u_turn_left_rounded,
-              color: theme.scaffoldBackgroundColor,
-              size: 60.r, // Maintain original icon size
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            // SizedBox(height: 8.h),
+            Icon(
+              Icons.circle_outlined, // Ring icon
+              color: theme.primaryColor,
+              size: 14.sp,
             ),
-          ),
-          SizedBox(width: 6.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  source,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: true,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.scaffoldBackgroundColor,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  destination,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.scaffoldBackgroundColor,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+            Container(
+              width: 2, // Thin vertical line
+              height: 10.h, // Adjust for spacing between icons
+              color: theme.primaryColor,
             ),
+            Icon(
+              Icons.location_on, // Location icon
+              color: theme.primaryColor,
+              size: 14.sp,
+            ),
+            SizedBox(height: 8.h),
+          ],
+        ),
+        SizedBox(width: 6.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                source,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.scaffoldBackgroundColor,
+                ),
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                destination,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.scaffoldBackgroundColor,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

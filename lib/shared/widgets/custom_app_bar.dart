@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vroo_test/core/router/navigation.dart';
 
 import 'bottom_shape_clipper.dart';
-
+import 'custom_dialog.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int highlightedCircles;
@@ -86,7 +88,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     icon: Icon(Icons.home,
                         color: theme.primaryColorDark, size: 30.r),
                     onPressed: () {
-                      // Navigate to home or perform other actions
+                      showDialog(
+                        context: context,
+                        builder: (dialogContext) => CustomDialog(
+                          title: 'Go to Home',
+                          message: 'Are you sure you want to go back to home?',
+                          confirmText: 'Yes',
+                          cancelText: 'Cancel',
+                          confirmColor: theme.indicatorColor,
+                          cancelColor: theme.primaryColorDark,
+                          onConfirm: () {
+                            context.read<Navigation>().navigateTo('/home');
+                          },
+                          onCancel: () {
+                            Navigator.pop(dialogContext);
+                          },
+                        ),
+                      );
                     },
                   ),
                 ],

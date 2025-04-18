@@ -18,6 +18,8 @@ class LocationSelectionBloc
     on<FetchSuggestionsEvent>(_onFetchSuggestions);
     on<SaveLocationEvent>(_onSaveLocation);
     on<GetLocationEvent>(_onGetLocation);
+    on<FetchPlaceIdFromLatLngEvent>(_onFetchPlaceIdFromLatLng);
+    on<FetchLatLngFromPlaceIdEvent>(_onFetchLatLngFromPlaceId);
   }
 
   Future<void> _onFetchSuggestions(
@@ -47,6 +49,37 @@ class LocationSelectionBloc
     final location = await getLocation.execute(event.role);
     if (location != null) {
       emit(LocationSelectionLoaded([location]));
+    }
+  }
+
+  Future<void> _onFetchPlaceIdFromLatLng(
+    FetchPlaceIdFromLatLngEvent event,
+    Emitter<LocationSelectionState> emit,
+  ) async {
+    emit(LocationSelectionLoading());
+    try {
+      final placeId = await fetchSuggestions.getPlaceId(event.lat, event.lng);
+      if (placeId != null) {
+        emit(PlaceIdLoaded(placeId));
+      } else {
+        emit(LocationSelectionError('Place ID not found'));
+      }
+    } catch (e) {
+      emit(LocationSelectionError(e.toString()));
+    }
+  }
+
+  Future<void> _onFetchLatLngFromPlaceId(
+    FetchLatLngFromPlaceIdEvent event,
+    Emitter<LocationSelectionState> emit,
+  ) async {
+    emit(LocationSelectionLoading());
+    try {
+      final latLng = await fetchSuggestions.getLatLng(event.placeId);
+      emit(LatLngLoaded(latLng)); // You'll need to create this state
+    } catch (e) {
+      emit(
+          LocationSelectionError('Failed to get coordinates: ${e.toString()}'));
     }
   }
 }

@@ -42,12 +42,14 @@ class MatchCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('estimatedArrivalTime: $estimatedArrivalTime');
+
     final theme = Theme.of(context);
     final user = FirebaseAuth.instance.currentUser!;
 
     return SizedBox(
       width: 363.w,
-      height: 280.h,
+      height: 200.h,
       child: Card(
         color: theme.primaryColorDark,
         shape: RoundedRectangleBorder(
@@ -56,7 +58,7 @@ class MatchCard extends StatelessWidget {
         elevation: 5.h,
         shadowColor: theme.primaryColorLight,
         child: Padding(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(12.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -65,86 +67,80 @@ class MatchCard extends StatelessWidget {
                   driverName: driverName,
                   rating: rating,
                   trips: trips,
-                  fare: fare),
+                  fare: fare,
+                  estimatedArrivalTime: estimatedArrivalTime),
               SizedBox(height: 12.h),
               // 📍 Source & Destination
               SourceAndDestinationWidget(
                 source: source,
                 destination: destination,
               ),
-              SizedBox(height: 10.h),
 
               // 🚘 Car Model, Seats & Join Button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // 🚙 Car Model
+                  CarDetails(
+                    carModel: carModel,
+                    totalSeats: totalSeats,
+                    filledSeats: filledSeats,
+                    estimatedArrivalTime: estimatedArrivalTime,
+                    carCompany: carCompany,
+                  )
+                ],
+              ),
 
-                      // 🪑 Seat Indicators
-
-                      CarDetails(
-                        carModel: carModel,
-                        totalSeats: totalSeats,
-                        filledSeats: filledSeats,
-                        estimatedArrivalTime: estimatedArrivalTime,
-                        carCompany: carCompany,
-                      )
-                    ],
-                  ),
-
-                  // 🟠 Join Button
-                  SizedBox(
-                    width: 106.w,
-                    height: 45.h,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final joinData = {
-                          "rideId": rideId,
-                          "rideRequestId": id,
-                          "driverId": driverName,
-                          "riderId": user!.uid,
-                          // "riderId": "new2"
-                        };
-                        context
-                            .read<MatchingBloc>()
-                            .add(JoinRideRequestEvent(joinData: joinData));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        padding: EdgeInsets.zero,
-                        backgroundColor: Colors.transparent,
-                        elevation: 0,
+              // 🟠 Join Button
+              Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: 125.w,
+                  height: 34.h,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final joinData = {
+                        "rideId": rideId,
+                        "rideRequestId": id,
+                        "driverId": driverName,
+                        "riderId": user.uid,
+                        // "riderId": "new2"
+                      };
+                      context
+                          .read<MatchingBloc>()
+                          .add(JoinRideRequestEvent(joinData: joinData));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              theme.primaryColor,
-                              theme.primaryColor.withOpacity(0.8)
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(8.r),
+                      padding: EdgeInsets.zero,
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                    ),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            theme.primaryColor,
+                            theme.primaryColor.withOpacity(0.8)
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Join',
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              color: theme.scaffoldBackgroundColor,
-                            ),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Join',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.scaffoldBackgroundColor,
                           ),
                         ),
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
             ],
           ),

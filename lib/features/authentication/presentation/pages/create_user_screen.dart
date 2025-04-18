@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vroo_test/features/authentication/presentation/widgets/gender_dropdown.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import 'package:vroo_test/shared/widgets/input_field.dart';
+import 'package:vroo_test/shared/widgets/overlay.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/utils/validators/auth_validators.dart';
 import '../../../../shared/widgets/appbar.dart';
@@ -25,43 +26,36 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
   final TextEditingController phoneController = TextEditingController();
   String selectedGender = 'Male';
 
+  String? firstNameError;
+  String? lastNameError;
+  String? phoneError;
+
   void _validate(BuildContext context) {
-    final theme = Theme.of(context);
-    final firstNameError =
-        AuthValidators.validateName(firstNameController.text);
-    final lastNameError = AuthValidators.validateName(lastNameController.text);
-    final mobileError =
-        AuthValidators.validateMobileNumber(phoneController.text);
+    final firstNameErr = AuthValidators.validateName(firstNameController.text);
+    final lastNameErr = AuthValidators.validateName(lastNameController.text);
+    final phoneErr = AuthValidators.validateMobileNumber(phoneController.text);
 
-    String? errorMessage;
-    if (firstNameError != null) {
-      errorMessage = firstNameError;
-    } else if (lastNameError != null) {
-      errorMessage = lastNameError;
-    } else
-      errorMessage = mobileError;
+    setState(() {
+      firstNameError = firstNameErr;
+      lastNameError = lastNameErr;
+      phoneError = phoneErr;
+    });
 
-    if (errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: theme.indicatorColor,
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return;
+    if (firstNameErr != null || lastNameErr != null || phoneErr != null) {
+      return; // Do not proceed if there are errors
     }
 
     _submitCreateUser(context);
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(
         heading: 'User Info',
       ),
-      body: BlocListener<CreateUserBloc, CreateUserState>(
+      body: BlocConsumer<CreateUserBloc, CreateUserState>(
         listener: (context, state) {
           if (state is CreateUserSuccess) {
             context.read<Navigation>().navigateTo('/home');
@@ -71,47 +65,58 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
             );
           }
         },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
+        builder: (context, state) {
+          return Stack(
             children: [
-              InputField(
-                labelText: 'First Name',
-                controller: firstNameController,
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    InputField(
+                      labelText: 'First Name',
+                      controller: firstNameController,
+                      errorText: firstNameError,
+                    ),
+                    const SizedBox(height: 20),
+                    InputField(
+                      labelText: 'Last Name',
+                      controller: lastNameController,
+                      errorText: lastNameError,
+                    ),
+                    const SizedBox(height: 20),
+                    GenderDropdown(
+                      items: ['Male', 'Female', 'Other'],
+                      onChanged: (value) {
+                        setState(() {
+                          selectedGender = value!;
+                        });
+                      },
+                      selectedValue: selectedGender,
+                      labelText: 'Gender',
+                      hintText: 'Select Gender',
+                      errorText: null,
+                    ),
+                    const SizedBox(height: 20),
+                    InputField(
+                      labelText: 'Phone Number',
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
+                      hintText: '+923001234567',
+                      errorText: phoneError,
+                    ),
+                    const SizedBox(height: 30),
+                    GradientButton(
+                      onTap: () => _validate(context),
+                      text: 'Complete Registration',
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 20),
-              InputField(
-                labelText: 'Last Name',
-                controller: lastNameController,
-              ),
-              const SizedBox(height: 20),
-              GenderDropdown(
-                items: ['Male', 'Female', 'Other'],
-                onChanged: (value) {
-                  setState(() {
-                    selectedGender = value!;
-                  });
-                },
-                selectedValue: selectedGender,
-                labelText: 'Gender',
-                hintText: 'Select Gender',
-                errorText: null,
-              ),
-              const SizedBox(height: 20),
-              InputField(
-                labelText: 'Phone Number',
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                hintText: '+923001234567',
-              ),
-              const SizedBox(height: 30),
-              GradientButton(
-                onTap: () => _validate(context),
-                text: 'Complete Registration',
-              ),
+              // Loading overlay
+              if (state is CreateUserLoading) const CustomOverlay(),
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }

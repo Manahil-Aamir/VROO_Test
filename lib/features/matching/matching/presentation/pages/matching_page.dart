@@ -7,6 +7,7 @@ import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import '../../../../../core/router/navigation.dart';
 import '../../../../../shared/widgets/appbar.dart';
+import '../../../../HomeScreens/presentation/widgets/appbarmatching.dart';
 import '../bloc/bloc/matching_bloc.dart';
 import '../bloc/state/matching_state.dart';
 import '../widgets/matching_card.dart';
@@ -55,22 +56,6 @@ class _MatchingPageState extends State<MatchingPage> {
   }
 
   /// Parses and formats an arrival time string.
-  String formatArrivalTime(String? arrivalTime) {
-    if (arrivalTime == null) return 'Unknown';
-    try {
-      // Define the input format to match the ISO 8601 format
-      DateFormat inputFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
-      // Parse the input string as a UTC datetime
-      DateTime parsedDate = inputFormat.parse(arrivalTime, true).toUtc();
-
-      // Convert UTC time to local time and format it
-      return DateFormat.jm().format(parsedDate.toLocal());
-    } catch (e) {
-      print('Error parsing expectedArrivalTime: $e');
-      return 'Unknown';
-    }
-  }
 
   @override
   @override
@@ -83,20 +68,18 @@ class _MatchingPageState extends State<MatchingPage> {
     print("maxPickupTime: ${widget.maxPickupTime}");
 
     return Scaffold(
-      appBar: appBar(
+      appBar: appBarMatching(
         heading: 'Matching Rides',
       ),
       body: Padding(
-        padding: EdgeInsets.all(12.0.sp),
+        padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
         child: Column(
           children: [
-            Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TimeWindowWidget(
-                    minPickupTime: widget.minPickupTime,
-                    maxPickupTime: widget.maxPickupTime,
-                    rideRequestId: widget.rideRequestId,
-                    scheduleDate: widget.schedule.date)),
+            TimeWindowWidget(
+                minPickupTime: widget.minPickupTime,
+                maxPickupTime: widget.maxPickupTime,
+                rideRequestId: widget.rideRequestId,
+                scheduleDate: widget.schedule.date),
             Expanded(
               child: BlocListener<MatchingBloc, MatchingState>(
                 listener: (context, state) {
@@ -132,6 +115,9 @@ class _MatchingPageState extends State<MatchingPage> {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is RiderRequestLoaded) {
                       print('loadinggggggggggg');
+                      if (state.matchingRides.isEmpty) {
+                        return const Center(child: Text('No rides found.'));
+                      }
                       return ListView.builder(
                         itemCount: state.matchingRides.length,
                         itemBuilder: (context, index) {
@@ -147,8 +133,8 @@ class _MatchingPageState extends State<MatchingPage> {
                               carModel: ride.car.model,
                               totalSeats: ride.numOfSeats.toInt(),
                               filledSeats: ride.passengers.length,
-                              estimatedArrivalTime:
-                                  formatArrivalTime(ride.expectedArrivalTime),
+                              estimatedArrivalTime: DateFormat.jm().format(
+                                  DateTime.parse(ride.expectedArrivalTime)),
                               id: widget.rideRequestId,
                               carCompany: ride.car.company,
                               rideId: ride.id,
@@ -184,8 +170,8 @@ class _MatchingPageState extends State<MatchingPage> {
                               carModel: ride.car.model,
                               totalSeats: ride.numOfSeats.toInt(),
                               filledSeats: ride.passengers.length,
-                              estimatedArrivalTime:
-                                  formatArrivalTime(ride.expectedArrivalTime),
+                              estimatedArrivalTime: DateFormat.jm().format(
+                                  DateTime.parse(ride.expectedArrivalTime)),
                               id: widget.rideRequestId,
                               carCompany: ride.car.company,
                               rideId: ride.id,

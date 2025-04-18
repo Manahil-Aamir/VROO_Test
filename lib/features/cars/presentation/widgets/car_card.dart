@@ -11,7 +11,7 @@ import '../bloc/bloc/car_bloc.dart';
 class CarCardWidget extends StatelessWidget {
   final CarEntity car;
 
-  const CarCardWidget({Key? key, required this.car}) : super(key: key);
+  const CarCardWidget({super.key, required this.car});
 
   @override
   Widget build(BuildContext context) {

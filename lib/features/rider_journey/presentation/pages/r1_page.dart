@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import 'package:vroo_test/shared/widgets/recurring_row.dart';
@@ -37,9 +36,7 @@ class _R1PageState extends State<R1Page> {
   bool isRecurring = false;
   String recurrence = 'One Time';
   ScheduleModel? schedule;
-
   void _validateFields() {
-    final theme = Theme.of(context);
     final state = context.read<R1Bloc>().state;
 
     if (state is ScheduleInputState) {
@@ -56,35 +53,23 @@ class _R1PageState extends State<R1Page> {
       final maxArrivalTimeErrorMsg = InputRideValidator.validateMaxArrivalTime(
           state.maxPickUpTime, state.maxArrivalTime);
 
-      // Show errors in UI
+      // Show errors in UI via the bloc
       context.read<R1Bloc>().add(ShowErrorEvent(
-            dateError: dateErrorMsg != null,
-            minTimeError: minTimeErrorMsg != null,
-            maxTimeError: maxTimeErrorMsg != null,
-            arrivalTimeError: arrivalTimeErrorMsg != null,
-            minMaxTimeError: minMaxTimeErrorMsg != null,
-            maxArrivalTimeError: maxArrivalTimeErrorMsg != null,
+            dateErrorText: dateErrorMsg,
+            minTimeErrorText: minTimeErrorMsg,
+            maxTimeErrorText: maxTimeErrorMsg,
+            arrivalTimeErrorText: arrivalTimeErrorMsg,
+            minMaxTimeErrorText: minMaxTimeErrorMsg,
+            maxArrivalTimeErrorText: maxArrivalTimeErrorMsg,
           ));
 
-      // Display error messages if validation fails
+      // If any error exists, stop processing
       if (dateErrorMsg != null ||
           minTimeErrorMsg != null ||
           maxTimeErrorMsg != null ||
           arrivalTimeErrorMsg != null ||
           minMaxTimeErrorMsg != null ||
           maxArrivalTimeErrorMsg != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(dateErrorMsg ??
-                minTimeErrorMsg ??
-                maxTimeErrorMsg ??
-                arrivalTimeErrorMsg ??
-                minMaxTimeErrorMsg ??
-                maxArrivalTimeErrorMsg ??
-                'Please fill in all fields.'),
-            backgroundColor: theme.indicatorColor,
-          ),
-        );
         return; // Stop further execution if validation fails
       }
 
@@ -96,6 +81,7 @@ class _R1PageState extends State<R1Page> {
         arrivalTime: state.maxArrivalTime!,
         recurrenceType: isRecurring ? recurrence : 'One Time',
       );
+
       context.read<R1Bloc>().add(SaveScheduleEvent(schedule));
       context.read<Navigation>().navigateTo('/r2_page', arguments: {
         'schedule': schedule,
@@ -104,22 +90,7 @@ class _R1PageState extends State<R1Page> {
     }
   }
 
-  void onRecurringTap(BuildContext context) {
-    showRecurrenceDialog(context);
-  }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (_isInitialLoad) {
-  //       context.read<R1Bloc>().add(LoadScheduleEvent());
-  //       _isInitialLoad = false;
-  //     }
-  //   });
-  // }
-
+// Now let's update the build method in R1Page to correctly display error messages
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -198,8 +169,7 @@ class _R1PageState extends State<R1Page> {
                             onDateSelected: (pickedDate) {
                               bloc.add(SelectDateEvent(pickedDate));
                             },
-                            errorText:
-                                state.dateError ? 'Please select a date' : null,
+                            errorText: state.dateErrorText,
                           ),
                           SizedBox(height: 12.h),
                           CustomTimePicker(
@@ -217,9 +187,8 @@ class _R1PageState extends State<R1Page> {
                               bloc.add(SelectTimeEvent(
                                   maxPickUpTime, "maxPickUpTime"));
                             },
-                            errorText: state.minTimeError
-                                ? 'Please select a time'
-                                : null,
+                            errorText: state.minTimeErrorText ??
+                                state.minMaxTimeErrorText,
                           ),
                           SizedBox(height: 12.h),
                           CustomTimePicker(
@@ -229,9 +198,8 @@ class _R1PageState extends State<R1Page> {
                               bloc.add(
                                   SelectTimeEvent(pickedTime, "maxPickUpTime"));
                             },
-                            errorText: state.maxTimeError
-                                ? 'Please select a time'
-                                : null,
+                            errorText: state.maxTimeErrorText ??
+                                state.minMaxTimeErrorText,
                           ),
                           SizedBox(height: 12.h),
                           CustomTimePicker(
@@ -241,9 +209,8 @@ class _R1PageState extends State<R1Page> {
                               bloc.add(SelectTimeEvent(
                                   pickedTime, "maxArrivalTime"));
                             },
-                            errorText: state.arrivalTimeError
-                                ? 'Please select a time'
-                                : null,
+                            errorText: state.arrivalTimeErrorText ??
+                                state.maxArrivalTimeErrorText,
                           ),
                           SizedBox(height: 12.h),
                           RecurringRow(

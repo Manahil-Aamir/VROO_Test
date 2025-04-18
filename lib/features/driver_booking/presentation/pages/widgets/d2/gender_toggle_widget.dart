@@ -7,7 +7,8 @@ class GenderToggleWidget extends StatelessWidget {
   final bool sameGenderOnly;
   final ValueChanged<bool> onGenderToggled;
 
-  const GenderToggleWidget({Key? key, required this.sameGenderOnly, required this.onGenderToggled}) : super(key: key);
+  const GenderToggleWidget(
+      {super.key, required this.sameGenderOnly, required this.onGenderToggled});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +22,20 @@ class GenderToggleWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(children: [
-              Icon(Icons.people_alt, color: ThemeColors.primaryColor, size: 24.w),
+              Icon(Icons.people_alt,
+                  color: ThemeColors.primaryColor, size: 24.w),
               SizedBox(width: 12.w),
-              Text('Same Gender Only', style: AppFonts.bodyTextStyle.copyWith(fontSize: AppFonts.body1TextSize, color: ThemeColors.headlinesTextColor, fontWeight: FontWeight.w500)),
+              Text('Same Gender Only',
+                  style: AppFonts.bodyTextStyle.copyWith(
+                      fontSize: AppFonts.body1TextSize,
+                      color: ThemeColors.headlinesTextColor,
+                      fontWeight: FontWeight.w500)),
             ]),
-            Switch.adaptive(value: sameGenderOnly, onChanged: onGenderToggled, activeColor: Colors.white, activeTrackColor: ThemeColors.primaryColor),
+            Switch.adaptive(
+                value: sameGenderOnly,
+                onChanged: onGenderToggled,
+                activeColor: Colors.white,
+                activeTrackColor: ThemeColors.primaryColor),
           ],
         ),
       ),

@@ -12,7 +12,7 @@ import '../widgets/add_car_modal.dart';
 import '../widgets/car_card.dart';
 
 class CarScreen extends StatefulWidget {
-  const CarScreen({Key? key}) : super(key: key);
+  const CarScreen({super.key});
 
   @override
   State<CarScreen> createState() => _CarScreenState();
@@ -90,15 +90,15 @@ class _CarScreenState extends State<CarScreen> {
               ),
             );
           } else if (state is CarLoaded || state is CarAdded) {
-            final List<CarEntity> cars = state is CarLoaded
-                ? state.cars
-                : (state as CarAdded).cars;
+            final List<CarEntity> cars =
+                state is CarLoaded ? state.cars : (state as CarAdded).cars;
 
             return Column(
               children: [
                 Expanded(
                   child: ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                     itemCount: cars.length,
                     itemBuilder: (context, index) {
                       final car = cars[index];
