@@ -1,11 +1,16 @@
+import 'dart:convert';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../../../authentication/data/model/user_model.dart';
 
 abstract class HomeDataSource {
   Future<LatLng> getCurrentLocation();
   Future<void> clearSharedPreferences();
   Future<void> logout();
+  Future<UserModel?> getUser();
 }
 
 class HomeDataSourceImpl implements HomeDataSource {
@@ -25,4 +30,15 @@ class HomeDataSourceImpl implements HomeDataSource {
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
   }
+
+  Future<UserModel?> getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('user_data');
+    if (jsonString != null) {
+      final Map<String, dynamic> json = jsonDecode(jsonString);
+      return UserModel.fromJson(json);
+    }
+    return null;
+  }
+
 }

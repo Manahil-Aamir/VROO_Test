@@ -6,6 +6,7 @@ import '../data/repository/home_repository_impl.dart';
 import '../domain/repository/home_repository.dart';
 import '../domain/usecase/get_current_location.dart';
 import '../domain/usecase/clear_preferences_usecase.dart';
+import '../domain/usecase/get_user_usecase.dart';
 import '../domain/usecase/logout_usecase.dart';
 import '../presentation/bloc/bloc/home_bloc.dart';
 
@@ -19,6 +20,7 @@ class HomeDependencyInjection {
         create: (_) => HomeBloc(
           getCurrentLocation: GetCurrentLocation(repository),
           clearPreferences: ClearPreferencesUseCase(repository),
+          getUser: GetUserUseCase(repository),
           logout: LogoutUseCase(repository),
         ),
       ),

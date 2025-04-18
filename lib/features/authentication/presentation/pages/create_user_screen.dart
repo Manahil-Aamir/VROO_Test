@@ -8,10 +8,12 @@ import 'package:vroo_test/shared/widgets/overlay.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/utils/validators/auth_validators.dart';
 import '../../../../shared/widgets/appbar.dart';
+import '../../data/data_source/user_preference.dart';
 import '../../data/model/user_model.dart';
 import '../bloc/bloc/create_user_bloc.dart';
 import '../bloc/event/create_user_event.dart';
 import '../bloc/state/create_user_state.dart';
+import '../bloc/user_bloc.dart';
 
 class CreateUserScreen extends StatefulWidget {
   const CreateUserScreen({super.key});
@@ -56,8 +58,17 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
         heading: 'User Info',
       ),
       body: BlocConsumer<CreateUserBloc, CreateUserState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is CreateUserSuccess) {
+            final user = UserModel(
+              uid: '',//FirebaseAuth.instance.currentUser!.uid,
+              name: '${firstNameController.text} ${lastNameController.text}',
+              gender: selectedGender,
+              phoneNumber: phoneController.text,
+              email: FirebaseAuth.instance.currentUser!.email!,
+            );
+            await UserPreferences.saveUser(user);
+            context.read<UserBloc>().add(SetUserEvent(user: user));
             context.read<Navigation>().navigateTo('/home');
           } else if (state is CreateUserFailure) {
             ScaffoldMessenger.of(context).showSnackBar(

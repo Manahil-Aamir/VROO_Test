@@ -9,6 +9,7 @@ import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import 'package:vroo_test/shared/widgets/input_field.dart';
 
 import '../../../../core/router/navigation.dart';
+import '../../data/data_source/user_preference.dart';
 import '../bloc/event/sign_in_event.dart';
 
 class SignInPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       appBar: AppBarNoIcon(heading: headingTitle),
       body: BlocConsumer<SignInBloc, SignInState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is AuthLoginSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -43,6 +44,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
             );
             context.read<Navigation>().navigateTo('/home');
+            await UserPreferences.saveUser(state.user);
             context.read<UserBloc>().add(SetUserEvent(user: state.user));
           } else if (state is AuthLoginFailure) {
             ScaffoldMessenger.of(context).showSnackBar(

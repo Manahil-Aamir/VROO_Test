@@ -6,6 +6,7 @@ import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../../shared/widgets/custom_dialog.dart';
 import '../bloc/bloc/home_bloc.dart';
+import '../bloc/event/home_event.dart';
 import '../bloc/state/home_state.dart';
 import '../widgets/location_selection_button_widget.dart';
 import '../widgets/side_bar_widget.dart';
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    context.read<HomeBloc>().add(LoadUserEvent());
     _printToken();
   }
 
