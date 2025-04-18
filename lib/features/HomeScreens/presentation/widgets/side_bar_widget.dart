@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/shared/widgets/setting_button.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/custom_dialog.dart';
+import '../../../authentication/presentation/bloc/user_bloc.dart';
 import '../../../sos/data/data_source/tracking_data_source.dart';
 import '../../../sos/presentation/bloc/bloc/sos_bloc.dart';
 import '../../../sos/presentation/bloc/event/sos_event.dart';
@@ -84,149 +85,141 @@ class _SidebarWidgetState extends State<SidebarWidget> {
       },
       child: BlocBuilder<RoleBloc, RoleState>(
         builder: (context, roleState) {
-          return Drawer(
-            elevation: 5,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(15.r),
-                  bottomRight: Radius.circular(15.r),
-                ),
-              ),
-              child: Column(
-                children: [
-                  DrawerHeader(
-                    curve: Curves.easeInQuart,
-                    margin: EdgeInsets.zero,
-                    padding: EdgeInsets.zero,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15.r),
-                      ),
-                      gradient: LinearGradient(
-                        colors: [
-                          theme.primaryColor,
-                          theme.primaryColor.withOpacity(0.7),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
+          return BlocBuilder<UserBloc, UserState>(
+            builder: (context, userState) {
+              final userName = userState is UserLoaded ? userState.user.name : '';
+              final initials = _getInitials(userName);
+              print('sidebar userName: $userName');
+              print('sidebar initials: $initials');
+              return Drawer(
+                elevation: 5,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(15.r),
+                      bottomRight: Radius.circular(15.r),
                     ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InitialsCircleAvatar(
-                          initials: 'HR', // Replace with dynamic initials if needed
-                          radius: 28, // Will be scaled using .r internally
-                          showCameraIcon: false,
-                        ),
-                        SizedBox(height: 10.h),
-                        Text(
-                          roleState.role,
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            color: theme.scaffoldBackgroundColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.sp,
+                  ),
+                  child: Column(
+                    children: [
+                      DrawerHeader(
+                        curve: Curves.easeInQuart,
+                        margin: EdgeInsets.zero,
+                        padding: EdgeInsets.zero,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(15.r),
+                          ),
+                          gradient: LinearGradient(
+                            colors: [
+                              theme.primaryColor,
+                              theme.primaryColor.withOpacity(0.7),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
                         ),
-                      ],
-                    ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InitialsCircleAvatar(
+                                initials: initials, 
+                                radius: 28,
+                                showCameraIcon: false,
+                              ),
+                              SizedBox(height: 10.h),
+                              Text(
+                                userName,
+                                style: theme.textTheme.headlineSmall?.copyWith(
+                                  color: theme.scaffoldBackgroundColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.sp,
+                                ),
+                              ),SizedBox(height: 10.h),
+                              Text(
+                                '(${roleState.role})',
+                                style: theme.textTheme.headlineSmall?.copyWith(
+                                  color: theme.scaffoldBackgroundColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView(
+                          padding: EdgeInsets.symmetric(vertical: 10.h),
+                          children: [
+                            _buildMenuItem(
+                              context,
+                              icon: Icons.home,
+                              title: 'Home',
+                              onTap: () => Navigator.of(context).pop(),
+                            ),
+                            Divider(thickness: 1, height: 8.h, color: theme.primaryColorLight),
+                            _buildMenuItem(
+                              context,
+                              icon: Icons.directions_car,
+                              title: 'Cars',
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pushNamed('/car');
+                              },
+                            ),
+                            Divider(thickness: 1, height: 8.h, color: theme.primaryColorLight),
+                            _buildMenuItem(
+                              context,
+                              icon: Icons.contact_phone,
+                              title: 'Emergency Contacts',
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                context.read<Navigation>().navigateTo('/emergency_contacts');
+                              },
+                            ),
+                            Divider(thickness: 1, height: 8.h, color: theme.primaryColorLight),
+                            _buildMenuItem(
+                              context,
+                              icon: Icons.settings,
+                              title: 'Settings',
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                final homeBloc = context.read<HomeBloc>();
+                                LogoutDialog().showLogoutDialog(context, homeBloc);
+                              },
+                            ),
+                            Divider(thickness: 1, height: 8.h, color: theme.primaryColorLight),
+                            _buildMenuItem(
+                              context,
+                              icon: Icons.logout,
+                              title: 'Logout',
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                final homeBloc = context.read<HomeBloc>();
+                                LogoutDialog().showLogoutDialog(context, homeBloc);
+                              },
+                            ),
+                            Divider(thickness: 1, height: 8.h, color: theme.primaryColorLight),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10.h),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 48.0),
+                        child: SettingButton(
+                          onTap: toggleTracking,
+                          text: isTracking ? 'Stop Tracking' : 'SOS',
+                          color: isTracking ? theme.primaryColor : theme.indicatorColor,
+                        ),
+                      ),
+                    ],
                   ),
-                  ),
-                  Expanded(
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(vertical: 10.h),
-                      children: [
-                        _buildMenuItem(
-                          context,
-                          icon: Icons.home,
-                          title: 'Home',
-                          onTap: () => Navigator.of(context).pop(),
-                        ),
-                        Divider(
-                          thickness: 1,
-                          height: 8.h,
-                          color: theme.primaryColorLight,
-                        ),
-                        _buildMenuItem(
-                          context,
-                          icon: Icons.directions_car,
-                          title: 'Cars',
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pushNamed('/car');
-                          },
-                        ),
-                        Divider(
-                          thickness: 1,
-                          height: 8.h,
-                          color: theme.primaryColorLight,
-                        ),
-                        _buildMenuItem(
-                          context,
-                          icon: Icons.contact_phone,
-                          title: 'Emergency Contacts',
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            context
-                                .read<Navigation>()
-                                .navigateTo('/emergency_contacts');
-                          },
-                        ),
-                        Divider(
-                          thickness: 1,
-                          height: 8.h,
-                          color: theme.primaryColorLight,
-                        ),
-                        _buildMenuItem(
-                          context,
-                          icon: Icons.settings,
-                          title: 'Settings',
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            final homeBloc = context.read<HomeBloc>();
-                            LogoutDialog().showLogoutDialog(context, homeBloc);
-                          },
-                        ),
-                        Divider(
-                          thickness: 1,
-                          height: 8.h,
-                          color: theme.primaryColorLight,
-                        ),
-                        _buildMenuItem(
-                          context,
-                          icon: Icons.logout,
-                          title: 'Logout',
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            final homeBloc = context.read<HomeBloc>();
-                            LogoutDialog().showLogoutDialog(context, homeBloc);
-                          },
-                        ),
-                        Divider(
-                          thickness: 1,
-                          height: 8.h,
-                          color: theme.primaryColorLight,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 48.0),
-                    child: SettingButton(
-                      onTap: toggleTracking,
-                      text: isTracking ? 'Stop Tracking' : 'SOS',
-                      color: isTracking
-                          ? theme.primaryColor
-                          : theme.indicatorColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           );
         },
       ),
@@ -274,5 +267,12 @@ class _SidebarWidgetState extends State<SidebarWidget> {
       ),
       hoverColor: theme.primaryColor.withOpacity(0.1),
     );
+  }
+
+  String _getInitials(String name) {
+    if (name.isEmpty) return '';
+    final names = name.split(' ');
+    if (names.length == 1) return names[0][0].toUpperCase();
+    return '${names[0][0]}${names[1][0]}'.toUpperCase();
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/features/authentication/presentation/bloc/bloc/sign_in_bloc.dart';
 import 'package:vroo_test/features/authentication/presentation/bloc/state/sign_in_state.dart';
+import 'package:vroo_test/features/authentication/presentation/bloc/user_bloc.dart';
 import 'package:vroo_test/shared/widgets/appbar_no_icon.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import 'package:vroo_test/shared/widgets/input_field.dart';
@@ -42,7 +43,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
             );
             context.read<Navigation>().navigateTo('/home');
-            // Navigator.pushNamed(context, '/home');
+            context.read<UserBloc>().add(SetUserEvent(user: state.user));
           } else if (state is AuthLoginFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

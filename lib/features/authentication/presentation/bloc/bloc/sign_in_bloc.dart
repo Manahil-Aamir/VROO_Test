@@ -19,8 +19,8 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
   Future<void> _onLogin(LoginEvent event, Emitter<SignInState> emit) async {
     emit(AuthLoading());
     try {
-      await loginUseCase(event.email, event.password);
-      emit(AuthLoginSuccess());
+      final user = await loginUseCase(event.email, event.password);
+      emit(AuthLoginSuccess(user: user));
     } catch (e) {
       emit(AuthLoginFailure(e.toString()));
     }

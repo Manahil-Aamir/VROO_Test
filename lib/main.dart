@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vroo_test/features/authentication/dependency_injection/user_di.dart';
 import 'app/app.dart';
 import 'core/router/navigation.dart';
 import 'features/HomeScreens/dependency_injection/role_di.dart';
@@ -31,6 +32,7 @@ void main() async {
     MultiProvider(
       providers: [
         ...await RoleDependencyInjection.init(),
+        ...await UserDi.init(),
         Provider<SharedPreferences>(create: (_) => prefs),
         Provider<Navigation>(create: (_) => Navigation()),
         Provider<FirebaseService>(create: (_) => firebaseService),
