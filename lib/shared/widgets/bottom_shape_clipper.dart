@@ -5,9 +5,9 @@ class BottomShapeClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     Path path = Path();
     path.lineTo(0, 0);
-    path.lineTo(0, size.height - 40); // Lower the start of the curve
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 40); // Adjust the curve
+    path.lineTo(0, size.height - 40); // Reduced from 40 to 30
+    path.quadraticBezierTo(size.width / 2, size.height, size.width,
+        size.height - 30); // Reduced curve height
     path.lineTo(size.width, 0);
     path.close();
     return path;
@@ -18,7 +18,6 @@ class BottomShapeClipper extends CustomClipper<Path> {
     return false;
   }
 }
-
 
 // class BottomShapeClipper extends CustomClipper<Path> {
 //   @override
