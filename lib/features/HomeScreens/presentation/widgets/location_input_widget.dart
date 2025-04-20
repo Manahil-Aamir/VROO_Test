@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../../../../core/theme/font/font_theme.dart';
 import '../../domain/entity/prediction.dart';
 import '../bloc/bloc/location_selection_bloc.dart';
 import '../bloc/event/location_selection_event.dart';

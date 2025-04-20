@@ -1,4 +1,5 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../../authentication/data/model/user_model.dart';
 import '../data_source/home_data_source.dart';
 import '../../domain/repository/home_repository.dart';
 
@@ -15,4 +16,9 @@ class HomeRepositoryImpl implements HomeRepository {
 
   @override
   Future<void> logout() => dataSource.logout();
+
+  @override
+  Future<UserModel?> getUser() {
+    return dataSource.getUser();
+  }
 }
