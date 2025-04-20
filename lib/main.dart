@@ -32,7 +32,7 @@ void main() async {
     MultiProvider(
       providers: [
         ...await RoleDependencyInjection.init(),
-        ...await UserDi.init(),
+        ...UserDi.init(),
         Provider<SharedPreferences>(create: (_) => prefs),
         Provider<Navigation>(create: (_) => Navigation()),
         Provider<FirebaseService>(create: (_) => firebaseService),

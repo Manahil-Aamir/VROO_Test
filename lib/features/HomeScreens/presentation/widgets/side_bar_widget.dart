@@ -87,7 +87,8 @@ class _SidebarWidgetState extends State<SidebarWidget> {
         builder: (context, roleState) {
           return BlocBuilder<UserBloc, UserState>(
             builder: (context, userState) {
-              final userName = userState is UserLoaded ? userState.user.name : '';
+              final userName =
+                  userState is UserLoaded ? userState.user.name : '';
               final initials = _getInitials(userName);
               print('sidebar userName: $userName');
               print('sidebar initials: $initials');
@@ -125,7 +126,7 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               InitialsCircleAvatar(
-                                initials: initials, 
+                                initials: initials,
                                 radius: 28,
                                 showCameraIcon: false,
                               ),
@@ -160,7 +161,10 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                               title: 'Home',
                               onTap: () => Navigator.of(context).pop(),
                             ),
-                            Divider(thickness: 1, height: 8.h, color: theme.primaryColorLight),
+                            Divider(
+                                thickness: 1,
+                                height: 8.h,
+                                color: theme.primaryColorLight),
                             _buildMenuItem(
                               context,
                               icon: Icons.directions_car,
@@ -170,17 +174,25 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                                 Navigator.of(context).pushNamed('/car');
                               },
                             ),
-                            Divider(thickness: 1, height: 8.h, color: theme.primaryColorLight),
+                            Divider(
+                                thickness: 1,
+                                height: 8.h,
+                                color: theme.primaryColorLight),
                             _buildMenuItem(
                               context,
                               icon: Icons.contact_phone,
                               title: 'Emergency Contacts',
                               onTap: () {
                                 Navigator.of(context).pop();
-                                context.read<Navigation>().navigateTo('/emergency_contacts');
+                                context
+                                    .read<Navigation>()
+                                    .navigateTo('/emergency_contacts');
                               },
                             ),
-                            Divider(thickness: 1, height: 8.h, color: theme.primaryColorLight),
+                            Divider(
+                                thickness: 1,
+                                height: 8.h,
+                                color: theme.primaryColorLight),
                             _buildMenuItem(
                               context,
                               icon: Icons.settings,
@@ -188,10 +200,14 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                               onTap: () {
                                 Navigator.of(context).pop();
                                 final homeBloc = context.read<HomeBloc>();
-                                LogoutDialog().showLogoutDialog(context, homeBloc);
+                                LogoutDialog()
+                                    .showLogoutDialog(context, homeBloc);
                               },
                             ),
-                            Divider(thickness: 1, height: 8.h, color: theme.primaryColorLight),
+                            Divider(
+                                thickness: 1,
+                                height: 8.h,
+                                color: theme.primaryColorLight),
                             _buildMenuItem(
                               context,
                               icon: Icons.logout,
@@ -199,10 +215,14 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                               onTap: () {
                                 Navigator.of(context).pop();
                                 final homeBloc = context.read<HomeBloc>();
-                                LogoutDialog().showLogoutDialog(context, homeBloc);
+                                LogoutDialog()
+                                    .showLogoutDialog(context, homeBloc);
                               },
                             ),
-                            Divider(thickness: 1, height: 8.h, color: theme.primaryColorLight),
+                            Divider(
+                                thickness: 1,
+                                height: 8.h,
+                                color: theme.primaryColorLight),
                           ],
                         ),
                       ),
@@ -212,7 +232,9 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                         child: SettingButton(
                           onTap: toggleTracking,
                           text: isTracking ? 'Stop Tracking' : 'SOS',
-                          color: isTracking ? theme.primaryColor : theme.indicatorColor,
+                          color: isTracking
+                              ? theme.primaryColor
+                              : theme.indicatorColor,
                         ),
                       ),
                     ],
@@ -233,30 +255,27 @@ class _SidebarWidgetState extends State<SidebarWidget> {
     required VoidCallback onTap,
   }) {
     final theme = Theme.of(context);
-    
+
     return ListTile(
       leading: Icon(
         icon,
-        color: title == 'Logout'
-            ? theme.indicatorColor
-            : theme.primaryColorDark,
+        color:
+            title == 'Logout' ? theme.indicatorColor : theme.primaryColorDark,
         size: 24.r,
       ),
       title: Text(
         title,
         style: title == 'Logout'
             ? theme.textTheme.bodyLarge?.copyWith(
-                  color: theme.indicatorColor,
-                )
+                color: theme.indicatorColor,
+              )
             : theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.primaryColorDark,
-                ),
+                color: theme.primaryColorDark,
+              ),
       ),
       trailing: Icon(
         Icons.arrow_forward_ios,
-        color: title == 'Logout'
-            ? theme.indicatorColor
-            : theme.primaryColor,
+        color: title == 'Logout' ? theme.indicatorColor : theme.primaryColor,
         size: 16.r,
       ),
       onTap: onTap,

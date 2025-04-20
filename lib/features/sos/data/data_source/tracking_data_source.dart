@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -124,10 +125,20 @@ class SosTrackerService {
   }
 
   /// Stop tracking
-  void stopTracking() {
+  Future<void> stopTracking() async {
     FlutterForegroundTask.sendDataToTask('stop');
     FlutterForegroundTask.stopService();
     print("🛑 Tracking stopped for session: $sessionId");
+    try {
+      await FirebaseFirestore.instance
+          .collection('sessions') // replace with your collection name
+          .doc(sessionId) // the document ID from the image is "100294376586"
+          .update({'status': 'inactive'});
+
+      print("✅ Status updated to inactive for session: $sessionId");
+    } catch (e) {
+      print("❌ Failed to update status: $e");
+    }
   }
 }
 
