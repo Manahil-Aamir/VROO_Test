@@ -45,14 +45,13 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   void _setupFocusListeners() {
     _fromFocusNode.addListener(() {
       if (_fromFocusNode.hasFocus) {
-        setState(() => activeMarker = 'start');
-        _updateMapMarkers();
+        _expandModal();
       }
     });
+
     _toFocusNode.addListener(() {
       if (_toFocusNode.hasFocus) {
-        setState(() => activeMarker = 'dest');
-        _updateMapMarkers();
+        _expandModal();
       }
     });
   }
@@ -329,6 +328,31 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
   @override
   @override
+/*************  ✨ Windsurf Command ⭐  *************/
+  /// Builds the UI for selecting a location on a map.
+  ///
+  /// It creates a [Scaffold] with an [AppBar] and a [BlocProvider] that
+  /// provides the [LocationSelectionBloc] to its descendants.
+  ///
+  /// The body of the [Scaffold] is a [BlocListener] that listens to the
+  /// [LocationSelectionBloc] and updates the UI when the state changes.
+  ///
+  /// The [BlocListener] has a child which is a [BlocBuilder] that builds the
+  /// UI depending on the role of the user.
+  ///
+  /// The [BlocBuilder] builds a [Stack] with two children. The first child
+  /// is the map background which is an [AndroidView] that displays the
+  /// native Google Map. The second child is the bottom modal sheet which
+  /// displays the location details and the buttons to select the location.
+  ///
+  /// The [BlocBuilder] also sets up the method channel to handle the
+  /// platform view's method calls and updates the map markers when the
+  /// platform view is created.
+  ///
+  /// The [BlocListener] also sets up the method channel to handle the
+  /// platform view's method calls and updates the map markers when the
+  /// location is selected.
+  /// *****  a3807f31-7023-40bb-811d-307f19100356  ******
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
@@ -340,13 +364,22 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
             if (state is PlaceIdLoaded) {
               _handlePlaceIdLoaded(state.placeId);
             }
+            if (state is LatLngLoaded) {
+              // Close keyboard and minimize modal when location is selected
+              FocusScope.of(context).unfocus();
+              _minimizeModal();
+            }
           },
           child: BlocBuilder<RoleBloc, RoleState>(
             builder: (context, roleState) {
               return Stack(
                 children: [
                   // Map background
-                  Positioned.fill(
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 250.h,
                     child: AndroidView(
                       viewType: 'native_google_map',
                       layoutDirection: TextDirection.ltr,
@@ -373,84 +406,150 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
                     ),
                   ),
 
-                  // Fixed Next Button
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 16.w, vertical: 100.h),
-                      child: _buildNextButton(context, roleState.role),
-                    ),
-                  ),
-
-                  // Scrollable Input Fields
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 16.h),
-                          width: 350.w,
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: theme.primaryColorDark.withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Column(
-                            children: [
-                              LocationInputField(
-                                label: 'From where would you go?',
-                                controller: _fromController,
-                                focusNode: _fromFocusNode,
-                                onPlaceSelected:
-                                    (placeId, description, position) {
-                                  setState(() {
-                                    fromPlaceId = placeId;
-                                    fromDescription = description;
-                                    fromPosition = position;
-                                    activeMarker = 'start';
-                                  });
-                                  _saveLocation(
-                                    keyPrefix: 'from',
-                                    placeId: placeId,
-                                    description: description,
-                                    position: position,
-                                  );
-                                  _updateMapMarkers();
-                                },
-                              ),
-                              SizedBox(height: 10.h),
-                              LocationInputField(
-                                label: 'Where would you go?',
-                                controller: _toController,
-                                focusNode: _toFocusNode,
-                                onPlaceSelected:
-                                    (placeId, description, position) {
-                                  setState(() {
-                                    toPlaceId = placeId;
-                                    toDescription = description;
-                                    toPosition = position;
-                                    activeMarker = 'dest';
-                                  });
-                                  _saveLocation(
-                                    keyPrefix: 'to',
-                                    placeId: placeId,
-                                    description: description,
-                                    position: position,
-                                  );
-                                  _updateMapMarkers();
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Bottom Modal Sheet
+                  _buildBottomModal(context, theme, roleState.role),
                 ],
               );
             },
+          ),
+        ),
+      ),
+    );
+  }
+
+// Control modal expansion state
+  bool _isModalExpanded = false;
+
+  void _expandModal() {
+    if (!_isModalExpanded) {
+      setState(() {
+        _isModalExpanded = true;
+      });
+    }
+  }
+
+  void _minimizeModal() {
+    if (_isModalExpanded) {
+      setState(() {
+        _isModalExpanded = false;
+      });
+    }
+  }
+
+  Widget _buildBottomModal(BuildContext context, ThemeData theme, String role) {
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      // When expanded, show more of the modal
+      height:
+          _isModalExpanded ? MediaQuery.of(context).size.height * 0.8 : 250.h,
+      child: GestureDetector(
+        // Allow manual open/close with drag
+        onVerticalDragEnd: (details) {
+          if (details.primaryVelocity! < 0) {
+            // Swipe up to expand
+            _expandModal();
+          } else if (details.primaryVelocity! > 0) {
+            // Swipe down to minimize
+            _minimizeModal();
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: theme.primaryColorDark,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, -2),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              // Handle bar for dragging
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 8.h),
+                width: 50.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+
+              // Location input fields
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: theme.primaryColorDark.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    children: [
+                      // From Location Field with focus listener
+                      LocationInputField(
+                        label: 'From where would you go?',
+                        controller: _fromController,
+                        focusNode: _fromFocusNode,
+                        onPlaceSelected: (placeId, description, position) {
+                          setState(() {
+                            fromPlaceId = placeId;
+                            fromDescription = description;
+                            fromPosition = position;
+                            activeMarker = 'start';
+                          });
+                          _saveLocation(
+                            keyPrefix: 'from',
+                            placeId: placeId,
+                            description: description,
+                            position: position,
+                          );
+                          _updateMapMarkers();
+                        },
+                      ),
+                      SizedBox(height: 10.h),
+                      // To Location Field with focus listener
+                      LocationInputField(
+                        label: 'Where would you go?',
+                        controller: _toController,
+                        focusNode: _toFocusNode,
+                        onPlaceSelected: (placeId, description, position) {
+                          setState(() {
+                            toPlaceId = placeId;
+                            toDescription = description;
+                            toPosition = position;
+                            activeMarker = 'dest';
+                          });
+                          _saveLocation(
+                            keyPrefix: 'to',
+                            placeId: placeId,
+                            description: description,
+                            position: position,
+                          );
+                          _updateMapMarkers();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Next button
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                child: _buildNextButton(context, role),
+              ),
+            ],
           ),
         ),
       ),

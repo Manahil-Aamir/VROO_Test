@@ -95,19 +95,20 @@ class _LocationInputFieldState extends State<LocationInputField> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-              controller: _controller,
-              focusNode: _focusNode,
+              controller: widget.controller,
+              focusNode: widget.focusNode,
               cursorColor: theme.primaryColor,
               style: theme.textTheme.bodyMedium
                   ?.copyWith(color: theme.scaffoldBackgroundColor),
               decoration: InputDecoration(
                 hintText: widget.label,
-                hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.scaffoldBackgroundColor.withOpacity(0.5)),
+                hintStyle: theme.textTheme.bodyMedium
+                    ?.copyWith(color: theme.scaffoldBackgroundColor),
                 prefixIcon: Icon(Icons.search, color: theme.primaryColor),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.r),
-                  borderSide: BorderSide(color: theme.primaryColor, width: 2.0),
+                  borderSide: BorderSide(
+                      color: theme.scaffoldBackgroundColor, width: 2.0),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.r),
@@ -150,7 +151,7 @@ class _LocationInputFieldState extends State<LocationInputField> {
 
   Widget _buildSuggestionsListItems(LocationSelectionLoaded state) {
     return SizedBox(
-      height: 500.0.h, // Set a fixed height for the scrollable area
+      height: 370.0.h, // Set a fixed height for the scrollable area
       child: ListView.builder(
         shrinkWrap: true,
         itemCount: state.predictions.length,
