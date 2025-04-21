@@ -1,7 +1,7 @@
 import '../../../cars/domain/entity/car.dart';
 import '../../../driver_requests/domain/entity/location_entity.dart';
 import '../../../driver_requests/domain/entity/ratings.dart';
-import '../../../driver_requests/domain/entity/driver_rider_detail.dart';
+import 'driver_rider_detail.dart';
 
 class RiderApprovedRequest {
   final String id;

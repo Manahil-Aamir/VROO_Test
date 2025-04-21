@@ -1,6 +1,6 @@
 import 'package:vroo_test/features/driver_requests/domain/entity/location_entity.dart';
 
-import 'driver_rider_detail.dart';
+import '../../../rider_requests/domain/entity/driver_rider_detail.dart';
 import 'preferences.dart';
 import 'time_range.dart';
 

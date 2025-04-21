@@ -1,10 +1,10 @@
-import 'package:vroo_test/features/driver_requests/data/model/driver_rider_detail_model.dart';
+import 'package:vroo_test/features/rider_requests/data/models/driver_rider_detail_model.dart';
 import 'package:vroo_test/features/rider_requests/domain/entity/rider_approved_request_entity.dart';
 
 import '../../../cars/data/model/carr_model.dart';
 import '../../../driver_requests/data/model/location_modal.dart';
 import '../../../driver_requests/data/model/ratings_modal.dart';
-import '../../../driver_requests/domain/entity/driver_rider_detail.dart';
+import '../../domain/entity/driver_rider_detail.dart';
 
 class RiderApprovedRequestModel extends RiderApprovedRequest {
   RiderApprovedRequestModel({
