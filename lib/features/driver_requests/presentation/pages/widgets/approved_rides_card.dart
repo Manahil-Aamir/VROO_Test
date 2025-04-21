@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import '../../../../../core/router/navigation.dart';
 import '../../../../../core/theme/color/color_theme.dart';
 import '../../../../../core/services/phone_service.dart'; 
 import '../../../../../shared/widgets/custom_dialog.dart';
+import '../../../../chat/domain/entity/chat_user.dart';
 import '../../../domain/entity/approved_rides.dart'; 
 
 class ApprovedRideCard extends StatelessWidget {
@@ -204,6 +207,7 @@ class ApprovedRideCard extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: () {
                 // Implement message functionality
+                _navigateToChat(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: ThemeColors.primaryColor,
@@ -262,7 +266,27 @@ class ApprovedRideCard extends StatelessWidget {
       ],
     );
   }
-  
+
+  void _navigateToChat(BuildContext context) {
+    // Create a ChatUser from the ApprovedRidesEntity
+    final chatUser = ChatUser(
+      id: ride.riderId,
+      name: ride.riderName,
+      fcmToken: ride.fcmToken, 
+      source: ride.source,
+      destination: ride.destination,
+      date: ride.date,
+    );
+    context.read<Navigation>().navigateTo('/chat_detail', arguments: chatUser);
+
+    // Navigate to the chat detail screen
+    // Navigator.of(context).push(
+    //   MaterialPageRoute(
+    //     builder: (context) => ChatDetailScreen(user: chatUser),
+    //   ),
+    // );
+  }
+
   void _showCallConfirmation(BuildContext context) {
     showDialog(
       context: context,
@@ -278,8 +302,7 @@ class ApprovedRideCard extends StatelessWidget {
           try {
             // Assuming the rider has a phoneNumber property in ApprovedRidesEntity
             // If not, you'll need to add it to the entity
-            // await PhoneService.makePhoneCall(ride.phoneNumber);
-            await PhoneService.makePhoneCall("+923310394968");
+            await PhoneService.makePhoneCall(ride.phoneNumber);
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Failed to make call: $e')),

@@ -28,6 +28,7 @@ class ApprovedRidesWrapperModel {
 class ApprovedRidesModel {
   final String riderId;
   final String riderName;
+  final String phoneNumber; 
   final String status;
   final int fare;
   final String rideRequestId;
@@ -37,10 +38,12 @@ class ApprovedRidesModel {
   final TimeRangeModel pickupTimeRange;
   final DateTime maxArrivalTime;
   final RatingsModel ratings; 
+  final String fcmToken;
 
   ApprovedRidesModel({
     required this.riderId,
     required this.riderName,
+    required this.phoneNumber,
     required this.status,
     required this.fare,
     required this.rideRequestId,
@@ -49,13 +52,15 @@ class ApprovedRidesModel {
     required this.date,
     required this.pickupTimeRange,
     required this.maxArrivalTime,
-    required this.ratings, 
+    required this.ratings,
+    required this.fcmToken, 
   });
 
   factory ApprovedRidesModel.fromJson(Map<String, dynamic> json) {
     return ApprovedRidesModel(
       riderId: json['riderId'] ?? '',
       riderName: json['riderName'] ?? '',
+      phoneNumber: json['phoneNumber'] ?? '',
       status: json['status'] ?? '',
       fare: json['fare']?.toInt() ?? 0,
       rideRequestId: json['rideRequestId'] ?? '',
@@ -65,6 +70,7 @@ class ApprovedRidesModel {
       pickupTimeRange: TimeRangeModel.fromJson(json['pickupTimeRange'] ?? {}),
       maxArrivalTime: DateTime.parse(json['maxArrivalTime']),
       ratings: RatingsModel.fromJson(json['ratings'] ?? {}), 
+      fcmToken: json['fcmToken'] ?? '',
     );
   }
 
@@ -72,6 +78,7 @@ class ApprovedRidesModel {
     return ApprovedRidesEntity(
       riderId: riderId,
       riderName: riderName,
+      phoneNumber: phoneNumber,
       status: status,
       fare: fare,
       rideRequestId: rideRequestId,
@@ -81,6 +88,7 @@ class ApprovedRidesModel {
       pickupTimeRange: pickupTimeRange.toEntity(),
       maxArrivalTime: maxArrivalTime,
       ratings: ratings.toEntity(),
+      fcmToken: fcmToken, 
     );
   }
 }
