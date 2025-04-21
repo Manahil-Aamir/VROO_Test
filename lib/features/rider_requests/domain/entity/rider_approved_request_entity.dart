@@ -1,6 +1,6 @@
 import '../../../cars/domain/entity/car.dart';
-import '../../../driver_requests/domain/entity/location_entity.dart';
-import '../../../driver_requests/domain/entity/ratings.dart';
+import '../../../../shared/domain/entity/location_entity.dart';
+import '../../../../shared/domain/entity/ratings.dart';
 import 'driver_rider_detail.dart';
 
 class RiderApprovedRequest {

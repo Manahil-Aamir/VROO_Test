@@ -1,8 +1,8 @@
 import 'package:vroo_test/features/rider_requests/domain/entity/rider_pending_request_entity.dart';
 
-import '../../../driver_requests/data/model/location_modal.dart';
-import '../../../driver_requests/data/model/preferences_modal.dart';
-import '../../../driver_requests/data/model/time_range_model.dart';
+import '../../../../shared/data/models/location_modal.dart';
+import '../../../../shared/data/models/preferences_modal.dart';
+import '../../../../shared/data/models/time_range_model.dart';
 
 class RiderPendingRequestModel extends RiderPendingRequest {
   RiderPendingRequestModel({

@@ -1,4 +1,4 @@
-import 'package:vroo_test/features/driver_requests/domain/entity/ratings.dart';
+import 'package:vroo_test/shared/domain/entity/ratings.dart';
 
 class DriverRiderDetail {
   final String name;

@@ -1,8 +1,8 @@
 import '../../domain/entity/pending_rides.dart';
 import '../../../rider_requests/data/models/driver_rider_detail_model.dart';
-import 'location_modal.dart';
-import 'preferences_modal.dart';
-import 'time_range_model.dart';
+import '../../../../shared/data/models/location_modal.dart';
+import '../../../../shared/data/models/preferences_modal.dart';
+import '../../../../shared/data/models/time_range_model.dart';
 
 class PendingRidesModel {
   final DateTime date;

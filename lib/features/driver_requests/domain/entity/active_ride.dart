@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../cars/domain/entity/car.dart';
-import 'location_entity.dart';
+import '../../../../shared/domain/entity/location_entity.dart';
 
 class ActiveRideEntity {
   final String id;

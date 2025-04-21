@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../domain/entity/active_ride.dart';
 import '../../../cars/data/model/carr_model.dart';
-import 'location_modal.dart';
+import '../../../../shared/data/models/location_modal.dart';
 
 class ActiveRideModel {
   final String id;

@@ -1,8 +1,8 @@
-import 'package:vroo_test/features/driver_requests/domain/entity/location_entity.dart';
+import 'package:vroo_test/shared/domain/entity/location_entity.dart';
 
 import '../../../rider_requests/domain/entity/driver_rider_detail.dart';
-import 'preferences.dart';
-import 'time_range.dart';
+import '../../../../shared/domain/entity/preferences.dart';
+import '../../../../shared/domain/entity/time_range.dart';
 
 class PendingRidesEntity {
   final DateTime date;

@@ -1,6 +1,6 @@
 import '../../domain/entity/approved_rides.dart';
-import 'ratings_modal.dart';
-import 'time_range_model.dart';
+import '../../../../shared/data/models/ratings_modal.dart';
+import '../../../../shared/data/models/time_range_model.dart';
 
 class ApprovedRidesWrapperModel {
   final int numOfSeats;

@@ -1,5 +1,5 @@
 import '../../domain/entity/driver_rider_detail.dart';
-import '../../../driver_requests/data/model/ratings_modal.dart';
+import '../../../../shared/data/models/ratings_modal.dart';
 
 class DriverRiderDetailModel {
   final String name;

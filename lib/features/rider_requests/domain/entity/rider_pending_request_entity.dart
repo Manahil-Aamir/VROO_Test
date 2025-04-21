@@ -1,6 +1,6 @@
-import '../../../driver_requests/domain/entity/location_entity.dart';
-import '../../../driver_requests/domain/entity/preferences.dart';
-import '../../../driver_requests/domain/entity/time_range.dart';
+import '../../../../shared/domain/entity/location_entity.dart';
+import '../../../../shared/domain/entity/preferences.dart';
+import '../../../../shared/domain/entity/time_range.dart';
 
 class RiderPendingRequest {
   final String id;

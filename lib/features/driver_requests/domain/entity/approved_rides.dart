@@ -1,5 +1,5 @@
-import 'ratings.dart';
-import 'time_range.dart';
+import '../../../../shared/domain/entity/ratings.dart';
+import '../../../../shared/domain/entity/time_range.dart';
 
 class ApprovedRidesEntity {
   final String riderId;
