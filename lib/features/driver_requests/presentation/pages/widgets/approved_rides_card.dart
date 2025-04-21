@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../../../../../core/theme/color/color_theme.dart';
-import '../../../domain/entity/approved_rides.dart';
+import '../../../../../core/services/phone_service.dart'; 
+import '../../../../../shared/widgets/custom_dialog.dart';
+import '../../../domain/entity/approved_rides.dart'; 
 
 class ApprovedRideCard extends StatelessWidget {
   final ApprovedRidesEntity ride;
@@ -182,8 +184,109 @@ class ApprovedRideCard extends StatelessWidget {
                 ),
               ],
             ),
+            
+            // Action buttons row
+            SizedBox(height: 16.h),
+            _buildActionButtons(context),
           ],
         ),
+      ),
+    );
+  }
+  
+  // Action buttons with icons
+  Widget _buildActionButtons(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: 34.h,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                // Implement message functionality
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ThemeColors.primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                elevation: 0,
+                padding: EdgeInsets.symmetric(vertical: 0),
+              ),
+              icon: Icon(
+                Icons.chat_rounded,
+                size: 18.r,
+                color: Colors.white,
+              ),
+              label: Text(
+                'Message',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.sp,
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 10.w),
+        Expanded(
+          child: SizedBox(
+            height: 34.h,
+            child: ElevatedButton.icon(
+              onPressed: () => _showCallConfirmation(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ThemeColors.primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                elevation: 0,
+                padding: EdgeInsets.symmetric(vertical: 0),
+              ),
+              icon: Icon(
+                Icons.call_rounded,
+                size: 18.r,
+                color: Colors.white,
+              ),
+              label: Text(
+                'Call',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.sp,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  
+  void _showCallConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => CustomDialog(
+        title: "Call Rider",
+        message: "Do you want to call ${ride.riderName}?",
+        confirmText: "Call",
+        cancelText: "Cancel",
+        confirmColor: ThemeColors.primaryColor,
+        cancelColor: ThemeColors.accentColor,
+        onConfirm: () async {
+          Navigator.of(context).pop();
+          try {
+            // Assuming the rider has a phoneNumber property in ApprovedRidesEntity
+            // If not, you'll need to add it to the entity
+            // await PhoneService.makePhoneCall(ride.phoneNumber);
+            await PhoneService.makePhoneCall("+923310394968");
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Failed to make call: $e')),
+            );
+          }
+        },
+        onCancel: () => Navigator.of(context).pop(),
       ),
     );
   }
