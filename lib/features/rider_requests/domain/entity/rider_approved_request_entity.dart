@@ -32,12 +32,14 @@ class DriverEntity {
   final Ratings rating;
   final TotalRides totalRides;
   final String phoneNumber;
+  final String fcmToken;
 
   DriverEntity({
     required this.name,
     required this.rating,
     required this.totalRides,
     required this.phoneNumber,
+    required this.fcmToken,
   });
 }
 

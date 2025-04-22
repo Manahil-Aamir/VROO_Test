@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/router/navigation.dart';
 import '../../../../core/services/phone_service.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/custom_dialog.dart';
 import '../../../../shared/widgets/dialog_button.dart';
+import '../../../chat/domain/entity/chat_user.dart';
 import '../../domain/entity/rider_approved_request_entity.dart';
 
 class ApprovedRequestCard extends StatelessWidget {
@@ -304,7 +307,9 @@ class ApprovedRequestCard extends StatelessWidget {
           child: SizedBox(
             height: 38.h,
             child: DialogButton(
-              onTap: () {},
+              onTap: () {
+                _navigateToChat(context);
+              },
               text: 'Message',
               color: ThemeColors.primaryColor,
             ),
@@ -340,6 +345,20 @@ class ApprovedRequestCard extends StatelessWidget {
       ),
     );
   }
+
+  void _navigateToChat(BuildContext context) {
+    final chatUser = ChatUser(
+      id: request.driverId,
+      name: request.driver.name,
+      fcmToken: request.driver.fcmToken,
+      source: request.source.address,
+      destination: request.destination.address,
+      date: request.date,
+    );
+
+    context.read<Navigation>().navigateTo('/chat_detail', arguments: chatUser);
+  }
+
 
   void _showCallConfirmation(BuildContext context) {
     showDialog(

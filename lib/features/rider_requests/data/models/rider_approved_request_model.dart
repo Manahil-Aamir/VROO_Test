@@ -56,6 +56,7 @@ class DriverModel extends DriverEntity {
     required super.rating,
     required super.totalRides,
     required super.phoneNumber,
+    required super.fcmToken,
   });
 
   factory DriverModel.fromJson(Map<String, dynamic> json) {
@@ -64,6 +65,7 @@ class DriverModel extends DriverEntity {
       rating: RatingsModel.fromJson(json['rating']).toEntity(),
       totalRides: TotalRidesModel.fromJson(json['totalRides']).toEntity(),
       phoneNumber: json['phoneNumber'],
+      fcmToken: json['fcmToken'],
     );
   }
 
@@ -73,6 +75,7 @@ class DriverModel extends DriverEntity {
       rating: rating,
       totalRides: totalRides,
       phoneNumber: phoneNumber,
+      fcmToken: fcmToken,
     );
   }
 }

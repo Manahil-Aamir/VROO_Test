@@ -19,6 +19,7 @@ class RiderApprovedRequestDataSourceImpl implements RiderApprovedRequestDataSour
   @override
   Future<List<RiderApprovedRequestModel>> getApprovedRequests(String token) async {
     print('Fetching approved requests for rider with token: $token');
+    print('URL: ${baseUrl}rider/ride-request/approved');
     final response = await client.get(
       Uri.parse('${baseUrl}rider/ride-request/approved'),
       headers: {
