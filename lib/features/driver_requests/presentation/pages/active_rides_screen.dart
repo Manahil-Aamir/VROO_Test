@@ -94,7 +94,32 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
                     if (state is ActiveRidesDriverLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is ActiveRidesDriverError) {
-                      return Center(child: Text(state.message));
+                      print(state.message);
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/error.png',
+                              width: 300.w,
+                              height: 300.h,
+                              fit: BoxFit.contain,
+                            ),
+                            // SizedBox(height: 16.h),
+                            // Padding(
+                            //   padding: EdgeInsets.symmetric(horizontal: 24.w),
+                            //   child: Text(
+                            //     'Failed to load profile information. Please try again later.',
+                            //     style: textTheme.bodyMedium?.copyWith(
+                            //       color: ThemeColors.accentColor,
+                            //       fontSize: 14.sp,
+                            //     ),
+                            //     textAlign: TextAlign.center,
+                            //   ),
+                            // ),
+                          ],
+                        ),
+                      );
                     } else if (state is ActiveRidesDriverLoaded) {
                       if (state.filteredRides.isEmpty) {
                         return Center(

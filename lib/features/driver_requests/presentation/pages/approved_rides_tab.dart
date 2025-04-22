@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../shared/widgets/error_dialog.dart';
 import '../bloc/bloc/approved_rides_bloc.dart';
@@ -24,7 +25,20 @@ class ApprovedRidesTab extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         } else if (state is ApprovedRidesError) {
           print('Error loading approved rides: ${state.message}');
-          return Center(child: Text(state.message));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/error.png',
+                    width: 300.w,
+                    height: 300.h,
+                    fit: BoxFit.contain,
+                  ),            
+                ],
+              ),
+            );
+                    
         } else if (state is ApprovedRidesLoaded) {
           print('Approved rides loaded: ${state.rides.length} rides found.');
           if (state.rides.isEmpty) {

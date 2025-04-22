@@ -41,7 +41,7 @@ class _ContactScreenState extends State<ContactScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(heading: 'Emergency Contacts'),
+      appBar: appBar(heading: 'Contacts'),
       body: Padding(
         padding: EdgeInsets.all(30.w),
         child: Column(
@@ -65,9 +65,36 @@ class _ContactScreenState extends State<ContactScreen> {
                     return ContactList(contacts: state.contacts);
                   } else if (state is SosError) {
                     // Preserve previous contacts & show the Snackbar message
-                    return ContactList(
-                      contacts: state.previousContacts,
-                    );
+                    if (state.previousContacts.isNotEmpty) {
+                      _showSnackbar(state.message);
+                      return ContactList(contacts: state.previousContacts);
+                    } else {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/error.png',
+                              width: 300.w,
+                              height: 300.h,
+                              fit: BoxFit.contain,
+                            ),
+                            // SizedBox(height: 16.h),
+                            // Text(
+                            //   state.message,
+                            //   style: TextStyle(
+                            //     color: Theme.of(context).indicatorColor,
+                            //     fontSize: 16.sp,
+                            //   ),
+                            //   textAlign: TextAlign.center,
+                            // ),
+                          ],
+                        ),
+                      );
+                    }
+                    // return ContactList(
+                    //   contacts: state.previousContacts,
+                    // );
                   }
                   return const Center(child: Text("No contacts added yet."));
                 },

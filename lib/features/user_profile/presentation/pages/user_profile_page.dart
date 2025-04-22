@@ -29,8 +29,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
+    // final textTheme = Theme.of(context).textTheme;
     return WillPopScope(
       onWillPop: () async {
         bool exitApp = await _showExitDialog(context);
@@ -83,22 +82,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   children: [
                     Image.asset(
                       'assets/images/error.png',
-                      width: 200.w,
-                      height: 200.h,
+                      width: 300.w,
+                      height: 300.h,
                       fit: BoxFit.contain,
                     ),
-                    SizedBox(height: 16.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.w),
-                      child: Text(
-                        'Failed to load profile information. Please try again later.',
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: ThemeColors.accentColor,
-                          fontSize: 14.sp,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                    // SizedBox(height: 16.h),
+                    // Padding(
+                    //   padding: EdgeInsets.symmetric(horizontal: 24.w),
+                    //   child: Text(
+                    //     'Failed to load profile information. Please try again later.',
+                    //     style: textTheme.bodyMedium?.copyWith(
+                    //       color: ThemeColors.accentColor,
+                    //       fontSize: 14.sp,
+                    //     ),
+                    //     textAlign: TextAlign.center,
+                    //   ),
+                    // ),
                   ],
                 ),
               );

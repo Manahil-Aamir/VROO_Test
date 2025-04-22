@@ -111,22 +111,22 @@ class ChatScreen extends StatelessWidget {
                           children: [
                             Image.asset(
                               'assets/images/error.png',
-                              width: 200.w,
-                              height: 200.h,
+                              width: 300.w,
+                              height: 300.h,
                               fit: BoxFit.contain,
                             ),
-                            SizedBox(height: 16.h),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 24.w),
-                              child: Text(
-                                'Failed to load profile information. Please try again later.',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: ThemeColors.accentColor,
-                                  fontSize: 14.sp,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
+                            // SizedBox(height: 16.h),
+                            // Padding(
+                            //   padding: EdgeInsets.symmetric(horizontal: 24.w),
+                            //   child: Text(
+                            //     'Failed to load profile information. Please try again later.',
+                            //     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            //       color: ThemeColors.accentColor,
+                            //       fontSize: 14.sp,
+                            //     ),
+                            //     textAlign: TextAlign.center,
+                            //   ),
+                            // ),
                           ],
                         ),
                       );

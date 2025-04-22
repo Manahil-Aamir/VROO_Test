@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../shared/widgets/error_dialog.dart';
 import '../bloc/bloc/approved_rides_bloc.dart';
 import '../bloc/bloc/pending_rides_bloc.dart';
@@ -40,7 +41,20 @@ class PendingRidesTab extends StatelessWidget {
         if (state is PendingRidesLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is PendingRidesError) {
-          return Center(child: Text(state.message));
+          print(state.message);
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/error.png',
+                  width: 300.w,
+                  height: 300.h,
+                  fit: BoxFit.contain,
+                ),                   
+              ],
+            ),
+          );            
         } else if (state is PendingRidesLoaded) {
           if (state.rides.isEmpty) {
             return const Center(child: Text('No pending requests.'));

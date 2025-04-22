@@ -43,8 +43,8 @@ class _CarScreenState extends State<CarScreen> {
                 children: [
                   Image.asset(
                     'assets/images/error.png',
-                    width: 400.w,
-                    height: 400.h,
+                    width: 300.w,
+                    height: 300.h,
                     fit: BoxFit.contain,
                   ),
                   SizedBox(height: 16.h),
