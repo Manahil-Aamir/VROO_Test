@@ -37,7 +37,6 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final List<dynamic> usersJson = data['data'];
-
       return usersJson.map((user) => ChatUserModel.fromJson(user)).toList();
     } else {
       throw Exception('Failed to load chat users');

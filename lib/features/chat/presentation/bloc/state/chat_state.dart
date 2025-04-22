@@ -54,7 +54,8 @@ class ChatUsersLoaded extends ChatState {
   @override
   List<Object> get props => [users, lastMessagesInfo];
 }
-/// Successfully loaded chat messages
+
+// Successfully loaded chat messages
 class ChatMessagesLoaded extends ChatState {
   final List<ChatMessage> messages;
   final bool hasMore; // Flag to indicate if there are more messages to load
@@ -63,6 +64,15 @@ class ChatMessagesLoaded extends ChatState {
 
   @override
   List<Object> get props => [messages, hasMore];
+}
+
+class ChatEmpty extends ChatState {
+  final String message;
+  
+  ChatEmpty({required this.message});
+
+  @override
+  List<Object> get props => [message];
 }
 
 /// Successfully loaded chat info

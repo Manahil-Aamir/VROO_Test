@@ -47,7 +47,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       final users = await getChatUsers(event.role);
       if (users.isEmpty) {
-        emit(ChatError('No users available for chat'));
+        emit(ChatEmpty(message: 'No chats available. Please create a ride first.'));
       } else {
         // Cancel any existing subscriptions
         _cancelAllSubscriptions();

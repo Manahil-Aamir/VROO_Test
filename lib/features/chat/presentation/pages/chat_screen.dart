@@ -47,7 +47,13 @@ class ChatScreen extends StatelessWidget {
                   builder: (context, state) {
                     if (state is ChatLoading) {
                       return const Center(child: CircularProgressIndicator());
-                    } else if (state is ChatUsersLoaded) {
+                    } else if (state is ChatEmpty) {
+                      return _buildEmptyState(context);
+                    }
+                      else if (state is ChatUsersLoaded) {
+                      if (state.users.isEmpty) {
+                        return _buildEmptyState(context);
+                      }
                       return RefreshIndicator(
                         onRefresh: () async {
                           context
@@ -59,7 +65,6 @@ class ChatScreen extends StatelessWidget {
                               horizontal: 16.w, vertical: 10.h),
                           itemCount: state.users.length,
                           itemBuilder: (context, index) {
-                            // final user = state.users[index];
                             final user = state.sortedUsers[index];
                             final chatId = _getChatId(
                                 FirebaseAuth.instance.currentUser?.uid ?? '',
@@ -135,6 +140,57 @@ class ChatScreen extends StatelessWidget {
           },
         ),
         bottomNavigationBar: CustomBottomNavBar(selectedIndex: 2),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    print('No chats available');
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.chat_bubble_outline,
+            size: 64.sp,
+            color: Colors.grey,
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'No chats available',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: ThemeColors.bodyTextColor,
+                ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            'Please create a ride to start chatting',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: ThemeColors.bodyTextColor.withOpacity(0.7),
+                ),
+          ),
+          SizedBox(height: 24.h),
+          ElevatedButton(
+            onPressed: () {
+              // Navigate to create ride screen
+              context.read<Navigation>().navigateTo('/location');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ThemeColors.primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+            ),
+            child: Text(
+              'Create Ride',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14.sp,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
