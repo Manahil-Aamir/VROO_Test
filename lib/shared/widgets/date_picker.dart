@@ -20,6 +20,7 @@ class CustomDatePicker extends StatelessWidget {
     print('i am here');
     final theme = Theme.of(context);
     return InputField(
+      keyboardType: TextInputType.number,
       labelText: labelText,
       readOnly: true,
       suffixIcon: Icon(Icons.calendar_today),

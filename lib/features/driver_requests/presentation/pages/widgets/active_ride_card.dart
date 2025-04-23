@@ -1,7 +1,9 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:vroo_test/features/ride_start/data/models/ride_start_model.dart';
 import '../../../../../core/router/navigation.dart';
 import '../../../../../core/theme/color/color_theme.dart';
 import '../../../../../shared/widgets/custom_dialog.dart';
@@ -9,6 +11,7 @@ import '../../../../../shared/widgets/dialog_button.dart';
 import '../../../domain/entity/active_ride.dart';
 import '../../bloc/bloc/active_rides_bloc.dart';
 import '../../bloc/event/active_rides_event.dart';
+import '../../bloc/state/active_rides_state.dart';
 
 class ActiveRideCard extends StatelessWidget {
   final ActiveRideEntity ride;
@@ -22,9 +25,9 @@ class ActiveRideCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.read<Navigation>().navigateTo(
-          '/ride_request_status',
-          arguments: ride.id.toString(),
-        );
+              '/ride_request_status',
+              arguments: ride.id.toString(),
+            );
       },
       child: Card(
         elevation: 2,
@@ -43,9 +46,9 @@ class ActiveRideCard extends StatelessWidget {
                 color: ThemeColors.buttonTextColor.withOpacity(0.15),
                 height: 16.h,
                 thickness: 0.5,
-              ),              
+              ),
               _buildRouteInfo(textTheme),
-              SizedBox(height: 6.h),              
+              SizedBox(height: 6.h),
               _buildCarDetails(textTheme),
               SizedBox(height: 12.h),
               _buildActionButtons(context),
@@ -73,9 +76,9 @@ class ActiveRideCard extends StatelessWidget {
   //           ),
   //         ),
   //       ),
-        
+
   //       SizedBox(width: 10.w),
-        
+
   //       // Start Ride Button (now second)
   //       Expanded(
   //         child: SizedBox(
@@ -98,9 +101,8 @@ class ActiveRideCard extends StatelessWidget {
 
   Widget _buildDateTimeRow(BuildContext context, TextTheme textTheme) {
     final maxArrival = TimeOfDay(
-      hour: (ride.time.hour + ((ride.time.minute + 30) ~/ 60)) % 24,
-      minute: (ride.time.minute + 30) % 60
-    );
+        hour: (ride.time.hour + ((ride.time.minute + 30) ~/ 60)) % 24,
+        minute: (ride.time.minute + 30) % 60);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,11 +115,11 @@ class ActiveRideCard extends StatelessWidget {
             fontSize: 12.sp,
           ),
         ),
-        
+
         // Time info
         Row(
           children: [
-            Icon(Icons.access_time_rounded, 
+            Icon(Icons.access_time_rounded,
                 color: ThemeColors.primaryColor, size: 16.r),
             SizedBox(width: 4.w),
             Text(
@@ -175,7 +177,7 @@ class ActiveRideCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               SizedBox(height: 6.h), // Reduced space between locations
-              
+
               // Destination in single line - now matching source style
               Text(
                 ride.destination.address,
@@ -250,9 +252,9 @@ class ActiveRideCard extends StatelessWidget {
             ],
           ),
         ),
-        
+
         SizedBox(width: 8.w),
-        
+
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -260,14 +262,14 @@ class ActiveRideCard extends StatelessWidget {
             for (int i = 0; i < ride.passengers.length; i++)
               Icon(
                 Icons.event_seat,
-                color: ThemeColors.primaryColor, 
+                color: ThemeColors.primaryColor,
                 size: 16.r,
               ),
             // Empty seats (available)
             for (int i = 0; i < ride.totalSeats; i++)
               Icon(
                 Icons.event_seat,
-                color: ThemeColors.backgroundColor, 
+                color: ThemeColors.backgroundColor,
                 size: 16.r,
               ),
           ],
@@ -279,13 +281,12 @@ class ActiveRideCard extends StatelessWidget {
   Widget _buildActionButtons(BuildContext context) {
     return Row(
       children: [
-        // Cancel Ride Button (now first)
+        // Cancel Ride Button
         Expanded(
           child: SizedBox(
-            height: 33.h, // Constrain the height to be smaller
+            height: 33.h,
             child: DialogButton(
               onTap: () {
-                // Show cancel confirmation dialog
                 _showCancelConfirmation(context);
               },
               text: 'Cancel',
@@ -293,22 +294,49 @@ class ActiveRideCard extends StatelessWidget {
             ),
           ),
         ),
-        
+
         SizedBox(width: 10.w),
-        
-        // Start Ride Button (now second)
+
+        // Start Ride Button
         Expanded(
           child: SizedBox(
-            height: 33.h, // Constrain the height to be smaller
-            child: DialogButton(
-              onTap: () {
-                context.read<Navigation>().navigateTo(
-                  '/start_ride',
-                  arguments: ride.id.toString(),
-                );
+            height: 33.h, // Added missing height constraint
+            child: BlocBuilder<ActiveRidesDriverBloc, ActiveRidesDriverState>(
+              builder: (context, state) {
+                if (state is ActiveRideDataLoaded) {
+                  return DialogButton(
+                    onTap: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => RideStartScreen(
+                      //       rideData: state.rideData,
+                      //     ),
+                      //   ),
+                      // );
+                      print(state.rideData);
+                    },
+                    text: 'Details',
+                    color: ThemeColors.primaryColor,
+                  );
+                } else {
+                  return DialogButton(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'This ride cannot be started',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    },
+                    text: 'Details',
+                    color: ThemeColors.primaryColor,
+                  );
+                }
               },
-              text: 'Start',
-              color: ThemeColors.primaryColor,
             ),
           ),
         ),
@@ -339,6 +367,4 @@ class ActiveRideCard extends StatelessWidget {
       ),
     );
   }
-
 }
-

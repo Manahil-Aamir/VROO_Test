@@ -90,7 +90,6 @@ class _R1PageState extends State<R1Page> {
     }
   }
 
-// Now let's update the build method in R1Page to correctly display error messages
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

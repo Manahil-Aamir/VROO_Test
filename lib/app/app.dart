@@ -42,8 +42,8 @@ class App extends StatelessWidget {
                     child: widget,
                   );
                 },
-                //initialRoute: _getInitialRoute(state),
-                initialRoute: Routes.sign_in,
+                initialRoute: _getInitialRoute(state),
+                //initialRoute: Routes.sign_in,
                 onGenerateRoute: Routes().generateRoute,
               );
             },

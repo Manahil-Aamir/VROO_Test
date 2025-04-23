@@ -19,6 +19,7 @@ class CustomTimePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return InputField(
+      keyboardType: TextInputType.number,
       labelText: labelText,
       readOnly: true,
       suffixIcon: const Icon(Icons.access_time),

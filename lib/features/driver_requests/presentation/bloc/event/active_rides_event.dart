@@ -21,3 +21,9 @@ class CancelRideEvent extends ActiveRidesDriverEvent {
 }
 
 class ClearErrorEvent extends ActiveRidesDriverEvent {}
+
+class GetRideDataEvent extends ActiveRidesDriverEvent {
+  final String rideId;
+
+  GetRideDataEvent(this.rideId);
+}

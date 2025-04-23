@@ -29,10 +29,10 @@ class InputRideValidator {
     final minTimeInMinutes = minTime.hour * 60 + minTime.minute;
     final maxTimeInMinutes = maxTime.hour * 60 + maxTime.minute;
     if (minTimeInMinutes >= maxTimeInMinutes) {
-      return 'Minimum time must be less than maximum time.';
+      return 'Min time must be less than Max time.';
     }
     if (maxTimeInMinutes - minTimeInMinutes < 15) {
-      return 'Maximum time must be at least 15 minutes greater than minimum time.';
+      return 'Max time must be at least 15 minutes greater than Min time.';
     }
     return null;
   }
