@@ -6,6 +6,7 @@ import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/error_dialog.dart';
 import '../../../../shared/widgets/gradient_button.dart';
+import '../../../authentication/presentation/bloc/user_bloc.dart';
 import '../../../cars/domain/entity/car.dart';
 import '../../domain/entity/ride_request.dart';
 import '../bloc/bloc/d3_bloc.dart';
@@ -211,13 +212,27 @@ class D3 extends StatelessWidget {
     );
 
     final user = FirebaseAuth.instance.currentUser;
+    final userState = context.read<UserBloc>().state;
+    String user_gender = '';
+    bool maleOnly = false;
+    bool femaleOnly = false;
+
+    if (userState is UserLoaded) {
+      user_gender = userState.user.gender;
+    }
+    print('user gender: ${user_gender}');
+    print('same gender: $sameGenderOnly');
+
+    if (user_gender.toLowerCase() == 'female' && sameGenderOnly == true) {
+      femaleOnly = true;
+    } else if (user_gender.toLowerCase() == 'male' && sameGenderOnly == true) {
+      maleOnly=true;
+    }
 
     final rideRequest = RideRequest(
-      // driverId: "Ali Ahmed 4,
-      driverId: user!.uid,
+      driverId: user!.uid, //remove when token
       numOfSeats: availableSeats,
       car: selectedCar,
-      coords: routeCoords,
       source: {
         'address': fromDescription,
         'placeId': fromPlaceId,
@@ -228,14 +243,18 @@ class D3 extends StatelessWidget {
         'placeId': toPlaceId,
         'coords': LatLng(routeCoords.last[0], routeCoords.last[1]),
       },
-      samegender: sameGenderOnly,
+      preference: preference_driver(maleOnly: maleOnly, femaleOnly: femaleOnly),
+      // samegender: sameGenderOnly,
       departureTime: departureDateTime.toIso8601String(),
       maxArrivalTime: maxArrivalDateTime.toIso8601String(),
       distance: _parseDistance(routeDistance),
       duration: _parseDuration(routeDuration),
       date: date.toIso8601String(),
       paymentMethod: paymentOption,
+      coords: routeCoords,
     );
+
+    print('ride create: $rideRequest');
 
     context.read<RideBloc>().add(SubmitRide(rideRequest));
   }

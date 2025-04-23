@@ -8,7 +8,8 @@ class RideRequestModel extends RideRequest {
     required super.coords,
     required super.source,
     required super.destination,
-    required super.samegender,
+    // required super.samegender,
+    required super.preference,
     required super.departureTime,
     required super.maxArrivalTime,
     required super.distance,
@@ -33,8 +34,10 @@ class RideRequestModel extends RideRequest {
       "source": source,
       "destination": destination,
       "preferences": {
-        "maleOnly": !samegender, // Inverse of femaleOnly
-        "femaleOnly": samegender,
+        // "maleOnly": !samegender, // Inverse of femaleOnly
+        // "femaleOnly": samegender,
+        "maleOnly": preference.maleOnly, 
+        "femaleOnly": preference.femaleOnly,
       },
       "departureTime": departureTime,
       "maxArrivalTime": maxArrivalTime,

@@ -7,7 +7,8 @@ class RideRequest {
   final List<dynamic> coords;
   final Map<String, dynamic> source;
   final Map<String, dynamic> destination;
-  final bool samegender;
+  final preference_driver preference;
+  // final bool samegender;
   final String departureTime;
   final String maxArrivalTime;
   final double distance;
@@ -23,7 +24,8 @@ class RideRequest {
     required this.coords,
     required this.source,
     required this.destination,
-    required this.samegender,
+    // required this.samegender,
+    required this.preference,
     required this.departureTime,
     required this.maxArrivalTime,
     required this.distance,
@@ -32,4 +34,11 @@ class RideRequest {
     // required this.fare,
     required this.paymentMethod,
   });
+}
+
+class preference_driver {
+  final bool maleOnly;
+  final bool femaleOnly;
+
+  preference_driver({required this.maleOnly, required this.femaleOnly});
 }
