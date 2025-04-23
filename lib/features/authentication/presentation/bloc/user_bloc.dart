@@ -2,6 +2,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../data/data_source/user_preference.dart';
 import '../../data/model/user_model.dart';
 
 // Events
@@ -37,10 +38,21 @@ class UserLoaded extends UserState {
 }
 
 // BLoC
+// user_bloc.dart
 class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(UserInitial()) {
     on<SetUserEvent>((event, emit) {
       emit(UserLoaded(user: event.user));
     });
+    
+    // Load user from preferences when bloc is created
+    _loadInitialUser();
+  }
+
+  Future<void> _loadInitialUser() async {
+    final user = await UserPreferences.getUser();
+    if (user != null) {
+      add(SetUserEvent(user: user));
+    }
   }
 }

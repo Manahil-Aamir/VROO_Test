@@ -87,6 +87,7 @@ class _SidebarWidgetState extends State<SidebarWidget> {
         builder: (context, roleState) {
           return BlocBuilder<UserBloc, UserState>(
             builder: (context, userState) {
+              print('userstate: $userState');
               final userName =
                   userState is UserLoaded ? userState.user.name : '';
               final initials = _getInitials(userName);

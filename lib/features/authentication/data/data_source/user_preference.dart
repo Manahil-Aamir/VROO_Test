@@ -5,6 +5,8 @@ import '../model/user_model.dart';
 class UserPreferences {
   static const _keyUser = 'user_data';
 
+  static String get userKey => _keyUser;
+
   static Future<void> saveUser(UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
     final userJson = jsonEncode(user.toJson());
@@ -25,8 +27,8 @@ class UserPreferences {
     }
   }
 
-  static Future<void> clearUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_keyUser);
-  }
+  // static Future<void> clearUser() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.remove(_keyUser);
+  // }
 }

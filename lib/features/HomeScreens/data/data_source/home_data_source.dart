@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../authentication/data/data_source/user_preference.dart';
 import '../../../authentication/data/model/user_model.dart';
 
 abstract class HomeDataSource {
@@ -22,8 +23,24 @@ class HomeDataSourceImpl implements HomeDataSource {
 
   @override
   Future<void> clearSharedPreferences() async {
+    await Future.delayed(const Duration(milliseconds: 100)); // Small delay
+    print('Clearing SharedPreferences...');
     final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    
+    // Get all keys
+    final allKeys = prefs.getKeys();
+    
+    // Remove all keys except the user data key
+    for (final key in allKeys) {
+      print('Key: $key');
+      if (key != UserPreferences.userKey) {
+        await prefs.remove(key);
+      }
+    }
+
+    print('SharedPreferences cleared except for user data.');
+    print ('User data: ${prefs.getString(UserPreferences.userKey)}');
+    print('All keys: ${prefs.getKeys()}');
   }
 
   @override
