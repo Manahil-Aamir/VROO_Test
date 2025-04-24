@@ -353,6 +353,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   /// platform view's method calls and updates the map markers when the
   /// location is selected.
   /// *****  a3807f31-7023-40bb-811d-307f19100356  ******
+  
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
@@ -594,6 +595,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
     Navigator.of(context).pushNamed(route, arguments: arguments);
   }
+
 }
 
 extension LatLngExtension on LatLng {

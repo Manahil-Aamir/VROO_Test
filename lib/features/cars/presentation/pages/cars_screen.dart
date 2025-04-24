@@ -47,18 +47,18 @@ class _CarScreenState extends State<CarScreen> {
                     height: 300.h,
                     fit: BoxFit.contain,
                   ),
-                  SizedBox(height: 16.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 32.w),
-                    child: Text(
-                      'Failed to load cars. Please try again later.',
-                      style: TextStyle(
-                        color: ThemeColors.buttonTextColor,
-                        fontSize: 16.sp,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                  // SizedBox(height: 16.h),
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 32.w),
+                  //   child: Text(
+                  //     'Failed to load cars. Please try again later.',
+                  //     style: TextStyle(
+                  //       color: ThemeColors.buttonTextColor,
+                  //       fontSize: 16.sp,
+                  //     ),
+                  //     textAlign: TextAlign.center,
+                  //   ),
+                  // ),
                 ],
               ),
             );

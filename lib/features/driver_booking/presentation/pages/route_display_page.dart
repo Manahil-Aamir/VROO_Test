@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../shared/widgets/appbar.dart';
 import '../../dependency_injection/route_di.dart';
 import '../bloc/bloc/route_bloc.dart';
@@ -54,7 +54,32 @@ class RouteDisplayPage extends StatelessWidget {
                 toPlaceId: toPlaceId,
               );
             } else if (state is RouteError) {
-              return Center(child: Text('Error: ${state.message}'));
+              print('Error loading routes: ${state.message}');
+              return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/error.png',
+                    width: 300.w,
+                    height: 300.h,
+                    fit: BoxFit.contain,
+                  ),
+                  // SizedBox(height: 16.h),
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 32.w),
+                  //   child: Text(
+                  //     'Failed to load cars. Please try again later.',
+                  //     style: TextStyle(
+                  //       color: ThemeColors.buttonTextColor,
+                  //       fontSize: 16.sp,
+                  //     ),
+                  //     textAlign: TextAlign.center,
+                  //   ),
+                  // ),
+                ],
+              ),
+            );
             }
             return const Center(child: Text('Unknown state'));
           },
