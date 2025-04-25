@@ -27,6 +27,15 @@ class MainActivity : FlutterActivity() {
                 "native_google_map",
                 NativeMapFactory(flutterEngine.dartExecutor.binaryMessenger)
             )
+            
+        // Register Ride Tracking Map View
+        flutterEngine
+            .platformViewsController
+            .registry
+            .registerViewFactory(
+                "ride_tracking_map",
+                RideTrackingMapFactory(flutterEngine.dartExecutor.binaryMessenger)
+            )
 
         // Set up MethodChannel for WakeLock
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->

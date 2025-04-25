@@ -40,15 +40,15 @@ class RiderModel extends RiderEntity {
 
   factory RiderModel.fromMap(Map<String, dynamic> map) {
     return RiderModel(
-      id: map['id'] ?? '',
+      id: map['_id'] ?? '',
       riderId: map['riderId'] ?? '',
       source: AddressModel.fromMap(map['source']),
       destination: AddressModel.fromMap(map['destination']),
-      date: (map['date']),
-      duration: map['duration'] ?? 0,
-      distance: map['distance'] ?? 0,
+      date: DateTime.parse(map['date']),
+      duration: map['duration'].toDouble() ?? 0,
+      distance: map['distance'].toDouble() ?? 0,
       pickupTimeRange: PickupTimeRangeModel.fromMap(map['pickupTimeRange']),
-      maxArrivalTime: (map['maxArrivalTime']),
+      maxArrivalTime: DateTime.parse(map['maxArrivalTime']),
       preferences: RidePreferencesModel.fromMap(map['preferences']),
       isRecurring: map['isRecurring'] ?? false,
       status: map['status'] ?? '',

@@ -5,9 +5,8 @@ class InridePassengerEntity {
   final String riderId;
   final String status;
   final double fare;
+  final DateTime eta;
   final String rideRequestId;
-  final String? review;
-  final String id;
   final RiderModel rideRequest;
   final String riderName;
 
@@ -16,8 +15,7 @@ class InridePassengerEntity {
     required this.status,
     required this.fare,
     required this.rideRequestId,
-    this.review,
-    required this.id,
+    required this.eta,
     required this.rideRequest,
     required this.riderName,
   });

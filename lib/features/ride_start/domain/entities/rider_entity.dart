@@ -10,11 +10,11 @@ class RiderEntity {
   final String riderId;
   final AddressModel source;
   final AddressModel destination;
-  final String date;
-  final int duration;
-  final int distance;
+  final DateTime date;
+  final double duration;
+  final double distance;
   final PickupTimeRangeModel pickupTimeRange;
-  final String maxArrivalTime;
+  final DateTime maxArrivalTime;
   final RidePreferencesModel preferences;
   final bool isRecurring;
   final String status;

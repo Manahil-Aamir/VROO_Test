@@ -6,6 +6,7 @@ import 'package:vroo_test/features/authentication/presentation/pages/sign_in_pag
 import 'package:vroo_test/features/cars/presentation/pages/cars_screen.dart';
 import 'package:vroo_test/features/chat/domain/entity/chat_user.dart';
 import 'package:vroo_test/features/chat/presentation/pages/chat_detail_screen.dart';
+import 'package:vroo_test/features/ride_start/presentation/pages/ride_static_page.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import 'package:vroo_test/features/user_profile/presentation/pages/user_profile_page.dart';
@@ -38,6 +39,7 @@ import '../../features/driver_requests/presentation/pages/active_rides_screen.da
 import '../../features/driver_requests/presentation/pages/ride_request_status.dart';
 import '../../features/matching/matching/dependency_injection/matching_di.dart';
 import '../../features/matching/matching/presentation/pages/matching_page.dart';
+import '../../features/ride_start/data/models/ridestart_data_model.dart';
 import '../../features/rider_journey/dependancy_injection/r1_di.dart';
 import '../../features/rider_journey/dependancy_injection/r2_di.dart';
 import '../../features/rider_journey/dependancy_injection/r3_di.dart';
@@ -87,6 +89,7 @@ class Routes {
   static const String sos = '/sos';
   static const String emergency_contacts = '/emergency_contacts';
   static const String ride_request_rider = '/ride_request_rider';
+  static const String static_page = '/static_page';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -607,7 +610,8 @@ class Routes {
             settings.arguments as String? ?? 'driver 86'; // Default to 'driver'
         return MaterialPageRoute(
           builder: (_) => MultiProvider(
-              providers: ActiveRideDi.init(), child: ActiveRidesDriverScreen(id: id)),
+              providers: ActiveRideDi.init(),
+              child: ActiveRidesDriverScreen(id: id)),
         );
       case '/booking_confirm_driver':
         return MaterialPageRoute(
@@ -748,6 +752,12 @@ class Routes {
             builder: (_) => MultiProvider(
                 providers: RiderRequestsDi.init(),
                 child: RiderRequestsScreen()));
+      case static_page:
+        final arguments = settings.arguments as Map<String, dynamic>;
+        final rideData = arguments['rideData'] as RidestartDataModel;
+        return MaterialPageRoute(
+          builder: (_) => RideTrackingPage(rideData: rideData),
+        );
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

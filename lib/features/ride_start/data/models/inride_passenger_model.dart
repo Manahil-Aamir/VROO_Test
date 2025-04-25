@@ -9,22 +9,19 @@ class InridePassengerModel extends InridePassengerEntity {
     required super.status,
     required super.fare,
     required super.rideRequestId,
-    super.review,
-    required super.id,
+    required super.eta,
     required super.rideRequest,
     required super.riderName,
   });
 
   // Convert model to map
-  @override
   Map<String, dynamic> toMap() {
     return {
       'riderId': riderId,
       'status': status,
       'fare': fare,
       'rideRequestId': rideRequestId,
-      'review': review,
-      '_id': id,
+      'eta': eta,
       'rideRequest': rideRequest.toMap(),
       'riderName': riderName,
     };
@@ -37,24 +34,9 @@ class InridePassengerModel extends InridePassengerEntity {
       status: map['status'] ?? '',
       fare: (map['fare'] as num).toDouble(),
       rideRequestId: map['rideRequestId'] ?? '',
-      review: map['review'],
-      id: map['_id'] ?? '',
+      eta: DateTime.parse(map['eta']), //map['eta'],
       rideRequest: RiderModel.fromMap(map['rideRequest']),
       riderName: map['riderName'] ?? '',
-    );
-  }
-
-  // Convert entity to model
-  factory InridePassengerModel.fromEntity(InridePassengerEntity entity) {
-    return InridePassengerModel(
-      riderId: entity.riderId,
-      status: entity.status,
-      fare: entity.fare,
-      rideRequestId: entity.rideRequestId,
-      review: entity.review,
-      id: entity.id,
-      rideRequest: entity.rideRequest,
-      riderName: entity.riderName,
     );
   }
 }

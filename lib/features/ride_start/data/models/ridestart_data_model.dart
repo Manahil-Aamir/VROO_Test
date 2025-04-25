@@ -33,25 +33,27 @@ class RidestartDataModel extends RidestartDataEntity {
 
   factory RidestartDataModel.fromMap(Map<String, dynamic> map) {
     return RidestartDataModel(
-      id: map['id'],
+      id: map['_id'],
       driverId: map['driverId'],
-      numOfSeats: map['numOfSeats'],
-      date: DateTime.parse(map['date']),
+      numOfSeats: map['numOfSeats'].toDouble(),
+      date: DateTime.parse(map['date']), //['date'],
       source: AddressModel.fromMap(map['source']),
       destination: AddressModel.fromMap(map['destination']),
-      departureTime: DateTime.parse(map['departureTime']),
-      maxArrivalTime: DateTime.parse(map['maxArrivalTime']),
-      distance: map['distance'],
-      duration: map['duration'],
+      departureTime: DateTime.parse(map['departureTime']), //'departureTime'],
+      maxArrivalTime:
+          DateTime.parse(map['maxArrivalTime']), //['maxArrivalTime'],
+      distance: map['distance'].toDouble(),
+      duration: map['duration'].toDouble(),
       preferences: RidePreferencesModel.fromMap(map['preferences']),
       isRecurring: map['isRecurring'],
       car: CarDetailsModel.fromMap(map['car']),
       recurringRides: List<dynamic>.from(map['recurringRides']),
       paymentMethod: List<String>.from(map['paymentMethod']),
-      fare: map['fare'],
+      fare: map['fare'].toDouble(),
       status: map['status'],
       environmentStats: EnvironmentStatsModel.fromMap(map['environmentStats']),
-      expectedArrivalTime: DateTime.parse(map['expectedArrivalTime']),
+      expectedArrivalTime:
+          DateTime.parse(map['expectedArrivalTime']), //['expectedArrivalTime'],
       routeCoords: List<List<double>>.from(
           map['routeCoords'].map((coords) => List<double>.from(coords))),
       passengers: List<InridePassengerModel>.from(map['passengers']
@@ -64,11 +66,11 @@ class RidestartDataModel extends RidestartDataEntity {
       'id': id,
       'driverId': driverId,
       'numOfSeats': numOfSeats,
-      'date': date.toIso8601String(),
+      'date': date,
       'source': source.toMap(),
       'destination': destination.toMap(),
-      'departureTime': departureTime.toIso8601String(),
-      'maxArrivalTime': maxArrivalTime.toIso8601String(),
+      'departureTime': departureTime,
+      'maxArrivalTime': maxArrivalTime,
       'distance': distance,
       'duration': duration,
       'preferences': preferences.toMap(),
@@ -79,7 +81,7 @@ class RidestartDataModel extends RidestartDataEntity {
       'fare': fare,
       'status': status,
       'environmentStats': environmentStats.toMap(),
-      'expectedArrivalTime': expectedArrivalTime.toIso8601String(),
+      'expectedArrivalTime': expectedArrivalTime,
       'routeCoords': routeCoords
           .map((coords) => coords.map((coord) => coord).toList())
           .toList(),

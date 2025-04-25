@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/appbar_no_icon.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../../shared/widgets/custom_dialog.dart';
@@ -17,7 +18,8 @@ class ActiveRidesDriverScreen extends StatefulWidget {
   const ActiveRidesDriverScreen({super.key, required this.id});
 
   @override
-  State<ActiveRidesDriverScreen> createState() => _ActiveRidesDriverScreenState();
+  State<ActiveRidesDriverScreen> createState() =>
+      _ActiveRidesDriverScreenState();
 }
 
 class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
@@ -72,13 +74,23 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
               // Clear the error message to prevent showing it multiple times
               context.read<ActiveRidesDriverBloc>().add(ClearErrorEvent());
             }
-            
+
             // Show success snackbar if there's a success message
             if (state.successMessage != null) {
               _showSnackBar(context, state.successMessage!, isError: false);
               // Clear the success message to prevent showing it multiple times
               context.read<ActiveRidesDriverBloc>().add(ClearErrorEvent());
             }
+          }
+          if (state is ActiveRideDataLoaded) {
+            print('Ride data loaded: ${state.rideData}');
+            // Navigate to ride details page
+            context.read<Navigation>().navigateTo(
+              '/static_page',
+              arguments: {
+                'rideData': state.rideData,
+              },
+            );
           }
         },
         child: Scaffold(
@@ -89,7 +101,8 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
               _buildDateFilter(),
               // Rides list
               Expanded(
-                child: BlocBuilder<ActiveRidesDriverBloc, ActiveRidesDriverState>(
+                child:
+                    BlocBuilder<ActiveRidesDriverBloc, ActiveRidesDriverState>(
                   builder: (context, state) {
                     if (state is ActiveRidesDriverLoading) {
                       return const Center(child: CircularProgressIndicator());
@@ -103,14 +116,17 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
                             children: [
                               Text(
                                 state.selectedDate != null
-                                  ? 'No rides found for this date'
-                                  : 'Please create a ride',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                    ? 'No rides found for this date'
+                                    : 'Please create a ride',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
                               ),
                               if (state.selectedDate != null)
                                 TextButton(
                                   onPressed: () {
-                                    context.read<ActiveRidesDriverBloc>().add(ClearDateFilter());
+                                    context
+                                        .read<ActiveRidesDriverBloc>()
+                                        .add(ClearDateFilter());
                                   },
                                   child: Text(
                                     'Show all rides',
@@ -146,7 +162,8 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
   }
 
   // Add this method to show snackbars
-  void _showSnackBar(BuildContext context, String message, {required bool isError}) {
+  void _showSnackBar(BuildContext context, String message,
+      {required bool isError}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -156,13 +173,13 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        backgroundColor: isError 
-            ? Colors.red  // Red background for errors
-            : Colors.green,  // Green background for success
+        backgroundColor: isError
+            ? Colors.red // Red background for errors
+            : Colors.green, // Green background for success
         duration: Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.only(
-          bottom: 70.h,  // Positioning above bottom nav bar
+          bottom: 70.h, // Positioning above bottom nav bar
           left: 16.w,
           right: 16.w,
         ),
@@ -176,8 +193,9 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
   Widget _buildDateFilter() {
     return BlocBuilder<ActiveRidesDriverBloc, ActiveRidesDriverState>(
       builder: (context, state) {
-        final selectedDate = state is ActiveRidesDriverLoaded ? state.selectedDate : null;
-        
+        final selectedDate =
+            state is ActiveRidesDriverLoaded ? state.selectedDate : null;
+
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
           decoration: BoxDecoration(
@@ -197,13 +215,14 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
                 child: GestureDetector(
                   onTap: () => _selectDate(context, selectedDate),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
                     decoration: BoxDecoration(
                       color: ThemeColors.primaryColorDark,
                       borderRadius: BorderRadius.circular(10.r),
                       border: Border.all(
-                        color: selectedDate != null 
-                            ? ThemeColors.primaryColor 
+                        color: selectedDate != null
+                            ? ThemeColors.primaryColor
                             : Colors.transparent,
                         width: 1.5,
                       ),
@@ -218,17 +237,20 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
                               size: 20.r,
                               color: selectedDate != null
                                   ? ThemeColors.primaryColor
-                                  : ThemeColors.buttonTextColor.withOpacity(0.7),
+                                  : ThemeColors.buttonTextColor
+                                      .withOpacity(0.7),
                             ),
                             SizedBox(width: 10.w),
                             Text(
                               selectedDate != null
-                                  ? DateFormat('EEE, dd MMM yyyy').format(selectedDate)
+                                  ? DateFormat('EEE, dd MMM yyyy')
+                                      .format(selectedDate)
                                   : 'Filter by date',
                               style: TextStyle(
                                 color: selectedDate != null
                                     ? ThemeColors.buttonTextColor
-                                    : ThemeColors.buttonTextColor.withOpacity(0.7),
+                                    : ThemeColors.buttonTextColor
+                                        .withOpacity(0.7),
                                 fontSize: 14.sp,
                                 fontWeight: selectedDate != null
                                     ? FontWeight.w600
@@ -237,17 +259,20 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
                             ),
                           ],
                         ),
-                        
+
                         // Clear button or dropdown indicator
                         if (selectedDate != null)
                           GestureDetector(
                             onTap: () {
-                              context.read<ActiveRidesDriverBloc>().add(ClearDateFilter());
+                              context
+                                  .read<ActiveRidesDriverBloc>()
+                                  .add(ClearDateFilter());
                             },
                             child: Container(
                               padding: EdgeInsets.all(4.r),
                               decoration: BoxDecoration(
-                                color: ThemeColors.primaryColor.withOpacity(0.15),
+                                color:
+                                    ThemeColors.primaryColor.withOpacity(0.15),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(

@@ -3,12 +3,13 @@ import 'package:http/http.dart' as http;
 import 'package:vroo_test/features/ride_start/data/models/ride_start_model.dart';
 
 import '../../../../core/utils/constant/api_constants.dart';
+import '../../../ride_start/data/models/ridestart_data_model.dart';
 import '../model/active_ride_model.dart';
 
 abstract class ActiveRidesDriverDataSource {
   Future<List<ActiveRideModel>> getActiveRidesDriver(String token);
   Future<void> cancelRide(String rideId, String token);
-  Future<RideStartModel> getRideData(String rideId, String token);
+  Future<RidestartDataModel> getRideData(String rideId, String token);
 }
 
 class ActiveRidesDriverRemoteDataSource implements ActiveRidesDriverDataSource {
@@ -62,20 +63,27 @@ class ActiveRidesDriverRemoteDataSource implements ActiveRidesDriverDataSource {
   }
 
   @override
-  Future<RideStartModel> getRideData(String rideId, String token) async {
-    final url = Uri.parse('http://localhost:8080/driver/ride/data//$rideId');
+  Future<RidestartDataModel> getRideData(String rideId, String token) async {
+    final url = Uri.parse('http://10.0.2.2:8080/driver/ride/data/$rideId');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
     };
+    print('rideId: $rideId');
 
     try {
       final response = await client.get(url, headers: headers);
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
-        return RideStartModel.fromMap(jsonData['data']);
+        // print('Ride data: $jsonData');
+        print('rideeeerrrrr dataa');
+
+        print('data loaded');
+
+        return RidestartDataModel.fromMap(jsonData['data']);
       } else {
+        print('Error: ${response.statusCode} - ${response.body}');
         throw Exception('Failed to load ride data: ${response.statusCode}');
       }
     } catch (e) {

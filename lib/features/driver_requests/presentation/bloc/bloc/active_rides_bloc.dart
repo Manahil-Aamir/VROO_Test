@@ -129,19 +129,26 @@ class ActiveRidesDriverBloc
     }
   }
 
-    Future<void> _onGetRideDataEvent(
-      GetRideDataEvent event,
-      Emitter<ActiveRidesDriverState> emit,
-    ) async {
+  Future<void> _onGetRideDataEvent(
+    GetRideDataEvent event,
+    Emitter<ActiveRidesDriverState> emit,
+  ) async {
+    try {
+      final token = await getTokenUseCase.call();
+      print('object token: $token');
+      emit(ActiveRidesDriverLoading());
       try {
-        final token = await getTokenUseCase.call();
-        emit(ActiveRidesDriverLoading());
         final rideData = await getRideData.call(event.rideId, token!);
-        emit(ActiveRideDataLoaded(rideData)); // Emit a new state for ride data
-      } catch (e) {
+        emit(ActiveRideDataLoaded(rideData));
+      } on Exception catch (e) {
+        print('data issue$e');
         emit(ActiveRidesDriverError(
             'Failed to fetch ride data: ${e.toString()}'));
       }
+      print('loaded ride data'); // Emit a new state for ride data
+    } catch (e) {
+      emit(
+          ActiveRidesDriverError('Failed to fetch ride data: ${e.toString()}'));
     }
   }
-
+}

@@ -19,85 +19,60 @@ class ActiveRideCard extends StatelessWidget {
   const ActiveRideCard({super.key, required this.ride});
 
   @override
+  @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return GestureDetector(
-      onTap: () {
-        context.read<Navigation>().navigateTo(
-              '/ride_request_status',
-              arguments: ride.id.toString(),
-            );
+    return BlocListener<ActiveRidesDriverBloc, ActiveRidesDriverState>(
+      listener: (context, state) {
+        print('state: $state');
+        if (state is ActiveRideDataLoaded) {
+          print('Ride data loaded: ${state.rideData}');
+          // Navigate to ride details page
+          Navigator.pushNamed(
+            context,
+            '/static_page', // Change to your actual route name
+            //arguments: state.rideData, // Send the loaded ride data as argument
+          );
+        }
       },
-      child: Card(
-        elevation: 2,
-        margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14.r),
-        ),
-        color: ThemeColors.primaryColorDark,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDateTimeRow(context, textTheme),
-              Divider(
-                color: ThemeColors.buttonTextColor.withOpacity(0.15),
-                height: 16.h,
-                thickness: 0.5,
-              ),
-              _buildRouteInfo(textTheme),
-              SizedBox(height: 6.h),
-              _buildCarDetails(textTheme),
-              SizedBox(height: 12.h),
-              _buildActionButtons(context),
-            ],
+      child: GestureDetector(
+        onTap: () {
+          context.read<Navigation>().navigateTo(
+                '/ride_request_status',
+                arguments: ride.id.toString(),
+              );
+        },
+        child: Card(
+          elevation: 2,
+          margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14.r),
+          ),
+          color: ThemeColors.primaryColorDark,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDateTimeRow(context, textTheme),
+                Divider(
+                  color: ThemeColors.buttonTextColor.withOpacity(0.15),
+                  height: 16.h,
+                  thickness: 0.5,
+                ),
+                _buildRouteInfo(textTheme),
+                SizedBox(height: 6.h),
+                _buildCarDetails(textTheme),
+                SizedBox(height: 12.h),
+                _buildActionButtons(context),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-
-  // Widget _buildActionButtons(BuildContext context) {
-  //   return Row(
-  //     children: [
-  //       // Cancel Ride Button (now first)
-  //       Expanded(
-  //         child: SizedBox(
-  //           height: 33.h, // Constrain the height to be smaller
-  //           child: DialogButton(
-  //             onTap: () {
-  //               // Show cancel confirmation dialog
-  //               // _showCancelConfirmation(context);
-  //             },
-  //             text: 'Cancel',
-  //             color: ThemeColors.accentColor,
-  //           ),
-  //         ),
-  //       ),
-
-  //       SizedBox(width: 10.w),
-
-  //       // Start Ride Button (now second)
-  //       Expanded(
-  //         child: SizedBox(
-  //           height: 33.h, // Constrain the height to be smaller
-  //           child: DialogButton(
-  //             onTap: () {
-  //               context.read<Navigation>().navigateTo(
-  //                 '/start_ride',
-  //                 arguments: ride.id.toString(),
-  //               );
-  //             },
-  //             text: 'Start',
-  //             color: ThemeColors.primaryColor,
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildDateTimeRow(BuildContext context, TextTheme textTheme) {
     final maxArrival = TimeOfDay(
@@ -303,39 +278,15 @@ class ActiveRideCard extends StatelessWidget {
             height: 33.h, // Added missing height constraint
             child: BlocBuilder<ActiveRidesDriverBloc, ActiveRidesDriverState>(
               builder: (context, state) {
-                if (state is ActiveRideDataLoaded) {
-                  return DialogButton(
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => RideStartScreen(
-                      //       rideData: state.rideData,
-                      //     ),
-                      //   ),
-                      // );
-                      print(state.rideData);
-                    },
-                    text: 'Details',
-                    color: ThemeColors.primaryColor,
-                  );
-                } else {
-                  return DialogButton(
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'This ride cannot be started',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    },
-                    text: 'Details',
-                    color: ThemeColors.primaryColor,
-                  );
-                }
+                return DialogButton(
+                  onTap: () {
+                    context
+                        .read<ActiveRidesDriverBloc>()
+                        .add(GetRideDataEvent(ride.id));
+                  },
+                  text: 'Details',
+                  color: ThemeColors.primaryColor,
+                );
               },
             ),
           ),

@@ -1,7 +1,7 @@
 class MatchEntity {
   final String rideId;
-  final int detourDistance;
-  final int detourDuration;
+  final double detourDistance;
+  final double detourDuration;
   final double fare;
   final DateTime eta;
   final bool sameSource;

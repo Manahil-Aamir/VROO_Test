@@ -1,21 +1,19 @@
 import 'package:vroo_test/features/ride_start/data/models/address_model.dart';
 import 'package:vroo_test/features/ride_start/data/models/inride_passenger_model.dart';
-import 'package:vroo_test/features/ride_start/domain/entities/address_entity.dart';
-import 'package:vroo_test/features/ride_start/domain/entities/inride_passenger_entity.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
 
 class RidestartDataEntity {
   final String id;
   final String driverId;
-  final int numOfSeats;
+  final double numOfSeats;
   final DateTime date;
   final AddressModel source;
   final AddressModel destination;
   final DateTime departureTime;
   final DateTime maxArrivalTime;
-  final int distance;
-  final int duration;
+  final double distance;
+  final double duration;
   final RidePreferencesModel preferences;
   final bool isRecurring;
   final CarDetailsModel car;
