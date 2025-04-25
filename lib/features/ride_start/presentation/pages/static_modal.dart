@@ -129,12 +129,12 @@ class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
                 ),
                 StatItem(
                   icon: Icons.access_time,
-                  value: '${(widget.rideData.duration / 60)} min',
+                  value: '${(widget.rideData.duration / 60).toInt()} min',
                   label: 'Duration',
                 ),
                 StatItem(
                   icon: Icons.straighten,
-                  value: '${widget.rideData.distance.toStringAsFixed(1)} km',
+                  value: '${(widget.rideData.distance / 1000).toInt()} km',
                   label: 'Distance',
                 ),
               ],
