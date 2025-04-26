@@ -64,7 +64,7 @@ class ActiveRidesDriverRemoteDataSource implements ActiveRidesDriverDataSource {
 
   @override
   Future<RidestartDataModel> getRideData(String rideId, String token) async {
-    final url = Uri.parse('http://10.0.2.2:8080/driver/ride/data/$rideId');
+    final url = Uri.parse('${ApiConstants.baseUrl}driver/ride/data/$rideId');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',

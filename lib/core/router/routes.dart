@@ -7,6 +7,7 @@ import 'package:vroo_test/features/cars/presentation/pages/cars_screen.dart';
 import 'package:vroo_test/features/chat/domain/entity/chat_user.dart';
 import 'package:vroo_test/features/chat/presentation/pages/chat_detail_screen.dart';
 import 'package:vroo_test/features/ride_start/presentation/pages/ride_static_page.dart';
+import 'package:vroo_test/features/ride_start/presentation/pages/ride_tracking_page.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import 'package:vroo_test/features/user_profile/presentation/pages/user_profile_page.dart';
@@ -90,6 +91,7 @@ class Routes {
   static const String emergency_contacts = '/emergency_contacts';
   static const String ride_request_rider = '/ride_request_rider';
   static const String static_page = '/static_page';
+  static const String ride_tracking = '/ride_tracking';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -757,6 +759,12 @@ class Routes {
         final rideData = arguments['rideData'] as RidestartDataModel;
         return MaterialPageRoute(
           builder: (_) => RideTrackingPage(rideData: rideData),
+        );
+      case ride_tracking:
+        final arguments = settings.arguments as Map<String, dynamic>;
+        final rideData = arguments['rideData'] as RidestartDataModel;
+        return MaterialPageRoute(
+          builder: (_) => RideTrackingScreen(rideData: rideData),
         );
       default:
         return MaterialPageRoute(

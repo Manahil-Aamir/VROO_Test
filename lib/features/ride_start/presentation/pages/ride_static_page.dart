@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vroo_test/features/ride_start/data/models/inride_passenger_model.dart';
 
+import '../../../../core/router/navigation.dart';
+import '../../../../shared/widgets/gradient_button.dart';
 import '../../data/models/ridestart_data_model.dart';
+import 'ride_tracking_page.dart';
 import 'static_modal.dart';
 
 class RideTrackingPage extends StatefulWidget {
@@ -89,6 +93,19 @@ class _RideTrackingPageState extends State<RideTrackingPage> {
                 _initMap(); // ✅ Trigger map initialization here
               },
             ),
+          ),
+
+          GradientButton(
+            onTap: () {
+              print("Start Ride Button Pressed");
+              context.read<Navigation>().navigateTo(
+                '/ride_tracking',
+                arguments: {
+                  'rideData': widget.rideData,
+                },
+              );
+            },
+            text: ('Start Ride'),
           ),
 
           // Bottom sheet overlay
