@@ -40,9 +40,9 @@ class PendingJoinCard extends StatelessWidget {
             ),
             _buildRouteInfo(textTheme),
             SizedBox(height: 10.h),
-            _buildFareAndSeats(textTheme),
+            _buildCarDetailsAndSeats(textTheme),
             SizedBox(height: 14.h),
-            _buildCancelButton(context),
+            _buildFareAndCancelButton(context, textTheme),
           ],
         ),
       ),
@@ -53,7 +53,6 @@ class PendingJoinCard extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Date
         Row(
           children: [
             Icon(Icons.calendar_today, size: 14.r, color: ThemeColors.primaryColor),
@@ -67,8 +66,6 @@ class PendingJoinCard extends StatelessWidget {
             ),
           ],
         ),
-        
-        // Time
         Row(
           children: [
             Icon(Icons.access_time_rounded, size: 16.r, color: ThemeColors.primaryColor),
@@ -135,26 +132,90 @@ class PendingJoinCard extends StatelessWidget {
     );
   }
 
-  Widget _buildFareAndSeats(TextTheme textTheme) {
+  Widget _buildCarDetailsAndSeats(TextTheme textTheme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Seats info
-        Row(
-          children: [
-            Icon(Icons.event_seat, size: 18.r, color: ThemeColors.primaryColor),
-            SizedBox(width: 4.w),
-            Text(
-              "${joinRequest.ride.noOfOccupiedSeats}/${joinRequest.ride.noOfSeats} Seats",
-              style: textTheme.bodyMedium?.copyWith(
-                fontSize: 14.sp,
-                color: ThemeColors.buttonTextColor,
-                fontWeight: FontWeight.w600,
+        // Car info
+        Expanded(
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(4.r),
+                decoration: BoxDecoration(
+                  color: ThemeColors.primaryColor.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(6.r),
+                ),
+                child: Icon(
+                  Icons.directions_car_filled,
+                  color: ThemeColors.primaryColor,
+                  size: 16.r,
+                ),
               ),
-            ),
-          ],
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Row(
+                  children: [
+                    Text(
+                      '${joinRequest.ride.car.company} ${joinRequest.ride.car.model}',
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: ThemeColors.buttonTextColor,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    Text(
+                      ' • ',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: ThemeColors.buttonTextColor.withOpacity(0.7),
+                        fontSize: 12.sp,
+                      ),
+                    ),
+                    Text(
+                      joinRequest.ride.car.numberPlate,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: ThemeColors.buttonTextColor.withOpacity(0.7),
+                        fontSize: 12.sp,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
         
+        SizedBox(width: 8.w),
+
+        // Seat icons
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (int i = 0; i < joinRequest.ride.noOfOccupiedSeats; i++)
+              Icon(
+                Icons.event_seat,
+                color: ThemeColors.primaryColor,
+                size: 16.r,
+              ),
+            for (int i = 0; i < (joinRequest.ride.noOfSeats - joinRequest.ride.noOfOccupiedSeats); i++)
+              Icon(
+                Icons.event_seat,
+                color: ThemeColors.backgroundColor,
+                size: 16.r,
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFareAndCancelButton(BuildContext context, TextTheme textTheme) {
+    return Row(
+      children: [
         // Fare
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
@@ -163,46 +224,46 @@ class PendingJoinCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.r),
           ),
           child: Text(
-            "Rs. ${joinRequest.riderDetails.fare.toStringAsFixed(0)}",
+            "Rs. ${joinRequest.riderDetails.fare.toStringAsFixed(2)}",
             style: textTheme.bodyMedium?.copyWith(
-              fontSize: 15.sp,
+              fontSize: 14.sp,
               color: ThemeColors.primaryColor,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
-      ],
-    );
-  }
 
-  Widget _buildCancelButton(BuildContext context) {
-    return SizedBox(
-      height: 34.h,
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: () => _showCancelConfirmation(context),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: ThemeColors.primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
+        Spacer(),
+
+        // Cancel Button
+        SizedBox(
+          height: 34.h,
+          child: ElevatedButton.icon(
+            onPressed: () => _showCancelConfirmation(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ThemeColors.primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              elevation: 0,
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
+            ),
+            icon: Icon(
+              Icons.close_rounded,
+              size: 18.r,
+              color: Colors.white,
+            ),
+            label: Text(
+              'Cancel Request',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14.sp,
+              ),
+            ),
           ),
-          elevation: 0,
-          padding: EdgeInsets.symmetric(vertical: 0),
         ),
-        icon: Icon(
-          Icons.close_rounded,
-          size: 18.r,
-          color: Colors.white,
-        ),
-        label: Text(
-          'Cancel Request',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 14.sp,
-          ),
-        ),
-      ),
+      ],
     );
   }
 
@@ -212,7 +273,7 @@ class PendingJoinCard extends StatelessWidget {
       builder: (_) => CustomDialog(
         title: "Cancel Request",
         message: "Are you sure you want to cancel this ride request?",
-        confirmText: "Yes, Cancel",
+        confirmText: "Cancel",
         cancelText: "No",
         confirmColor: ThemeColors.primaryColor,
         cancelColor: ThemeColors.accentColor,

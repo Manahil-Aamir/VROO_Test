@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../shared/widgets/Appbar.dart';
 import '../bloc/bloc/ride_request_join_bloc.dart';
@@ -30,7 +31,7 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(heading: 'Pending Joins'),
+      appBar: appBar(heading: 'Join Requests'),
       body: BlocBuilder<RideRequestJoinBloc, RideRequestJoinState>(
         builder: (context, state) {
           if (state is RideRequestJoinLoading) {
@@ -40,10 +41,46 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
               return const Center(child: Text('No pending join requests'));
             }
             return ListView.builder(
-              itemCount: state.joins.length,
+              itemCount: state.joins.length + 1,
               itemBuilder: (context, index) {
-                final join = state.joins[index];
-                return PendingJoinCard(joinRequest: join);
+                if (index < state.joins.length) {
+                  final join = state.joins[index];
+                  return PendingJoinCard(joinRequest: join);
+                } else {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                     mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Need to find more matches?',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(width: 5.w),
+                      GestureDetector(
+                        onTap: () {
+                          // TODO: Add your functionality here
+                          print('Find more drivers clicked');
+                        },
+                        child: Text(
+                          'Find drivers',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                            color: Theme.of(context).primaryColor, 
+                            decorationColor: Theme.of(context).primaryColor, 
+                            decorationThickness: 2.w
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                  );
+                }
               },
             );
           } else if (state is RideRequestJoinError) {
