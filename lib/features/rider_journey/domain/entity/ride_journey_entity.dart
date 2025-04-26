@@ -1,5 +1,3 @@
-import 'package:equatable/equatable.dart';
-
 class RiderJourneyEntity {
   final String riderId;
   final RideLocation source;
@@ -20,20 +18,9 @@ class RiderJourneyEntity {
     required this.preferences,
     required this.isRecurring,
   });
-
-  List<Object> get props => [
-        riderId,
-        source,
-        destination,
-        date,
-        pickupTimeRange,
-        maxArrivalTime,
-        preferences,
-        isRecurring,
-      ];
 }
 
-class RideLocation extends Equatable {
+class RideLocation {
   final List<double> coords;
   final String placeId;
   final String address;
@@ -43,22 +30,17 @@ class RideLocation extends Equatable {
     required this.placeId,
     required this.address,
   });
-
-  @override
-  List<Object> get props => [coords, placeId, address];
 }
 
-class PickupTimeRange extends Equatable {
+class PickupTimeRange {
   final String min;
   final String max;
 
   const PickupTimeRange({required this.min, required this.max});
 
-  @override
-  List<Object> get props => [min, max];
 }
 
-class RidePreferences extends Equatable {
+class RidePreferences {
   final bool maleOnly;
   final bool femaleOnly;
   final bool canWalk;
@@ -69,6 +51,4 @@ class RidePreferences extends Equatable {
     required this.canWalk,
   });
 
-  @override
-  List<Object> get props => [maleOnly, femaleOnly, canWalk];
 }

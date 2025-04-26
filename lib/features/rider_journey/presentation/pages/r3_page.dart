@@ -15,6 +15,7 @@ import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/expandable_detail_tile.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../../../../shared/widgets/overlay.dart';
+import '../../../authentication/presentation/bloc/user_bloc.dart';
 import '../../data/model/preferences_model.dart';
 import '../../data/model/schedule_model.dart';
 import '../bloc/event/r3_event.dart';
@@ -189,69 +190,7 @@ class _R3PageState extends State<R3Page> {
                               SizedBox(height: 60.h),
                               GradientButton(
                                 onTap: () {
-                                  // Ensure coordinates have been loaded.
-                                  if (widget.location.sourceCoordinates ==
-                                          null ||
-                                      widget.location.destCoordinates == null) {
-                                    Future.delayed(
-                                        const Duration(seconds: 40), () {});
-                                  }
-                                  rideDetails = RiderJourneyModel(
-                                    riderId: getRiderId(),
-                                    source: RideLocationModel(
-                                      coords: [
-                                        widget.location.sourceCoordinates!
-                                            .latitude,
-                                        widget.location.sourceCoordinates!
-                                            .longitude
-                                      ],
-                                      placeId: widget.location.fromPlaceId,
-                                      address: widget.location.fromDescription,
-                                    ),
-                                    destination: RideLocationModel(
-                                      coords: [
-                                        widget
-                                            .location.destCoordinates!.latitude,
-                                        widget
-                                            .location.destCoordinates!.longitude
-                                      ],
-                                      placeId: widget.location.toPlaceId,
-                                      address: widget.location.toDescription,
-                                    ),
-                                    date: DateFormat("yyyy-MM-dd").format(
-                                      DateTime(
-                                        widget.schedule.date.year,
-                                        widget.schedule.date.month,
-                                        widget.schedule.date.day,
-                                      ),
-                                    ),
-                                    pickupTimeRange: PickupTimeRangeModel(
-                                      min: formatISO8601DateTime(
-                                        widget.schedule.date,
-                                        widget.schedule.minTime,
-                                      ),
-                                      max: formatISO8601DateTime(
-                                        widget.schedule.date,
-                                        widget.schedule.maxTime,
-                                      ),
-                                    ),
-                                    maxArrivalTime: formatISO8601DateTime(
-                                      widget.schedule.date,
-                                      widget.schedule.arrivalTime,
-                                    ),
-                                    preferences: RidePreferencesModel(
-                                      maleOnly: !widget.preferences.sameGender,
-                                      femaleOnly: widget.preferences.sameGender,
-                                      canWalk: widget.preferences.walk,
-                                    ),
-                                    isRecurring: false,
-                                  );
-
-                                  print('Ride data: ${rideDetails.toMap()}');
-                                  // Dispatch the ride request event.
-                                  context
-                                      .read<R3Bloc>()
-                                      .add(SendRideRequestEvent(rideDetails));
+                                  _onConfirmPressed();
                                 },
                                 text: 'Confirm and Proceed',
                               ),
@@ -271,4 +210,76 @@ class _R3PageState extends State<R3Page> {
       ),
     );
   }
+
+  void _onConfirmPressed() {
+    if (widget.location.sourceCoordinates == null ||
+        widget.location.destCoordinates == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please wait while coordinates are loading.')),
+      );
+      return;
+    }
+
+    final userState = context.read<UserBloc>().state;
+    String user_gender = '';
+    bool maleOnly = false;
+    bool femaleOnly = false;
+
+    if (userState is UserLoaded) {
+      print('here');
+      print(userState.user);
+      user_gender = userState.user.gender;
+    }
+    print('user gender: ${user_gender}');
+    print('same gender: ${widget.preferences.sameGender}');
+
+    if (user_gender.toLowerCase() == 'female' && widget.preferences.sameGender == true) {
+      femaleOnly = true;
+    } else if (user_gender.toLowerCase() == 'male' && widget.preferences.sameGender == true) {
+      maleOnly=true;
+    }
+
+    rideDetails = RiderJourneyModel(
+      riderId: getRiderId(),
+      source: RideLocationModel(
+        coords: [
+          widget.location.sourceCoordinates!.latitude,
+          widget.location.sourceCoordinates!.longitude
+        ],
+        placeId: widget.location.fromPlaceId,
+        address: widget.location.fromDescription,
+      ),
+      destination: RideLocationModel(
+        coords: [
+          widget.location.destCoordinates!.latitude,
+          widget.location.destCoordinates!.longitude
+        ],
+        placeId: widget.location.toPlaceId,
+        address: widget.location.toDescription,
+      ),
+      date: DateFormat("yyyy-MM-dd").format(
+        DateTime(
+          widget.schedule.date.year,
+          widget.schedule.date.month,
+          widget.schedule.date.day,
+        ),
+      ),
+      pickupTimeRange: PickupTimeRangeModel(
+        min: formatISO8601DateTime(widget.schedule.date, widget.schedule.minTime),
+        max: formatISO8601DateTime(widget.schedule.date, widget.schedule.maxTime),
+      ),
+      maxArrivalTime: formatISO8601DateTime(widget.schedule.date, widget.schedule.arrivalTime),
+      preferences: RidePreferencesModel(
+        maleOnly: maleOnly,
+        femaleOnly: femaleOnly,
+        canWalk: widget.preferences.walk,
+      ),
+      isRecurring: false,
+    );
+
+    print('Ride data: ${rideDetails.toJson()}');
+
+    context.read<R3Bloc>().add(SendRideRequestEvent(rideDetails));
+  }
+
 }

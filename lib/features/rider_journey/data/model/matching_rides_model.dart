@@ -1,180 +1,190 @@
-import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
-import '../../domain/entity/matching_rides_entity.dart';
+import '../../../cars/data/model/carr_model.dart';
+import 'ride_journey_model.dart';
 
-// Models
-class MatchingRideModel extends MatchingRide {
+class MatchingRideModel {
+  final String id;
+  final Car car;
+  final String date;
+  final String departureTime;
+  final RideLocationModel source;
+  final RideLocationModel destination;
+  final double distance;
+  final String driverId;
+  final String driverName;
+  final String driverGender;
+  final double duration;
+  final EnvironmentStatsModel environmentStats;
+  final String expectedArrivalTime;
+  final double fare;
+  final bool isRecurring;
+  final String maxArrivalTime;
+  final List<String> neighbourRouteCells;
+  final double numOfSeats;
+  final List<PassengerModel> passengers;
+  final List<dynamic> paymentMethod;
+  final RidePreferencesModel preferences;
+  final List<dynamic> recurringRides;
+  final List<dynamic> routeCells;
+  final List<dynamic> routeCoords;
+  final String status;
+  final double totalDetourDistance;
+  final double totalDetourDuration;
+
   const MatchingRideModel({
-    required super.id,
-    required super.car,
-    required super.date,
-    required super.departureTime,
-    required super.source,
-    required super.destination,
-    required super.distance,
-    required super.driverId,
-    required super.duration,
-    required super.environmentStats,
-    required super.expectedArrivalTime,
-    required super.fare,
-    required super.isRecurring,
-    required super.maxArrivalTime,
-    required super.neighbourRouteCells,
-    required super.numOfSeats,
-    required super.passengers,
-    required super.paymentMethod,
-    required super.preferences,
-    required super.recurringRides,
-    required super.routeCells,
-    required super.routeCoords,
-    required super.status,
-    required super.totalDetourDistance,
-    required super.totalDetourDuration,
+    required this.id,
+    required this.car,
+    required this.date,
+    required this.departureTime,
+    required this.source,
+    required this.destination,
+    required this.distance,
+    required this.driverId,
+    required this.driverName,
+    required this.driverGender,
+    required this.duration,
+    required this.environmentStats,
+    required this.expectedArrivalTime,
+    required this.fare,
+    required this.isRecurring,
+    required this.maxArrivalTime,
+    required this.neighbourRouteCells,
+    required this.numOfSeats,
+    required this.passengers,
+    required this.paymentMethod,
+    required this.preferences,
+    required this.recurringRides,
+    required this.routeCells,
+    required this.routeCoords,
+    required this.status,
+    required this.totalDetourDistance,
+    required this.totalDetourDuration,
   });
 
-  Map<String, dynamic> toMap() {
+  factory MatchingRideModel.fromJson(Map<String, dynamic> json) {
+    return MatchingRideModel(
+      id: json['id'],
+      car: Car.fromJson(json['car']),
+      date: json['date'],
+      departureTime: json['departureTime'],
+      source: RideLocationModel.fromJson(json['source']),
+      destination: RideLocationModel.fromJson(json['destination']),
+      distance: json['distance'].toDouble(),
+      driverId: json['driverId'],
+      driverName: json['driverName'],
+      driverGender: json['driverGender'],
+      duration: json['duration'].toDouble(),
+      environmentStats: EnvironmentStatsModel.fromJson(json['environmentStats']),
+      expectedArrivalTime: json['expectedArrivalTime'],
+      fare: json['fare'].toDouble(),
+      isRecurring: json['isRecurring'],
+      maxArrivalTime: json['maxArrivalTime'],
+      neighbourRouteCells: List<String>.from(json['neighbourRouteCells']),
+      numOfSeats: json['numOfSeats'].toDouble(),
+      passengers: (json['passengers'] as List)
+          .map((e) => PassengerModel.fromJson(e))
+          .toList(),
+      paymentMethod: json['paymentMethod'],
+      preferences: RidePreferencesModel.fromJson(json['preferences']),
+      recurringRides: json['recurringRides'],
+      routeCells: json['routeCells'],
+      routeCoords: json['routeCoords'],
+      status: json['status'],
+      totalDetourDistance: json['totalDetourDistance'].toDouble(),
+      totalDetourDuration: json['totalDetourDuration'].toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'car': car.toMap(),
+      'car': Car(
+        carId: car.carId,
+        company: car.company,
+        model: car.model,
+        color: car.color,
+        numberPlate: car.numberPlate,
+        mileage: car.mileage,
+        isVerified: car.isVerified,
+      ).toJson(),
       'date': date,
       'departureTime': departureTime,
-      'source': source.toMap(),
-      'destination': destination.toMap(),
+      'source': source.toJson(),
+      'destination': destination.toJson(),
       'distance': distance,
       'driverId': driverId,
+      'driverName': driverName,
+      'driverGender': driverGender,
       'duration': duration,
-      'environmentStats': environmentStats.toMap(),
+      'environmentStats': environmentStats.toJson(),
       'expectedArrivalTime': expectedArrivalTime,
       'fare': fare,
       'isRecurring': isRecurring,
       'maxArrivalTime': maxArrivalTime,
       'neighbourRouteCells': neighbourRouteCells,
       'numOfSeats': numOfSeats,
-      'passengers': passengers.map((p) => p.toMap()).toList(),
+      'passengers': passengers.map((e) => e.toJson()).toList(),
       'paymentMethod': paymentMethod,
-      'preferences': preferences.toMap(),
+      'preferences': preferences.toJson(),
       'recurringRides': recurringRides,
       'routeCells': routeCells,
-      'routeCoords': routeCoords.map((x) => x.toList()).toList(),
+      'routeCoords': routeCoords,
       'status': status,
       'totalDetourDistance': totalDetourDistance,
       'totalDetourDuration': totalDetourDuration,
     };
   }
-
-  factory MatchingRideModel.fromMap(Map<String, dynamic> map) {
-    print("DEBUG: Type of id -> ${map['id']?.runtimeType}");
-    print("DEBUG: Type of car -> ${map['car']?.runtimeType}");
-    print("DEBUG: Type of date -> ${map['date']?.runtimeType}");
-    print(
-        "DEBUG: Type of departureTime -> ${map['departureTime']?.runtimeType}");
-    print("DEBUG: Type of source -> ${map['source']?.runtimeType}");
-    print("DEBUG: Type of destination -> ${map['destination']?.runtimeType}");
-    print("DEBUG: Type of distance -> ${map['distance']?.runtimeType}");
-    print("DEBUG: Type of driverId -> ${map['driverId']?.runtimeType}");
-    print("DEBUG: Type of duration -> ${map['duration']?.runtimeType}");
-    print(
-        "DEBUG: Type of environmentStats -> ${map['environmentStats']?.runtimeType}");
-    print(
-        "DEBUG: Type of expectedArrivalTime -> ${map['expectedArrivalTime']?.runtimeType}");
-    print("DEBUG: Type of fare -> ${map['fare']?.runtimeType}");
-    print("DEBUG: Type of isRecurring -> ${map['isRecurring']?.runtimeType}");
-    print(
-        "DEBUG: Type of maxArrivalTime -> ${map['maxArrivalTime']?.runtimeType}");
-    print(
-        "DEBUG: Type of neighbourRouteCells -> ${map['neighbourRouteCells']?.runtimeType}");
-    print("DEBUG: Type of numOfSeats -> ${map['numOfSeats']?.runtimeType}");
-    print("DEBUG: Type of passengers -> ${map['passengers']?.runtimeType}");
-    print(
-        "DEBUG: Type of paymentMethod -> ${map['paymentMethod']?.runtimeType}");
-    print("DEBUG: Type of preferences -> ${map['preferences']?.runtimeType}");
-    print(
-        "DEBUG: Type of recurringRides -> ${map['recurringRides']?.runtimeType}");
-    print("DEBUG: Type of routeCells -> ${map['routeCells']?.runtimeType}");
-    print("DEBUG: Type of routeCoords -> ${map['routeCoords']?.runtimeType}");
-    print("DEBUG: Type of status -> ${map['status']?.runtimeType}");
-    print(
-        "DEBUG: Type of totalDetourDistance -> ${map['totalDetourDistance']?.runtimeType}");
-    print(
-        "DEBUG: Type of totalDetourDuration -> ${map['totalDetourDuration']?.runtimeType}");
-    return MatchingRideModel(
-      id: map['_id']?.toString() ?? '',
-      car: CarDetailsModel.fromMap(map['car'] ?? {}),
-      date: map['date']?.toString() ?? '',
-      departureTime: map['departureTime']?.toString() ?? '',
-      source: RideLocationModel.fromMap(map['source'] ?? {}),
-      destination: RideLocationModel.fromMap(map['destination'] ?? {}),
-      distance: (map['distance'] as num?)?.toDouble() ?? 0.0,
-      driverId: map['driverId']?.toString() ?? '',
-      duration: (map['duration'] as num?)?.toDouble() ?? 0.0,
-      environmentStats:
-          EnvironmentStatsModel.fromMap(map['environmentStats'] ?? {}),
-      expectedArrivalTime: map['expectedArrivalTime']?.toString() ?? '',
-      fare: (map['fare'] as num?)?.toDouble() ?? 0.0,
-      isRecurring: map['isRecurring'] ?? false,
-      maxArrivalTime: map['maxArrivalTime']?.toString() ?? '',
-      neighbourRouteCells: List<String>.from(map['neighbourRouteCells'] ?? []),
-      numOfSeats: (map['numOfSeats'] as num?)?.toDouble() ?? 0,
-      passengers: List<PassengerModel>.from(
-          (map['passengers'] ?? []).map((x) => PassengerModel.fromMap(x))),
-      paymentMethod: List<String>.from(map['paymentMethod'] ?? []),
-      preferences: RidePreferencesModel.fromMap(map['preferences'] ?? {}),
-      recurringRides: List<String>.from(map['recurringRides'] ?? []),
-      routeCells: List<String>.from(map['routeCells'] ?? []),
-      routeCoords: (map['routeCoords'] ?? [])
-          .map<List<double>>((x) => List<double>.from(x))
-          .toList(),
-      status: map['status']?.toString() ?? '',
-      totalDetourDistance:
-          (map['totalDetourDistance'] as num?)?.toDouble() ?? 0.0,
-      totalDetourDuration:
-          (map['totalDetourDuration'] as num?)?.toDouble() ?? 0.0,
-    );
-  }
 }
 
-class CarDetailsModel extends CarDetails {
-  const CarDetailsModel({
-    required super.color,
-    required super.company,
-    required super.isVerified,
-    required super.mileage,
-    required super.model,
-    required super.numberPlate,
+class EnvironmentStatsModel {
+  final double co2Saved;
+  final double fuelSaved;
+
+  const EnvironmentStatsModel({
+    required this.co2Saved,
+    required this.fuelSaved,
   });
 
-  Map<String, dynamic> toMap() {
+  factory EnvironmentStatsModel.fromJson(Map<String, dynamic> json) {
+    return EnvironmentStatsModel(
+      co2Saved: json['co2Saved'].toDouble(),
+      fuelSaved: json['fuelSaved'].toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
     return {
-      'color': color,
-      'company': company,
-      'isVerified': isVerified,
-      'mileage': mileage,
-      'model': model,
-      'numberPlate': numberPlate,
+      'co2Saved': co2Saved,
+      'fuelSaved': fuelSaved,
     };
   }
-
-  factory CarDetailsModel.fromMap(Map<String, dynamic> map) {
-    return CarDetailsModel(
-      color: map['color'] ?? '',
-      company: map['company'] ?? '',
-      isVerified: map['isVerified'] ?? false,
-      mileage: (map['mileage'] as num?)?.toDouble() ?? 0.0,
-      model: map['model'] ?? '',
-      numberPlate: map['numberPlate'] ?? '',
-    );
-  }
 }
 
-class PassengerModel extends Passenger {
+class PassengerModel {
+  final String eta;
+  final double fare;
+  final String rideRequestId;
+  final String riderId;
+  final String status;
+
   const PassengerModel({
-    required super.eta,
-    required super.fare,
-    required super.rideRequestId,
-    required super.riderId,
-    required super.status,
+    required this.eta,
+    required this.fare,
+    required this.rideRequestId,
+    required this.riderId,
+    required this.status,
   });
 
-  Map<String, dynamic> toMap() {
+  factory PassengerModel.fromJson(Map<String, dynamic> json) {
+    return PassengerModel(
+      eta: json['eta'],
+      fare: json['fare'].toDouble(),
+      rideRequestId: json['rideRequestId'],
+      riderId: json['riderId'],
+      status: json['status'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       'eta': eta,
       'fare': fare,
@@ -183,66 +193,34 @@ class PassengerModel extends Passenger {
       'status': status,
     };
   }
-
-  factory PassengerModel.fromMap(Map<String, dynamic> map) {
-    return PassengerModel(
-      eta: map['eta'] ?? '',
-      fare: (map['fare'] as num?)?.toDouble() ?? 0.0,
-      rideRequestId: map['rideRequestId'] ?? '',
-      riderId: map['riderId'] ?? '',
-      status: map['status'] ?? '',
-    );
-  }
 }
 
-class RideResponseModel extends RideResponse {
+class RideResponseModel {
+  final String message;
+  final String rideRequestId;
+  final List<MatchingRideModel> matchingRides;
+
   const RideResponseModel({
-    required super.message,
-    required super.rideRequestId,
-    required super.matchingRides,
+    required this.message,
+    required this.rideRequestId,
+    required this.matchingRides,
   });
 
-  Map<String, dynamic> toMap() {
+  factory RideResponseModel.fromJson(Map<String, dynamic> json) {
+    return RideResponseModel(
+      message: json['message'],
+      rideRequestId: json['rideRequestId'],
+      matchingRides: (json['matchingRides'] as List)
+          .map((e) => MatchingRideModel.fromJson(e))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       'message': message,
       'rideRequestId': rideRequestId,
-      'matchingRides': matchingRides.map((r) => r.toMap()).toList(),
+      'matchingRides': matchingRides.map((e) => e.toJson()).toList(),
     };
-  }
-
-  factory RideResponseModel.fromMap(Map<String, dynamic> map) {
-    final data = map['data'] as Map<String, dynamic>? ?? {};
-
-    return RideResponseModel(
-      message: data['message'] ?? '',
-      rideRequestId: data['rideRequestId'] ?? '',
-      matchingRides: (data['matchingRides'] != null &&
-              data['matchingRides'] is List)
-          ? (data['matchingRides'] as List)
-              .map((x) => MatchingRideModel.fromMap(x as Map<String, dynamic>))
-              .toList()
-          : [],
-    );
-  }
-}
-
-class EnvironmentStatsModel extends EnvironmentStats {
-  const EnvironmentStatsModel({
-    required super.co2Saved,
-    required super.fuelSaved,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'co2Saved': co2Saved,
-      'fuelSaved': fuelSaved,
-    };
-  }
-
-  factory EnvironmentStatsModel.fromMap(Map<String, dynamic> map) {
-    return EnvironmentStatsModel(
-      co2Saved: (map['co2Saved'] as num?)?.toDouble() ?? 0.0,
-      fuelSaved: (map['fuelSaved'] as num?)?.toDouble() ?? 0.0,
-    );
   }
 }

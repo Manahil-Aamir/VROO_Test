@@ -1,60 +1,71 @@
-import '../../domain/entity/ride_journey_entity.dart';
+class RiderJourneyModel {
+  final String riderId;
+  final RideLocationModel source;
+  final RideLocationModel destination;
+  final String date;
+  final PickupTimeRangeModel pickupTimeRange;
+  final String maxArrivalTime;
+  final RidePreferencesModel preferences;
+  final bool isRecurring;
 
-class RiderJourneyModel extends RiderJourneyEntity {
   const RiderJourneyModel({
-    required super.riderId,
-    required super.source,
-    required super.destination,
-    required super.date,
-    required super.pickupTimeRange,
-    required super.maxArrivalTime,
-    required super.preferences,
-    required super.isRecurring,
+    required this.riderId,
+    required this.source,
+    required this.destination,
+    required this.date,
+    required this.pickupTimeRange,
+    required this.maxArrivalTime,
+    required this.preferences,
+    required this.isRecurring,
   });
 
-  factory RiderJourneyModel.fromMap(Map<String, dynamic> map) {
+  factory RiderJourneyModel.fromJson(Map<String, dynamic> json) {
     return RiderJourneyModel(
-      riderId: map['riderId'],
-      source: RideLocationModel.fromMap(map['source']),
-      destination: RideLocationModel.fromMap(map['destination']),
-      date: map['date'],
-      pickupTimeRange: PickupTimeRangeModel.fromMap(map['pickupTimeRange']),
-      maxArrivalTime: map['maxArrivalTime'],
-      preferences: RidePreferencesModel.fromMap(map['preferences']),
-      isRecurring: map['isRecurring'],
+      riderId: json['riderId'],
+      source: RideLocationModel.fromJson(json['source']),
+      destination: RideLocationModel.fromJson(json['destination']),
+      date: json['date'],
+      pickupTimeRange: PickupTimeRangeModel.fromJson(json['pickupTimeRange']),
+      maxArrivalTime: json['maxArrivalTime'],
+      preferences: RidePreferencesModel.fromJson(json['preferences']),
+      isRecurring: json['isRecurring'],
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'riderId': riderId,
-      'source': (source as RideLocationModel).toMap(),
-      'destination': (destination as RideLocationModel).toMap(),
+      'source': source.toJson(),
+      'destination': destination.toJson(),
       'date': date,
-      'pickupTimeRange': (pickupTimeRange as PickupTimeRangeModel).toMap(),
+      'pickupTimeRange': pickupTimeRange.toJson(),
       'maxArrivalTime': maxArrivalTime,
-      'preferences': (preferences as RidePreferencesModel).toMap(),
+      'preferences': preferences.toJson(),
       'isRecurring': isRecurring,
     };
   }
 }
 
-class RideLocationModel extends RideLocation {
+class RideLocationModel {
+  final List<double> coords;
+  final String placeId;
+  final String address;
+
   const RideLocationModel({
-    required super.coords,
-    required super.placeId,
-    required super.address,
+    required this.coords,
+    required this.placeId,
+    required this.address,
   });
 
-  factory RideLocationModel.fromMap(Map<String, dynamic> map) {
+  factory RideLocationModel.fromJson(Map<String, dynamic> json) {
     return RideLocationModel(
-      coords: List<double>.from(map['coords']),
-      placeId: map['placeId'],
-      address: map['address'],
+      coords: List<double>.from(json['coords'].map((e) => e.toDouble())),
+      placeId: json['placeId'],
+      address: json['address'],
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'coords': coords,
       'placeId': placeId,
@@ -63,17 +74,23 @@ class RideLocationModel extends RideLocation {
   }
 }
 
-class PickupTimeRangeModel extends PickupTimeRange {
-  const PickupTimeRangeModel({required super.min, required super.max});
+class PickupTimeRangeModel {
+  final String min;
+  final String max;
 
-  factory PickupTimeRangeModel.fromMap(Map<String, dynamic> map) {
+  const PickupTimeRangeModel({
+    required this.min,
+    required this.max,
+  });
+
+  factory PickupTimeRangeModel.fromJson(Map<String, dynamic> json) {
     return PickupTimeRangeModel(
-      min: map['min'],
-      max: map['max'],
+      min: json['min'],
+      max: json['max'],
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'min': min,
       'max': max,
@@ -81,22 +98,26 @@ class PickupTimeRangeModel extends PickupTimeRange {
   }
 }
 
-class RidePreferencesModel extends RidePreferences {
+class RidePreferencesModel {
+  final bool maleOnly;
+  final bool femaleOnly;
+  final bool canWalk;
+
   const RidePreferencesModel({
-    required super.maleOnly,
-    required super.femaleOnly,
-    required super.canWalk,
+    required this.maleOnly,
+    required this.femaleOnly,
+    required this.canWalk,
   });
 
-  factory RidePreferencesModel.fromMap(Map<String, dynamic> map) {
+  factory RidePreferencesModel.fromJson(Map<String, dynamic> json) {
     return RidePreferencesModel(
-      maleOnly: map['maleOnly'] ?? false,
-      femaleOnly: map['femaleOnly'] ?? false,
-      canWalk: map['canWalk'] ?? false,
+      maleOnly: json['maleOnly'],
+      femaleOnly: json['femaleOnly'],
+      canWalk: json['canWalk'],
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'maleOnly': maleOnly,
       'femaleOnly': femaleOnly,

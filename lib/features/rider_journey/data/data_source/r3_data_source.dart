@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
-
 import '../../../../core/utils/constant/api_constants.dart';
 
 class R3DataSource {
@@ -47,8 +46,8 @@ class R3DataSource {
       final responseBody = jsonDecode(response.body) as Map<String, dynamic>;
       print(responseBody);
       print('here in success in datasource');
-      print(RideResponseModel.fromMap(responseBody));
-      return RideResponseModel.fromMap(responseBody); // ✅ Convert map to model
+      print(RideResponseModel.fromJson(responseBody));
+      return RideResponseModel.fromJson(responseBody); // ✅ Convert map to model
     } else {
       throw Exception("Failed to send ride request");
     }

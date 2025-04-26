@@ -6,7 +6,6 @@ import 'package:vroo_test/features/matching/matching/presentation/widgets/time_w
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import '../../../../../core/router/navigation.dart';
-import '../../../../../shared/widgets/appbar.dart';
 import '../../../../HomeScreens/presentation/widgets/appbarmatching.dart';
 import '../bloc/bloc/matching_bloc.dart';
 import '../bloc/state/matching_state.dart';
@@ -55,7 +54,7 @@ class _MatchingPageState extends State<MatchingPage> {
     return "${dateString}T$hours:$minutes:$seconds";
   }
 
-  /// Parses and formats an arrival time string.
+  // Parses and formats an arrival time string.
 
   @override
   @override
@@ -124,7 +123,7 @@ class _MatchingPageState extends State<MatchingPage> {
                           try {
                             final ride = state.matchingRides[index];
                             return MatchCard(
-                              driverName: ride.driverId,
+                              driverName: ride.driverName,
                               rating: 4.3,
                               trips: 5,
                               source: ride.source.address,

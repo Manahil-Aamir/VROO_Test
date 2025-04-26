@@ -25,7 +25,7 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
       final updatedRides =
           await modifyRideUseCase.execute(event.id, event.modifyData);
       final rides =
-          updatedRides.map((ride) => MatchingRideModel.fromMap(ride)).toList();
+          updatedRides.map((ride) => MatchingRideModel.fromJson(ride)).toList();
       print('updatinggg rides');
       print(updatedRides);
       emit(RiderRequestLoaded(

@@ -1,27 +1,28 @@
-import 'package:equatable/equatable.dart';
-import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
-import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
+import '../../../cars/domain/entity/car.dart';
+import 'ride_journey_entity.dart';
 
-class MatchingRide extends Equatable {
+class MatchingRide {
   final String id;
-  final CarDetailsModel car;
+  final CarEntity car;
   final String date;
   final String departureTime;
-  final RideLocationModel source;
-  final RideLocationModel destination;
+  final RideLocation source;
+  final RideLocation destination;
   final double distance;
   final String driverId;
+  final String driverName;
+  final String driverGender;
   final double duration;
-  final EnvironmentStatsModel environmentStats;
+  final EnvironmentStats environmentStats;
   final String expectedArrivalTime;
   final double fare;
   final bool isRecurring;
   final String maxArrivalTime;
   final List<String> neighbourRouteCells;
   final double numOfSeats;
-  final List<PassengerModel> passengers;
+  final List<Passenger> passengers;
   final List<dynamic> paymentMethod;
-  final RidePreferencesModel preferences;
+  final RidePreferences preferences;
   final List<dynamic> recurringRides;
   final List<dynamic> routeCells;
   final List<dynamic> routeCoords;
@@ -38,6 +39,8 @@ class MatchingRide extends Equatable {
     required this.destination,
     required this.distance,
     required this.driverId,
+    required this.driverName,
+    required this.driverGender,
     required this.duration,
     required this.environmentStats,
     required this.expectedArrivalTime,
@@ -57,69 +60,16 @@ class MatchingRide extends Equatable {
     required this.totalDetourDuration,
   });
 
-  @override
-  List<Object> get props => [
-        id,
-        car,
-        date,
-        departureTime,
-        source,
-        destination,
-        distance,
-        driverId,
-        duration,
-        environmentStats,
-        expectedArrivalTime,
-        fare,
-        isRecurring,
-        maxArrivalTime,
-        neighbourRouteCells,
-        numOfSeats,
-        passengers,
-        paymentMethod,
-        preferences,
-        recurringRides,
-        routeCells,
-        routeCoords,
-        status,
-        totalDetourDistance,
-        totalDetourDuration,
-      ];
 }
 
-class CarDetails extends Equatable {
-  final String color;
-  final String company;
-  final bool isVerified;
-  final double mileage;
-  final String model;
-  final String numberPlate;
-
-  const CarDetails({
-    required this.color,
-    required this.company,
-    required this.isVerified,
-    required this.mileage,
-    required this.model,
-    required this.numberPlate,
-  });
-
-  @override
-  List<Object> get props =>
-      [color, company, isVerified, mileage, model, numberPlate];
-}
-
-class EnvironmentStats extends Equatable {
+class EnvironmentStats{
   final double co2Saved;
   final double fuelSaved;
 
   const EnvironmentStats({required this.co2Saved, required this.fuelSaved});
-
-  @override
-  List<Object> get props => [co2Saved, fuelSaved];
 }
 
-class Passenger extends Equatable {
+class Passenger{
   final String eta;
   final double fare;
   final String rideRequestId;
@@ -133,22 +83,16 @@ class Passenger extends Equatable {
     required this.riderId,
     required this.status,
   });
-
-  @override
-  List<Object> get props => [eta, fare, rideRequestId, riderId, status];
 }
 
-class RideResponse extends Equatable {
+class RideResponse {
   final String message;
   final String rideRequestId;
-  final List<MatchingRideModel> matchingRides;
+  final List<MatchingRide> matchingRides;
 
   const RideResponse({
     required this.message,
     required this.rideRequestId,
     required this.matchingRides,
   });
-
-  @override
-  List<Object> get props => [message, rideRequestId, matchingRides];
 }
