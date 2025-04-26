@@ -2,6 +2,7 @@ import '../../../cars/domain/entity/car.dart';
 import '../../../../shared/domain/entity/location_entity.dart';
 import '../../../../shared/domain/entity/ratings.dart';
 import 'driver_rider_detail.dart';
+import 'total_rides_entity.dart';
 
 class RiderApprovedRequest {
   final String id;
@@ -43,12 +44,4 @@ class DriverEntity {
   });
 }
 
-class TotalRides {
-  final int asDriver;
-  final int asRider;
 
-  TotalRides({
-    required this.asDriver,
-    required this.asRider,
-  });
-}

@@ -5,6 +5,7 @@ import '../../../cars/data/model/carr_model.dart';
 import '../../../../shared/data/models/location_modal.dart';
 import '../../../../shared/data/models/ratings_modal.dart';
 import '../../domain/entity/driver_rider_detail.dart';
+import 'total_rides_model.dart';
 
 class RiderApprovedRequestModel extends RiderApprovedRequest {
   RiderApprovedRequestModel({
@@ -80,24 +81,3 @@ class DriverModel extends DriverEntity {
   }
 }
 
-class TotalRidesModel extends TotalRides {
-  TotalRidesModel({
-    required super.asDriver,
-    required super.asRider,
-  });
-
-  factory TotalRidesModel.fromJson(Map<String, dynamic> json) {
-    return TotalRidesModel(
-      asDriver: json['asDriver'],
-      asRider: json['asRider'],
-    );
-  }
-
-  // toEntity()
-  TotalRides toEntity() {
-    return TotalRides(
-      asDriver: asDriver,
-      asRider: asRider,
-    );
-  }
-}

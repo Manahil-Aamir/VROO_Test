@@ -50,7 +50,9 @@ import '../../features/authentication/dependency_injection/create_user_di.dart';
 import '../../features/authentication/presentation/pages/email_verification_screen.dart';
 import '../../features/authentication/presentation/pages/create_user_screen.dart';
 import '../../features/authentication/presentation/pages/signup_screen.dart';
+import '../../features/rider_requests/dependency_injection/ride_request_joins_di.dart';
 import '../../features/rider_requests/dependency_injection/rider_request_di.dart';
+import '../../features/rider_requests/presentation/pages/rider_request_join.dart';
 import '../../features/rider_requests/presentation/pages/rider_requests_screen.dart';
 import '../../features/sos/presentation/pages/contact_page.dart';
 import '../../features/user_profile/dependency_injection/user_profile_di.dart';
@@ -87,6 +89,7 @@ class Routes {
   static const String sos = '/sos';
   static const String emergency_contacts = '/emergency_contacts';
   static const String ride_request_rider = '/ride_request_rider';
+  static const String rider_request_joins = '/rider_request_joins';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -748,6 +751,14 @@ class Routes {
             builder: (_) => MultiProvider(
                 providers: RiderRequestsDi.init(),
                 child: RiderRequestsScreen()));
+      case rider_request_joins:
+        final requestId = settings.arguments as String; 
+        return MaterialPageRoute(
+          builder: (_) => MultiProvider(
+            providers: RideRequestJoinDi.init(), 
+            child: RiderRequestJoinsPage(rideRequestId: requestId), 
+          ),
+        );
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

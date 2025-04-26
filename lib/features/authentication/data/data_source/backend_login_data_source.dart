@@ -25,11 +25,16 @@ class BackendLoginDataSourceImpl implements BackendLoginDataSource {
       body: jsonEncode({'fcmToken': fcmToken}),
     );
 
+    print('response statuscode: ${response.statusCode}');
+    print('response body: ${response.body}');    
+
     if (response.statusCode == 200 || response.statusCode == 201) {
       final responseData = jsonDecode(response.body);
       return UserModel.fromJson(responseData['user']); // Extract only user part
     } else {
-      throw Exception('Failed to notify backend: ${response.body}');
+      final responseData = jsonDecode(response.body);
+      // throw Exception('Failed to notify backend: ${response.body}');
+      throw Exception('${responseData['message']}');
     }
   }
 }

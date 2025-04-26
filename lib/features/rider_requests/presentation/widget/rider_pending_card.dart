@@ -1,7 +1,9 @@
 // lib/presentation/widgets/pending_request_card.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/router/navigation.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/custom_dialog.dart';
 import '../../../../shared/widgets/dialog_button.dart';
@@ -17,7 +19,13 @@ class PendingRequestCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        // call join card with argument 
+        context.read<Navigation>().navigateTo(
+          '/rider_request_joins',
+          arguments: request.id,
+        );
+      },
       child: Card(
         elevation: 2,
         margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
