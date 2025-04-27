@@ -1,5 +1,5 @@
 import '../../../cars/domain/entity/car.dart';
-import 'ride_journey_entity.dart';
+import '../../../rider_journey/domain/entity/ride_journey_entity.dart';
 
 class MatchingRide {
   final String id;

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:vroo_test/features/matching/matching/presentation/widgets/time_window.dart';
-import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
+import 'package:vroo_test/features/matching/presentation/widgets/time_window.dart';
+import 'package:vroo_test/features/matching/data/models/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
-import '../../../../../core/router/navigation.dart';
-import '../../../../HomeScreens/presentation/widgets/appbarmatching.dart';
+import '../../../../core/router/navigation.dart';
+import '../../../HomeScreens/presentation/widgets/appbarmatching.dart';
 import '../bloc/bloc/matching_bloc.dart';
 import '../bloc/state/matching_state.dart';
 import '../widgets/matching_card.dart';
@@ -132,8 +132,8 @@ class _MatchingPageState extends State<MatchingPage> {
                               carModel: ride.car.model,
                               totalSeats: ride.numOfSeats.toInt(),
                               filledSeats: ride.passengers.length,
-                              estimatedArrivalTime: DateFormat.jm().format(
-                                  DateTime.parse(ride.expectedArrivalTime)),
+                              estimatedArrivalTime: 
+                              DateFormat('yyyy-MM-dd').format(ride.expectedArrivalTime),
                               id: widget.rideRequestId,
                               carCompany: ride.car.company,
                               rideId: ride.id,
@@ -169,8 +169,10 @@ class _MatchingPageState extends State<MatchingPage> {
                               carModel: ride.car.model,
                               totalSeats: ride.numOfSeats.toInt(),
                               filledSeats: ride.passengers.length,
-                              estimatedArrivalTime: DateFormat.jm().format(
-                                  DateTime.parse(ride.expectedArrivalTime)),
+                              estimatedArrivalTime: 
+                              DateFormat('yyyy-MM-dd').format(ride.expectedArrivalTime),
+                              // DateFormat.jm().format(
+                              //     DateTime.parse(ride.expectedArrivalTime)),
                               id: widget.rideRequestId,
                               carCompany: ride.car.company,
                               rideId: ride.id,

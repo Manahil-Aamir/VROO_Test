@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
+import 'package:vroo_test/features/matching/data/models/matching_rides_model.dart';
 
 abstract class MatchingState extends Equatable {
   const MatchingState();
@@ -59,4 +59,29 @@ class RiderRequestError extends MatchingState {
 
   @override
   List<Object> get props => [error];
+}
+
+class RideRequestMatchesLoaded extends MatchingState {
+  final List<MatchingRideModel> matches;
+
+  const RideRequestMatchesLoaded({required this.matches});
+
+  @override
+  List<Object> get props => [matches];
+}
+
+// In matching_state.dart
+class MatchesLoading extends MatchingState {}
+
+class MatchesVisibilityToggled extends MatchingState {
+  final bool showMatches;
+  final List<MatchingRideModel> matches;
+
+  const MatchesVisibilityToggled({
+    required this.showMatches,
+    required this.matches,
+  });
+
+  @override
+  List<Object> get props => [showMatches, matches];
 }

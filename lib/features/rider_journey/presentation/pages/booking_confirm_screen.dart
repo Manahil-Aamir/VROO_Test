@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
+import 'package:vroo_test/features/matching/data/models/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import 'package:vroo_test/shared/widgets/booking_confirm_button.dart';
 

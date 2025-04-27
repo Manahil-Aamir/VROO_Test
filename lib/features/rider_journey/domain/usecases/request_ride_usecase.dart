@@ -1,4 +1,4 @@
-import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
+import 'package:vroo_test/features/matching/data/models/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/domain/repository/r3_repository.dart';
 
 class RequestRideUseCase {

@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/custom_dialog.dart';
-import '../../../../shared/widgets/dialog_button.dart';
 import '../../domain/entity/rider_pending_request_entity.dart';
+import 'cancel_button.dart';
 
 class PendingRequestCard extends StatelessWidget {
   final RiderPendingRequest request;
@@ -50,13 +50,17 @@ class PendingRequestCard extends StatelessWidget {
                 children: [
                   Expanded(child: _buildPreferences(textTheme)),
                   SizedBox(width: 6.h),
-                  _buildCancelButton(context),
+                  CancelButton(
+                    onCancel: () => _showCancelConfirmation(context),
+                  ),
                 ],
               ),
               if (!_hasPreferences) Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  _buildCancelButton(context),
+                  CancelButton(
+                    onCancel: () => _showCancelConfirmation(context),
+                  ),
                 ],
               ),
             ],
@@ -220,20 +224,6 @@ class PendingRequestCard extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildCancelButton(BuildContext context) {
-    return SizedBox(
-      height: 33.h,
-      child: DialogButton(
-        onTap: () {
-          _showCancelConfirmation(context);
-        },
-        text: 'Cancel',
-        color: ThemeColors.accentColor,
-      ),
-    );
-  }
-  
   void _showCancelConfirmation(BuildContext context) {
     showDialog(
       context: context,

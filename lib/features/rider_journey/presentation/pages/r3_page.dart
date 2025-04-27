@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
+import 'package:vroo_test/features/matching/data/models/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import 'package:vroo_test/features/rider_journey/presentation/bloc/bloc/r3_bloc.dart';
@@ -101,9 +101,11 @@ class _R3PageState extends State<R3Page> {
                     });
                   } else if (state is RideRequestSuccess) {
                     RideResponseModel response = state.response;
-                    final rideRequestId = response.rideRequestId;
+                    final rideRequestId = response.data.rideRequestId;
+                    print('success');                    
+                    print('Ride request ID: $rideRequestId');
                     final List<MatchingRideModel> matchingRides =
-                        response.matchingRides;
+                        response.data.matchingRides;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                           backgroundColor: theme.secondaryHeaderColor,

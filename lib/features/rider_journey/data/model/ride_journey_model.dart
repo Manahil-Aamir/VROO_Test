@@ -111,9 +111,9 @@ class RidePreferencesModel {
 
   factory RidePreferencesModel.fromJson(Map<String, dynamic> json) {
     return RidePreferencesModel(
-      maleOnly: json['maleOnly'],
-      femaleOnly: json['femaleOnly'],
-      canWalk: json['canWalk'],
+      maleOnly: json['maleOnly'],// as bool? ?? false,
+      femaleOnly: json['femaleOnly'],// as bool? ?? false,
+      canWalk: json['canWalk'] as bool? ?? false,
     );
   }
 

@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../../../../../core/utils/constant/api_constants.dart';
+import '../../../../core/utils/constant/api_constants.dart';
+import '../models/matching_rides_model.dart';
 
-class MatchingDataSource {
+class MatchingDataSourceImpl {
   final http.Client client;
   final String apiKey = "AIzaSyClFyao6GuHD2iaFLzxsz8kAmHUvTAWokI";
 
-  MatchingDataSource({required this.client});
+  MatchingDataSourceImpl({required this.client});
 
   Future<Map<String, dynamic>> sendJoinRequest(
       Map<String, String> rideData) async {
@@ -65,6 +66,39 @@ class MatchingDataSource {
       return data is List ? data : [];
     } else {
       throw Exception("Failed to send ride request");
+    }
+  }
+
+  // In matching_data_source.dart
+  Future<List<MatchingRideModel>> getRideRequestMatches(String rideRequestId, String token) async {
+    print('Fetching ride request matches for ID: $rideRequestId');
+    print('token: $token');
+    final url = Uri.parse('${ApiConstants.baseUrl}rider/ride-request/$rideRequestId/matches');
+    print(url);
+    final response = await client.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print('Response status for ride request matches: ${response.statusCode}');
+    print('Response body for ride request matches: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      final data = responseBody['data']['matches'];
+      
+      if (data is List) {
+        List<MatchingRideModel> dataList = data.map((rideJson) => MatchingRideModel.fromJson(rideJson)).toList();
+        print('successful map');
+        print(dataList);
+        return dataList;
+      }
+      throw Exception("Invalid data format - expected list of rides");
+    } else {
+      throw Exception("Failed to fetch ride request matches: ${response.statusCode}");
     }
   }
 }

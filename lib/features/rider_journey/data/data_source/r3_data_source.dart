@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
+import 'package:vroo_test/features/matching/data/models/matching_rides_model.dart';
 import '../../../../core/utils/constant/api_constants.dart';
 
 class R3DataSource {
@@ -25,10 +25,10 @@ class R3DataSource {
     }
   }
 
-  Future<RideResponseModel> sendRideRequest(
-    Map<String, dynamic> requestData) async {
-      print('Request Data: $requestData');
-      print('In Send Request Datasource');
+  Future<RideResponseModel> sendRideRequest(Map<String, dynamic> requestData) async {
+    print('Request Data: $requestData');
+    print('In Send Request Datasource');
+    print(jsonEncode(requestData));
     final url = Uri.parse(
       '${ApiConstants.baseUrl}rider/ride-request'
       // 'http://10.0.2.2:8080/rider/ride-request'

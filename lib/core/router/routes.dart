@@ -6,7 +6,7 @@ import 'package:vroo_test/features/authentication/presentation/pages/sign_in_pag
 import 'package:vroo_test/features/cars/presentation/pages/cars_screen.dart';
 import 'package:vroo_test/features/chat/domain/entity/chat_user.dart';
 import 'package:vroo_test/features/chat/presentation/pages/chat_detail_screen.dart';
-import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
+import 'package:vroo_test/features/matching/data/models/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import 'package:vroo_test/features/user_profile/presentation/pages/user_profile_page.dart';
 import 'package:vroo_test/features/sos/dependancy_injection/sos_di.dart';
@@ -36,8 +36,8 @@ import '../../features/driver_requests/dependency_injection/approve_rides_di.dar
 import '../../features/driver_requests/dependency_injection/pending_rides_di.dart';
 import '../../features/driver_requests/presentation/pages/active_rides_screen.dart';
 import '../../features/driver_requests/presentation/pages/ride_request_status.dart';
-import '../../features/matching/matching/dependency_injection/matching_di.dart';
-import '../../features/matching/matching/presentation/pages/matching_page.dart';
+import '../../features/matching/dependency_injection/matching_di.dart';
+import '../../features/matching/presentation/pages/matching_page.dart';
 import '../../features/rider_journey/dependancy_injection/r1_di.dart';
 import '../../features/rider_journey/dependancy_injection/r2_di.dart';
 import '../../features/rider_journey/dependancy_injection/r3_di.dart';
@@ -741,7 +741,8 @@ class Routes {
       case user_profile:
         return MaterialPageRoute(
             builder: (_) => MultiBlocProvider(
-                providers: UserProfileDi.init(), child: UserProfilePage()));
+                providers: UserProfileDi.init(), 
+                child: UserProfilePage()));
       case car:
         return MaterialPageRoute(
             builder: (_) => MultiBlocProvider(
@@ -754,8 +755,11 @@ class Routes {
       case rider_request_joins:
         final requestId = settings.arguments as String; 
         return MaterialPageRoute(
-          builder: (_) => MultiProvider(
-            providers: RideRequestJoinDi.init(), 
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              ...RideRequestJoinDi.init(),
+              ...MatchingDependencyInjection.init(),
+            ],
             child: RiderRequestJoinsPage(rideRequestId: requestId), 
           ),
         );

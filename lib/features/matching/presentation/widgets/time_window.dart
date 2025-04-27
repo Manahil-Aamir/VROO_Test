@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:vroo_test/features/matching/matching/presentation/widgets/time_change.dart';
+import 'package:vroo_test/features/matching/presentation/widgets/time_change.dart';
 
 import '../bloc/bloc/matching_bloc.dart';
 import '../bloc/event/matching_event.dart';

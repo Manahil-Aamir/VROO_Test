@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../shared/widgets/Appbar.dart';
+import '../../../matching/presentation/bloc/bloc/matching_bloc.dart';
+import '../../../matching/presentation/bloc/event/matching_event.dart';
+import '../../../matching/presentation/bloc/state/matching_state.dart';
+import '../../../matching/presentation/widgets/match_card.dart';
 import '../bloc/bloc/ride_request_join_bloc.dart';
 import '../bloc/events/ride_request_join_event.dart';
 import '../bloc/states/ride_request_join_state.dart';
@@ -21,75 +24,124 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
   @override
   void initState() {
     super.initState();
-    print('request id: ${widget.rideRequestId}');
-    // Dispatch the fetch event immediately when page opens
     context.read<RideRequestJoinBloc>().add(
       FetchPendingRideRequestJoins(widget.rideRequestId),
     );
+  }
+
+  void _fetchMatches(BuildContext context) {
+    final bloc = context.read<MatchingBloc>();
+    print('Before adding FetchRideRequestMatchesEvent');
+    
+    bloc.add(FetchRideRequestMatchesEvent(rideRequestId: widget.rideRequestId));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(heading: 'Join Requests'),
-      body: BlocBuilder<RideRequestJoinBloc, RideRequestJoinState>(
-        builder: (context, state) {
-          if (state is RideRequestJoinLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is RideRequestJoinLoaded) {
-            if (state.joins.isEmpty) {
-              return const Center(child: Text('No pending join requests'));
-            }
-            return ListView.builder(
-              itemCount: state.joins.length + 1,
-              itemBuilder: (context, index) {
-                if (index < state.joins.length) {
-                  final join = state.joins[index];
-                  return PendingJoinCard(joinRequest: join);
-                } else {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                     mainAxisAlignment: MainAxisAlignment.center,
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<RideRequestJoinBloc, RideRequestJoinState>(
+            listener: (context, state) {
+              if (state is RideRequestJoinError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.message)),
+                );
+              }
+            },
+          ),
+          BlocListener<MatchingBloc, MatchingState>(
+            listener: (context, state) {
+              if (state is RiderRequestError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.error)),
+                );
+              }
+            },
+          ),
+        ],
+        child: BlocBuilder<RideRequestJoinBloc, RideRequestJoinState>(
+          builder: (context, joinState) {
+            return BlocBuilder<MatchingBloc, MatchingState>(
+              builder: (context, matchState) {
+                if (joinState is RideRequestJoinLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (joinState is RideRequestJoinLoaded) {
+                  return ListView(
                     children: [
-                      Text(
-                        'Need to find more matches?',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+                      // Existing join requests
+                      if (joinState.joins.isNotEmpty)
+                        ...joinState.joins.map((join) => PendingJoinCard(joinRequest: join)).toList(),
+                      if (joinState.joins.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(child: Text('No pending join requests')),
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(width: 5.w),
-                      GestureDetector(
-                        onTap: () {
-                          // TODO: Add your functionality here
-                          print('Find more drivers clicked');
-                        },
-                        child: Text(
-                          'Find drivers',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
-                            color: Theme.of(context).primaryColor, 
-                            decorationColor: Theme.of(context).primaryColor, 
-                            decorationThickness: 2.w
-                          ),
-                          textAlign: TextAlign.center,
+
+                      // Find more drivers button
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () => _fetchMatches(context),
+                              child: Text(
+                                'Find more drivers',
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline,
+                                      color: Theme.of(context).primaryColor, 
+                                      decorationColor: Theme.of(context).primaryColor, 
+                                      decorationThickness: 2.w,
+                                    ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+
+                      // Matches section
+                      if (matchState is MatchesLoading)
+                        const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                      
+                      if (matchState is MatchesVisibilityToggled && matchState.showMatches)
+                        _buildMatchesSection(context, matchState),
+                      
+                      if (matchState is RideRequestMatchesLoaded)
+                        _buildMatchesSection(context, matchState),
                     ],
-                  ),
                   );
                 }
+
+                if (joinState is RideRequestJoinError) {
+                  return Center(child: Text('Error: ${joinState.message}'));
+                }
+
+                return const SizedBox();
               },
             );
-          } else if (state is RideRequestJoinError) {
-            return Center(child: Text('Error: ${state.message}'));
-          }
-          return const SizedBox();
-        },
+          },
+        ),
       ),
     );
   }
-}
+  
+  Widget _buildMatchesSection(BuildContext context, dynamic state) {
+    final matches = state is MatchesVisibilityToggled 
+        ? state.matches 
+        : (state as RideRequestMatchesLoaded).matches;
 
+    return Column(
+      children: [
+        ...matches.map((match) => RideMatchCard(match: match)).toList(),
+      ],
+    );
+  }
+}

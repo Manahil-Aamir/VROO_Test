@@ -27,3 +27,23 @@ class JoinRideRequestEvent extends MatchingEvent {
   @override
   List<Object> get props => [joinData];
 }
+
+class FetchRideRequestMatchesEvent extends MatchingEvent {
+  final String rideRequestId;
+  const FetchRideRequestMatchesEvent({required this.rideRequestId});
+
+  @override
+  List<Object> get props => [rideRequestId];
+}
+
+// In matching_event.dart
+class ToggleMatchesVisibility extends MatchingEvent {
+  final bool showMatches;
+
+  const ToggleMatchesVisibility({required this.showMatches});
+
+  @override
+  List<Object> get props => [showMatches];
+}
+
+
