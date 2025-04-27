@@ -139,6 +139,7 @@ class ActiveRidesDriverBloc
       emit(ActiveRidesDriverLoading());
       try {
         final rideData = await getRideData.call(event.rideId, token!);
+        print(rideData.passengers);
         emit(ActiveRideDataLoaded(rideData));
       } on Exception catch (e) {
         print('data issue$e');

@@ -32,32 +32,52 @@ class RidestartDataModel extends RidestartDataEntity {
   });
 
   factory RidestartDataModel.fromMap(Map<String, dynamic> map) {
+    print(map['passengers'].length);
     return RidestartDataModel(
       id: map['_id'],
       driverId: map['driverId'],
-      numOfSeats: map['numOfSeats'].toDouble(),
-      date: DateTime.parse(map['date']), //['date'],
+      numOfSeats: (map['numOfSeats'] ?? 0).toDouble(),
+      date: map['date'] != null ? DateTime.parse(map['date']) : DateTime.now(),
       source: AddressModel.fromMap(map['source']),
       destination: AddressModel.fromMap(map['destination']),
-      departureTime: DateTime.parse(map['departureTime']), //'departureTime'],
-      maxArrivalTime:
-          DateTime.parse(map['maxArrivalTime']), //['maxArrivalTime'],
-      distance: map['distance'].toDouble(),
-      duration: map['duration'].toDouble(),
+      departureTime: map['departureTime'] != null
+          ? DateTime.parse(map['departureTime'])
+          : DateTime.now(),
+      maxArrivalTime: map['maxArrivalTime'] != null
+          ? DateTime.parse(map['maxArrivalTime'])
+          : DateTime.now(),
+      distance:
+          map['distance'] != null ? (map['distance'] as num).toDouble() : 0.0,
+      duration:
+          map['duration'] != null ? (map['duration'] as num).toDouble() : 0.0,
       preferences: RidePreferencesModel.fromMap(map['preferences']),
-      isRecurring: map['isRecurring'],
+      isRecurring: map['isRecurring'] ?? false,
       car: CarDetailsModel.fromMap(map['car']),
-      recurringRides: List<dynamic>.from(map['recurringRides']),
-      paymentMethod: List<String>.from(map['paymentMethod']),
-      fare: map['fare'].toDouble(),
-      status: map['status'],
+      recurringRides: map['recurringRides'] != null
+          ? List<dynamic>.from(map['recurringRides'])
+          : [],
+      paymentMethod: map['paymentMethod'] != null
+          ? List<String>.from(map['paymentMethod'])
+          : [],
+      fare: map['fare'] != null ? (map['fare'] as num).toDouble() : 0.0,
+      status: map['status'] ?? '',
       environmentStats: EnvironmentStatsModel.fromMap(map['environmentStats']),
-      expectedArrivalTime:
-          DateTime.parse(map['expectedArrivalTime']), //['expectedArrivalTime'],
-      routeCoords: List<List<double>>.from(
-          map['routeCoords'].map((coords) => List<double>.from(coords))),
-      passengers: List<InridePassengerModel>.from(map['passengers']
-          .map((passenger) => InridePassengerModel.fromMap(passenger))),
+      expectedArrivalTime: map['expectedArrivalTime'] != null
+          ? DateTime.parse(map['expectedArrivalTime'])
+          : DateTime.now(),
+      routeCoords: map['routeCoords'] != null
+          ? List<List<double>>.from(
+              map['routeCoords'].map((coords) => List<double>.from(coords)))
+          : [],
+      passengers: (map['passengers'] != null &&
+              map['passengers'] is List &&
+              map['passengers'].any((p) => p != null && p.isNotEmpty))
+          ? List<InridePassengerModel>.from(
+              map['passengers']
+                  .where((p) => p != null && p.isNotEmpty)
+                  .map((passenger) => InridePassengerModel.fromMap(passenger)),
+            )
+          : [],
     );
   }
 

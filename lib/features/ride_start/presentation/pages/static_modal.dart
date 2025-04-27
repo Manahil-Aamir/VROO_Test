@@ -124,7 +124,7 @@ class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
                 StatItem(
                   icon: Icons.person,
                   value:
-                      '${widget.rideData.passengers.length}/${widget.rideData.numOfSeats.toInt()}',
+                      '${widget.rideData.passengers.length}/${widget.rideData.numOfSeats.toInt() + widget.rideData.passengers.length}',
                   label: 'Passengers',
                 ),
                 StatItem(

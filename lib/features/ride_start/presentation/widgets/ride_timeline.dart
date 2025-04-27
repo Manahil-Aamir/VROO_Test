@@ -14,7 +14,7 @@ class RideTimeline extends StatelessWidget {
       children: [
         // Continuous vertical line
         Positioned(
-          left: 86.w, // Centered in timeline column
+          left: 46.w, // Centered in timeline column
           top: 18.h, // Start from the center of first icon
           bottom: 90.h, // End at the center of last icon
           width: 4.w,
@@ -33,7 +33,7 @@ class RideTimeline extends StatelessWidget {
 
                         // Icon on top of the line
                         Positioned(
-                          left: 70.w,
+                          left: 30.w,
                           top: 0,
                           child: Container(
                             width: 36.w,

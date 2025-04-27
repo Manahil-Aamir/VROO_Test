@@ -64,7 +64,7 @@ class ActiveRidesDriverRemoteDataSource implements ActiveRidesDriverDataSource {
 
   @override
   Future<RidestartDataModel> getRideData(String rideId, String token) async {
-    final url = Uri.parse('${ApiConstants.baseUrl}driver/ride/data/$rideId');
+    final url = Uri.parse('http://10.0.2.2:8080/driver/ride/data/$rideId');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -73,6 +73,12 @@ class ActiveRidesDriverRemoteDataSource implements ActiveRidesDriverDataSource {
 
     try {
       final response = await client.get(url, headers: headers);
+      final jsonData = json.decode(response.body);
+      jsonData.forEach((key, value) {
+        if (value == null) {
+          print('Null value found for key: $key');
+        }
+      });
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);

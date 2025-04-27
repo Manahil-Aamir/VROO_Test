@@ -48,11 +48,11 @@ class TimelineItem extends StatelessWidget {
             children: [
               // Time column
               SizedBox(
-                width: 80.w,
+                width: 40.w,
                 child: Text(
                   time,
-                  style: theme.textTheme.bodyMedium
-                      ?.copyWith(color: theme.primaryColor),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w600, color: theme.primaryColor),
                 ),
               ),
 
@@ -69,9 +69,9 @@ class TimelineItem extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.canvasColor,
-                          ),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.canvasColor,
+                              fontWeight: FontWeight.w600),
                         ),
                         Spacer(),
                         if (fare != null)

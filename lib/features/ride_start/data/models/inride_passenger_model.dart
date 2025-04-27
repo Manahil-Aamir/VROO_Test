@@ -32,7 +32,7 @@ class InridePassengerModel extends InridePassengerEntity {
     return InridePassengerModel(
       riderId: map['riderId'] ?? '',
       status: map['status'] ?? '',
-      fare: (map['fare'] as num).toDouble(),
+      fare: (map['fare'] != null ? (map['fare'] as num).toDouble() : 0.0),
       rideRequestId: map['rideRequestId'] ?? '',
       eta: DateTime.parse(map['eta']), //map['eta'],
       rideRequest: RiderModel.fromMap(map['rideRequest']),

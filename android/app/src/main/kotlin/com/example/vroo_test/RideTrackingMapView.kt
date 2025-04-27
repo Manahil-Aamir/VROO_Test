@@ -339,12 +339,14 @@ class RideTrackingMapView(
                 val dropoffLat = passengerMap["dropoffLat"]
                 val dropoffLng = passengerMap["dropoffLng"]
                 
-                if (dropoffCoords is List<*>) {
+                if(sameSource){
+                    if (dropoffCoords is List<*>) {
                     dropoffPoints.add(PickupDropoffPoint(LatLng(dropoffCoords[0] as Double, dropoffCoords[1] as Double), name, false))
                     Log.d("MapDebug", "Dropoff from list: ${dropoffCoords[0]}, ${dropoffCoords[1]} - Passenger: $name")
                 } else if (dropoffLat != null && dropoffLng != null) {
                     dropoffPoints.add(PickupDropoffPoint(LatLng(dropoffLat as Double, dropoffLng as Double), name, false))
                     Log.d("MapDebug", "Dropoff from lat/lng: $dropoffLat, $dropoffLng - Passenger: $name")
+                }
                 }
             }
             

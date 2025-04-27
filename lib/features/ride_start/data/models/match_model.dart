@@ -24,8 +24,8 @@ class MatchModel extends MatchEntity {
   factory MatchModel.fromMap(Map<String, dynamic> map) {
     return MatchModel(
       rideId: map['rideId'] ?? '',
-      detourDistance: map['detourDistance'].toDouble() ?? 0,
-      detourDuration: map['detourDuration'].toDouble() ?? 0,
+      detourDistance: (map['detourDistance'] as num?)?.toDouble() ?? 0.0,
+      detourDuration: (map['detourDuration'] as num?)?.toDouble() ?? 0.0,
       fare: (map['fare'] as num?)?.toDouble() ?? 0.0,
       eta: DateTime.parse(map['eta']),
       sameSource: map['sameSource'] ?? false,
