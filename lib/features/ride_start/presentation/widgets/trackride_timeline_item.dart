@@ -1,23 +1,24 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vroo_test/features/ride_start/presentation/widgets/start_button.dart';
-import 'package:vroo_test/shared/widgets/dialog_button.dart';
+import 'dart:ui';
 
-import '../../../../core/router/navigation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../../shared/widgets/custom_dialog.dart';
 import '../../data/models/ridestart_data_model.dart';
 
-class TimelineItem extends StatelessWidget {
+class TrackRideTimelineItem extends StatelessWidget {
   final String time;
   final String title;
   final String address;
   final double? fare;
   final bool isSource;
   final bool isDestination;
+  final bool isPassenger;
+  final bool isConfirmed;
   final RidestartDataModel rideData;
+  final Function()? onConfirm;
 
-  const TimelineItem({
+  const TrackRideTimelineItem({
     super.key,
     required this.time,
     required this.title,
@@ -25,7 +26,10 @@ class TimelineItem extends StatelessWidget {
     this.fare,
     this.isSource = false,
     this.isDestination = false,
+    this.isPassenger = false,
+    this.isConfirmed = false,
     required this.rideData,
+    this.onConfirm,
   });
 
   @override
@@ -33,17 +37,17 @@ class TimelineItem extends StatelessWidget {
     final theme = Theme.of(context);
     final primaryColor = theme.primaryColor;
 
-    // Determine icon and colors based on type
+    // Determine icon and colors based on type and confirmation status
     IconData iconData;
-    Color iconColor = theme.primaryColor;
-    Color bgColor = theme.primaryColor.withOpacity(0.2);
 
     if (isSource) {
       iconData = Icons.location_on;
     } else if (isDestination) {
       iconData = Icons.flag;
+    } else if (isConfirmed) {
+      iconData = Icons.check_circle; // Tick icon when confirmed
     } else {
-      iconData = Icons.person;
+      iconData = Icons.account_circle; // Different passenger icon
     }
 
     return Stack(
@@ -84,46 +88,73 @@ class TimelineItem extends StatelessWidget {
                                   color: theme.canvasColor,
                                   fontWeight: FontWeight.w600),
                             ),
-                            if (title.toLowerCase() == 'source')
+                            if (!isSource && !isDestination && !isConfirmed)
                               Padding(
                                 padding: EdgeInsets.only(left: 8.w),
-                                child: StartButton(
-                                  onTap: () {
+                                child: TextButton(
+                                  onPressed: () {
                                     showDialog(
                                       context: context,
                                       builder: (context) => CustomDialog(
-                                        title: 'Start Ride',
+                                        title: 'Confirm Pickup',
                                         message:
-                                            'Do you want to start your ride?',
+                                            'Do you want to confirm pickup for this passenger?',
                                         confirmText: 'Confirm',
                                         cancelText: 'Cancel',
                                         confirmColor: theme.primaryColor,
                                         cancelColor: theme.primaryColorDark,
                                         onConfirm: () {
-                                          print("Start Ride Button Pressed");
-                                          print(rideData.id);
-                                          context.read<Navigation>().navigateTo(
-                                            '/ride_tracking',
-                                            arguments: {
-                                              'rideId': rideData.id,
-                                            },
-                                          );
+                                          Navigator.of(context).pop();
+                                          if (onConfirm != null) {
+                                            onConfirm!();
+                                          }
                                         },
                                         onCancel: () {
-                                          // Handle cancel action
                                           Navigator.of(context).pop();
                                         },
                                       ),
                                     );
                                   },
-                                  text: 'Start Ride',
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: theme.primaryColor,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12.w, vertical: 4.h),
+                                    minimumSize: Size(80.w, 24.h),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4.r),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Confirm',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
                               ),
                           ],
                         ),
                         Spacer(),
+                      ],
+                    ),
+                    SizedBox(height: 4.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            address,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.grey.shade400,
+                            ),
+                          ),
+                        ),
                         if (fare != null)
                           Container(
+                            margin: EdgeInsets.only(left: 8.w),
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8.w, vertical: 2.h),
                             decoration: BoxDecoration(
@@ -138,14 +169,6 @@ class TimelineItem extends StatelessWidget {
                             ),
                           ),
                       ],
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      address,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: Colors.grey.shade400,
-                      ),
                     ),
                   ],
                 ),

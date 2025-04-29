@@ -12,6 +12,10 @@ class InridePassengerModel extends InridePassengerEntity {
     required super.eta,
     required super.rideRequest,
     required super.riderName,
+    super.review,
+    super.sameSource,
+    super.sameDestination,
+    super.fcmToken,
   });
 
   // Convert model to map
@@ -24,6 +28,10 @@ class InridePassengerModel extends InridePassengerEntity {
       'eta': eta,
       'rideRequest': rideRequest.toMap(),
       'riderName': riderName,
+      'review': review ?? '',
+      'sameSource': sameSource ?? false,
+      'sameDestination': sameDestination ?? false,
+      'fcmToken': fcmToken ?? '',
     };
   }
 

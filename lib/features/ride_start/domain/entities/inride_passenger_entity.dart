@@ -9,6 +9,10 @@ class InridePassengerEntity {
   final String rideRequestId;
   final RiderModel rideRequest;
   final String riderName;
+  final String? review;
+  final bool? sameSource;
+  final bool? sameDestination;
+  final String? fcmToken;
 
   InridePassengerEntity({
     required this.riderId,
@@ -18,5 +22,9 @@ class InridePassengerEntity {
     required this.eta,
     required this.rideRequest,
     required this.riderName,
+    this.review,
+    this.sameSource,
+    this.sameDestination,
+    this.fcmToken,
   });
 }

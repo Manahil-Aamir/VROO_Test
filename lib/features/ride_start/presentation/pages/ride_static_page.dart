@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vroo_test/features/ride_start/data/models/inride_passenger_model.dart';
 
 import '../../../../core/router/navigation.dart';
+import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../../data/models/ridestart_data_model.dart';
 import 'ride_tracking_page.dart';
@@ -69,6 +70,7 @@ class _RideTrackingPageState extends State<RideTrackingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -90,22 +92,26 @@ class _RideTrackingPageState extends State<RideTrackingPage> {
               },
               creationParamsCodec: const StandardMessageCodec(),
               onPlatformViewCreated: (int id) {
-                _initMap(); // ✅ Trigger map initialization here
+                _initMap();
               },
             ),
           ),
 
-          GradientButton(
-            onTap: () {
-              print("Start Ride Button Pressed");
-              context.read<Navigation>().navigateTo(
-                '/ride_tracking',
-                arguments: {
-                  'rideData': widget.rideData,
-                },
-              );
-            },
-            text: ('Start Ride'),
+          Positioned(
+            top: 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back,
+                      color: ThemeColors.primaryColorDark),
+                  onPressed: () {
+                    print('Back button pressed');
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
           ),
 
           // Bottom sheet overlay

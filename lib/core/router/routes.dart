@@ -6,6 +6,7 @@ import 'package:vroo_test/features/authentication/presentation/pages/sign_in_pag
 import 'package:vroo_test/features/cars/presentation/pages/cars_screen.dart';
 import 'package:vroo_test/features/chat/domain/entity/chat_user.dart';
 import 'package:vroo_test/features/chat/presentation/pages/chat_detail_screen.dart';
+import 'package:vroo_test/features/ride_start/dependancy_injection/ridestart_di.dart';
 import 'package:vroo_test/features/ride_start/presentation/pages/ride_static_page.dart';
 import 'package:vroo_test/features/ride_start/presentation/pages/ride_tracking_page.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
@@ -762,9 +763,11 @@ class Routes {
         );
       case ride_tracking:
         final arguments = settings.arguments as Map<String, dynamic>;
-        final rideData = arguments['rideData'] as RidestartDataModel;
+        final id = arguments['rideId'] as String;
         return MaterialPageRoute(
-          builder: (_) => RideTrackingScreen(rideData: rideData),
+          builder: (_) => MultiProvider(
+              providers: RideStartDependencyInjection.init(),
+              child: RideTrackingScreen(rideId: id)),
         );
       default:
         return MaterialPageRoute(

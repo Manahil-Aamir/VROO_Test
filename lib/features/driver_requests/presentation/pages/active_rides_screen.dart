@@ -29,6 +29,13 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
     context.read<ActiveRidesDriverBloc>().add(FetchActiveRidesDriver());
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // This will be called every time the screen becomes visible again
+    context.read<ActiveRidesDriverBloc>().add(FetchActiveRidesDriver());
+  }
+
   // Function to show date picker
   Future<void> _selectDate(BuildContext context, DateTime? initialDate) async {
     final DateTime? picked = await showDatePicker(

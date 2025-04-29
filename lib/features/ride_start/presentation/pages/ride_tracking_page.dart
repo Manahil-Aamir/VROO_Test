@@ -1,10 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:vroo_test/features/ride_start/data/models/ridestart_data_model.dart';
+import 'package:vroo_test/features/ride_start/presentation/pages/static_modal.dart';
+import 'package:vroo_test/features/ride_start/presentation/pages/tracking_modal.dart';
 import '../../data/data_source/driver_tracker.dart';
 import '../../data/models/inride_passenger_model.dart';
+import '../bloc/bloc/ridestart_bloc.dart';
+import '../bloc/event/ridestart_event.dart';
+import '../bloc/state/ridestart_state.dart';
 
 class LocationServiceMonitor {
   final VoidCallback onEnabled;
@@ -30,9 +37,9 @@ class LocationServiceMonitor {
 }
 
 class RideTrackingScreen extends StatefulWidget {
-  final RidestartDataModel rideData;
+  final String rideId;
 
-  const RideTrackingScreen({super.key, required this.rideData});
+  const RideTrackingScreen({super.key, required this.rideId});
 
   @override
   State<RideTrackingScreen> createState() => _RideTrackingScreenState();
@@ -50,6 +57,8 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
   bool _isLoading = true;
   String? _errorMessage;
   int? _mapViewId;
+  RidestartDataModel? _rideData;
+  bool _isRideTrackerInitialized = false;
 
   @override
   void initState() {
@@ -59,19 +68,26 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
       onEnabled: _resumeTrackingAutomatically,
     );
     _locationMonitor.startMonitoring();
-    _initializeApp();
+
+    // Initialize ride by triggering the bloc event with ride ID
+    context.read<RideStartBloc>().add(InitializeRideEvent(widget.rideId));
   }
 
   @override
   void dispose() {
     _locationMonitor.stopMonitoring();
     WidgetsBinding.instance.removeObserver(this);
-    _rideTracker.dispose();
+    if (_isRideTrackerInitialized) {
+      _rideTracker.dispose();
+    }
     super.dispose();
   }
 
   Future<void> _resumeTrackingAutomatically() async {
-    if (!_isTracking && mounted) {
+    if (!_isTracking &&
+        mounted &&
+        _rideData != null &&
+        _isRideTrackerInitialized) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Location enabled - resuming tracking'),
@@ -83,43 +99,27 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
     }
   }
 
-  Future<void> _openLocationSettings() async {
-    try {
-      final opened = await Geolocator.openLocationSettings();
-      if (!opened && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not open location settings'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
-  Future<void> _initializeApp() async {
+  Future<void> _initializeApp(RidestartDataModel rideData) async {
     try {
       setState(() {
         _isLoading = true;
         _errorMessage = null;
+        _rideData = rideData;
       });
 
-      _rideTracker = RealTimeRideTracker(rideId: widget.rideData.id);
+      _rideTracker = RealTimeRideTracker(rideId: rideData.id);
       await _rideTracker.initialize();
       await _rideTracker.loadHistoricalRouteData();
 
       setState(() {
+        _isRideTrackerInitialized = true;
         _isLoading = false;
       });
+
+      // Start tracking automatically after initialization
+      if (mounted) {
+        _toggleTracking();
+      }
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -129,8 +129,15 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
   }
 
   Future<void> _initializeMap(int viewId) async {
+    if (_rideData == null) {
+      setState(() {
+        _errorMessage = 'Cannot initialize map: Ride data is not available';
+      });
+      return;
+    }
+
     try {
-      final passengers = widget.rideData.passengers.map((passenger) {
+      final passengers = _rideData!.passengers.map((passenger) {
         final p = passenger;
         return {
           'id': p.riderId,
@@ -146,12 +153,12 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
       await _mapChannel.invokeMethod('initializeMap', {
         'viewId': viewId,
         'source': {
-          'lat': widget.rideData.source.coords[0],
-          'lng': widget.rideData.source.coords[1],
+          'lat': _rideData!.source.coords[0],
+          'lng': _rideData!.source.coords[1],
         },
         'destination': {
-          'lat': widget.rideData.destination.coords[0],
-          'lng': widget.rideData.destination.coords[1],
+          'lat': _rideData!.destination.coords[0],
+          'lng': _rideData!.destination.coords[1],
         },
         'routeCoords': [],
         'passengers': passengers,
@@ -167,13 +174,25 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
   }
 
   Future<void> _toggleTracking() async {
-    final servicesEnabled = await Geolocator.isLocationServiceEnabled();
+    if (_rideData == null || !_isRideTrackerInitialized) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cannot toggle tracking: Ride tracker not initialized'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
 
-    if (!servicesEnabled) {
+    final servicesEnabled = await Geolocator.isLocationServiceEnabled();
+    final permission = await Geolocator.checkPermission();
+
+    if (!servicesEnabled || permission == LocationPermission.denied) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Please enable location services to track'),
+            content: Text('Please enable location services and permissions'),
             backgroundColor: Colors.red,
             duration: Duration(seconds: 3),
           ),
@@ -203,6 +222,8 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
   }
 
   Future<void> _endRide() async {
+    if (!_isRideTrackerInitialized) return;
+
     try {
       await _rideTracker.stopTracking();
       if (!mounted) return;
@@ -217,71 +238,136 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Active Ride'),
-        actions: [
-          if (_isMapReady)
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () => _mapChannel
-                  .invokeMethod('fitRouteToScreen', {'viewId': _mapViewId}),
-            ),
-        ],
-      ),
-      body: _buildContent(),
-      floatingActionButton: _isMapReady
-          ? FloatingActionButton(
-              onPressed: () => _mapChannel
-                  .invokeMethod('centerOnVehicle', {'viewId': _mapViewId}),
-              child: const Icon(Icons.my_location),
-            )
-          : null,
+    return BlocConsumer<RideStartBloc, RideStartState>(
+      listener: (context, state) {
+        if (state is RideStartSuccess) {
+          print('Ride started successfully: ${state.rideData}');
+          _initializeApp(state.rideData);
+        } else if (state is RideStartFailure) {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = state.errorMessage;
+          });
+        }
+      },
+      builder: (context, state) {
+        final theme = Theme.of(context);
+
+        return Scaffold(
+          body: Stack(
+            children: [
+              _buildContent(state),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.w),
+                  child: SafeArea(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back,
+                              color: theme.primaryColorDark),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        if (_isMapReady && _mapViewId != null)
+                          IconButton(
+                            icon: Icon(Icons.refresh,
+                                color: theme.primaryColorDark),
+                            onPressed: () => _mapChannel.invokeMethod(
+                                'fitRouteToScreen', {'viewId': _mapViewId}),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              if (_rideData != null && _isRideTrackerInitialized && !_isLoading)
+                Positioned(
+                  top: 30.h + MediaQuery.of(context).padding.top,
+                  left: 75.w,
+                  right: 75.w,
+                  child: SizedBox(
+                    width: 50.w,
+                    child: ElevatedButton.icon(
+                      onPressed: _toggleTracking,
+                      icon: _isTracking
+                          ? const Icon(Icons.stop)
+                          : const Icon(Icons.play_arrow),
+                      label: Text(_isTracking ? 'End Ride' : 'Resume Ride'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            _isTracking ? Colors.red : Colors.green,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              if (_isTracking && _rideData != null)
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: TrackingRideDetailsBottomSheet(
+                    rideData: _rideData!,
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildContent() {
-    if (_isLoading) {
+  Widget _buildContent(RideStartState state) {
+    if (state is RideStartLoading || _isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_errorMessage != null) {
+    if (state is RideStartFailure || _errorMessage != null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _initializeApp,
-              child: const Text('Retry Initialization'),
+            Text(
+              _errorMessage ?? (state as RideStartFailure).errorMessage,
+              style: const TextStyle(color: Colors.red),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       );
     }
 
-    return Column(
-      children: [
-        Expanded(
-          child: Stack(
-            children: [
-              _buildMapView(),
-              if (_isMapReady) _buildMapControls(),
-            ],
+    if (_rideData != null) {
+      return Column(
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                _buildMapView(),
+                if (_isMapReady) _buildMapControls(),
+              ],
+            ),
           ),
-        ),
-        _buildRideControls(),
-      ],
-    );
+        ],
+      );
+    }
+
+    return const Center(child: Text('Waiting for ride data...'));
   }
 
   Widget _buildMapView() {
+    if (_rideData == null) return const SizedBox.shrink();
+
     return AndroidView(
       viewType: 'ride_tracking_map',
       creationParams: <String, dynamic>{
-        'initialLat': widget.rideData.source.coords[0],
-        'initialLng': widget.rideData.source.coords[1],
+        'initialLat': _rideData!.source.coords[0],
+        'initialLng': _rideData!.source.coords[1],
       },
       creationParamsCodec: const StandardMessageCodec(),
       onPlatformViewCreated: (int id) {
@@ -293,78 +379,38 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
 
   Widget _buildMapControls() {
     return Positioned(
-      top: 16,
+      top: 150.h,
       right: 16,
       child: Column(
         children: [
           _buildMapButton(
             Icons.add,
-            () => _mapChannel.invokeMethod('zoomIn', {'viewId': _mapViewId}),
+            () => _mapViewId != null
+                ? _mapChannel.invokeMethod('zoomIn', {'viewId': _mapViewId})
+                : null,
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           _buildMapButton(
             Icons.remove,
-            () => _mapChannel.invokeMethod('zoomOut', {'viewId': _mapViewId}),
+            () => _mapViewId != null
+                ? _mapChannel.invokeMethod('zoomOut', {'viewId': _mapViewId})
+                : null,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMapButton(IconData icon, VoidCallback onPressed) {
+  Widget _buildMapButton(IconData icon, VoidCallback? onPressed) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(4),
       ),
-      child: IconButton(icon: Icon(icon), onPressed: onPressed),
-    );
-  }
-
-  Widget _buildRideControls() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          if (!_isTracking)
-            ElevatedButton(
-              onPressed: _openLocationSettings,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text('Enable Location Services'),
-            ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              if (_isTracking)
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _endRide,
-                    icon: const Icon(Icons.stop),
-                    label: const Text('End Ride'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                )
-              else
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _toggleTracking,
-                    icon: const Icon(Icons.play_arrow),
-                    label: const Text('Resume Ride'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ],
+      child: IconButton(
+        icon: Icon(icon),
+        onPressed: onPressed,
+        disabledColor: Colors.grey,
       ),
     );
   }

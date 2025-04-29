@@ -49,6 +49,10 @@ class RideTrackingMapView(
     
     // Car bitmap for marker
     private var carBitmap: BitmapDescriptor? = null
+    
+    // Flag to prevent auto-zooming on first vehicle appearance
+    private var isFirstVehicleUpdate = true
+    private var shouldFocusOnVehicle = false
 
     init {
         Log.d("MapDebug", "RideTrackingMapView initialized")
@@ -110,12 +114,14 @@ class RideTrackingMapView(
 
             "centerOnVehicle" -> {
                 vehiclePosition?.let {
+                    shouldFocusOnVehicle = true
                     googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 17f))
                 }
                 result.success(null)
             }
 
             "centerOnUserLocation" -> {
+                shouldFocusOnVehicle = false
                 // Center on the provided coordinates initially
                 val initialLatLng = LatLng(24.9412, 67.1139)
                 googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(initialLatLng, 15f))
@@ -133,6 +139,7 @@ class RideTrackingMapView(
             }
 
             "fitRouteToScreen" -> {
+                shouldFocusOnVehicle = false
                 zoomToShowAllPoints()
                 result.success(null)
             }
@@ -209,11 +216,27 @@ class RideTrackingMapView(
             handler.post {
                 vehicleMarker = googleMap?.addMarker(markerOptions)
                 Log.d("MapDebug", "Vehicle marker created at ${position.latitude}, ${position.longitude}")
+                
+                // If it's the first vehicle update, don't auto-focus on it
+                // This prevents the initial extreme zoom-in
+                if (isFirstVehicleUpdate) {
+                    isFirstVehicleUpdate = false
+                    // Instead of focusing on vehicle, maintain the current zoom level or fit all points
+                    zoomToShowAllPoints()
+                } else if (shouldFocusOnVehicle) {
+                    // Only focus on vehicle if explicitly told to do so
+                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 17f))
+                }
             }
         } else {
             // Animate the marker movement
             handler.post {
                 animateMarkerToPosition(position, heading)
+                
+                // Only follow the vehicle with the camera if explicitly told to do so
+                if (shouldFocusOnVehicle) {
+                    googleMap?.animateCamera(CameraUpdateFactory.newLatLng(position))
+                }
             }
         }
         
@@ -354,6 +377,10 @@ class RideTrackingMapView(
                     "Route points: ${routePoints.size}, Pickup points: ${pickupPoints.size}, " +
                     "Dropoff points: ${dropoffPoints.size}")
             
+            // Reset tracking flags when new map data is loaded
+            isFirstVehicleUpdate = true
+            shouldFocusOnVehicle = false
+            
             mapView.post {
                 googleMap?.let { drawMapElements() }
             }
@@ -391,17 +418,17 @@ class RideTrackingMapView(
             }
             
             // Initialize vehicle marker at the starting point if available
-        if (vehiclePosition != null) {
-            // Recreate vehicle marker after clearing the map
-            val markerOptions = MarkerOptions()
-                .position(vehiclePosition!!)
-                .flat(true)
-                .anchor(0.5f, 0.5f)
-                .rotation(vehicleBearing)
-                .icon(carBitmap ?: BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                
-            vehicleMarker = googleMap?.addMarker(markerOptions)
-        }
+            if (vehiclePosition != null) {
+                // Recreate vehicle marker after clearing the map
+                val markerOptions = MarkerOptions()
+                    .position(vehiclePosition!!)
+                    .flat(true)
+                    .anchor(0.5f, 0.5f)
+                    .rotation(vehicleBearing)
+                    .icon(carBitmap ?: BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    
+                vehicleMarker = googleMap?.addMarker(markerOptions)
+            }
 
             // Zoom to show all points
             mapView.post {

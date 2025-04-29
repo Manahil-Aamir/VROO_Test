@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:vroo_test/features/ride_start/data/models/ride_start_model.dart';
 
 import '../../../../core/utils/constant/api_constants.dart';
 import '../../../ride_start/data/models/ridestart_data_model.dart';
@@ -64,7 +63,7 @@ class ActiveRidesDriverRemoteDataSource implements ActiveRidesDriverDataSource {
 
   @override
   Future<RidestartDataModel> getRideData(String rideId, String token) async {
-    final url = Uri.parse('http://10.0.2.2:8080/driver/ride/data/$rideId');
+    final url = Uri.parse('${ApiConstants.baseUrl}driver/ride/data/$rideId');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',

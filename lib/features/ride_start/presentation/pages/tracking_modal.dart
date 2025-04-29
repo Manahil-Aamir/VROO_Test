@@ -3,22 +3,26 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:vroo_test/features/ride_start/data/models/ridestart_data_model.dart';
 import 'package:vroo_test/features/ride_start/presentation/widgets/timeline_item.dart';
+import 'package:vroo_test/features/ride_start/presentation/widgets/trackride_timeline.dart';
+import 'package:vroo_test/features/ride_start/presentation/widgets/trackride_timeline_item.dart';
 
 import '../widgets/ride_timeline.dart';
 import '../widgets/stat_item.dart';
 
-class RideDetailsBottomSheet extends StatefulWidget {
+class TrackingRideDetailsBottomSheet extends StatefulWidget {
   final RidestartDataModel rideData;
-  const RideDetailsBottomSheet({
+  const TrackingRideDetailsBottomSheet({
     super.key,
     required this.rideData,
   });
 
   @override
-  State<RideDetailsBottomSheet> createState() => _RideDetailsBottomSheetState();
+  State<TrackingRideDetailsBottomSheet> createState() =>
+      _TrackingRideDetailsBottomSheetState();
 }
 
-class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
+class _TrackingRideDetailsBottomSheetState
+    extends State<TrackingRideDetailsBottomSheet> {
   bool _isExpanded = false;
 
   @override
@@ -146,9 +150,9 @@ class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
           // Ride Timeline
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: RideTimeline(
+            child: TrackingRideTimeline(
               items: [
-                TimelineItem(
+                TrackRideTimelineItem(
                   time: DateFormat('h:mm a')
                       .format(widget.rideData.departureTime),
                   title: 'Source',
@@ -162,7 +166,7 @@ class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
                   final isSameSource =
                       p.rideRequest.matches.any((match) => match.sameSource);
 
-                  return TimelineItem(
+                  return TrackRideTimelineItem(
                     time: DateFormat('h:mm a').format(p.eta),
                     title: isSameSource
                         ? 'Drop Off ${p.riderName}'
@@ -176,7 +180,7 @@ class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
                     rideData: widget.rideData,
                   );
                 }),
-                TimelineItem(
+                TrackRideTimelineItem(
                   time: DateFormat('h:mm a')
                       .format(widget.rideData.expectedArrivalTime),
                   title: 'Final Destination',
