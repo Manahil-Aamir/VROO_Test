@@ -55,13 +55,10 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
       appBar: appBar(heading: 'Join Requests'),
       body: MultiBlocListener(
         listeners: [
-          // Listen for successful join events and refresh the pending joins list
           BlocListener<MatchingBloc, MatchingState>(
             listener: (context, state) {
               if (state is RiderJoinSuccess) {
-                // Refresh the pending joins list
                 _loadPendingJoins();
-                // Show success message
                 _showJoinSuccessSnackBar(context);
               }
             },
@@ -71,21 +68,6 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
           builder: (context, joinState) {
             return BlocBuilder<MatchingBloc, MatchingState>(
               builder: (context, matchState) {
-                // 🔵 Handle join request loading
-                if (matchState is RiderJoinLoading) {
-                  return Stack(
-                    children: [
-                      _buildMainContent(joinState, matchState, context),
-                      Container(
-                        color: Colors.black.withOpacity(0.3),
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    ],
-                  );
-                }
-                
                 return _buildMainContent(joinState, matchState, context);
               },
             );
@@ -96,12 +78,10 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
   }
 
   Widget _buildMainContent(RideRequestJoinState joinState, MatchingState matchState, BuildContext context) {
-    // 🔵 Handle loading
     if (joinState is RideRequestJoinLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // 🔴 Handle error with an image
     if (joinState is RideRequestJoinError) {
       return Center(
         child: Column(
@@ -124,11 +104,9 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
       );
     }
 
-    // ✅ Handle loaded data
     if (joinState is RideRequestJoinLoaded) {
       return ListView(
         children: [
-          // Existing pending join requests
           if (joinState.joins.isNotEmpty)
             ...joinState.joins.map((join) => PendingJoinCard(joinRequest: join)).toList(),
 
@@ -138,7 +116,6 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
               child: Center(child: Text('No pending join requests')),
             ),
 
-          // Find more drivers button
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -161,23 +138,28 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
             ),
           ),
 
-          // Loading indicator while fetching matches
           if (matchState is MatchesLoading)
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.2,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
+            const Center(child: CircularProgressIndicator()),
 
-          // Show Matches if loaded
           if (matchState is MatchesVisibilityToggled && matchState.showMatches)
             _buildMatchesSection(context, matchState),
 
           if (matchState is RideRequestMatchesLoaded)
             _buildMatchesSection(context, matchState),
 
-          // 🔴 Also show error for MatchingBloc (if needed)
+          if ((matchState is RideRequestMatchesLoaded && matchState.matches.isEmpty) ||
+              (matchState is MatchesVisibilityToggled && matchState.matches.isEmpty))
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Center(
+                child: Text(
+                  'No matches available right now,\n' 
+                  'please try again later',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+
           if (matchState is RiderRequestError)
             Center(
               child: Column(

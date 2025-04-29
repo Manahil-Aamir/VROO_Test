@@ -22,4 +22,9 @@ class RideRequestJoinRepositoryImpl implements RideRequestJoinRepository {
     final models = await remoteDatasource.getPendingRideRequestJoins(await getUserToken(), RideRequestId);
     return models.map((model) => model.toEntity()).toList();
   }
+
+  @override
+  Future<void> cancelJoinRequest(String joinRequestId) async {
+    await remoteDatasource.cancelJoinRequest(await getUserToken(), joinRequestId);
+  }
 }

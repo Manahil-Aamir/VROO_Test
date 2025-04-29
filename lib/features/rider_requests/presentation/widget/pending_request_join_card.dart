@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
@@ -6,6 +7,8 @@ import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/initials_circle_avatar.dart';
 import '../../domain/entity/ride_request_join.dart';
 import '../../../../../shared/widgets/custom_dialog.dart';
+import '../bloc/bloc/ride_request_join_bloc.dart';
+import '../bloc/events/ride_request_join_event.dart';
 import 'cancel_button.dart';
 
 class PendingJoinCard extends StatelessWidget {
@@ -322,6 +325,11 @@ class PendingJoinCard extends StatelessWidget {
         onConfirm: () {
           Navigator.of(context).pop();
           // Functionality to be added later
+          Navigator.of(context).pop();
+          print("Cancel button pressed");
+          context.read<RideRequestJoinBloc>().add(
+            CancelJoinRequest(joinRequest.id),
+          );
         },
         onCancel: () => Navigator.of(context).pop(),
       ),

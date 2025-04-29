@@ -5,6 +5,7 @@ import '../models/ride_request_join_model.dart';
 
 abstract class RideRequestJoinRemoteDatasource {
   Future<List<RideRequestJoinModel>> getPendingRideRequestJoins(String token, String rideRequestId);
+  Future<void> cancelJoinRequest(String token, String joinRequestId);
 }
 
 class RideRequestJoinRemoteDatasourceImpl implements RideRequestJoinRemoteDatasource {
@@ -33,6 +34,24 @@ class RideRequestJoinRemoteDatasourceImpl implements RideRequestJoinRemoteDataso
       return data.map((json) => RideRequestJoinModel.fromJson(json)).toList();
     } else {
       throw Exception('Failed to fetch pending ride requests: ${response.statusCode}');
+    }
+  }
+
+  Future<void> cancelJoinRequest(String token, String joinRequestId) async {
+    print('here in cancelJoinRequest');
+    final response = await client.post(
+      Uri.parse('${ApiConstants.baseUrl}rider/withdraw-request/$joinRequestId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print('Response status for cancel join request: ${response.statusCode}');
+    print('Response body for cancel join request: ${response.body}');
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to cancel join request: ${response.statusCode}');
     }
   }
 }
