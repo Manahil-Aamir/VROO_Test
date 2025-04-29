@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vroo_test/features/ride_start/presentation/widgets/start_button.dart';
 
 import '../../../../shared/widgets/custom_dialog.dart';
 import '../../data/models/ridestart_data_model.dart';
@@ -91,8 +92,8 @@ class TrackRideTimelineItem extends StatelessWidget {
                             if (!isSource && !isDestination && !isConfirmed)
                               Padding(
                                 padding: EdgeInsets.only(left: 8.w),
-                                child: TextButton(
-                                  onPressed: () {
+                                child: StartButton(
+                                  onTap: () {
                                     showDialog(
                                       context: context,
                                       builder: (context) => CustomDialog(
@@ -115,23 +116,7 @@ class TrackRideTimelineItem extends StatelessWidget {
                                       ),
                                     );
                                   },
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: theme.primaryColor,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 12.w, vertical: 4.h),
-                                    minimumSize: Size(80.w, 24.h),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4.r),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Confirm',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
+                                  text: 'Confirm',
                                 ),
                               ),
                           ],
