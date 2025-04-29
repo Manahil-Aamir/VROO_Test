@@ -299,8 +299,9 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
                           : const Icon(Icons.play_arrow),
                       label: Text(_isTracking ? 'End Ride' : 'Resume Ride'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            _isTracking ? Colors.red : Colors.green,
+                        backgroundColor: _isTracking
+                            ? theme.secondaryHeaderColor
+                            : theme.indicatorColor,
                         foregroundColor: Colors.white,
                       ),
                     ),

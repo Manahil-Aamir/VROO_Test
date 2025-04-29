@@ -113,18 +113,24 @@ class RideTrackingMapView(
             }
 
             "centerOnVehicle" -> {
+                // Set flag to ensure we maintain focus on the vehicle
+                shouldFocusOnVehicle = true
+                
                 vehiclePosition?.let {
-                    shouldFocusOnVehicle = true
-                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 17f))
+                    // Use a zoom level that clearly shows the vehicle (16f is better than 14f for this)
+                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 16f))
+                    Log.d("MapDebug", "Explicitly centering on vehicle per user request")
                 }
                 result.success(null)
             }
 
             "centerOnUserLocation" -> {
+                // Make sure we stop following the vehicle
                 shouldFocusOnVehicle = false
                 // Center on the provided coordinates initially
                 val initialLatLng = LatLng(24.9412, 67.1139)
                 googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(initialLatLng, 15f))
+                Log.d("MapDebug", "Centering on user location, no longer following vehicle")
                 result.success(null)
             }
 
@@ -217,15 +223,18 @@ class RideTrackingMapView(
                 vehicleMarker = googleMap?.addMarker(markerOptions)
                 Log.d("MapDebug", "Vehicle marker created at ${position.latitude}, ${position.longitude}")
                 
-                // If it's the first vehicle update, don't auto-focus on it
-                // This prevents the initial extreme zoom-in
+                // IMPORTANT: We need to focus on the vehicle when it first appears
+                // Changed logic to ensure we focus on the vehicle
                 if (isFirstVehicleUpdate) {
                     isFirstVehicleUpdate = false
-                    // Instead of focusing on vehicle, maintain the current zoom level or fit all points
-                    zoomToShowAllPoints()
+                    // Instead of calling zoomToShowAllPoints, force focus on vehicle
+                    shouldFocusOnVehicle = true
+                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 16f))
+                    Log.d("MapDebug", "First vehicle update - focusing camera on vehicle")
                 } else if (shouldFocusOnVehicle) {
-                    // Only focus on vehicle if explicitly told to do so
-                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 17f))
+                    // Continue focusing on vehicle in subsequent updates
+                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 16f))
+                    Log.d("MapDebug", "Focusing camera on vehicle")
                 }
             }
         } else {
@@ -233,9 +242,11 @@ class RideTrackingMapView(
             handler.post {
                 animateMarkerToPosition(position, heading)
                 
-                // Only follow the vehicle with the camera if explicitly told to do so
+                // Always focus on vehicle if shouldFocusOnVehicle is true
                 if (shouldFocusOnVehicle) {
+                    // Ensure we maintain focus on the vehicle
                     googleMap?.animateCamera(CameraUpdateFactory.newLatLng(position))
+                    Log.d("MapDebug", "Keeping camera focused on moving vehicle")
                 }
             }
         }
@@ -481,6 +492,17 @@ class RideTrackingMapView(
                 try {
                     googleMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
                     Log.d("MapDebug", "Camera updated with bounds")
+                    
+                    // If we want to enforce a maximum zoom level when showing all points
+                    googleMap?.setOnCameraIdleListener {
+                        val currentZoom = googleMap?.cameraPosition?.zoom ?: 0f
+                        if (currentZoom > 15f) {
+                            // If zoomed in too much, zoom out to a more reasonable level
+                            googleMap?.animateCamera(CameraUpdateFactory.zoomTo(15f))
+                        }
+                        // Reset the listener to avoid continuous checks
+                        googleMap?.setOnCameraIdleListener(null)
+                    }
                 } catch (e: Exception) {
                     Log.e("MapDebug", "Failed to animate camera with bounds", e)
                     sourcePoint?.let {

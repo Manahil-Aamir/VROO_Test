@@ -18,7 +18,7 @@ class StartButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: 34.h,
-        width: 120.w,
+        width: 100.w,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
