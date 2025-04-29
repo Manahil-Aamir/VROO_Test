@@ -6,6 +6,7 @@ import '../models/rider_pending_request.dart';
 
 abstract class RiderPendingRequestDataSource {
   Future<List<RiderPendingRequestModel>> getPendingRequests(String token);
+  Future<void> deleteRequest(String requestId, String token);
 }
 
 class RiderPendingRequestDataSourceImpl implements RiderPendingRequestDataSource {
@@ -43,6 +44,26 @@ class RiderPendingRequestDataSourceImpl implements RiderPendingRequestDataSource
       }
     } else {
       throw Exception('Failed to load pending requests with status: ${response.statusCode}');
+    }
+  }
+
+  @override
+  Future<void> deleteRequest(String requestId, String token) async {
+    print('Deleting request with ID: $requestId');
+    final response = await client.post(
+      Uri.parse('${baseUrl}rider/delete-request/$requestId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print('Response status for delete request: ${response.statusCode}');
+    print('Response body for delete request: ${response.body}');
+
+    if (response.statusCode != 200) {
+      final jsonData = json.decode(response.body);
+      throw Exception('Failed to delete request: ${jsonData['message'] ?? 'Unknown error'}');
     }
   }
 }

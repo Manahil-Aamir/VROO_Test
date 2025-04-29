@@ -28,3 +28,13 @@ class RiderPendingRequestError extends RiderPendingRequestState {
   @override
   List<Object> get props => [message];
 }
+
+class RiderPendingRequestDeleted extends RiderPendingRequestState {
+  final String requestId;
+  final List<RiderPendingRequest> remainingRequests;
+
+  RiderPendingRequestDeleted(this.requestId, this.remainingRequests);
+
+  @override
+  List<Object> get props => [requestId, remainingRequests];
+}

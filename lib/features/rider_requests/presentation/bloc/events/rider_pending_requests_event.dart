@@ -6,3 +6,12 @@ abstract class RiderPendingRequestEvent extends Equatable {
 }
 
 class FetchPendingRequests extends RiderPendingRequestEvent {}
+
+class DeletePendingRequest extends RiderPendingRequestEvent {
+  final String requestId;
+
+  DeletePendingRequest(this.requestId);
+
+  @override
+  List<Object> get props => [requestId];
+}

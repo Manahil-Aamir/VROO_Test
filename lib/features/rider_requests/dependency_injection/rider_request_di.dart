@@ -10,6 +10,7 @@ import '../data/repository/rider_approved_request_repository_impl.dart';
 import '../data/repository/rider_pending_request_repository_impl.dart';
 import '../domain/repository/rider_approved_request_repository.dart';
 import '../domain/repository/rider_pending_request_repository.dart';
+import '../domain/usecases/delete_ride_request_usecase.dart';
 import '../domain/usecases/get_approved_ride_requests.dart';
 import '../domain/usecases/get_pending_ride_requests.dart';
 import '../presentation/bloc/bloc/rider_approved_requests_bloc.dart';
@@ -31,6 +32,7 @@ class RiderRequestsDi {
     // Use cases
     final getPendingRequestsUseCase = GetPendingRequestsUseCase(pendingRepository);
     final getApprovedRequestsUseCase = GetApprovedRequestsUseCase(approvedRepository);
+    final deleteRideRequestUseCase = DeleteRideRequestUseCase(pendingRepository);
 
     return [
       Provider<http.Client>(create: (_) => httpClient),
@@ -40,8 +42,12 @@ class RiderRequestsDi {
       Provider<RiderApprovedRequestRepository>(create: (_) => approvedRepository),
       Provider<GetPendingRequestsUseCase>(create: (_) => getPendingRequestsUseCase),
       Provider<GetApprovedRequestsUseCase>(create: (_) => getApprovedRequestsUseCase),
+      Provider<DeleteRideRequestUseCase>(create: (_) => deleteRideRequestUseCase),
       BlocProvider<RiderPendingRequestBloc>(
-        create: (_) => RiderPendingRequestBloc(getPendingRequestsUseCase: getPendingRequestsUseCase),
+        create: (_) => RiderPendingRequestBloc(
+          getPendingRequestsUseCase: getPendingRequestsUseCase,
+          deleteRideRequestUseCase: deleteRideRequestUseCase
+        ),
       ),
       BlocProvider<RiderApprovedRequestBloc>(
         create: (_) => RiderApprovedRequestBloc(getApprovedRequestsUseCase: getApprovedRequestsUseCase),

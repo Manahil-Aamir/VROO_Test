@@ -21,4 +21,8 @@ class RiderPendingRequestRepositoryImpl implements RiderPendingRequestRepository
     final modelList = await dataSource.getPendingRequests(await getUserToken());
     return modelList.map((model) => model.toEntity()).toList();
   }
+
+  Future<void> deleteRequest(String requestId) async {
+    await dataSource.deleteRequest(requestId, await getUserToken());
+  }
 }

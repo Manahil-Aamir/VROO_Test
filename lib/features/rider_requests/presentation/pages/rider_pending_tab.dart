@@ -9,41 +9,46 @@ class RiderPendingTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RiderPendingRequestBloc, RiderPendingRequestState>(
-      // listener: (context, state) {
-      //   if (state is RiderPendingRequestError) {
-      //     ErrorDialog.show(context, state.message);
-      //   }
-      //   // Add any success listeners if needed
-      // },
+    return BlocConsumer<RiderPendingRequestBloc, RiderPendingRequestState>(
+      listener: (context, state) {
+        if (state is RiderPendingRequestDeleted) {
+          // Show success message or snackbar
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Request deleted successfully'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      },
       builder: (context, state) {
-        if (state is RiderPendingRequestLoading) {
+        if (state is RiderPendingRequestLoading && 
+            !(state is RiderPendingRequestLoaded)) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is RiderPendingRequestError) {
-          print('Error loading rider pending requests: ${state.message}');
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/images/error.png',
-                  width: 300,
-                  height: 300,
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(height: 16),
+                Image.asset('assets/images/error.png'),
+                Text(state.message),
               ],
             ),
           );
-        } else if (state is RiderPendingRequestLoaded) {
-          if (state.requests.isEmpty) {
+        } else if (state is RiderPendingRequestLoaded || 
+                  state is RiderPendingRequestDeleted) {
+          final requests = state is RiderPendingRequestLoaded 
+              ? state.requests 
+              : (state as RiderPendingRequestDeleted).remainingRequests;
+          
+          if (requests.isEmpty) {
             return const Center(child: Text('No pending requests found'));
           }
+          
           return ListView.builder(
-            // padding: const EdgeInsets.all(16),
-            itemCount: state.requests.length,
+            itemCount: requests.length,
             itemBuilder: (context, index) => PendingRequestCard(
-              request: state.requests[index],
+              request: requests[index],
             ),
           );
         }

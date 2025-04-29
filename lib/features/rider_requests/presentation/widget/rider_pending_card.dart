@@ -7,6 +7,8 @@ import '../../../../core/router/navigation.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/custom_dialog.dart';
 import '../../domain/entity/rider_pending_request_entity.dart';
+import '../bloc/bloc/rider_pending_requests_bloc.dart';
+import '../bloc/events/rider_pending_requests_event.dart';
 import 'cancel_button.dart';
 
 class PendingRequestCard extends StatelessWidget {
@@ -225,6 +227,7 @@ class PendingRequestCard extends StatelessWidget {
     );
   }
   void _showCancelConfirmation(BuildContext context) {
+    final bloc = BlocProvider.of<RiderPendingRequestBloc>(context);  
     showDialog(
       context: context,
       builder: (context) => CustomDialog(
@@ -235,8 +238,8 @@ class PendingRequestCard extends StatelessWidget {
         confirmColor: ThemeColors.accentColor,
         cancelColor: ThemeColors.primaryColor,
         onConfirm: () {
-          // Functionality to be added later
           Navigator.of(context).pop();
+          bloc.add(DeletePendingRequest(request.id));
         },
         onCancel: () {
           Navigator.of(context).pop();
