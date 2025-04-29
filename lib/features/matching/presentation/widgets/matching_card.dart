@@ -105,6 +105,7 @@ class MatchCard extends StatelessWidget {
                         "riderId": user.uid,
                         // "riderId": "new2"
                       };
+                      print("Join data: $joinData");
                       context
                           .read<MatchingBloc>()
                           .add(JoinRideRequestEvent(joinData: joinData));

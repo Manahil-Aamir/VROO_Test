@@ -14,13 +14,23 @@ class LocationModel {
   });
 
   factory LocationModel.fromJson(Map<String, dynamic> json) {
-  return LocationModel(
-    address: json['address'] ?? 'Unknown address',
-    cellId: json['cellId'] ?? '',
-    coords: List<double>.from((json['coords'] ?? []).map((x) => x.toDouble())),
-    placeId: json['placeId'] ?? '',
-  );
-}
+    return LocationModel(
+      address: json['address'] ?? 'Unknown address',
+      cellId: json['cellId'] ?? '',
+      coords: List<double>.from((json['coords'] ?? []).map((x) => x.toDouble())),
+      placeId: json['placeId'] ?? '',
+    );
+  }
+
+  // tojson
+  Map<String, dynamic> toJson() {
+    return {
+      'address': address,
+      'cellId': cellId,
+      'coords': coords,
+      'placeId': placeId,
+    };
+  }
 
   LocationEntity toEntity() => LocationEntity(
         address: address,

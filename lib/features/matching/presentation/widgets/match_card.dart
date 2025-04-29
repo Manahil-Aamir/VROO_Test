@@ -1,17 +1,30 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/initials_circle_avatar.dart';
 import '../../../matching/data/models/matching_rides_model.dart';
+import '../bloc/bloc/matching_bloc.dart';
+import '../bloc/event/matching_event.dart';
 
 class RideMatchCard extends StatelessWidget {
   final MatchingRideModel match;
+  final String rideRequestId;
 
   const RideMatchCard({
     Key? key, 
     required this.match,
+    required this.rideRequestId,
   }) : super(key: key);
+
+  String getRiderId() {
+    final FirebaseAuth firebaseAuth =
+        FirebaseAuth.instance; // Initialize FirebaseAuth
+    final User user = firebaseAuth.currentUser!; // Get current user
+    return user.uid; // Return UID or null if user is not logged in
+  }
 
   String _getDriverInitials() {
     final driverName = match.driverName;
@@ -304,7 +317,16 @@ class RideMatchCard extends StatelessWidget {
 
         // Join Button
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            final joinData = {
+              "rideId": match.id,
+              "rideRequestId": rideRequestId,
+              "driverId": match.driverId, 
+              "riderId": getRiderId(),
+            };
+            print("Join data: $joinData");
+            context.read<MatchingBloc>().add(JoinRideRequestEvent(joinData: joinData));
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: ThemeColors.primaryColor,
             foregroundColor: ThemeColors.buttonTextColor,
@@ -321,7 +343,12 @@ class RideMatchCard extends StatelessWidget {
             ),
           ),
         ),
+      
+      
       ],
     );
   }
+
+
+
 }

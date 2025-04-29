@@ -1,3 +1,4 @@
+import '../../../../shared/data/models/location_modal.dart';
 import '../../../cars/data/model/carr_model.dart';
 import '../../../rider_journey/data/model/ride_journey_model.dart';
 
@@ -66,7 +67,7 @@ class MatchingRideModel {
   final Car car;
   final DateTime date;
   final DateTime departureTime;
-  final RideLocationModel destination;
+  final LocationModel destination;
   final double distance;
   final String driverGender;
   final String driverId;
@@ -86,7 +87,7 @@ class MatchingRideModel {
   final List<dynamic> recurringRides;
   final List<String> routeCells;
   final List<List<double>> routeCoords;
-  final RideLocationModel source;
+  final LocationModel source;
   final String status;
   final double totalDetourDistance;
   final double totalDetourDuration;
@@ -129,7 +130,7 @@ class MatchingRideModel {
     car: Car.fromJson(json['car']),
     date: DateTime.parse(json['date']), 
     departureTime: DateTime.parse(json['departureTime']), 
-    destination: RideLocationModel.fromJson(json['destination']),
+    destination: LocationModel.fromJson(json['destination']),
     distance: (json['distance'] as num).toDouble(),
     driverGender: json['driverGender'],
     driverId: json['driverId'],
@@ -153,7 +154,7 @@ class MatchingRideModel {
     routeCoords: (json['routeCoords'] as List)
         .map((e) => List<double>.from(e.map((v) => (v as num).toDouble())))
         .toList(),
-    source: RideLocationModel.fromJson(json['source']),
+    source: LocationModel.fromJson(json['source']),
     status: json['status'],
     totalDetourDistance: (json['totalDetourDistance'] as num).toDouble(),
     totalDetourDuration: (json['totalDetourDuration'] as num).toDouble(),
