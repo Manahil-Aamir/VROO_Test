@@ -318,6 +318,7 @@ class RideMatchCard extends StatelessWidget {
         // Join Button
         ElevatedButton(
           onPressed: () {
+            print("Join button pressed");
             final joinData = {
               "rideId": match.id,
               "rideRequestId": rideRequestId,

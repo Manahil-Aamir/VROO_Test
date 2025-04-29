@@ -40,8 +40,21 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
       JoinRideRequestEvent event, Emitter<MatchingState> emit) async {
     emit(RiderJoinLoading());
     try {
+      print('here');
       final rideDetails = await sendJoinRequestUseCase.execute(event.joinData);
+      
+      // After successful join, emit success with the ride details
       emit(RiderJoinSuccess(rideDetails));
+      
+      // Also preserve the current matches if they exist
+      if (state is RideRequestMatchesLoaded) {
+        final currentMatches = (state as RideRequestMatchesLoaded).matches;
+        // Filter out the joined ride
+        final updatedMatches = currentMatches
+            .where((match) => match.id != event.joinData['rideId'])
+            .toList();
+        emit(RideRequestMatchesLoaded(matches: updatedMatches));
+      }
     } catch (e) {
       emit(RiderRequestError(e.toString()));
     }
@@ -50,7 +63,6 @@ class MatchingBloc extends Bloc<MatchingEvent, MatchingState> {
   Future<void> _onFetchRideRequestMatches(
       FetchRideRequestMatchesEvent event, Emitter<MatchingState> emit) async {
     print('Processing FetchRideRequestMatchesEvent for ID: ${event.rideRequestId}');
-    // Change this to MatchesLoading so the UI can detect it properly
     emit(MatchesLoading());
     try {
       print('Calling getRideRequestMatchesUseCase.execute()');
