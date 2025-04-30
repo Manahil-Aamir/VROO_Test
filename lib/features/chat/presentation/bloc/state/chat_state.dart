@@ -32,10 +32,19 @@ class ChatUsersLoaded extends ChatState {
     );
   }
 
-  // Helper method to get sorted users
+  // Helper method to get sorted users with duplicates removed
   List<ChatUser> get sortedUsers {
-    final usersCopy = List<ChatUser>.from(users);
-    usersCopy.sort((a, b) {
+    // Create a map of users by ID to ensure uniqueness
+    final userMap = <String, ChatUser>{};
+    for (final user in users) {
+      userMap[user.id] = user;
+    }
+    
+    // Get the unique user list
+    final uniqueUsers = userMap.values.toList();
+    
+    // Sort by last message time
+    uniqueUsers.sort((a, b) {
       final aTime = lastMessagesInfo[a.id]?['lastMessageTime'] ?? '';
       final bTime = lastMessagesInfo[b.id]?['lastMessageTime'] ?? '';
       
@@ -46,9 +55,10 @@ class ChatUsersLoaded extends ChatState {
       } else if (bTime.isNotEmpty) {
         return 1;
       }
-      return 0;
+      return a.name.compareTo(b.name); // Fallback to alphabetical sort by name
     });
-    return usersCopy;
+    
+    return uniqueUsers;
   }
 
   @override

@@ -49,11 +49,17 @@ class ChatScreen extends StatelessWidget {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is ChatEmpty) {
                       return _buildEmptyState(context);
-                    }
-                      else if (state is ChatUsersLoaded) {
+                    } else if (state is ChatUsersLoaded) {
                       if (state.users.isEmpty) {
                         return _buildEmptyState(context);
                       }
+                      
+                      // Get sorted users using the helper method from the state
+                      final sortedUsers = state.sortedUsers;
+                      
+                      // Create a set to track user IDs that have already been displayed
+                      final displayedUserIds = <String>{};
+                      
                       return RefreshIndicator(
                         onRefresh: () async {
                           context
@@ -63,9 +69,18 @@ class ChatScreen extends StatelessWidget {
                         child: ListView.builder(
                           padding: EdgeInsets.symmetric(
                               horizontal: 16.w, vertical: 10.h),
-                          itemCount: state.users.length,
+                          itemCount: sortedUsers.length,
                           itemBuilder: (context, index) {
-                            final user = state.sortedUsers[index];
+                            final user = sortedUsers[index];
+                            
+                            // Skip if this user ID has already been displayed
+                            if (displayedUserIds.contains(user.id)) {
+                              return const SizedBox.shrink();
+                            }
+                            
+                            // Add this user ID to the displayed set
+                            displayedUserIds.add(user.id);
+                            
                             final chatId = _getChatId(
                                 FirebaseAuth.instance.currentUser?.uid ?? '',
                                 user.id);
@@ -115,18 +130,6 @@ class ChatScreen extends StatelessWidget {
                               height: 300.h,
                               fit: BoxFit.contain,
                             ),
-                            // SizedBox(height: 16.h),
-                            // Padding(
-                            //   padding: EdgeInsets.symmetric(horizontal: 24.w),
-                            //   child: Text(
-                            //     'Failed to load profile information. Please try again later.',
-                            //     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            //       color: ThemeColors.accentColor,
-                            //       fontSize: 14.sp,
-                            //     ),
-                            //     textAlign: TextAlign.center,
-                            //   ),
-                            // ),
                           ],
                         ),
                       );
@@ -145,7 +148,6 @@ class ChatScreen extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context) {
-    print('No chats available');
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

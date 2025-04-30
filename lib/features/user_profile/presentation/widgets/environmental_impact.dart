@@ -28,8 +28,11 @@ class EnvironmentalImpact extends StatelessWidget {
       child: Column(
         children: [
           _buildImpactStats(theme),
-          SizedBox(height: 16.h),
-          _buildEcoMessage(theme),
+          // Only show eco message if CO2 saved is not zero
+          if (user.co2Saved != 0) ...[
+            SizedBox(height: 16.h),
+            _buildEcoMessage(theme),
+          ],
         ],
       ),
     );

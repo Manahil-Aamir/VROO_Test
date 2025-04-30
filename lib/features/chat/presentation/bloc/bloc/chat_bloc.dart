@@ -22,6 +22,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final Map<String, StreamSubscription<Map<String, dynamic>?>> _streamSubscriptions = {};
   final Map<String, Map<String, dynamic>> _lastMessagesCache = {};
 
+  // Track processed user IDs to avoid duplicates
+  final Set<String> _processedUserIds = {};
+
   ChatBloc({
     required this.getChatUsers,
     required this.streamLastMessageInfo,
@@ -45,8 +48,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ) async {
     emit(ChatLoading());
     try {
+      // Clear processed users set when loading fresh
+      _processedUserIds.clear();
+      
       final users = await getChatUsers(event.role);
-      if (users.isEmpty) {
+      
+      // Filter out duplicate users based on user ID
+      final uniqueUsers = users.where((user) {
+        final isUnique = !_processedUserIds.contains(user.id);
+        if (isUnique) {
+          _processedUserIds.add(user.id);
+        }
+        return isUnique;
+      }).toList();
+      
+      if (uniqueUsers.isEmpty) {
         emit(ChatEmpty(message: 'No chats available. Please create a ride first.'));
       } else {
         // Cancel any existing subscriptions
@@ -57,7 +73,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         // Initialize with cached data if available
         final initialLastMessagesInfo = Map<String, Map<String, dynamic>>.from(_lastMessagesCache);
         
-        for (final user in users) {
+        for (final user in uniqueUsers) {
           final chatId = _getChatId(currentUserId, user.id);
           final stream = streamLastMessageInfo(chatId);
           
@@ -84,7 +100,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         }
 
         emit(ChatUsersLoaded(
-          users: users,
+          users: uniqueUsers,
           lastMessagesInfo: initialLastMessagesInfo,
         ));
       }
@@ -198,6 +214,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> close() {
     _cancelAllSubscriptions();
     _lastMessagesCache.clear();
+    _processedUserIds.clear();
     return super.close();
   }
 

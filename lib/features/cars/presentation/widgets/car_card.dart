@@ -41,7 +41,7 @@ class CarCardWidget extends StatelessWidget {
             subtitle: Padding(
               padding: EdgeInsets.only(top: 4.h),
               child: Text(
-                '${car.color}  |  ${car.mileage.toInt()} MPG',
+                '${car.color}  |  ${car.mileage.toInt()} km/l',
                 style: TextStyle(
                   color: ThemeColors.buttonTextColor,
                   fontSize: 12.sp,

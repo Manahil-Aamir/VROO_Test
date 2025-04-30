@@ -48,24 +48,18 @@ class _AddCarModalState extends State<AddCarModal> {
   // Define popular car colors
   final List<String> _carColors = [
     // popular colors in Pakistan
-    'White', 'Black', 'Grey', 'Silver', 'Red', 'Blue', 'Beige', 'Brown', 'Green', 'Cyan', 'Maroon', 'Turquoise', 'Teal', 'Lavender', 'Peach', 'Coral', 'Navy Blue', 'Olive', 'Mint Green', 'Mustard', 'Cream', 'Burgundy', 'Tan', 'Charcoal', 'Magenta', 'Indigo', 'Copper', 'Bronze', 'Yellow', 'Orange', 'Purple', 'Pink', 'Gold', 'Violet',    // other colors
+    'White', 'Black', 'Grey', 'Silver', 'Red', 'Blue', 'Beige', 'Brown', 'Green', 'Cyan', 'Maroon', 
+    //'Turquoise', 'Teal', 'Lavender', 'Peach', 'Coral', 'Navy Blue', 'Olive', 'Mint Green', 'Mustard', 'Cream', 'Burgundy', 'Tan', 'Charcoal', 'Magenta', 'Indigo', 'Copper', 'Bronze', 'Yellow', 'Orange', 'Purple', 'Pink', 'Gold', 'Violet',    // other colors
     'Other',
-
   ];
   
-  String _selectedCompany = 'Honda';
+  String? _selectedCompany;
   String? _selectedModel;
-  String _selectedColor = 'White';
+  String? _selectedColor;
   
   // Controllers for number plate - 3 characters, separator, 3 numbers
   List<TextEditingController> _plateControllers = List.generate(6, (_) => TextEditingController());
   final TextEditingController _mileageController = TextEditingController();
-  
-  @override
-  void initState() {
-    super.initState();
-    _selectedModel = _carModelsByCompany[_selectedCompany]?.first;
-  }
 
   @override
   void dispose() {
@@ -105,9 +99,9 @@ class _AddCarModalState extends State<AddCarModal> {
               items: _carCompanies,
               onChanged: (value) {
                 setState(() {
-                  _selectedCompany = value!;
+                  _selectedCompany = value;
                   // Reset model when company changes
-                  _selectedModel = _carModelsByCompany[_selectedCompany]?.first;
+                  _selectedModel = null;
                 });
               },
             ),
@@ -115,13 +109,14 @@ class _AddCarModalState extends State<AddCarModal> {
             // Model dropdown (dependent on company)
             _buildDropdownField(
               label: 'Model',
-              selectedValue: _selectedModel ?? '',
-              items: _carModelsByCompany[_selectedCompany] ?? ['Other'],
+              selectedValue: _selectedModel,
+              items: _selectedCompany != null ? _carModelsByCompany[_selectedCompany] ?? ['Other'] : [],
               onChanged: (value) {
                 setState(() {
                   _selectedModel = value;
                 });
               },
+              isDisabled: _selectedCompany == null,
             ),
             
             // Color dropdown
@@ -131,7 +126,7 @@ class _AddCarModalState extends State<AddCarModal> {
               items: _carColors,
               onChanged: (value) {
                 setState(() {
-                  _selectedColor = value!;
+                  _selectedColor = value;
                 });
               },
             ),
@@ -153,18 +148,13 @@ class _AddCarModalState extends State<AddCarModal> {
   
 Widget _buildDropdownField({
   required String label,
-  required String selectedValue,
+  required String? selectedValue,
   required List<String> items,
   required void Function(String?) onChanged,
+  bool isDisabled = false,
 }) {
   // Check if "Other" is selected to show the text input field
-  final bool isOtherSelected = !items.contains(selectedValue) || 
-                             selectedValue == 'Other';
-  
-  // Controller for the "Other" text field
-  final TextEditingController otherController = TextEditingController(
-    text: isOtherSelected && selectedValue != 'Other' ? selectedValue : ''
-  );
+  final bool isOtherSelected = selectedValue == 'Other';
   
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -181,22 +171,17 @@ Widget _buildDropdownField({
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
-            border: Border.all(color: ThemeColors.dividerColor),
+            border: Border.all(color: isDisabled ? ThemeColors.dividerColor.withOpacity(0.5) : ThemeColors.dividerColor),
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: Material(
               color: Colors.transparent,
               child: PopupMenuButton<String>(
-                initialValue: items.contains(selectedValue) ? selectedValue : 'Other',
+                enabled: !isDisabled,
+                initialValue: selectedValue,
                 onSelected: (value) {
-                  if (value == 'Other') {
-                    // Just set to "Other" and let the text field handle the actual value
-                    onChanged('Other');
-                  } else {
-                    // For regular selections
-                    onChanged(value);
-                  }
+                  onChanged(value);
                 },
                 itemBuilder: (context) => items.map((item) {
                   return PopupMenuItem<String>(
@@ -220,9 +205,11 @@ Widget _buildDropdownField({
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        items.contains(selectedValue) ? selectedValue : 'Other',
+                        selectedValue ?? 'Select ${label}',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: ThemeColors.backgroundColor,
+                              color: selectedValue == null 
+                                  ? ThemeColors.backgroundColor.withOpacity(0.5) 
+                                  : ThemeColors.backgroundColor,
                             ),
                       ),
                       Row(
@@ -236,7 +223,9 @@ Widget _buildDropdownField({
                           SizedBox(width: 4.w),
                           Icon(
                             Icons.arrow_drop_down,
-                            color: ThemeColors.buttonTextColor,
+                            color: isDisabled 
+                                ? ThemeColors.buttonTextColor.withOpacity(0.5)
+                                : ThemeColors.buttonTextColor,
                           ),
                         ],
                       ),
@@ -253,11 +242,12 @@ Widget _buildDropdownField({
           Padding(
             padding: EdgeInsets.only(top: 8.h),
             child: TextFormField(
-              controller: otherController,
               onChanged: (value) {
                 // Pass the custom value back up
                 if (value.isNotEmpty) {
                   onChanged(value);
+                } else {
+                  onChanged('Other');
                 }
               },
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -290,6 +280,7 @@ Widget _buildDropdownField({
     ),
   );
 }
+
   Widget _buildNumberPlateField() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -346,6 +337,12 @@ Widget _buildDropdownField({
                           ),
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Required';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 );
@@ -405,6 +402,12 @@ Widget _buildDropdownField({
                           ),
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Required';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 );
@@ -468,6 +471,28 @@ Widget _buildDropdownField({
 
   void _handleSubmit() {
     if (_formKey.currentState?.validate() ?? false) {
+      // Check if all required selections are made
+      if (_selectedCompany == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please select a company')),
+        );
+        return;
+      }
+      
+      if (_selectedModel == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please select a model')),
+        );
+        return;
+      }
+      
+      if (_selectedColor == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please select a color')),
+        );
+        return;
+      }
+      
       // Combine plate controllers into a single string with hyphen
       final firstPart = _plateControllers.sublist(0, 3).map((controller) => controller.text).join('');
       final secondPart = _plateControllers.sublist(3, 6).map((controller) => controller.text).join('');
@@ -475,9 +500,9 @@ Widget _buildDropdownField({
       
       final newCar = CarEntity(
         carId: '', // Assuming carId is generated by the backend or database
-        company: _selectedCompany,
-        model: _selectedModel ?? 'Other',
-        color: _selectedColor,
+        company: _selectedCompany!,
+        model: _selectedModel!,
+        color: _selectedColor!,
         numberPlate: numberPlate,
         mileage: double.tryParse(_mileageController.text) ?? 0.0,
         isVerified: false,
