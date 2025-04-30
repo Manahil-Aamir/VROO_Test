@@ -294,111 +294,144 @@ class RideTrackingMapView(
     }
 
     private fun processMapData(mapData: Map<*, *>) {
-        try {
-            Log.d("MapDebug", "Processing map data")
-            
-            // Extract source coordinates (handling both list and map formats)
-            val source = mapData["source"]
-            if (source is Map<*, *>) {
-                val lat = source["lat"] as? Double
-                val lng = source["lng"] as? Double
+    try {
+        Log.d("MapDebug", "Processing map data")
+        
+        // Extract source coordinates (handling both list and map formats)
+        val source = mapData["source"]
+        if (source is Map<*, *>) {
+            val lat = source["lat"] as? Double
+            val lng = source["lng"] as? Double
+            if (lat != null && lng != null) {
+                sourcePoint = LatLng(lat, lng)
+                Log.d("MapDebug", "Source from map: $lat, $lng")
+            }
+        } else if (source is List<*>) {
+            sourcePoint = LatLng(source[0] as Double, source[1] as Double)
+            Log.d("MapDebug", "Source from list: ${source[0]}, ${source[1]}")
+        }
+        
+        // Extract destination coordinates (handling both list and map formats)
+        val destination = mapData["destination"]
+        if (destination is Map<*, *>) {
+            val lat = destination["lat"] as? Double
+            val lng = destination["lng"] as? Double
+            if (lat != null && lng != null) {
+                destinationPoint = LatLng(lat, lng)
+                Log.d("MapDebug", "Destination from map: $lat, $lng")
+            }
+        } else if (destination is List<*>) {
+            destinationPoint = LatLng(destination[0] as Double, destination[1] as Double)
+            Log.d("MapDebug", "Destination from list: ${destination[0]}, ${destination[1]}")
+        }
+        
+        // Process route coordinates
+        routePoints.clear()
+        val routeCoords = mapData["routeCoords"] as? List<*> ?: emptyList<Any>()
+        for (point in routeCoords) {
+            if (point is Map<*, *>) {
+                val lat = point["lat"] as? Double
+                val lng = point["lng"] as? Double
                 if (lat != null && lng != null) {
-                    sourcePoint = LatLng(lat, lng)
-                    Log.d("MapDebug", "Source from map: $lat, $lng")
+                    routePoints.add(LatLng(lat, lng))
+                    //Log.d("MapDebug", "Route point from map: $lat, $lng")
                 }
-            } else if (source is List<*>) {
-                sourcePoint = LatLng(source[0] as Double, source[1] as Double)
-                Log.d("MapDebug", "Source from list: ${source[0]}, ${source[1]}")
+            } else if (point is List<*>) {
+                routePoints.add(LatLng(point[0] as Double, point[1] as Double))
+                Log.d("MapDebug", "Route point from list: ${point[0]}, ${point[1]}")
+            }
+        }
+        
+        // ADDED: Position vehicle at first route point if route is not empty
+        if (routePoints.isNotEmpty()) {
+            val initialPosition = routePoints.first()
+            vehiclePosition = initialPosition
+            // Calculate initial bearing if there are at least 2 points
+            vehicleBearing = if (routePoints.size > 1) {
+                calculateBearing(routePoints[0], routePoints[1])
+            } else {
+                0f // Default bearing if only one point
+            }
+            Log.d("MapDebug", "Positioned vehicle at first route point: ${initialPosition.latitude}, ${initialPosition.longitude}")
+        }
+        
+        // Process passenger data
+        pickupPoints.clear()
+        dropoffPoints.clear()
+        val passengers = mapData["passengers"] as? List<*> ?: emptyList<Any>()
+        Log.d("MapDebug", "Processing ${passengers.size} passengers")
+        
+        for (passenger in passengers) {
+            val passengerMap = passenger as? Map<*, *> ?: continue
+            val name = passengerMap["name"] as? String ?: "Unknown Passenger"
+            val sameSource = passengerMap["sameSource"] as? Boolean ?: false
+            
+            if (!sameSource) {
+                // Process pickup coordinates
+                val pickupCoords = passengerMap["pickupCoords"]
+                val pickupLat = passengerMap["pickupLat"]
+                val pickupLng = passengerMap["pickupLng"]
+                
+                if (pickupCoords is List<*>) {
+                    pickupPoints.add(PickupDropoffPoint(LatLng(pickupCoords[0] as Double, pickupCoords[1] as Double), name, true))
+                    Log.d("MapDebug", "Pickup from list: ${pickupCoords[0]}, ${pickupCoords[1]} - Passenger: $name")
+                } else if (pickupLat != null && pickupLng != null) {
+                    pickupPoints.add(PickupDropoffPoint(LatLng(pickupLat as Double, pickupLng as Double), name, true))
+                    Log.d("MapDebug", "Pickup from lat/lng: $pickupLat, $pickupLng - Passenger: $name")
+                }
             }
             
-            // Extract destination coordinates (handling both list and map formats)
-            val destination = mapData["destination"]
-            if (destination is Map<*, *>) {
-                val lat = destination["lat"] as? Double
-                val lng = destination["lng"] as? Double
-                if (lat != null && lng != null) {
-                    destinationPoint = LatLng(lat, lng)
-                    Log.d("MapDebug", "Destination from map: $lat, $lng")
-                }
-            } else if (destination is List<*>) {
-                destinationPoint = LatLng(destination[0] as Double, destination[1] as Double)
-                Log.d("MapDebug", "Destination from list: ${destination[0]}, ${destination[1]}")
-            }
+            // Process dropoff coordinates
+            val dropoffCoords = passengerMap["dropoffCoords"]
+            val dropoffLat = passengerMap["dropoffLat"]
+            val dropoffLng = passengerMap["dropoffLng"]
             
-            // Process route coordinates
-            routePoints.clear()
-            val routeCoords = mapData["routeCoords"] as? List<*> ?: emptyList<Any>()
-            for (point in routeCoords) {
-                if (point is Map<*, *>) {
-                    val lat = point["lat"] as? Double
-                    val lng = point["lng"] as? Double
-                    if (lat != null && lng != null) {
-                        routePoints.add(LatLng(lat, lng))
-                        //Log.d("MapDebug", "Route point from map: $lat, $lng")
-                    }
-                } else if (point is List<*>) {
-                    routePoints.add(LatLng(point[0] as Double, point[1] as Double))
-                    Log.d("MapDebug", "Route point from list: ${point[0]}, ${point[1]}")
-                }
-            }
-            
-            // Process passenger data
-            pickupPoints.clear()
-            dropoffPoints.clear()
-            val passengers = mapData["passengers"] as? List<*> ?: emptyList<Any>()
-            Log.d("MapDebug", "Processing ${passengers.size} passengers")
-            
-            for (passenger in passengers) {
-                val passengerMap = passenger as? Map<*, *> ?: continue
-                val name = passengerMap["name"] as? String ?: "Unknown Passenger"
-                val sameSource = passengerMap["sameSource"] as? Boolean ?: false
-                
-                if (!sameSource) {
-                    // Process pickup coordinates
-                    val pickupCoords = passengerMap["pickupCoords"]
-                    val pickupLat = passengerMap["pickupLat"]
-                    val pickupLng = passengerMap["pickupLng"]
-                    
-                    if (pickupCoords is List<*>) {
-                        pickupPoints.add(PickupDropoffPoint(LatLng(pickupCoords[0] as Double, pickupCoords[1] as Double), name, true))
-                        Log.d("MapDebug", "Pickup from list: ${pickupCoords[0]}, ${pickupCoords[1]} - Passenger: $name")
-                    } else if (pickupLat != null && pickupLng != null) {
-                        pickupPoints.add(PickupDropoffPoint(LatLng(pickupLat as Double, pickupLng as Double), name, true))
-                        Log.d("MapDebug", "Pickup from lat/lng: $pickupLat, $pickupLng - Passenger: $name")
-                    }
-                }
-                
-                // Process dropoff coordinates
-                val dropoffCoords = passengerMap["dropoffCoords"]
-                val dropoffLat = passengerMap["dropoffLat"]
-                val dropoffLng = passengerMap["dropoffLng"]
-                
-                if(sameSource){
-                    if (dropoffCoords is List<*>) {
-                    dropoffPoints.add(PickupDropoffPoint(LatLng(dropoffCoords[0] as Double, dropoffCoords[1] as Double), name, false))
-                    Log.d("MapDebug", "Dropoff from list: ${dropoffCoords[0]}, ${dropoffCoords[1]} - Passenger: $name")
+            if(sameSource){
+                if (dropoffCoords is List<*>) {
+                dropoffPoints.add(PickupDropoffPoint(LatLng(dropoffCoords[0] as Double, dropoffCoords[1] as Double), name, false))
+                Log.d("MapDebug", "Dropoff from list: ${dropoffCoords[0]}, ${dropoffCoords[1]} - Passenger: $name")
                 } else if (dropoffLat != null && dropoffLng != null) {
                     dropoffPoints.add(PickupDropoffPoint(LatLng(dropoffLat as Double, dropoffLng as Double), name, false))
                     Log.d("MapDebug", "Dropoff from lat/lng: $dropoffLat, $dropoffLng - Passenger: $name")
                 }
-                }
             }
-            
-            Log.d("MapDebug", "Processed map data: Source: $sourcePoint, Destination: $destinationPoint, " +
-                    "Route points: ${routePoints.size}, Pickup points: ${pickupPoints.size}, " +
-                    "Dropoff points: ${dropoffPoints.size}")
-            
-            // Reset tracking flags when new map data is loaded
-            isFirstVehicleUpdate = true
-            shouldFocusOnVehicle = false
-            
-            mapView.post {
-                googleMap?.let { drawMapElements() }
-            }
-        } catch (e: Exception) {
-            Log.e("MapDebug", "Error processing map data: ${e.message}", e)
         }
+        
+        Log.d("MapDebug", "Processed map data: Source: $sourcePoint, Destination: $destinationPoint, " +
+                "Route points: ${routePoints.size}, Pickup points: ${pickupPoints.size}, " +
+                "Dropoff points: ${dropoffPoints.size}")
+        
+        // Reset tracking flags when new map data is loaded
+        isFirstVehicleUpdate = true
+        shouldFocusOnVehicle = false
+        
+        mapView.post {
+            googleMap?.let { drawMapElements() }
+        }
+    } catch (e: Exception) {
+        Log.e("MapDebug", "Error processing map data: ${e.message}", e)
     }
+}
+
+private fun calculateBearing(start: LatLng, end: LatLng): Float {
+    val startLat = Math.toRadians(start.latitude)
+    val startLng = Math.toRadians(start.longitude)
+    val endLat = Math.toRadians(end.latitude)
+    val endLng = Math.toRadians(end.longitude)
+    
+    val dLng = endLng - startLng
+    
+    val y = Math.sin(dLng) * Math.cos(endLat)
+    val x = Math.cos(startLat) * Math.sin(endLat) - 
+            Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLng)
+    
+    var bearing = Math.toDegrees(Math.atan2(y, x))
+    
+    // Normalize to 0-360
+    bearing = (bearing + 360) % 360
+    
+    return bearing.toFloat()
+}
 
     private fun drawMapElements() {
         Log.d("MapDebug", "Drawing map elements")
