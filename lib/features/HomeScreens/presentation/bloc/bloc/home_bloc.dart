@@ -98,6 +98,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(OngoingTripError('Unable to get authentication token'));
         return;
       }
+      print("helooooooooo");
 
       final trip = await checkOngoingTrip(token);
 

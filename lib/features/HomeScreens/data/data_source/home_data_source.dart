@@ -69,16 +69,12 @@ class HomeDataSourceImpl implements HomeDataSource {
       if (response.statusCode == 200) {
         print('Response data: ${response.body}');
         final jsonData = json.decode(response.body);
-        if (jsonData['data'] != null &&
-            jsonData['data'] is Map &&
-            jsonData['data'].isNotEmpty) {
-          return OngoingModel.fromMap(jsonData['data']);
+        if (jsonData['data'] is List && jsonData['data'].isNotEmpty) {
+          return OngoingModel.fromMap(jsonData['data'][0]);
         } else {
-          // Return a sample OngoingModel if data is empty or not valid
           return OngoingModel(
             rideId: 'sample_id',
             role: 'sample_status',
-            // Add other fields with sample values as needed
           );
         }
       } else {
