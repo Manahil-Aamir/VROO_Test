@@ -113,7 +113,7 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
           if (joinState.joins.isEmpty)
             const Padding(
               padding: EdgeInsets.all(16.0),
-              child: Center(child: Text('No pending join requests')),
+              child: Center(child: Text('No join requests')),
             ),
 
           Padding(

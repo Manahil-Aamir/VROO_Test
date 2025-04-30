@@ -28,30 +28,30 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
   }
 
   // Function to show date picker
-  Future<void> _selectDate(BuildContext context, DateTime? initialDate) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: initialDate ?? DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2100),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: ThemeColors.primaryColor,
-              onPrimary: ThemeColors.buttonTextColor,
-              // onSurface: ThemeColors.textColor,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
+  // Future<void> _selectDate(BuildContext context, DateTime? initialDate) async {
+  //   final DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: initialDate ?? DateTime.now(),
+  //     firstDate: DateTime(2020),
+  //     lastDate: DateTime(2100),
+  //     builder: (context, child) {
+  //       return Theme(
+  //         data: Theme.of(context).copyWith(
+  //           colorScheme: ColorScheme.light(
+  //             primary: ThemeColors.primaryColor,
+  //             onPrimary: ThemeColors.buttonTextColor,
+  //             // onSurface: ThemeColors.textColor,
+  //           ),
+  //         ),
+  //         child: child!,
+  //       );
+  //     },
+  //   );
 
-    if (picked != null) {
-      context.read<ActiveRidesDriverBloc>().add(FilterRidesByDate(picked));
-    }
-  }
+  //   if (picked != null) {
+  //     context.read<ActiveRidesDriverBloc>().add(FilterRidesByDate(picked));
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -299,4 +299,53 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
       },
     );
   }
+
+  Future<void> _selectDate(BuildContext context, DateTime? initialDate) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate ?? DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+      cancelText: '', // Removes Cancel button
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: ThemeColors.primaryColor,
+              onPrimary: ThemeColors.buttonTextColor,
+            ),
+            dialogTheme: DialogTheme(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              insetPadding: EdgeInsets.zero, // Remove default padding
+            ),
+          ),
+          child: Stack(
+            clipBehavior: Clip.none, // Allows button to extend beyond bounds
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: child!,
+              ),
+              Positioned(
+                top: 4,
+                right: 4,
+                child: IconButton(
+                  icon: Icon(Icons.close, size: 24),
+                  color: ThemeColors.primaryColor,
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (picked != null) {
+      context.read<ActiveRidesDriverBloc>().add(FilterRidesByDate(picked));
+    }
+  }
+
 }

@@ -15,3 +15,14 @@ class DeletePendingRequest extends RiderPendingRequestEvent {
   @override
   List<Object> get props => [requestId];
 }
+
+class FilterPendingRequestsByDate extends RiderPendingRequestEvent {
+  final DateTime? selectedDate;
+
+  FilterPendingRequestsByDate(this.selectedDate);
+
+  @override
+  List<Object> get props => [selectedDate ?? ''];
+}
+
+class ClearPendingDateFilter extends RiderPendingRequestEvent {}

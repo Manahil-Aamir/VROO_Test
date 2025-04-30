@@ -164,7 +164,11 @@ class D3 extends StatelessWidget {
                             DetailTile(
                               icon: Icons.payment,
                               label: 'Payment Option',
-                              value: paymentOption.join(', '),
+                              value: paymentOption.map((option) => 
+                                option.isNotEmpty ? 
+                                  option[0].toUpperCase() + option.substring(1) : 
+                                  option)
+                                .join(', '),
                             ),
                           ],
                         ),
