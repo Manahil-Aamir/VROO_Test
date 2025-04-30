@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/utils/exit_dialouge_util.dart';
 import '../../../../shared/widgets/appbar_no_icon.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
-import '../../../../shared/widgets/custom_dialog.dart';
 import '../bloc/bloc/active_rides_bloc.dart';
 import '../bloc/event/active_rides_event.dart';
 import '../bloc/state/active_rides_state.dart';
@@ -57,7 +57,7 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        bool exitApp = await _showExitDialog(context);
+        bool exitApp = await DialogUtil.showExitDialog(context);
         if (exitApp) {
           SystemNavigator.pop(); // Closes the app
         }
@@ -298,26 +298,5 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
         );
       },
     );
-  }
-
-  Future<bool> _showExitDialog(BuildContext context) async {
-    return await showDialog(
-          context: context,
-          builder: (context) => CustomDialog(
-            title: "Exit App",
-            message: "Are you sure you want to exit?",
-            confirmText: "Yes",
-            cancelText: "No",
-            confirmColor: Theme.of(context).indicatorColor,
-            cancelColor: Theme.of(context).primaryColorDark,
-            onConfirm: () {
-              Navigator.of(context).pop(true);
-            },
-            onCancel: () {
-              Navigator.of(context).pop(false);
-            },
-          ),
-        ) ??
-        false;
   }
 }

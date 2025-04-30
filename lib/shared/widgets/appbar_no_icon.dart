@@ -4,10 +4,12 @@ import 'bottom_shape_clipper.dart';
 
 class AppBarNoIcon extends StatelessWidget implements PreferredSizeWidget {
   final String heading;
+  final Widget? leading; // Added optional leading widget
 
   const AppBarNoIcon({
     super.key,
     required this.heading,
+    this.leading,
   });
 
   @override
@@ -35,13 +37,25 @@ class AppBarNoIcon extends StatelessWidget implements PreferredSizeWidget {
             child: SafeArea(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                child: Center(
-                  child: Text(
-                    heading,
-                    style: theme.textTheme.headlineLarge?.copyWith(
-                      color: theme.primaryColorDark,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Leading widget (if provided)
+                    if (leading != null)
+                      Positioned(
+                        left: 0,
+                        child: leading!,
+                      ),
+                    // Title
+                    Center(
+                      child: Text(
+                        heading,
+                        style: theme.textTheme.headlineLarge?.copyWith(
+                          color: theme.primaryColorDark,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),

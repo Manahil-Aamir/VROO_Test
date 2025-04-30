@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/core/utils/validators/auth_validators.dart';
@@ -6,6 +7,7 @@ import 'package:vroo_test/shared/widgets/appbar_no_icon.dart';
 import 'package:vroo_test/shared/widgets/gradient_button.dart';
 import 'package:vroo_test/shared/widgets/overlay.dart';
 import '../../../../core/router/navigation.dart';
+import '../../../../core/utils/exit_dialouge_util.dart';
 import '../../../../shared/widgets/input_field.dart';
 import '../bloc/bloc/auth_bloc.dart';
 import '../bloc/event/auth_event.dart';
@@ -63,119 +65,128 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBarNoIcon(heading: 'Sign Up'),
-      body: BlocConsumer<SignUpBloc, SignUpState>(
-        listener: (context, state) {
-          if (state is SignUpSuccess) {
-            print('success');
-            context.read<Navigation>().navigateTo('/email-verification');
-          } else if (state is SignUpFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error),
-                backgroundColor: theme.indicatorColor,
-                duration: Duration(seconds: 3),
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          return Stack(
-            children: [
-              SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(20.r),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      InputField(
-                        controller: _emailController,
-                        errorText: _emailError,
-                        labelText: 'Email',
-                      ),
-                      SizedBox(height: 20.h),
-                      InputField(
-                        labelText: 'Password',
-                        controller: _passwordController,
-                        errorText: _passwordError,
-                        obscure: _obscurePassword,
-                        suffixIcon: GestureDetector(
-                          onTap: () => setState(
-                              () => _obscurePassword = !_obscurePassword),
-                          child: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: Theme.of(context)
-                                .primaryColor, // Set primary color
+    return WillPopScope(
+      onWillPop: () async {
+        bool exitApp = await DialogUtil.showExitDialog(context);
+        if (exitApp) {
+          SystemNavigator.pop(); // Closes the app
+        }
+        return false; // Prevents the default back action
+      },
+      child: Scaffold(
+        appBar: AppBarNoIcon(heading: 'Sign Up'),
+        body: BlocConsumer<SignUpBloc, SignUpState>(
+          listener: (context, state) {
+            if (state is SignUpSuccess) {
+              print('success');
+              context.read<Navigation>().navigateTo('/email-verification');
+            } else if (state is SignUpFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error),
+                  backgroundColor: theme.indicatorColor,
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            }
+          },
+          builder: (context, state) {
+            return Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.all(20.r),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        InputField(
+                          controller: _emailController,
+                          errorText: _emailError,
+                          labelText: 'Email',
+                        ),
+                        SizedBox(height: 20.h),
+                        InputField(
+                          labelText: 'Password',
+                          controller: _passwordController,
+                          errorText: _passwordError,
+                          obscure: _obscurePassword,
+                          suffixIcon: GestureDetector(
+                            onTap: () => setState(
+                                () => _obscurePassword = !_obscurePassword),
+                            child: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Theme.of(context)
+                                  .primaryColor, // Set primary color
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 20.h),
-                      InputField(
-                        labelText: 'Confirm Password',
-                        controller: _confirmPasswordController,
-                        errorText: _confirmPasswordError,
-                        obscure: _obscurePassword2,
-                        suffixIcon: GestureDetector(
-                          onTap: () => setState(
-                              () => _obscurePassword2 = !_obscurePassword2),
-                          child: Icon(
-                            _obscurePassword2
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: Theme.of(context)
-                                .primaryColor, // Set primary color
+                        SizedBox(height: 20.h),
+                        InputField(
+                          labelText: 'Confirm Password',
+                          controller: _confirmPasswordController,
+                          errorText: _confirmPasswordError,
+                          obscure: _obscurePassword2,
+                          suffixIcon: GestureDetector(
+                            onTap: () => setState(
+                                () => _obscurePassword2 = !_obscurePassword2),
+                            child: Icon(
+                              _obscurePassword2
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Theme.of(context)
+                                  .primaryColor, // Set primary color
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 20.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Already have an account? ",
-                            style: theme.textTheme.bodyLarge
-                                ?.copyWith(color: theme.primaryColorDark),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/sign_in');
-                            },
-                            style: ButtonStyle(
-                              overlayColor: WidgetStateProperty.all(
-                                theme.primaryColor.withOpacity(0.1),
+                        SizedBox(height: 20.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Already have an account? ",
+                              style: theme.textTheme.bodyLarge
+                                  ?.copyWith(color: theme.primaryColorDark),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/sign_in');
+                              },
+                              style: ButtonStyle(
+                                overlayColor: WidgetStateProperty.all(
+                                  theme.primaryColor.withOpacity(0.1),
+                                ),
+                              ),
+                              child: Text(
+                                'Sign In',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.primaryColorDark,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: theme.primaryColor,
+                                    decorationThickness: 2.0),
                               ),
                             ),
-                            child: Text(
-                              'Sign In',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.primaryColorDark,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: theme.primaryColor,
-                                  decorationThickness: 2.0),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20.h),
-                      GradientButton(
-                        onTap: state is SignUpLoading
-                            ? () {}
-                            : () => _signUp(context),
-                        text: 'Sign Up',
-                      ),
-                    ],
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                        GradientButton(
+                          onTap: state is SignUpLoading
+                              ? () {}
+                              : () => _signUp(context),
+                          text: 'Sign Up',
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              // Loading overlay
-              if (state is SignUpLoading) const CustomOverlay(),
-            ],
-          );
-        },
+                // Loading overlay
+                if (state is SignUpLoading) const CustomOverlay(),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

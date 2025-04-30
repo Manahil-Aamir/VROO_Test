@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/color/color_theme.dart';
+import '../../../../core/utils/exit_dialouge_util.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
-import '../../../../shared/widgets/custom_dialog.dart';
 import '../bloc/bloc/user_profile_bloc.dart';
 import '../bloc/event/user_profile_event.dart';
 import '../bloc/state/user_profile_state.dart';
@@ -32,7 +32,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     // final textTheme = Theme.of(context).textTheme;
     return WillPopScope(
       onWillPop: () async {
-        bool exitApp = await _showExitDialog(context);
+        bool exitApp = await DialogUtil.showExitDialog(context);
         if (exitApp) {
           SystemNavigator.pop(); // Closes the app
         }
@@ -108,26 +108,5 @@ class _UserProfilePageState extends State<UserProfilePage> {
         bottomNavigationBar: CustomBottomNavBar(selectedIndex: 3),
       ),
     );
-  }
-
-  Future<bool> _showExitDialog(BuildContext context) async {
-    return await showDialog(
-          context: context,
-          builder: (context) => CustomDialog(
-            title: "Exit App",
-            message: "Are you sure you want to exit?",
-            confirmText: "Yes",
-            cancelText: "No",
-            confirmColor: Theme.of(context).indicatorColor,
-            cancelColor: Theme.of(context).primaryColorDark,
-            onConfirm: () {
-              Navigator.of(context).pop(true);
-            },
-            onCancel: () {
-              Navigator.of(context).pop(false);
-            },
-          ),
-        ) ??
-        false;
   }
 }

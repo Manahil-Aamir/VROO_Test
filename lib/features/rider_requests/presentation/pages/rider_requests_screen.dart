@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/utils/exit_dialouge_util.dart';
 import '../../../../shared/widgets/appbar_no_icon.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
-import '../../../../shared/widgets/custom_dialog.dart';
 import '../../../../shared/widgets/custom_tab_bar.dart';
 import '../bloc/bloc/rider_approved_requests_bloc.dart';
 import '../bloc/bloc/rider_pending_requests_bloc.dart';
@@ -78,7 +78,7 @@ class _RiderRequestsScreenState extends State<RiderRequestsScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        bool exitApp = await _showExitDialog(context);
+        bool exitApp = await DialogUtil.showExitDialog(context);
         if (exitApp) {
           SystemNavigator.pop(); // Closes the app
         }
@@ -106,26 +106,5 @@ class _RiderRequestsScreenState extends State<RiderRequestsScreen>
         bottomNavigationBar: CustomBottomNavBar(selectedIndex: 1),
       ),
     );
-  }
-
-  Future<bool> _showExitDialog(BuildContext context) async {
-    return await showDialog(
-      context: context,
-      builder: (context) => CustomDialog(
-        title: "Exit App",
-        message: "Are you sure you want to exit?",
-        confirmText: "Yes",
-        cancelText: "No",
-        confirmColor: Theme.of(context).indicatorColor,
-        cancelColor: Theme.of(context).primaryColorDark,
-        onConfirm: () {
-          Navigator.of(context).pop(true);
-        },
-        onCancel: () {
-          Navigator.of(context).pop(false);
-        },
-      ),
-    ) ??
-    false;
   }
 }

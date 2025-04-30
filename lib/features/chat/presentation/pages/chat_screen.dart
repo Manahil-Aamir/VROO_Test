@@ -6,8 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vroo_test/shared/widgets/appbar_no_icon.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/theme/color/color_theme.dart';
+import '../../../../core/utils/exit_dialouge_util.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
-import '../../../../shared/widgets/custom_dialog.dart';
 import '../../../HomeScreens/presentation/bloc/role_bloc.dart';
 import '../bloc/bloc/chat_bloc.dart';
 import '../bloc/event/chat_event.dart';
@@ -22,7 +22,7 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        bool exitApp = await _showExitDialog(context);
+        bool exitApp = await DialogUtil.showExitDialog(context);
         if (exitApp) {
           SystemNavigator.pop(); // Closes the app
         }
@@ -193,27 +193,6 @@ class ChatScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<bool> _showExitDialog(BuildContext context) async {
-    return await showDialog(
-          context: context,
-          builder: (context) => CustomDialog(
-            title: "Exit App",
-            message: "Are you sure you want to exit?",
-            confirmText: "Yes",
-            cancelText: "No",
-            confirmColor: Theme.of(context).indicatorColor,
-            cancelColor: Theme.of(context).primaryColorDark,
-            onConfirm: () {
-              Navigator.of(context).pop(true);
-            },
-            onCancel: () {
-              Navigator.of(context).pop(false);
-            },
-          ),
-        ) ??
-        false;
   }
 
   String _formatTime(DateTime time) {
