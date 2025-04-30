@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vroo_test/features/HomeScreens/data/data_source/coords_data_source.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
 import '../../../../shared/widgets/custom_dialog.dart';
@@ -21,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  CoordsDataSource coordsDataSource = CoordsDataSource();
 
   @override
   void initState() {
@@ -99,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildOngoingTripOverlay() {
+    final theme = Theme.of(context);
     return BlocBuilder<HomeBloc, HomeState>(
         buildWhen: (previous, current) =>
             current is OngoingTripLoaded ||
@@ -110,21 +114,33 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             print('home screen ongoing trip: ${state.trip.rideId}');
             // Display ongoing trip notification at the top with light green background
             return Positioned(
-              top: 80, // Position below the top bar
+              top: 110.h, // Position below the top bar
               left: 0,
               right: 0,
               child: GestureDetector(
-                onTap: () {
+                onTap: () async {
                   // Navigate to trip details or show more details
                   print('Ongoing trip clicked: ${state.trip.rideId}');
-                  // Example: context.read<Navigation>().navigateTo('/ongoing_trip_details/${state.trip.rideId}');
+                  print(state.trip.mode.toString() == 'Driver');
+                  if (state.trip.mode == 'Driver') {
+                    context
+                        .read<Navigation>()
+                        .navigateTo('/ride_tracking', arguments: {
+                      'rideId': state.trip.rideId,
+                      'coords': await coordsDataSource
+                          .fetchRouteCoordinates(state.trip.rideId),
+                    });
+                  } else if (state.trip.mode == 'passenger') {
+                    print("stupid passenger");
+                  }
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   padding:
                       const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   decoration: BoxDecoration(
-                    color: Colors.green[100], // Light green background
+                    color: theme.secondaryHeaderColor
+                        .withOpacity(0.3), // Light green background
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
@@ -138,22 +154,22 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     children: [
                       Icon(
                         Icons.directions_car,
-                        color: Colors.green[800], // Dark green icon
+                        color: theme.primaryColor, // Dark green icon
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'You have ongoing ride: ${state.trip.rideId} as ${state.trip.role}',
-                          style: TextStyle(
-                            color: Colors.green[800], // Dark green text
-                            fontWeight: FontWeight.bold,
+                          'You have ongoing ride  as ${state.trip.mode}: ${state.trip.rideId}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.primaryColorDark,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
                       Icon(
                         Icons.arrow_forward_ios,
-                        size: 16,
-                        color: Colors.green[800], // Dark green icon
+                        size: 16.sp,
+                        color: theme.primaryColorDark, // Dark green icon
                       ),
                     ],
                   ),

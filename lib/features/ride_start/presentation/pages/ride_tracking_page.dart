@@ -38,8 +38,9 @@ class LocationServiceMonitor {
 
 class RideTrackingScreen extends StatefulWidget {
   final String rideId;
+  final List<List<double>>? coords;
 
-  const RideTrackingScreen({super.key, required this.rideId});
+  const RideTrackingScreen({super.key, required this.rideId, this.coords});
 
   @override
   State<RideTrackingScreen> createState() => _RideTrackingScreenState();
@@ -59,7 +60,6 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
   int? _mapViewId;
   RidestartDataModel? _rideData;
   bool _isRideTrackerInitialized = false;
-  List<List<double>>? coords;
 
   @override
   void initState() {
@@ -161,9 +161,13 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
           'lat': _rideData!.destination.coords[0],
           'lng': _rideData!.destination.coords[1],
         },
-        'routeCoords': coords ?? [],
+        'routeCoords': widget.coords ?? [],
         'passengers': passengers,
       });
+
+      if (widget.coords != null) {
+        print('Route coordinates from home screen: ${widget.coords}');
+      }
 
       await _mapChannel.invokeMethod('fitRouteToScreen', {'viewId': viewId});
       setState(() => _isMapReady = true);

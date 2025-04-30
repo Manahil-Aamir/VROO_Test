@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 
 class OngoingEntity extends Equatable {
-  final String role;
+  final String mode;
   final String rideId;
 
   const OngoingEntity({
-    required this.role,
+    required this.mode,
     required this.rideId,
   });
 
   @override
-  List<Object> get props => [role, rideId];
+  List<Object> get props => [mode, rideId];
 }

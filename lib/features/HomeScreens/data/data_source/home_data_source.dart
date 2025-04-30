@@ -74,7 +74,7 @@ class HomeDataSourceImpl implements HomeDataSource {
         } else {
           return OngoingModel(
             rideId: 'sample_id',
-            role: 'sample_status',
+            mode: 'sample_status',
           );
         }
       } else {

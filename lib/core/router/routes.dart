@@ -764,10 +764,12 @@ class Routes {
       case ride_tracking:
         final arguments = settings.arguments as Map<String, dynamic>;
         final id = arguments['rideId'] as String;
+        final coords = arguments['coords'] as List<List<double>>?;
         return MaterialPageRoute(
           builder: (_) => MultiProvider(
-              providers: RideStartDependencyInjection.init(),
-              child: RideTrackingScreen(rideId: id)),
+            providers: RideStartDependencyInjection.init(),
+            child: RideTrackingScreen(rideId: id, coords: coords),
+          ),
         );
       default:
         return MaterialPageRoute(
