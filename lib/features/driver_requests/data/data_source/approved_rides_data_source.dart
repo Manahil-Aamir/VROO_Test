@@ -5,7 +5,8 @@ import '../../../../core/utils/constant/api_constants.dart';
 import '../model/approved_rides_model.dart';
 
 abstract class ApprovedRidesDataSource {
-  Future<List<ApprovedRidesModel>> getApprovedRides(String rideId, String token);
+  Future<List<ApprovedRidesModel>> getApprovedRides(
+      String rideId, String token);
 }
 
 class ApprovedRidesRemoteDataSource implements ApprovedRidesDataSource {
@@ -14,7 +15,8 @@ class ApprovedRidesRemoteDataSource implements ApprovedRidesDataSource {
   ApprovedRidesRemoteDataSource(this.client);
 
   @override
-  Future<List<ApprovedRidesModel>> getApprovedRides(String rideId, String token) async {
+  Future<List<ApprovedRidesModel>> getApprovedRides(
+      String rideId, String token) async {
     try {
       print('Fetching approved ride details for ride ID: $rideId');
       final response = await client.get(

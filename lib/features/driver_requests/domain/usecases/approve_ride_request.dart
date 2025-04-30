@@ -6,6 +6,7 @@ class ApproveRideRequest {
   ApproveRideRequest(this.repository);
 
   Future<void> execute(String rideRequestId, String rideId) async {
+    print("Approving ride request with ID: $rideRequestId for ride ID: $rideId");
     await repository.approveRideRequest(rideRequestId, rideId);
   }
 }

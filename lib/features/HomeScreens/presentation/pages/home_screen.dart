@@ -19,24 +19,36 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    context.read<HomeBloc>().add(LoadUserEvent());
-    _printToken();
+    WidgetsBinding.instance.addObserver(this);
+    _initializeHomeScreen();
   }
 
-  Future<void> _printToken() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final token = await user.getIdToken();
-      print('User ID Token: $token');
-    } else {
-      print('No user logged in');
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // When app comes to foreground, check for ongoing trips
+    if (state == AppLifecycleState.resumed) {
+      context.read<HomeBloc>().add(CheckOngoingTripEvent());
     }
+  }
+
+  Future<void> _initializeHomeScreen() async {
+    // Load user data first
+    context.read<HomeBloc>().add(LoadUserEvent());
+
+    // Check for ongoing trips
+    context.read<HomeBloc>().add(CheckOngoingTripEvent());
   }
 
   @override
@@ -57,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildMapContent(),
             TopBarWidget(scaffoldKey: _scaffoldKey),
             const LocationSelectionButtonsWidget(),
+            _buildOngoingTripOverlay(),
           ],
         ),
         bottomNavigationBar: CustomBottomNavBar(
@@ -71,12 +84,84 @@ class _HomeScreenState extends State<HomeScreen> {
       listener: (context, state) {
         if (state is HomeLogoutSuccess) {
           context.read<Navigation>().navigateTo('/sign_in');
+        } else if (state is OngoingTripError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
         }
       },
       builder: (context, state) {
         print('HomeState: $state');
-
         return const NativeGoogleMap();
+      },
+    );
+  }
+
+  Widget _buildOngoingTripOverlay() {
+    return BlocBuilder<HomeBloc, HomeState>(
+      buildWhen: (previous, current) =>
+          current is OngoingTripLoaded ||
+          current is OngoingTripLoading ||
+          current is NoOngoingTripState ||
+          current is OngoingTripError,
+      builder: (context, state) {
+        if (state is OngoingTripLoaded && state.trip.rideId != 'sample_id') {
+          // Display ongoing trip notification at the top with light green background
+          return Positioned(
+            top: 80, // Position below the top bar
+            left: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to trip details or show more details
+                print('Ongoing trip clicked: ${state.trip.rideId}');
+                // Example: context.read<Navigation>().navigateTo('/ongoing_trip_details/${state.trip.rideId}');
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.green[100], // Light green background
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 6,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.directions_car,
+                      color: Colors.green[800], // Dark green icon
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'You have ongoing ride: ${state.trip.rideId} as ${state.trip.role}',
+                        style: TextStyle(
+                          color: Colors.green[800], // Dark green text
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: Colors.green[800], // Dark green icon
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
+        // Don't show anything if there's no ongoing trip or it's a sample
+        return const SizedBox.shrink();
       },
     );
   }
@@ -114,7 +199,7 @@ class NativeGoogleMap extends StatelessWidget {
       creationParams: {
         'showMarkersByDefault': false, // Explicitly disable markers
       },
-      creationParamsCodec: const StandardMessageCodec(), // Add this line
+      creationParamsCodec: const StandardMessageCodec(),
     );
   }
 }

@@ -59,6 +59,7 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
   int? _mapViewId;
   RidestartDataModel? _rideData;
   bool _isRideTrackerInitialized = false;
+  List<List<double>>? coords;
 
   @override
   void initState() {
@@ -160,7 +161,7 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
           'lat': _rideData!.destination.coords[0],
           'lng': _rideData!.destination.coords[1],
         },
-        'routeCoords': [],
+        'routeCoords': coords ?? [],
         'passengers': passengers,
       });
 
