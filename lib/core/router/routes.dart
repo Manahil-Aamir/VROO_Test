@@ -79,7 +79,7 @@ class Routes {
   static const String sign_up = '/sign_up';
   static const String sign_in = '/sign_in';
   static const String emailVerification = '/email-verification';
-  static const String profile = '/profile';
+  static const String create_user = '/create_user';
   static const String home = '/home';
   static const String location = '/location';
   static const String chat = '/chat';
@@ -707,7 +707,7 @@ class Routes {
             builder: (_) => MultiProvider(
                 providers: AuthDependencyInjection.init(),
                 child: const EmailVerificationScreen()));
-      case profile:
+      case create_user:
         return MaterialPageRoute(
             builder: (_) => MultiProvider(
                 providers: CreateUserDependencyInjection.init(),

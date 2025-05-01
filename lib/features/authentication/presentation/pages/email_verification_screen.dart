@@ -20,8 +20,7 @@ class EmailVerificationScreen extends StatelessWidget {
       body: BlocConsumer<EmailVerificationBloc, EmailVerificationState>(
         listener: (context, state) {
           if (state is EmailVerificationSuccess) {
-            context.read<Navigation>().navigateTo('/profile');
-            // Navigator.pushReplacementNamed(context, Routes.profile);
+            context.read<Navigation>().navigateTo('/create_user');
           } else if (state is EmailVerificationFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

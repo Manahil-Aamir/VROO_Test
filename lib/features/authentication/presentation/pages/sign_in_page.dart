@@ -24,9 +24,15 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _obscurePassword = true; 
-
+  bool _obscurePassword = true;
   bool _isLoginMode = true;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,23 +41,20 @@ class _SignInPageState extends State<SignInPage> {
 
     return WillPopScope(
       onWillPop: () async {
-        // If in forgot password mode, just return to login mode
         if (!_isLoginMode) {
           setState(() => _isLoginMode = true);
           return false;
         }
         
-        // Only show exit dialog in login mode
         bool exitApp = await DialogUtil.showExitDialog(context);
         if (exitApp) {
-          SystemNavigator.pop(); // Closes the app
+          SystemNavigator.pop();
         }
-        return false; // Prevents the default back action
+        return false;
       },
       child: Scaffold(
         appBar: AppBarNoIcon(
           heading: headingTitle,
-          // Add a back button when in forgot password mode
           leading: !_isLoginMode 
               ? IconButton(
                   icon: Icon(Icons.arrow_back),
@@ -69,7 +72,7 @@ class _SignInPageState extends State<SignInPage> {
                   content: Text('Login Successful!'),
                   backgroundColor: theme.secondaryHeaderColor,
                   duration: Duration(seconds: 3),
-                ),
+                ),  
               );
               context.read<Navigation>().navigateTo('/home');
               await UserPreferences.saveUser(state.user);
@@ -90,7 +93,6 @@ class _SignInPageState extends State<SignInPage> {
                   duration: Duration(seconds: 3),
                 ),
               );
-              // Return to login mode after successful password reset
               setState(() => _isLoginMode = true);
             } else if (state is AuthPasswordResetFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -114,6 +116,11 @@ class _SignInPageState extends State<SignInPage> {
                   InputField(
                     labelText: 'Email',
                     controller: _emailController,
+                    // Allow whitespace during input
+                    keyboardType: TextInputType.emailAddress,
+                    // inputFormatters: [
+                    //   // Don't restrict whitespace during input
+                    // ],
                   ),
                   SizedBox(height: 20.h),
       
@@ -122,12 +129,11 @@ class _SignInPageState extends State<SignInPage> {
                       labelText: 'Password',
                       controller: _passwordController,
                       obscure: _obscurePassword,
-                      // Added eye icon toggle
                       suffixIcon: GestureDetector(
                         onTap: () => setState(() => _obscurePassword = !_obscurePassword),
                         child: Icon(
                           _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                          color: Theme.of(context).primaryColor, // Set primary color
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ),
@@ -177,21 +183,24 @@ class _SignInPageState extends State<SignInPage> {
                       ],
                     ),
       
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 330.h),
       
                   GradientButton(
                     onTap: () {
+                      // Trim whitespace only when submitting
+                      final trimmedEmail = _emailController.text.trim();
+                      
                       if (_isLoginMode) {
                         context.read<SignInBloc>().add(
                           LoginEvent(
-                            email: _emailController.text.trim(),
+                            email: trimmedEmail,
                             password: _passwordController.text.trim(),
                           ),
                         );
                       } else {
                         context.read<SignInBloc>().add(
                           ForgotPasswordEvent(
-                            email: _emailController.text.trim(),
+                            email: trimmedEmail,
                           ),
                         );
                       }
