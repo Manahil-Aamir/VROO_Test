@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:vroo_test/features/ride_start/domain/entities/address_entity.dart';
 
 class RidingPassengerEntity extends Equatable {
+  final String? review;
   final String? riderId;
   final String status;
   final String rideRequestId;
@@ -18,6 +19,7 @@ class RidingPassengerEntity extends Equatable {
   final Address destination;
 
   const RidingPassengerEntity({
+    this.review,
     this.riderId,
     required this.status,
     required this.rideRequestId,
@@ -35,6 +37,7 @@ class RidingPassengerEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+        review,
         riderId,
         status,
         rideRequestId,

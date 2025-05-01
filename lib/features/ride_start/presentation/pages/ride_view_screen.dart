@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 import '../../../HomeScreens/data/data_source/coords_data_source.dart';
 import '../../data/models/rider_view_model.dart';
@@ -106,20 +107,20 @@ class _RideTrackingScreenState extends State<RideViewScreen>
       await _mapChannel.invokeMethod('initializeMap', {
         'viewId': viewId,
         'source': {
-          'lat': _rideData!.passengerData?.source.coords[0],
-          'lng': _rideData!.passengerData?.source.coords[1],
+          'lat': _rideData!.passengerData.source.coords[0],
+          'lng': _rideData!.passengerData.source.coords[1],
         },
         'destination': {
-          'lat': _rideData!.passengerData?.destination.coords[0],
-          'lng': _rideData!.passengerData?.destination.coords[0],
+          'lat': _rideData!.passengerData.destination.coords[0],
+          'lng': _rideData!.passengerData.destination.coords[0],
         },
         'routeCoords': _currentRouteCoords,
         'passengers': [], // Empty as this is rider view
       });
       print(
-          'Source: lat=${_rideData!.passengerData?.source.coords[0]}, lng=${_rideData!.passengerData?.source.coords[1]}');
+          'Source: lat=${_rideData!.passengerData.source.coords[0]}, lng=${_rideData!.passengerData.source.coords[1]}');
       print(
-          'Destination: lat=${_rideData!.passengerData?.destination.coords[0]}, lng=${_rideData!.passengerData?.destination.coords[1]}');
+          'Destination: lat=${_rideData!.passengerData.destination.coords[0]}, lng=${_rideData!.passengerData.destination.coords[1]}');
 
       await _mapChannel.invokeMethod('fitRouteToScreen', {'viewId': viewId});
       setState(() => _isMapReady = true);
@@ -252,9 +253,9 @@ class _RideTrackingScreenState extends State<RideViewScreen>
     return AndroidView(
       viewType: 'ride_tracking_map',
       creationParams: <String, dynamic>{
-        'initialLat': _rideData!.passengerData?.source.coords[0] ??
+        'initialLat': _rideData!.passengerData.source.coords[0] ??
             _rideData!.source.coords[0],
-        'initialLng': _rideData!.passengerData?.source.coords[1] ??
+        'initialLng': _rideData!.passengerData.source.coords[1] ??
             _rideData!.source.coords[1],
       },
       creationParamsCodec: const StandardMessageCodec(),
@@ -305,51 +306,132 @@ class _RideTrackingScreenState extends State<RideViewScreen>
 }
 
 // Bottom sheet to display driver and ride details
-class RideDetailsBottomSheet extends StatelessWidget {
+class RideDetailsBottomSheet extends StatefulWidget {
   final RideViewModel rideData;
-
   const RideDetailsBottomSheet({
     super.key,
     required this.rideData,
   });
 
   @override
+  State<RideDetailsBottomSheet> createState() => _RideDetailsBottomSheetState();
+}
+
+class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
+  bool _isExpanded = false;
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final expectedArrival = _formatDateTime(rideData.expectedArrivalTime);
+    final modalHeight =
+        _isExpanded ? MediaQuery.of(context).size.height * 0.85 : 320.h;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: Offset(0, -2),
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      height: modalHeight,
+      child: GestureDetector(
+        onTap: () => setState(() => _isExpanded = !_isExpanded),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, -2),
+              ),
+            ],
           ),
-        ],
+          child: _buildModalContent(context),
+        ),
       ),
-      padding: EdgeInsets.all(16),
+    );
+  }
+
+  Widget _buildModalContent(BuildContext context) {
+    final theme = Theme.of(context);
+    final expectedArrival =
+        _formatDateTime(widget.rideData.expectedArrivalTime);
+
+    return SingleChildScrollView(
+      physics: const ClampingScrollPhysics(),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildDriverInfo(),
-          Divider(height: 24),
-          _buildRideInfo(),
-          if (rideData.otherPassengers != null &&
-              rideData.otherPassengers!.isNotEmpty) ...[
-            Divider(height: 24),
-            ..._buildOtherPassengersInfo(),
+          // Handle bar
+          Center(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 12.h),
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+            ),
+          ),
+
+          // Title
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Ride Details',
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 16.h),
+
+          // Driver Info
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: _buildDriverInfo(),
+          ),
+
+          Divider(height: 24.h, thickness: 1),
+
+          // Ride Info
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: _buildRideInfo(),
+          ),
+
+          if (widget.rideData.otherPassengers != null &&
+              widget.rideData.otherPassengers!.isNotEmpty) ...[
+            Divider(height: 24.h, thickness: 1),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: _buildOtherPassengersInfo(),
+              ),
+            ),
           ],
-          if (rideData.passengerData != null) ...[
-            Divider(height: 24),
-            _buildPassengerInfo(),
+
+          ...[
+            Divider(height: 24.h, thickness: 1),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: _buildPassengerInfo(),
+            ),
           ],
+
+          SizedBox(height: 16.h),
         ],
       ),
     );
@@ -360,23 +442,29 @@ class RideDetailsBottomSheet extends StatelessWidget {
       children: [
         CircleAvatar(
           backgroundColor: Colors.grey.shade200,
-          radius: 25,
+          radius: 25.r,
           child: Icon(Icons.person, size: 30, color: Colors.grey.shade700),
         ),
-        SizedBox(width: 16),
+        SizedBox(width: 16.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Driver: ${rideData.driverName}',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                'Driver: ${widget.rideData.driverName}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.sp,
+                ),
               ),
-              SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Text(
-                'Expected Arrival: ${_formatDateTime(rideData.expectedArrivalTime)}',
-                style:
-                    TextStyle(color: Colors.green, fontWeight: FontWeight.w500),
+                'Expected Arrival: ${_formatDateTime(widget.rideData.expectedArrivalTime)}',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14.sp,
+                ),
               ),
             ],
           ),
@@ -390,38 +478,42 @@ class RideDetailsBottomSheet extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Ride Details',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          'Route Details',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15.sp,
+          ),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 12.h),
         _buildAddressRow(
           icon: Icons.location_on,
           title: 'From:',
-          address: rideData.source.address,
+          address: widget.rideData.source.address,
           color: Colors.green,
         ),
-        SizedBox(height: 12),
+        SizedBox(height: 12.h),
         _buildAddressRow(
           icon: Icons.flag,
           title: 'To:',
-          address: rideData.destination.address,
+          address: widget.rideData.destination.address,
           color: Colors.red,
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 12.h),
         Row(
           children: [
             Expanded(
               child: _buildInfoBox(
                 title: 'Distance',
-                value: '${(rideData.distance / 1000).toStringAsFixed(1)} km',
+                value:
+                    '${(widget.rideData.distance / 1000).toStringAsFixed(1)} km',
                 icon: Icons.route,
               ),
             ),
-            SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: _buildInfoBox(
                 title: 'Duration',
-                value: _formatDuration(rideData.duration),
+                value: _formatDuration(widget.rideData.duration),
                 icon: Icons.access_time,
               ),
             ),
@@ -432,32 +524,33 @@ class RideDetailsBottomSheet extends StatelessWidget {
   }
 
   Widget _buildPassengerInfo() {
-    final passenger = rideData.passengerData;
-
-    if (passenger == null) return SizedBox.shrink();
+    final passenger = widget.rideData.passengerData;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Your Trip',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15.sp,
+          ),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 12.h),
         _buildAddressRow(
           icon: Icons.location_on,
           title: 'Pickup:',
           address: passenger.source.address,
           color: Colors.blue,
         ),
-        SizedBox(height: 12),
+        SizedBox(height: 12.h),
         _buildAddressRow(
           icon: Icons.flag,
           title: 'Dropoff:',
           address: passenger.destination.address,
           color: Colors.purple,
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 12.h),
         Row(
           children: [
             Expanded(
@@ -468,7 +561,7 @@ class RideDetailsBottomSheet extends StatelessWidget {
                 icon: Icons.alt_route,
               ),
             ),
-            SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: _buildInfoBox(
                 title: 'Detour Time',
@@ -483,31 +576,38 @@ class RideDetailsBottomSheet extends StatelessWidget {
   }
 
   List<Widget> _buildOtherPassengersInfo() {
-    if (rideData.otherPassengers == null || rideData.otherPassengers!.isEmpty) {
+    if (widget.rideData.otherPassengers == null ||
+        widget.rideData.otherPassengers!.isEmpty) {
       return [];
     }
 
     return [
       Text(
         'Other Passengers',
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 15.sp,
+        ),
       ),
-      SizedBox(height: 8),
-      ...rideData.otherPassengers!.map((passenger) {
+      SizedBox(height: 8.h),
+      ...widget.rideData.otherPassengers!.map((passenger) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
+          padding: EdgeInsets.only(bottom: 8.h),
           child: Row(
             children: [
               CircleAvatar(
                 backgroundColor: Colors.grey.shade200,
-                radius: 16,
-                child:
-                    Icon(Icons.person, size: 16, color: Colors.grey.shade700),
+                radius: 16.r,
+                child: Icon(
+                  Icons.person,
+                  size: 16.sp,
+                  color: Colors.grey.shade700,
+                ),
               ),
-              SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Text(
                 passenger.name,
-                style: TextStyle(fontSize: 14),
+                style: TextStyle(fontSize: 14.sp),
               ),
             ],
           ),
@@ -525,8 +625,8 @@ class RideDetailsBottomSheet extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: color, size: 18),
-        SizedBox(width: 10),
+        Icon(icon, color: color, size: 18.sp),
+        SizedBox(width: 10.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -535,12 +635,12 @@ class RideDetailsBottomSheet extends StatelessWidget {
                 title,
                 style: TextStyle(
                   color: Colors.grey.shade600,
-                  fontSize: 12,
+                  fontSize: 12.sp,
                 ),
               ),
               Text(
                 address,
-                style: TextStyle(fontSize: 14),
+                style: TextStyle(fontSize: 14.sp),
               ),
             ],
           ),
@@ -555,33 +655,33 @@ class RideDetailsBottomSheet extends StatelessWidget {
     required IconData icon,
   }) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(10.h),
       decoration: BoxDecoration(
         color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 14, color: Colors.grey.shade700),
-              SizedBox(width: 4),
+              Icon(icon, size: 14.sp, color: Colors.grey.shade700),
+              SizedBox(width: 4.w),
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   color: Colors.grey.shade700,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             value,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 14,
+              fontSize: 14.sp,
             ),
           ),
         ],
@@ -590,9 +690,7 @@ class RideDetailsBottomSheet extends StatelessWidget {
   }
 
   String _formatDateTime(DateTime dateTime) {
-    final hour = dateTime.hour.toString().padLeft(2, '0');
-    final minute = dateTime.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
+    return DateFormat('h:mm a').format(dateTime);
   }
 
   String _formatDuration(int seconds) {

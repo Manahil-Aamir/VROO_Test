@@ -4,6 +4,7 @@ import '../../domain/entities/riding_passenger_entity.dart';
 
 class RidingPassengerModel extends RidingPassengerEntity {
   const RidingPassengerModel({
+    super.review,
     super.riderId,
     required super.status,
     required super.rideRequestId,
@@ -18,9 +19,30 @@ class RidingPassengerModel extends RidingPassengerEntity {
     required super.source,
     required super.destination,
   });
-
   factory RidingPassengerModel.fromMap(Map<String, dynamic> json) {
+    final nullValues = <String>[];
+
+    if (json['review'] == null) nullValues.add('review');
+    if (json['riderId'] == null) nullValues.add('riderId');
+    if (json['status'] == null) nullValues.add('status');
+    if (json['rideRequestId'] == null) nullValues.add('rideRequestId');
+    if (json['fare'] == null) nullValues.add('fare');
+    if (json['eta'] == null) nullValues.add('eta');
+    if (json['sameSource'] == null) nullValues.add('sameSource');
+    if (json['sameDestination'] == null) nullValues.add('sameDestination');
+    if (json['gender'] == null) nullValues.add('gender');
+    if (json['detourDistance'] == null) nullValues.add('detourDistance');
+    if (json['detourDuration'] == null) nullValues.add('detourDuration');
+    if (json['username'] == null) nullValues.add('username');
+    if (json['source'] == null) nullValues.add('source');
+    if (json['destination'] == null) nullValues.add('destination');
+
+    if (nullValues.isNotEmpty) {
+      print('The following keys have null values: ${nullValues.join(', ')}');
+    }
+
     return RidingPassengerModel(
+      review: json['review'] != null ? json['review'].toString() : '',
       riderId: json['riderId'],
       status: json['status'] ?? '',
       rideRequestId: json['rideRequestId'] ?? '',
@@ -39,6 +61,7 @@ class RidingPassengerModel extends RidingPassengerEntity {
 
   Map<String, dynamic> toMap() {
     return {
+      'review': review,
       'riderId': riderId,
       'status': status,
       'rideRequestId': rideRequestId,

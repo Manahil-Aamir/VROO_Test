@@ -4,6 +4,7 @@ import 'package:vroo_test/features/ride_start/domain/entities/gender_preference_
 import 'package:vroo_test/features/ride_start/domain/entities/others_entity.dart';
 import 'package:vroo_test/features/ride_start/domain/entities/riding_passenger_entity.dart';
 
+import '../../../rider_journey/data/model/matching_rides_model.dart';
 import 'address_entity.dart';
 
 class RideViewEntity extends Equatable {
@@ -31,8 +32,9 @@ class RideViewEntity extends Equatable {
   final String status;
   final DateTime expectedArrivalTime;
   final List<List<double>> routeCoords;
-  final RidingPassengerEntity? passengerData;
+  final RidingPassengerEntity passengerData;
   final List<OthersEntity>? otherPassengers;
+  final CarDetailsModel carDetails;
 
   const RideViewEntity({
     required this.id,
@@ -59,8 +61,9 @@ class RideViewEntity extends Equatable {
     required this.status,
     required this.expectedArrivalTime,
     required this.routeCoords,
-    this.passengerData,
+    required this.passengerData,
     this.otherPassengers,
+    required this.carDetails,
   });
 
   @override
@@ -91,5 +94,6 @@ class RideViewEntity extends Equatable {
         routeCoords,
         passengerData,
         otherPassengers,
+        carDetails,
       ];
 }

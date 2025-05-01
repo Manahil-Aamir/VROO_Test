@@ -25,19 +25,18 @@ class RideViewRemoteDataSource implements RideViewDataSource {
 
     try {
       final response = await client.get(url, headers: headers);
+      print('response body: ${response.body}');
       final jsonData = json.decode(response.body);
-      jsonData.forEach((key, value) {
-        if (value == null) {
-          print('Null value found for key: $key');
-        }
-      });
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
-        // print('Ride data: $jsonData');
+
         print('rideeeerrrrr dataa');
 
         print('data loaded');
+        print(jsonData['data']);
+        RideViewModel model = RideViewModel.fromMap(jsonData['data']);
+        print('RideViewModel: ${model.carDetails}');
 
         return RideViewModel.fromMap(jsonData['data']);
       } else {
