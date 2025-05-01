@@ -110,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             current is NoOngoingTripState ||
             current is OngoingTripError,
         builder: (context, state) {
-          if (state is OngoingTripLoaded) {
+          if (state is OngoingTripLoaded && state.trip.rideId != 'sample_id') {
             print('home screen ongoing trip: ${state.trip.rideId}');
             // Display ongoing trip notification at the top with light green background
             return Positioned(
