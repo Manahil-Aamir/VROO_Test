@@ -29,6 +29,12 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     context.read<ActiveRidesDriverBloc>().add(FetchActiveRidesDriver());
+    _initilizeActiveRidesScreen();
+  }
+
+  Future<void> _initilizeActiveRidesScreen() async {
+    // Check for ongoing trips
+    context.read<ActiveRidesDriverBloc>().add(FetchActiveRidesDriver());
   }
 
   @override
