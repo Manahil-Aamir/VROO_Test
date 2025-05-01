@@ -1,8 +1,9 @@
 import 'package:vroo_test/features/ride_start/data/models/inride_passenger_model.dart';
 import 'package:vroo_test/features/ride_start/domain/entities/ridestart_data_entity.dart';
 
+import '../../../cars/data/model/carr_model.dart';
 import '../../../driver_requests/data/model/active_ride_model.dart';
-import '../../../rider_journey/data/model/matching_rides_model.dart';
+import '../../../matching/data/models/matching_rides_model.dart';
 import '../../../rider_journey/data/model/ride_journey_model.dart';
 import 'address_model.dart';
 
@@ -50,9 +51,9 @@ class RidestartDataModel extends RidestartDataEntity {
           map['distance'] != null ? (map['distance'] as num).toDouble() : 0.0,
       duration:
           map['duration'] != null ? (map['duration'] as num).toDouble() : 0.0,
-      preferences: RidePreferencesModel.fromMap(map['preferences']),
+      preferences: RidePreferencesModel.fromJson(map['preferences']),
       isRecurring: map['isRecurring'] ?? false,
-      car: CarDetailsModel.fromMap(map['car']),
+      car: Car.fromJson(map['car']),
       recurringRides: map['recurringRides'] != null
           ? List<dynamic>.from(map['recurringRides'])
           : [],
@@ -61,7 +62,7 @@ class RidestartDataModel extends RidestartDataEntity {
           : [],
       fare: map['fare'] != null ? (map['fare'] as num).toDouble() : 0.0,
       status: map['status'] ?? '',
-      environmentStats: EnvironmentStatsModel.fromMap(map['environmentStats']),
+      environmentStats: EnvironmentStatsModel.fromJson(map['environmentStats']),
       expectedArrivalTime: map['expectedArrivalTime'] != null
           ? DateTime.parse(map['expectedArrivalTime'])
           : DateTime.now(),
@@ -93,14 +94,14 @@ class RidestartDataModel extends RidestartDataEntity {
       'maxArrivalTime': maxArrivalTime,
       'distance': distance,
       'duration': duration,
-      'preferences': preferences.toMap(),
+      'preferences': preferences.toJson(),
       'isRecurring': isRecurring,
-      'car': car.toMap(),
+      'car': car.toJson(),
       'recurringRides': recurringRides,
       'paymentMethod': paymentMethod,
       'fare': fare,
       'status': status,
-      'environmentStats': environmentStats.toMap(),
+      'environmentStats': environmentStats.toJson(),
       'expectedArrivalTime': expectedArrivalTime,
       'routeCoords': routeCoords
           .map((coords) => coords.map((coord) => coord).toList())

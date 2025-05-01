@@ -1,7 +1,9 @@
 import 'package:vroo_test/features/ride_start/data/models/address_model.dart';
 import 'package:vroo_test/features/ride_start/data/models/inride_passenger_model.dart';
-import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/ride_journey_model.dart';
+
+import '../../../cars/data/model/carr_model.dart';
+import '../../../matching/data/models/matching_rides_model.dart';
 
 class RidestartDataEntity {
   final String id;
@@ -16,7 +18,7 @@ class RidestartDataEntity {
   final double duration;
   final RidePreferencesModel preferences;
   final bool isRecurring;
-  final CarDetailsModel car;
+  final Car car;
   final List<dynamic> recurringRides; // Adjust type if needed
   final List<String> paymentMethod;
   final double fare;

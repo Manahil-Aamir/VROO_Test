@@ -4,7 +4,7 @@ import 'package:vroo_test/features/ride_start/data/models/others_model.dart';
 import 'package:vroo_test/features/ride_start/data/models/riding_passenger_model.dart';
 import 'package:vroo_test/features/ride_start/domain/entities/rider_view_entity.dart';
 
-import '../../../rider_journey/data/model/matching_rides_model.dart';
+import '../../../cars/data/model/carr_model.dart';
 
 class RideViewModel extends RideViewEntity {
   const RideViewModel({
@@ -152,7 +152,7 @@ class RideViewModel extends RideViewEntity {
       passengerData: RidingPassengerModel.fromMap(json['passengerData'] ?? {}),
       otherPassengers: List<OthersModel>.from(
           json['otherPassengers']?.map((x) => OthersModel.fromMap(x)) ?? []),
-      carDetails: CarDetailsModel.fromMap(json['car'] ?? {}),
+      carDetails: Car.fromJson(json['car'] ?? {}),
     );
   }
 
@@ -186,7 +186,7 @@ class RideViewModel extends RideViewEntity {
       'otherPassengers':
           otherPassengers?.map((x) => (x as OthersModel).toMap()).toList() ??
               [],
-      'carDetails': (carDetails).toMap(),
+      'carDetails': (carDetails).toJson(),
     };
   }
 }
