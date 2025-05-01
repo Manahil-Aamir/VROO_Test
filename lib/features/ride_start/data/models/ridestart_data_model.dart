@@ -1,0 +1,111 @@
+import 'package:vroo_test/features/ride_start/data/models/inride_passenger_model.dart';
+import 'package:vroo_test/features/ride_start/domain/entities/ridestart_data_entity.dart';
+
+import '../../../driver_requests/data/model/active_ride_model.dart';
+import '../../../rider_journey/data/model/matching_rides_model.dart';
+import '../../../rider_journey/data/model/ride_journey_model.dart';
+import 'address_model.dart';
+
+class RidestartDataModel extends RidestartDataEntity {
+  RidestartDataModel({
+    required super.id,
+    required super.driverId,
+    required super.numOfSeats,
+    required super.date,
+    required super.source,
+    required super.destination,
+    required super.departureTime,
+    required super.maxArrivalTime,
+    required super.distance,
+    required super.duration,
+    required super.preferences,
+    required super.isRecurring,
+    required super.car,
+    required super.recurringRides,
+    required super.paymentMethod,
+    required super.fare,
+    required super.status,
+    required super.environmentStats,
+    required super.expectedArrivalTime,
+    required super.routeCoords,
+    required super.passengers,
+  });
+
+  factory RidestartDataModel.fromMap(Map<String, dynamic> map) {
+    print(map['passengers'].length);
+    return RidestartDataModel(
+      id: map['_id'],
+      driverId: map['driverId'],
+      numOfSeats: (map['numOfSeats'] ?? 0).toDouble(),
+      date: map['date'] != null ? DateTime.parse(map['date']) : DateTime.now(),
+      source: AddressModel.fromMap(map['source']),
+      destination: AddressModel.fromMap(map['destination']),
+      departureTime: map['departureTime'] != null
+          ? DateTime.parse(map['departureTime'])
+          : DateTime.now(),
+      maxArrivalTime: map['maxArrivalTime'] != null
+          ? DateTime.parse(map['maxArrivalTime'])
+          : DateTime.now(),
+      distance:
+          map['distance'] != null ? (map['distance'] as num).toDouble() : 0.0,
+      duration:
+          map['duration'] != null ? (map['duration'] as num).toDouble() : 0.0,
+      preferences: RidePreferencesModel.fromMap(map['preferences']),
+      isRecurring: map['isRecurring'] ?? false,
+      car: CarDetailsModel.fromMap(map['car']),
+      recurringRides: map['recurringRides'] != null
+          ? List<dynamic>.from(map['recurringRides'])
+          : [],
+      paymentMethod: map['paymentMethod'] != null
+          ? List<String>.from(map['paymentMethod'])
+          : [],
+      fare: map['fare'] != null ? (map['fare'] as num).toDouble() : 0.0,
+      status: map['status'] ?? '',
+      environmentStats: EnvironmentStatsModel.fromMap(map['environmentStats']),
+      expectedArrivalTime: map['expectedArrivalTime'] != null
+          ? DateTime.parse(map['expectedArrivalTime'])
+          : DateTime.now(),
+      routeCoords: map['routeCoords'] != null
+          ? List<List<double>>.from(
+              map['routeCoords'].map((coords) => List<double>.from(coords)))
+          : [],
+      passengers: (map['passengers'] != null &&
+              map['passengers'] is List &&
+              map['passengers'].any((p) => p != null && p.isNotEmpty))
+          ? List<InridePassengerModel>.from(
+              map['passengers']
+                  .where((p) => p != null && p.isNotEmpty)
+                  .map((passenger) => InridePassengerModel.fromMap(passenger)),
+            )
+          : [],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'driverId': driverId,
+      'numOfSeats': numOfSeats,
+      'date': date,
+      'source': source.toMap(),
+      'destination': destination.toMap(),
+      'departureTime': departureTime,
+      'maxArrivalTime': maxArrivalTime,
+      'distance': distance,
+      'duration': duration,
+      'preferences': preferences.toMap(),
+      'isRecurring': isRecurring,
+      'car': car.toMap(),
+      'recurringRides': recurringRides,
+      'paymentMethod': paymentMethod,
+      'fare': fare,
+      'status': status,
+      'environmentStats': environmentStats.toMap(),
+      'expectedArrivalTime': expectedArrivalTime,
+      'routeCoords': routeCoords
+          .map((coords) => coords.map((coord) => coord).toList())
+          .toList(),
+      'passengers': passengers.map((passenger) => passenger.toMap()).toList(),
+    };
+  }
+}

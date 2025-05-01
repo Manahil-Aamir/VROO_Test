@@ -16,6 +16,7 @@ class BackendLoginDataSourceImpl implements BackendLoginDataSource {
   @override
   Future<UserModel> notifyLogin(String authToken, String fcmToken) async {
     final url = Uri.parse('${ApiConstants.baseUrl}users/login');
+    print("logon login login login");
     final response = await client.post(
       url,
       headers: {
@@ -38,4 +39,3 @@ class BackendLoginDataSourceImpl implements BackendLoginDataSource {
     }
   }
 }
-

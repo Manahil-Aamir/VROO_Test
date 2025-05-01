@@ -198,5 +198,5 @@ Future<void> sendLocation(String sessionId, Position position) async {
     "lastUpdated": DateTime.now().toIso8601String(),
   });
 
-  print("✅ Location updated: ${position.latitude}, ${position.longitude}");
+  print("Location updated: ${position.latitude}, ${position.longitude}");
 }

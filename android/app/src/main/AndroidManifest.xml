@@ -55,6 +55,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+                <service
+            android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
+            android:foregroundServiceType="location"
+            android:exported="false" />
 <!-- Background service -->
 <service
     android:name=".ApplicationService"
@@ -62,8 +66,6 @@
     android:foregroundServiceType="location"
     android:enabled="true"
     android:exported="false" />
-    <service android:name="com.pravera.flutter_foreground_task.service.ForegroundService" />
-
 <service
     android:name="id.flutter.flutter_background_service.BackgroundService"
     android:permission="android.permission.FOREGROUND_SERVICE"

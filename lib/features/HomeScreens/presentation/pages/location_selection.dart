@@ -358,6 +358,7 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: appBar(heading: "Select Location"),
+      resizeToAvoidBottomInset: false,
       body: BlocProvider(
         create: (context) => context.read<LocationSelectionBloc>(),
         child: BlocListener<LocationSelectionBloc, LocationSelectionState>(
@@ -445,8 +446,9 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
       right: 0,
       bottom: 0,
       // When expanded, show more of the modal
-      height:
-          _isModalExpanded ? MediaQuery.of(context).size.height * 0.8 : 250.h,
+      height: _isModalExpanded
+          ? MediaQuery.of(context).size.height * 0.825
+          : MediaQuery.of(context).size.height * 0.35,
       child: GestureDetector(
         // Allow manual open/close with drag
         onVerticalDragEnd: (details) {

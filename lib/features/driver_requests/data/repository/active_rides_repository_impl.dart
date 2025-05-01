@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vroo_test/features/driver_requests/domain/entity/active_ride.dart';
+import '../../../ride_start/data/models/ride_start_model.dart';
+import '../../../ride_start/data/models/ridestart_data_model.dart';
 import '../../domain/repository/active_rides_repository.dart';
 import '../data_source/active_rides_data_source.dart';
 
@@ -25,5 +27,11 @@ class ActiveRidesDriverRepositoryImpl implements ActiveRidesDriverRepository {
   @override
   Future<void> cancelRide(String rideId) async {
     await dataSource.cancelRide(rideId, await getUserToken());
+  }
+
+  @override
+  Future<RidestartDataModel> getRideData(String rideId, String token) async {
+    final rideData = await dataSource.getRideData(rideId, token);
+    return rideData;
   }
 }

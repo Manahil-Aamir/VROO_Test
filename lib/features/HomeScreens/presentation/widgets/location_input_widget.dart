@@ -149,7 +149,7 @@ class _LocationInputFieldState extends State<LocationInputField> {
 
   Widget _buildSuggestionsListItems(LocationSelectionLoaded state) {
     return SizedBox(
-      height: 370.0.h, // Set a fixed height for the scrollable area
+      height: 300.0.h, // Set a fixed height for the scrollable area
       child: ListView.builder(
         shrinkWrap: true,
         itemCount: state.predictions.length,

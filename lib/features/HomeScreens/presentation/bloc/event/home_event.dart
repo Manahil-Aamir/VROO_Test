@@ -21,5 +21,11 @@ class LogoutEvent extends HomeEvent {
 
 class LoadUserEvent extends HomeEvent {
   @override
-  List<Object?> get props => [];  
+  List<Object?> get props => [];
+}
+
+// New event for the ongoing trip feature
+class CheckOngoingTripEvent extends HomeEvent {
+  @override
+  List<Object?> get props => [];
 }
