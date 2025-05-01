@@ -16,7 +16,7 @@ class RideViewRemoteDataSource implements RideViewDataSource {
 
   @override
   Future<RideViewModel> startRide(String rideId, String token) async {
-    final url = Uri.parse('${ApiConstants.baseUrl}driver/ride/data/$rideId');
+    final url = Uri.parse('${ApiConstants.baseUrl}rider/ride-data/$rideId');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
