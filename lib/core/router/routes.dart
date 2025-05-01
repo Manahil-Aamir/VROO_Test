@@ -7,8 +7,10 @@ import 'package:vroo_test/features/cars/presentation/pages/cars_screen.dart';
 import 'package:vroo_test/features/chat/domain/entity/chat_user.dart';
 import 'package:vroo_test/features/chat/presentation/pages/chat_detail_screen.dart';
 import 'package:vroo_test/features/ride_start/dependancy_injection/ridestart_di.dart';
+import 'package:vroo_test/features/ride_start/dependancy_injection/rideview_di.dart';
 import 'package:vroo_test/features/ride_start/presentation/pages/ride_static_page.dart';
 import 'package:vroo_test/features/ride_start/presentation/pages/ride_tracking_page.dart';
+import 'package:vroo_test/features/ride_start/presentation/pages/ride_view_screen.dart';
 import 'package:vroo_test/features/rider_journey/data/model/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
 import 'package:vroo_test/features/user_profile/presentation/pages/user_profile_page.dart';
@@ -93,6 +95,7 @@ class Routes {
   static const String ride_request_rider = '/ride_request_rider';
   static const String static_page = '/static_page';
   static const String ride_tracking = '/ride_tracking';
+  static const String rider_view = '/rider_view';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -769,6 +772,16 @@ class Routes {
           builder: (_) => MultiProvider(
             providers: RideStartDependencyInjection.init(),
             child: RideTrackingScreen(rideId: id, coords: coords),
+          ),
+        );
+      case rider_view:
+        final arguments = settings.arguments as Map<String, dynamic>;
+        final id = arguments['rideId'] as String;
+        final coords = arguments['coords'] as List<List<double>>?;
+        return MaterialPageRoute(
+          builder: (_) => MultiProvider(
+            providers: RideViewDependencyInjection.init(),
+            child: RideViewScreen(rideId: id, coords: coords),
           ),
         );
       default:

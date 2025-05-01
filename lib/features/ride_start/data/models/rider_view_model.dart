@@ -1,5 +1,6 @@
 import 'package:vroo_test/features/ride_start/data/models/address_model.dart';
 import 'package:vroo_test/features/ride_start/data/models/gender_preference_model.dart';
+import 'package:vroo_test/features/ride_start/data/models/others_model.dart';
 import 'package:vroo_test/features/ride_start/data/models/riding_passenger_model.dart';
 import 'package:vroo_test/features/ride_start/domain/entities/rider_view_entity.dart';
 
@@ -66,7 +67,7 @@ class RideViewModel extends RideViewEntity {
       passengerData: json['passengerData'] != null
           ? RidingPassengerModel.fromMap(json['passengerData'])
           : null,
-      otherPassengers: List<Map<String, dynamic>>.from(
+      otherPassengers: List<OthersModel>.from(
           json['otherPassengers']?.map((x) => x as Map<String, dynamic>) ?? []),
     );
   }
@@ -98,7 +99,9 @@ class RideViewModel extends RideViewEntity {
       'expectedArrivalTime': expectedArrivalTime.toIso8601String(),
       'routeCoords': routeCoords,
       'passengerData': (passengerData as RidingPassengerModel).toMap(),
-      'otherPassengers': otherPassengers,
+      'otherPassengers':
+          otherPassengers?.map((x) => (x as OthersModel).toMap()).toList() ??
+              [],
     };
   }
 }

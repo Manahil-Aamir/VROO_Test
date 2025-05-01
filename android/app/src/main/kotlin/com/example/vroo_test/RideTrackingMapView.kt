@@ -150,6 +150,60 @@ class RideTrackingMapView(
                 result.success(null)
             }
 
+            // Add this method within the onMethodCall function in your RideTrackingMapView.kt file
+// Inside the when (call.method) block, add this case:
+
+"updateRouteCoordinates" -> {
+    val data = call.arguments as? Map<*, *>
+    if (data != null) {
+        val viewId = data["viewId"] as? Int
+        val routeCoords = data["routeCoords"] as? List<*>
+        
+        if (routeCoords != null) {
+            Log.d("MapDebug", "Updating route coordinates with ${routeCoords.size} points")
+            
+            // Clear existing route points and add new ones
+            routePoints.clear()
+            
+            for (point in routeCoords) {
+                if (point is List<*> && point.size >= 2) {
+                    val lat = point[0] as? Double
+                    val lng = point[1] as? Double
+                    
+                    if (lat != null && lng != null) {
+                        routePoints.add(LatLng(lat, lng))
+                    }
+                }
+            }
+            
+            // Update the route polylines with new points
+            updateRoutePolylines()
+            
+            // If vehicle position is set, make sure it's at the latest point
+            if (routePoints.isNotEmpty() && vehiclePosition != null) {
+                val latestPoint = routePoints.last()
+                
+                // Calculate bearing if there are at least 2 points
+                val bearing = if (routePoints.size > 1) {
+                    val secondLastPoint = routePoints[routePoints.size - 2]
+                    calculateBearing(secondLastPoint, latestPoint)
+                } else {
+                    vehicleBearing // Keep current bearing if only one point
+                }
+                
+                // Update vehicle position
+                updateVehiclePosition(latestPoint, bearing)
+            }
+            
+            result.success(null)
+        } else {
+            result.error("INVALID_ARGS", "Missing or invalid route coordinates", null)
+        }
+    } else {
+        result.error("INVALID_ARGS", "Invalid arguments for updating route coordinates", null)
+    }
+}
+
             else -> result.notImplemented()
         }
     }

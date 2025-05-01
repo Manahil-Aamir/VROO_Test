@@ -130,8 +130,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       'coords': await coordsDataSource
                           .fetchRouteCoordinates(state.trip.rideId),
                     });
-                  } else if (state.trip.mode == 'passenger') {
+                  } else if (state.trip.mode == 'Rider') {
                     print("stupid passenger");
+
+                    context
+                        .read<Navigation>()
+                        .navigateTo('/rider_view', arguments: {
+                      'rideId': state.trip.rideId,
+                      'coords': await coordsDataSource
+                          .fetchRouteCoordinates(state.trip.rideId),
+                    });
                   }
                 },
                 child: Container(
