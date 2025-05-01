@@ -170,7 +170,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 290.h),
+                        SizedBox(height: 20.h),
                         GradientButton(
                           onTap: state is SignUpLoading
                               ? () {}

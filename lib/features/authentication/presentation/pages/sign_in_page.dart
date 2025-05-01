@@ -45,7 +45,7 @@ class _SignInPageState extends State<SignInPage> {
           setState(() => _isLoginMode = true);
           return false;
         }
-        
+
         bool exitApp = await DialogUtil.showExitDialog(context);
         if (exitApp) {
           SystemNavigator.pop();
@@ -55,7 +55,7 @@ class _SignInPageState extends State<SignInPage> {
       child: Scaffold(
         appBar: AppBarNoIcon(
           heading: headingTitle,
-          leading: !_isLoginMode 
+          leading: !_isLoginMode
               ? IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
@@ -72,7 +72,7 @@ class _SignInPageState extends State<SignInPage> {
                   content: Text('Login Successful!'),
                   backgroundColor: theme.secondaryHeaderColor,
                   duration: Duration(seconds: 3),
-                ),  
+                ),
               );
               context.read<Navigation>().navigateTo('/home');
               await UserPreferences.saveUser(state.user);
@@ -108,7 +108,7 @@ class _SignInPageState extends State<SignInPage> {
             if (state is AuthLoading) {
               return const Center(child: CircularProgressIndicator());
             }
-      
+
             return SingleChildScrollView(
               padding: EdgeInsets.all(16.w),
               child: Column(
@@ -123,21 +123,22 @@ class _SignInPageState extends State<SignInPage> {
                     // ],
                   ),
                   SizedBox(height: 20.h),
-      
                   if (_isLoginMode)
                     InputField(
                       labelText: 'Password',
                       controller: _passwordController,
                       obscure: _obscurePassword,
                       suffixIcon: GestureDetector(
-                        onTap: () => setState(() => _obscurePassword = !_obscurePassword),
+                        onTap: () => setState(
+                            () => _obscurePassword = !_obscurePassword),
                         child: Icon(
-                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ),
-      
                   if (_isLoginMode) SizedBox(height: 5.h),
                   if (_isLoginMode)
                     Align(
@@ -151,15 +152,13 @@ class _SignInPageState extends State<SignInPage> {
                         ),
                       ),
                     ),
-      
                   SizedBox(height: 14.h),
-      
                   if (_isLoginMode)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Does not have an account? ",
+                          "Don't have an account? ",
                           style: theme.textTheme.bodyLarge
                               ?.copyWith(color: theme.primaryColorDark),
                         ),
@@ -169,7 +168,8 @@ class _SignInPageState extends State<SignInPage> {
                               theme.primaryColor.withOpacity(0.1),
                             ),
                           ),
-                          onPressed: () => Navigator.pushNamed(context, '/sign_up'),
+                          onPressed: () =>
+                              Navigator.pushNamed(context, '/sign_up'),
                           child: Text(
                             'Sign Up',
                             style: theme.textTheme.bodyMedium?.copyWith(
@@ -182,27 +182,25 @@ class _SignInPageState extends State<SignInPage> {
                         ),
                       ],
                     ),
-      
-                  SizedBox(height: 330.h),
-      
+                  SizedBox(height: 20.h),
                   GradientButton(
                     onTap: () {
                       // Trim whitespace only when submitting
                       final trimmedEmail = _emailController.text.trim();
-                      
+
                       if (_isLoginMode) {
                         context.read<SignInBloc>().add(
-                          LoginEvent(
-                            email: trimmedEmail,
-                            password: _passwordController.text.trim(),
-                          ),
-                        );
+                              LoginEvent(
+                                email: trimmedEmail,
+                                password: _passwordController.text.trim(),
+                              ),
+                            );
                       } else {
                         context.read<SignInBloc>().add(
-                          ForgotPasswordEvent(
-                            email: trimmedEmail,
-                          ),
-                        );
+                              ForgotPasswordEvent(
+                                email: trimmedEmail,
+                              ),
+                            );
                       }
                     },
                     text: _isLoginMode ? 'Login' : 'Reset Password',
