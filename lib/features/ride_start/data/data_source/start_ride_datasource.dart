@@ -16,7 +16,7 @@ class StartRideRemoteDataSource implements StartRideDataSource {
 
   @override
   Future<RidestartDataModel> startRide(String rideId, String token) async {
-    final url = Uri.parse('${ApiConstants.baseUrl}driver/ride/data/$rideId');
+    final url = Uri.parse('${ApiConstants.baseUrl}driver/start-ride/$rideId');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -34,12 +34,14 @@ class StartRideRemoteDataSource implements StartRideDataSource {
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
-        // print('Ride data: $jsonData');
-        print('rideeeerrrrr dataa');
-
-        print('data loaded');
-
-        return RidestartDataModel.fromMap(jsonData['data']);
+        if (jsonData['data'] != null) {
+          print('Ride data: ${jsonData['data']}');
+          print('Data loaded successfully');
+          return RidestartDataModel.fromMap(jsonData['data']);
+        } else {
+          print('Error: Data is null');
+          throw Exception('Ride cannot be started without a passenger');
+        }
       } else {
         print('Error: ${response.statusCode} - ${response.body}');
         throw Exception('Failed to load ride data: ${response.statusCode}');

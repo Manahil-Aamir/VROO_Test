@@ -346,12 +346,25 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
     }
 
     if (state is RideStartFailure || _errorMessage != null) {
+      final errorMessage =
+          _errorMessage ?? (state as RideStartFailure).errorMessage;
+      if (errorMessage.contains('Ride cannot be started without a passenger')) {
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) Navigator.of(context).pop();
+        });
+        return const Center(
+          child: Text(
+            'Ride cannot be started without a passenger',
+            style: TextStyle(color: Colors.red),
+          ),
+        );
+      }
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              _errorMessage ?? (state as RideStartFailure).errorMessage,
+              errorMessage,
               style: const TextStyle(color: Colors.red),
             ),
             const SizedBox(height: 20),
