@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/utils/exit_dialouge_util.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/appbar_no_icon.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
+import '../../../../shared/widgets/custom_dialog.dart';
 import '../bloc/bloc/active_rides_bloc.dart';
 import '../bloc/event/active_rides_event.dart';
 import '../bloc/state/active_rides_state.dart';
@@ -23,11 +23,66 @@ class ActiveRidesDriverScreen extends StatefulWidget {
 }
 
 class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
-    with WidgetsBindingObserver {
+    with RouteAware, WidgetsBindingObserver {
+  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+  bool _isDataFetched = false;
+
   @override
   void initState() {
     super.initState();
-    context.read<ActiveRidesDriverBloc>().add(FetchActiveRidesDriver());
+    WidgetsBinding.instance.addObserver(this);
+    _fetchRides();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Use the existing route observer architecture
+    final route = ModalRoute.of(context);
+    if (route is PageRoute<dynamic>) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // Called when returning to this screen (user pops the screen on top)
+    if (mounted) {
+      print('ActiveRidesDriverScreen: didPopNext called');
+      _fetchRides();
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted) {
+      print('ActiveRidesDriverScreen: app resumed');
+      _fetchRides();
+    }
+  }
+
+  void _fetchRides() {
+    if (mounted) {
+      print('ActiveRidesDriverScreen: Fetching rides');
+      context.read<ActiveRidesDriverBloc>().add(FetchActiveRidesDriver());
+      _isDataFetched = true;
+
+      // Set flag to false after 5 seconds to allow refreshing again
+      Future.delayed(const Duration(seconds: 5), () {
+        if (mounted) {
+          setState(() {
+            _isDataFetched = false;
+          });
+        }
+      });
+    }
   }
 
   // Function to show date picker
@@ -51,16 +106,16 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
       },
     );
 
-  //   if (picked != null) {
-  //     context.read<ActiveRidesDriverBloc>().add(FilterRidesByDate(picked));
-  //   }
-  // }
+    if (picked != null) {
+      context.read<ActiveRidesDriverBloc>().add(FilterRidesByDate(picked));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        bool exitApp = await DialogUtil.showExitDialog(context);
+        bool exitApp = await _showExitDialog(context);
         if (exitApp) {
           SystemNavigator.pop(); // Closes the app
         }
@@ -84,7 +139,8 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
             }
           }
           if (state is ActiveRideDataLoaded) {
-            print('Ride data loaded: ${state.rideData}');
+            debugPrint('Ride data loaded: ${state.rideData}');
+
             // Navigate to ride details page
             context.read<Navigation>().navigateTo(
               '/static_page',
@@ -108,32 +164,7 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
                     if (state is ActiveRidesDriverLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is ActiveRidesDriverError) {
-                      print(state.message);
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/images/error.png',
-                              width: 300.w,
-                              height: 300.h,
-                              fit: BoxFit.contain,
-                            ),
-                            // SizedBox(height: 16.h),
-                            // Padding(
-                            //   padding: EdgeInsets.symmetric(horizontal: 24.w),
-                            //   child: Text(
-                            //     'Failed to load profile information. Please try again later.',
-                            //     style: textTheme.bodyMedium?.copyWith(
-                            //       color: ThemeColors.accentColor,
-                            //       fontSize: 14.sp,
-                            //     ),
-                            //     textAlign: TextAlign.center,
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                      );
+                      return Center(child: Text(state.message));
                     } else if (state is ActiveRidesDriverLoaded) {
                       if (state.filteredRides.isEmpty) {
                         return Center(
@@ -173,7 +204,24 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
                         ),
                       );
                     }
-                    return const Center(child: Text('Fetching rides...'));
+
+                    // Always attempt to fetch when in unknown state
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (mounted && !_isDataFetched) {
+                        _fetchRides();
+                      }
+                    });
+
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const CircularProgressIndicator(),
+                          SizedBox(height: 16.h),
+                          const Text('Fetching rides...'),
+                        ],
+                      ),
+                    );
                   },
                 ),
               ),
@@ -326,52 +374,24 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
     );
   }
 
-  Future<void> _selectDate(BuildContext context, DateTime? initialDate) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: initialDate ?? DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2100),
-      cancelText: '', // Removes Cancel button
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: ThemeColors.primaryColor,
-              onPrimary: ThemeColors.buttonTextColor,
-            ),
-            dialogTheme: DialogTheme(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              insetPadding: EdgeInsets.zero, // Remove default padding
-            ),
+  Future<bool> _showExitDialog(BuildContext context) async {
+    return await showDialog(
+          context: context,
+          builder: (context) => CustomDialog(
+            title: "Exit App",
+            message: "Are you sure you want to exit?",
+            confirmText: "Yes",
+            cancelText: "No",
+            confirmColor: Theme.of(context).indicatorColor,
+            cancelColor: Theme.of(context).primaryColorDark,
+            onConfirm: () {
+              Navigator.of(context).pop(true);
+            },
+            onCancel: () {
+              Navigator.of(context).pop(false);
+            },
           ),
-          child: Stack(
-            clipBehavior: Clip.none, // Allows button to extend beyond bounds
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: child!,
-              ),
-              Positioned(
-                top: 4,
-                right: 4,
-                child: IconButton(
-                  icon: Icon(Icons.close, size: 24),
-                  color: ThemeColors.primaryColor,
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-
-    if (picked != null) {
-      context.read<ActiveRidesDriverBloc>().add(FilterRidesByDate(picked));
-    }
+        ) ??
+        false;
   }
-
 }

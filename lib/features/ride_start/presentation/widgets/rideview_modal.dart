@@ -22,7 +22,7 @@ class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final modalHeight =
-        _isExpanded ? MediaQuery.of(context).size.height * 0.6 : 320.h;
+        _isExpanded ? MediaQuery.of(context).size.height * 0.675 : 320.h;
 
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 300),
@@ -202,25 +202,50 @@ class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text:
-                            '${widget.rideData.carDetails.company} ${widget.rideData.carDetails.model} • ',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.canvasColor,
-                          fontWeight: FontWeight.w600,
-                        ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text:
+                                '${widget.rideData.carDetails.company} ${widget.rideData.carDetails.model} • ',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.canvasColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          TextSpan(
+                            text: widget.rideData.carDetails.numberPlate,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.canvasColor,
+                            ),
+                          ),
+                        ],
                       ),
-                      TextSpan(
-                        text: widget.rideData.carDetails.numberPlate,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.canvasColor,
-                        ),
+                    ),
+                    SizedBox(width: 25.w),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                      decoration: BoxDecoration(
+                        color: theme.primaryColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(20.r),
                       ),
-                    ],
-                  ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Rs: ${widget.rideData.passengerData.fare.toStringAsFixed(2)}',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -303,7 +328,8 @@ class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
             Expanded(
               child: _buildInfoBox(
                 title: 'Duration',
-                value: _formatDuration(widget.rideData.duration),
+                value: _formatDuration(
+                    widget.rideData.passengerData.detourDuration),
                 icon: Icons.access_time,
               ),
             ),

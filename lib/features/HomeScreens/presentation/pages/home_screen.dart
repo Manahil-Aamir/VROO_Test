@@ -167,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'You have ongoing ride  as ${state.trip.mode}: ${state.trip.rideId}',
+                          'You have ongoing ride as ${state.trip.mode}: ${state.trip.rideId}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.primaryColorDark,
                             fontWeight: FontWeight.w500,
@@ -192,7 +192,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           return const SizedBox.shrink();
         });
   }
-
 }
 
 class NativeGoogleMap extends StatelessWidget {

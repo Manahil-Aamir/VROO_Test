@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:vroo_test/features/ride_start/data/models/ridestart_data_model.dart';
 import 'package:vroo_test/features/ride_start/presentation/pages/static_modal.dart';
 import 'package:vroo_test/features/ride_start/presentation/pages/tracking_modal.dart';
+import '../../../../core/router/navigation.dart';
 import '../../data/data_source/driver_tracker.dart';
 import '../../data/models/inride_passenger_model.dart';
 import '../bloc/bloc/ridestart_bloc.dart';
@@ -243,88 +244,99 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RideStartBloc, RideStartState>(
-      listener: (context, state) {
-        if (state is RideStartSuccess) {
-          print('Ride started successfully: ${state.rideData}');
-          _initializeApp(state.rideData);
-        } else if (state is RideStartFailure) {
-          setState(() {
-            _isLoading = false;
-            _errorMessage = state.errorMessage;
-          });
-        }
+    return WillPopScope(
+      onWillPop: () async {
+        context.read<Navigation>().navigateTo('/home');
+        return false;
       },
-      builder: (context, state) {
-        final theme = Theme.of(context);
+      child: BlocConsumer<RideStartBloc, RideStartState>(
+        listener: (context, state) {
+          if (state is RideStartSuccess) {
+            print('Ride started successfully: ${state.rideData}');
+            _initializeApp(state.rideData);
+          } else if (state is RideStartFailure) {
+            setState(() {
+              _isLoading = false;
+              _errorMessage = state.errorMessage;
+            });
+          }
+        },
+        builder: (context, state) {
+          final theme = Theme.of(context);
 
-        return Scaffold(
-          body: Stack(
-            children: [
-              _buildContent(state),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  color: Colors.transparent,
-                  padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.w),
-                  child: SafeArea(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.arrow_back,
-                              color: theme.primaryColorDark),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                        if (_isMapReady && _mapViewId != null)
-                          IconButton(
-                            icon: Icon(Icons.refresh,
-                                color: theme.primaryColorDark),
-                            onPressed: () => _mapChannel.invokeMethod(
-                                'fitRouteToScreen', {'viewId': _mapViewId}),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              if (_rideData != null && _isRideTrackerInitialized && !_isLoading)
+          return Scaffold(
+            body: Stack(
+              children: [
+                _buildContent(state),
                 Positioned(
-                  top: 30.h + MediaQuery.of(context).padding.top,
-                  left: 75.w,
-                  right: 75.w,
-                  child: SizedBox(
-                    width: 50.w,
-                    child: ElevatedButton.icon(
-                      onPressed: _toggleTracking,
-                      icon: _isTracking
-                          ? const Icon(Icons.stop)
-                          : const Icon(Icons.play_arrow),
-                      label: Text(_isTracking ? 'End Ride' : 'Resume Ride'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _isTracking
-                            ? theme.secondaryHeaderColor
-                            : theme.indicatorColor,
-                        foregroundColor: Colors.white,
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    color: Colors.transparent,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 3.w, vertical: 2.w),
+                    child: SafeArea(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon:
+                                Icon(Icons.home, color: theme.primaryColorDark),
+                            onPressed: () {
+                              context.read<Navigation>().navigateTo('/home');
+                            },
+                          ),
+                          if (_isMapReady && _mapViewId != null)
+                            IconButton(
+                              icon: Icon(Icons.refresh,
+                                  color: theme.primaryColorDark),
+                              onPressed: () => _mapChannel.invokeMethod(
+                                  'fitRouteToScreen', {'viewId': _mapViewId}),
+                            ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              if (_isTracking && _rideData != null)
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: TrackingRideDetailsBottomSheet(
-                    rideData: _rideData!,
+                if (_rideData != null &&
+                    _isRideTrackerInitialized &&
+                    !_isLoading)
+                  Positioned(
+                    top: 30.h + MediaQuery.of(context).padding.top,
+                    left: 75.w,
+                    right: 75.w,
+                    child: SizedBox(
+                      width: 50.w,
+                      child: ElevatedButton.icon(
+                        onPressed: _toggleTracking,
+                        icon: _isTracking
+                            ? const Icon(Icons.stop)
+                            : const Icon(Icons.play_arrow),
+                        label: Text(_isTracking ? 'End Ride' : 'Resume Ride'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _isTracking
+                              ? theme.secondaryHeaderColor
+                              : theme.indicatorColor,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-            ],
-          ),
-        );
-      },
+                if (_isTracking && _rideData != null)
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: TrackingRideDetailsBottomSheet(
+                      rideData: _rideData!,
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
