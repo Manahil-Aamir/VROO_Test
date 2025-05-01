@@ -6,6 +6,7 @@ class AddressModel extends Address {
     required super.placeId,
     required super.coords,
     required super.cellId,
+    super.id,
   });
 
   Map<String, dynamic> toMap() {
@@ -14,6 +15,7 @@ class AddressModel extends Address {
       'placeId': placeId,
       'coords': coords,
       'cellId': cellId,
+      'id': id,
     };
   }
 
@@ -23,6 +25,7 @@ class AddressModel extends Address {
       placeId: json['placeId'] ?? '',
       coords: List<double>.from(json['coords'] ?? []),
       cellId: json['cellId'] ?? '',
+      id: json['_id'],
     );
   }
 }
