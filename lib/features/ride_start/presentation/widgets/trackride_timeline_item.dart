@@ -66,7 +66,9 @@ class TrackRideTimelineItem extends StatelessWidget {
                 child: Text(
                   time,
                   style: theme.textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w600, color: theme.primaryColor),
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: theme.primaryColor),
                 ),
               ),
 

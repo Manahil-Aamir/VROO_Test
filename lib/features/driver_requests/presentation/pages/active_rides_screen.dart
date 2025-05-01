@@ -22,11 +22,28 @@ class ActiveRidesDriverScreen extends StatefulWidget {
       _ActiveRidesDriverScreenState();
 }
 
-class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen> {
+class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     context.read<ActiveRidesDriverBloc>().add(FetchActiveRidesDriver());
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('api called: $state');
+    // When app comes to foreground, check for ongoing trips
+    if (state == AppLifecycleState.resumed) {
+      context.read<ActiveRidesDriverBloc>().add(FetchActiveRidesDriver());
+    }
   }
 
   @override
