@@ -51,7 +51,7 @@ class PendingRequestCard extends StatelessWidget {
               if (_hasPreferences) Row(
                 children: [
                   Expanded(child: _buildPreferences(textTheme)),
-                  SizedBox(width: 6.h),
+                  SizedBox(width: 12.h),
                   CancelButton(
                     onCancel: () => _showCancelConfirmation(context),
                   ),
@@ -189,7 +189,7 @@ class PendingRequestCard extends StatelessWidget {
         if (request.preferences.maleOnly)
           _buildPreferenceChip('Male Only', Icons.male, textTheme),
         if (request.preferences.canWalk)
-          _buildPreferenceChip('Can Walk', Icons.directions_walk, textTheme),
+          _buildPreferenceChip('Walk', Icons.directions_walk, textTheme),
       ],
     );
   }
@@ -226,6 +226,7 @@ class PendingRequestCard extends StatelessWidget {
       ),
     );
   }
+  
   void _showCancelConfirmation(BuildContext context) {
     final bloc = BlocProvider.of<RiderPendingRequestBloc>(context);  
     showDialog(

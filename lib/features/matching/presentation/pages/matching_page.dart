@@ -9,6 +9,7 @@ import '../../../../core/router/navigation.dart';
 import '../../../HomeScreens/presentation/widgets/appbarmatching.dart';
 import '../bloc/bloc/matching_bloc.dart';
 import '../bloc/state/matching_state.dart';
+import '../widgets/match_card.dart';
 import '../widgets/matching_card.dart';
 
 class MatchingPage extends StatefulWidget {
@@ -122,22 +123,23 @@ class _MatchingPageState extends State<MatchingPage> {
                         itemBuilder: (context, index) {
                           try {
                             final ride = state.matchingRides[index];
-                            return MatchCard(
-                              driverName: ride.driverName,
-                              rating: 4.3,
-                              trips: 5,
-                              source: ride.source.address,
-                              destination: ride.destination.address,
-                              fare: ride.fare,
-                              carModel: ride.car.model,
-                              totalSeats: ride.numOfSeats.toInt(),
-                              filledSeats: ride.passengers.length,
-                              estimatedArrivalTime: 
-                              DateFormat('yyyy-MM-dd').format(ride.expectedArrivalTime),
-                              id: widget.rideRequestId,
-                              carCompany: ride.car.company,
-                              rideId: ride.id,
-                            );
+                            // return MatchCard(
+                            //   driverName: ride.driverName,
+                            //   rating: 4.3,
+                            //   trips: 5,
+                            //   source: ride.source.address,
+                            //   destination: ride.destination.address,
+                            //   fare: ride.fare,
+                            //   carModel: ride.car.model,
+                            //   totalSeats: ride.numOfSeats.toInt(),
+                            //   filledSeats: ride.passengers.length,
+                            //   estimatedArrivalTime: 
+                            //   DateFormat('yyyy-MM-dd').format(ride.expectedArrivalTime),
+                            //   id: widget.rideRequestId,
+                            //   carCompany: ride.car.company,
+                            //   rideId: ride.id,
+                            // );
+                              return RideMatchCard(match: ride, rideRequestId: widget.rideRequestId, );
                           } catch (error) {
                             print(
                                 "Error building MatchCard from loaded ride: $error");

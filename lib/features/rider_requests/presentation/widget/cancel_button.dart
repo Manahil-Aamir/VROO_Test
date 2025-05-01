@@ -1,4 +1,3 @@
-// lib/shared/widgets/cancel_button.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,12 +14,15 @@ class CancelButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 33.h,
-      child: DialogButton(
-        onTap: onCancel,
-        text: 'Cancel',
-        color: ThemeColors.accentColor,
+    return Transform.scale(
+      scale: 0.8,  // Scales down the entire button by 15%
+      child: SizedBox(
+        height: 33.h,  // Reduced from 33.h
+        child: DialogButton(
+          onTap: onCancel,
+          text: 'Cancel',
+          color: ThemeColors.accentColor,
+        ),
       ),
     );
   }

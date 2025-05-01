@@ -718,20 +718,21 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         SizedBox(height: 4.h),
 
                         /// User ID (Handles overflow)
-                        Text(
-                          'ID: ${widget.user.id}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12.sp,
-                                color:
-                                    ThemeColors.bodyTextColor.withOpacity(0.7),
-                              ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
+                        // Text(
+                        //   'ID: ${widget.user.}',
+                        //   style: Theme.of(context)
+                        //       .textTheme
+                        //       .bodyMedium
+                        //       ?.copyWith(
+                        //         fontWeight: FontWeight.bold,
+                        //         fontSize: 12.sp,
+                        //         color:
+                        //             ThemeColors.bodyTextColor.withOpacity(0.7),
+                        //       ),
+                        //   overflow: TextOverflow.ellipsis,
+                        //   maxLines: 1,
+                        // ),
+                      
                       ],
                     ),
                   ),
