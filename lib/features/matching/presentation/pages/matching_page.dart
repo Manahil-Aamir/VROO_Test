@@ -161,24 +161,27 @@ class _MatchingPageState extends State<MatchingPage> {
                         itemBuilder: (context, index) {
                           try {
                             final ride = widget.initialMatchingRides[index];
-                            return MatchCard(
-                              driverName: ride.driverId,
-                              rating: 4.3,
-                              trips: 5,
-                              source: ride.source.address,
-                              destination: ride.destination.address,
-                              fare: ride.fare,
-                              carModel: ride.car.model,
-                              totalSeats: ride.numOfSeats.toInt(),
-                              filledSeats: ride.passengers.length,
-                              estimatedArrivalTime: 
-                              DateFormat('yyyy-MM-dd').format(ride.expectedArrivalTime),
-                              // DateFormat.jm().format(
-                              //     DateTime.parse(ride.expectedArrivalTime)),
-                              id: widget.rideRequestId,
-                              carCompany: ride.car.company,
-                              rideId: ride.id,
-                            );
+                            // return MatchCard(
+                            //   driverName: ride.driverId,
+                            //   rating: 4.3,
+                            //   trips: 5,
+                            //   source: ride.source.address,
+                            //   destination: ride.destination.address,
+                            //   fare: ride.fare,
+                            //   carModel: ride.car.model,
+                            //   totalSeats: ride.numOfSeats.toInt(),
+                            //   filledSeats: ride.passengers.length,
+                            //   estimatedArrivalTime: 
+                            //   DateFormat('yyyy-MM-dd').format(ride.expectedArrivalTime),
+                            //   // DateFormat.jm().format(
+                            //   //     DateTime.parse(ride.expectedArrivalTime)),
+                            //   id: widget.rideRequestId,
+                            //   carCompany: ride.car.company,
+                            //   rideId: ride.id,
+                            // );
+                        
+                            return RideMatchCard(match: ride, rideRequestId: widget.rideRequestId, );
+
                           } catch (error) {
                             print(
                                 "Error building MatchCard from initial ride: $error");
