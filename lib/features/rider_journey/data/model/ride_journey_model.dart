@@ -101,19 +101,19 @@ class PickupTimeRangeModel {
 class RidePreferencesModel {
   final bool maleOnly;
   final bool femaleOnly;
-  final bool canWalk;
+  final bool? canWalk;
 
   const RidePreferencesModel({
     required this.maleOnly,
     required this.femaleOnly,
-    required this.canWalk,
+    this.canWalk,
   });
 
   factory RidePreferencesModel.fromJson(Map<String, dynamic> json) {
     return RidePreferencesModel(
-      maleOnly: json['maleOnly'],// as bool? ?? false,
-      femaleOnly: json['femaleOnly'],// as bool? ?? false,
-      canWalk: json['canWalk'] as bool? ?? false,
+      maleOnly: json['maleOnly'],
+      femaleOnly: json['femaleOnly'],
+      canWalk: json.containsKey('canWalk') ? json['canWalk'] as bool? : null,
     );
   }
 
@@ -121,7 +121,7 @@ class RidePreferencesModel {
     return {
       'maleOnly': maleOnly,
       'femaleOnly': femaleOnly,
-      'canWalk': canWalk,
+      if (canWalk != null) 'canWalk': canWalk,
     };
   }
 }

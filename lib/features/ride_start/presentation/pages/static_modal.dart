@@ -163,7 +163,8 @@ class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
                       p.rideRequest.matches.any((match) => match.sameSource);
 
                   return TimelineItem(
-                    time: DateFormat('h:mm a').format(p.eta),
+                    time: DateFormat('h:mm a')
+                        .format(p.rideRequest.matches.first.eta),
                     title: isSameSource
                         ? 'Drop Off ${p.riderName}'
                         : 'Pickup ${p.riderName}',

@@ -131,8 +131,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           .fetchRouteCoordinates(state.trip.rideId),
                     });
                   } else if (state.trip.mode == 'Rider') {
-                    print("stupid passenger");
-
                     context
                         .read<Navigation>()
                         .navigateTo('/rider_view', arguments: {

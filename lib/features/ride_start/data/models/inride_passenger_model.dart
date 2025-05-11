@@ -16,6 +16,8 @@ class InridePassengerModel extends InridePassengerEntity {
     super.sameSource,
     super.sameDestination,
     super.fcmToken,
+    super.detourDistance,
+    super.detourDuration,
   });
 
   // Convert model to map
@@ -25,13 +27,15 @@ class InridePassengerModel extends InridePassengerEntity {
       'status': status,
       'fare': fare,
       'rideRequestId': rideRequestId,
-      'eta': eta,
-      'rideRequest': rideRequest.toMap(),
+      'eta': eta?.toIso8601String(),
+      'rideRequest': (rideRequest as RiderModel).toMap(),
       'riderName': riderName,
       'review': review ?? '',
       'sameSource': sameSource ?? false,
       'sameDestination': sameDestination ?? false,
       'fcmToken': fcmToken ?? '',
+      'detourDistance': detourDistance ?? 0.0,
+      'detourDuration': detourDuration ?? 0.0,
     };
   }
 
@@ -40,11 +44,17 @@ class InridePassengerModel extends InridePassengerEntity {
     return InridePassengerModel(
       riderId: map['riderId'] ?? '',
       status: map['status'] ?? '',
-      fare: (map['fare'] != null ? (map['fare'] as num).toDouble() : 0.0),
+      fare: (map['fare'] as num?)?.toDouble() ?? 0.0,
       rideRequestId: map['rideRequestId'] ?? '',
-      eta: DateTime.parse(map['eta']), //map['eta'],
+      eta: map['eta'] != null ? DateTime.tryParse(map['eta']) : null,
       rideRequest: RiderModel.fromMap(map['rideRequest']),
       riderName: map['riderName'] ?? '',
+      review: map['review'],
+      sameSource: map['sameSource'],
+      sameDestination: map['sameDestination'],
+      fcmToken: map['fcmToken'],
+      detourDistance: (map['detourDistance'] as num?)?.toDouble(),
+      detourDuration: (map['detourDuration'] as num?)?.toDouble(),
     );
   }
 }

@@ -33,10 +33,31 @@ class RidestartDataModel extends RidestartDataEntity {
   });
 
   factory RidestartDataModel.fromMap(Map<String, dynamic> map) {
-    print(map['passengers'].length);
+    print('id: ${map['_id']}');
+    print('driverId: ${map['driverId']}');
+    print('numOfSeats: ${map['numOfSeats']}');
+    print('date: ${map['date']}');
+    print('source: ${map['source']}');
+    print('destination: ${map['destination']}');
+    print('departureTime: ${map['departureTime']}');
+    print('maxArrivalTime: ${map['maxArrivalTime']}');
+    print('distance: ${map['distance']}');
+    print('duration: ${map['duration']}');
+    print('preferences: ${map['preferences']}');
+    print('isRecurring: ${map['isRecurring']}');
+    print('car: ${map['car']}');
+    print('recurringRides: ${map['recurringRides']}');
+    print('paymentMethod: ${map['paymentMethod']}');
+    print('fare: ${map['fare']}');
+    print('status: ${map['status']}');
+    print('environmentStats: ${map['environmentStats']}');
+    print('expectedArrivalTime: ${map['expectedArrivalTime']}');
+    print('routeCoords: ${map['routeCoords']}');
+    print('passengers: ${map['passengers']}');
+
     return RidestartDataModel(
-      id: map['_id'],
-      driverId: map['driverId'],
+      id: map['_id'] ?? '',
+      driverId: map['driverId'] ?? '',
       numOfSeats: (map['numOfSeats'] ?? 0).toDouble(),
       date: map['date'] != null ? DateTime.parse(map['date']) : DateTime.now(),
       source: AddressModel.fromMap(map['source']),
