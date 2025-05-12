@@ -113,7 +113,7 @@ class _RideTrackingScreenState extends State<RideViewScreen>
         },
         'destination': {
           'lat': _rideData!.passengerData.destination.coords[0],
-          'lng': _rideData!.passengerData.destination.coords[0],
+          'lng': _rideData!.passengerData.destination.coords[1],
         },
         'routeCoords': _currentRouteCoords,
         'passengers': [], // Empty as this is rider view

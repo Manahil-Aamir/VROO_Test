@@ -263,7 +263,7 @@ class RideTrackingMapView(
     private fun updateVehiclePosition(position: LatLng, heading: Float) {
         vehiclePosition = position
         vehicleBearing = heading
-        
+
         if (vehicleMarker == null) {
             // Create the marker if it doesn't exist
             val markerOptions = MarkerOptions()
@@ -272,41 +272,38 @@ class RideTrackingMapView(
                 .anchor(0.5f, 0.5f)
                 .rotation(heading)
                 .icon(carBitmap ?: BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                
+
             handler.post {
                 vehicleMarker = googleMap?.addMarker(markerOptions)
                 Log.d("MapDebug", "Vehicle marker created at ${position.latitude}, ${position.longitude}")
-                
-                // IMPORTANT: We need to focus on the vehicle when it first appears
-                // Changed logic to ensure we focus on the vehicle
-                if (isFirstVehicleUpdate) {
-                    isFirstVehicleUpdate = false
-                    // Instead of calling zoomToShowAllPoints, force focus on vehicle
-                    shouldFocusOnVehicle = true
-                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 16f))
-                    Log.d("MapDebug", "First vehicle update - focusing camera on vehicle")
-                } else if (shouldFocusOnVehicle) {
-                    // Continue focusing on vehicle in subsequent updates
-                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 16f))
-                    Log.d("MapDebug", "Focusing camera on vehicle")
-                }
+
+                // Call centerOnVehicle logic
+                centerOnVehicle()
             }
         } else {
             // Animate the marker movement
             handler.post {
                 animateMarkerToPosition(position, heading)
-                
+
                 // Always focus on vehicle if shouldFocusOnVehicle is true
                 if (shouldFocusOnVehicle) {
-                    // Ensure we maintain focus on the vehicle
                     googleMap?.animateCamera(CameraUpdateFactory.newLatLng(position))
                     Log.d("MapDebug", "Keeping camera focused on moving vehicle")
                 }
             }
+            centerOnVehicle()
         }
-        
+
         // Add point to route and update polylines
         addRoutePoint(position)
+    }
+
+    private fun centerOnVehicle() {
+        shouldFocusOnVehicle = true
+        vehiclePosition?.let {
+            googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 16f))
+            Log.d("MapDebug", "Centering camera on vehicle")
+        }
     }
     
     private fun animateMarkerToPosition(targetPosition: LatLng, bearing: Float) {
