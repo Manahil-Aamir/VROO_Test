@@ -13,6 +13,7 @@ import '../../data/models/inride_passenger_model.dart';
 import '../bloc/bloc/ridestart_bloc.dart';
 import '../bloc/event/ridestart_event.dart';
 import '../bloc/state/ridestart_state.dart';
+import '../widgets/review_modal.dart';
 
 class LocationServiceMonitor {
   final VoidCallback onEnabled;
@@ -234,6 +235,15 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
       await _rideTracker.stopTracking();
       if (!mounted) return;
       Navigator.of(context).pop();
+
+      showDialog(
+        context: context,
+        builder: (context) => MultiPassengerReviewModal(
+          passengers: _rideData!.passengers,
+          rideId: _rideData!.id,
+          currentUserId: _rideData!.driverId,
+        ),
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -309,7 +319,7 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
                     child: SizedBox(
                       width: 50.w,
                       child: ElevatedButton.icon(
-                        onPressed: _toggleTracking,
+                        onPressed: _isTracking ? _endRide : _toggleTracking,
                         icon: _isTracking
                             ? const Icon(Icons.stop)
                             : const Icon(Icons.play_arrow),
