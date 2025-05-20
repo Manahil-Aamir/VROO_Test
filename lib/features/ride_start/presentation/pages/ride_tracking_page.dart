@@ -234,14 +234,18 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
     try {
       await _rideTracker.stopTracking();
       if (!mounted) return;
-      Navigator.of(context).pop();
+      print('Ride ended successfully: ${_rideData!.id}');
+
+      // Get the RideStartBloc before showing the dialog
+      final rideStartBloc = BlocProvider.of<RideStartBloc>(context);
 
       showDialog(
         context: context,
-        builder: (context) => MultiPassengerReviewModal(
+        builder: (dialogContext) => MultiPassengerReviewModal(
           passengers: _rideData!.passengers,
           rideId: _rideData!.id,
           currentUserId: _rideData!.driverId,
+          rideStartBloc: rideStartBloc, // Pass the bloc from outside the dialog
         ),
       );
     } catch (e) {

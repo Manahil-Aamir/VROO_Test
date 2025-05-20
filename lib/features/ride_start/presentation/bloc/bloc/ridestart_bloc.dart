@@ -19,6 +19,7 @@ class RideStartBloc extends Bloc<RideStartEvent, RideStartState> {
     required this.giveReviewUseCase,
   }) : super(RideStartInitial()) {
     on<InitializeRideEvent>(_onInitializeRide);
+    on<SubmitReviewEvent>(_onSubmitReview);
   }
 
   Future<void> _onInitializeRide(
