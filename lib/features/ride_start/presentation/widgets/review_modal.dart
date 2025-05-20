@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/features/ride_start/data/models/give_review_model.dart';
 import 'package:vroo_test/features/ride_start/presentation/bloc/state/ridestart_state.dart';
+import 'package:vroo_test/shared/widgets/dialog_button.dart';
 
 import '../../data/models/inride_passenger_model.dart';
 import '../../domain/entities/give_review_entity.dart';
@@ -38,21 +39,26 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
   @override
   void initState() {
     super.initState();
-    // Filter passengers who haven't been reviewed yet (if needed)
     passengersToReview =
         widget.passengers.where((p) => p.review == null).toList();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     if (passengersToReview.isEmpty) {
       return AlertDialog(
-        title: const Text('All Reviews Complete'),
-        content: const Text('All passengers have been reviewed.'),
+        backgroundColor: colorScheme.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('All Reviews Complete', style: theme.textTheme.titleLarge),
+        content: Text('All passengers have been reviewed.',
+            style: theme.textTheme.bodyMedium),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: Text('Close', style: theme.textTheme.labelLarge),
           ),
         ],
       );
@@ -66,16 +72,12 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
       bloc: widget.rideStartBloc,
       listener: (context, state) {
         if (state is ReviewSuccess) {
-          setState(() {
-            isSubmitting = false;
-          });
+          setState(() => isSubmitting = false);
 
-          // Move to next passenger or close if last
           if (isLastPassenger) {
-            Navigator.of(context).pop(); // Close modal when done
-
-            // Navigate to home screen if this was intended
-            // Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+            Navigator.of(context).pop();
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/home', (route) => false);
           } else {
             setState(() {
               currentPassengerIndex++;
@@ -83,34 +85,65 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
             });
           }
         } else if (state is ReviewFailure) {
-          setState(() {
-            isSubmitting = false;
-          });
+          setState(() => isSubmitting = false);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Review failed: ${state.errorMessage}')),
           );
         }
       },
       child: AlertDialog(
-        title: Padding(
-          padding: EdgeInsets.only(bottom: 8.h),
-          child: Text(
-            'Review ${currentPassenger.riderName}',
-            style: TextStyle(fontSize: 20.sp),
-          ),
+        backgroundColor: theme.primaryColorDark,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Column(
+          children: [
+            Text(
+              'Rate Your Passenger',
+              style: theme.textTheme.displayMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.scaffoldBackgroundColor,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              currentPassenger.riderName,
+              style: theme.textTheme.displayMedium?.copyWith(
+                color: theme.primaryColor,
+              ),
+            ),
+          ],
         ),
         content: isSubmitting
-            ? const Center(child: CircularProgressIndicator())
+            ? SizedBox(
+                height: 150,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(theme.primaryColor),
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        'Submitting review...',
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              )
             : SizedBox(
-                width: 300.w,
+                width: double.maxFinite,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'How was your ride with this passenger?',
-                      style: TextStyle(fontSize: 16.sp),
+                      'How was your experience?',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.canvasColor,
+                      ),
                     ),
-                    SizedBox(height: 16.h),
+                    SizedBox(height: 12.h),
                     // Star rating widget
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -118,9 +151,12 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                         return IconButton(
                           icon: Icon(
                             selectedRating != null && index < selectedRating!
-                                ? Icons.star
-                                : Icons.star_border,
-                            color: Colors.yellow,
+                                ? Icons.star_rounded
+                                : Icons.star_outline_rounded,
+                            color: selectedRating != null &&
+                                    index < selectedRating!
+                                ? Colors.yellow
+                                : theme.primaryColorLight,
                             size: 36.sp,
                           ),
                           onPressed: () {
@@ -134,27 +170,44 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                     SizedBox(height: 16.h),
                     // Optional review text
                     TextField(
+                      cursorColor: theme.primaryColor,
                       controller: reviewController,
                       decoration: InputDecoration(
-                        labelText: 'Review',
-                        labelStyle: TextStyle(fontSize: 14.sp),
+                        labelText: 'Give a review',
+                        labelStyle: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.primaryColorLight.withOpacity(0.6),
+                        ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.r),
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide:
+                              BorderSide(color: theme.primaryColorLight),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: theme.canvasColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide(
+                            color: theme.primaryColorLight,
+                            width: 2,
+                          ),
                         ),
                         contentPadding: EdgeInsets.symmetric(
-                          vertical: 12.h,
-                          horizontal: 12.w,
+                          horizontal: 16,
+                          vertical: 12,
                         ),
                       ),
                       maxLines: 3,
-                      style: TextStyle(fontSize: 14.sp),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.canvasColor,
+                      ),
                     ),
                   ],
                 ),
               ),
-        actionsPadding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
         actions: isSubmitting
-            ? []
+            ? null
             : [
                 if (currentPassengerIndex > 0)
                   TextButton(
@@ -166,31 +219,27 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                     },
                     child: Text(
                       'Back',
-                      style: TextStyle(fontSize: 14.sp),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: colorScheme.primary,
+                      ),
                     ),
                   ),
-                TextButton(
-                  onPressed: () {
+                DialogButton(
+                  onTap: () {
                     if (selectedRating == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(
-                            'Please select a rating',
-                            style: TextStyle(fontSize: 14.sp),
-                          ),
+                          content: Text('Please select a rating'),
+                          behavior: SnackBarBehavior.floating,
                         ),
                       );
                       return;
                     }
-
-                    // Submit review
                     _submitReview(currentPassenger);
                   },
-                  child: Text(
-                    isLastPassenger ? 'Done' : 'Next',
-                    style: TextStyle(fontSize: 14.sp),
-                  ),
-                ),
+                  text: isLastPassenger ? 'Done' : 'Next',
+                  color: theme.primaryColor,
+                )
               ],
       ),
     );
@@ -202,10 +251,7 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
   }
 
   void _submitReview(InridePassengerModel passenger) {
-    // Set submitting state
-    setState(() {
-      isSubmitting = true;
-    });
+    setState(() => isSubmitting = true);
 
     final reviewModel = GiveReviewModel(
       uid: widget.currentUserId,
@@ -215,7 +261,6 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
       review: reviewController.text.isNotEmpty ? reviewController.text : null,
     );
 
-    // Dispatch the event - BlocListener will handle the response
     widget.rideStartBloc.add(SubmitReviewEvent(reviewModel));
   }
 
