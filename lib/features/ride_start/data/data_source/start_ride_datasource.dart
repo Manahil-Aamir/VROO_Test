@@ -4,9 +4,12 @@ import 'package:vroo_test/features/ride_start/data/models/ride_start_model.dart'
 
 import '../../../../core/utils/constant/api_constants.dart';
 import '../../../ride_start/data/models/ridestart_data_model.dart';
+import '../models/give_review_model.dart';
+import '../models/review_model.dart';
 
 abstract class StartRideDataSource {
   Future<RidestartDataModel> startRide(String rideId, String token);
+  Future<ReviewModel> giveReview(GiveReviewModel giveReview, String token);
 }
 
 class StartRideRemoteDataSource implements StartRideDataSource {
@@ -48,6 +51,34 @@ class StartRideRemoteDataSource implements StartRideDataSource {
       }
     } catch (e) {
       throw Exception('Failed to load ride data: $e');
+    }
+  }
+
+  @override
+  Future<ReviewModel> giveReview(
+      GiveReviewModel giveReview, String token) async {
+    final url = Uri.parse('http://localhost:8080/driver/give-review');
+    final headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      final response = await client.post(url,
+          headers: headers, body: json.encode(giveReview.toMap()));
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData['success'] == true && jsonData['data'] != null) {
+          return ReviewModel.fromMap(jsonData['data']);
+        } else {
+          throw Exception(jsonData['message'] ?? 'Failed to submit review');
+        }
+      } else {
+        throw Exception('Server error: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error submitting review: ${e.toString()}');
     }
   }
 }

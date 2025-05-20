@@ -1,6 +1,8 @@
 // Events
 import 'package:equatable/equatable.dart';
 
+import '../../../data/models/give_review_model.dart';
+
 abstract class RideStartEvent extends Equatable {
   const RideStartEvent();
 
@@ -15,4 +17,13 @@ class InitializeRideEvent extends RideStartEvent {
 
   @override
   List<Object?> get props => [rideId];
+}
+
+class SubmitReviewEvent extends RideStartEvent {
+  final GiveReviewModel reviewModel;
+
+  const SubmitReviewEvent(this.reviewModel);
+
+  @override
+  List<Object?> get props => [reviewModel];
 }

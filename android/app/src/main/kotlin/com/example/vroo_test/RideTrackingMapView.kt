@@ -45,6 +45,7 @@ class RideTrackingMapView(
     private var vehicleBearing: Float = 0f
     private var routePolyline: Polyline? = null
     private var completedRoutePolyline: Polyline? = null
+    private val routePolylines = mutableListOf<Polyline>()
     private val handler = Handler(Looper.getMainLooper())
     
     // Car bitmap for marker
@@ -179,10 +180,9 @@ class RideTrackingMapView(
             // Update the route polylines with new points
             updateRoutePolylines()
             
-            // If vehicle position is set, make sure it's at the latest point
-            if (routePoints.isNotEmpty() && vehiclePosition != null) {
+            // Always set vehicle position to the latest route point
+            if (routePoints.isNotEmpty()) {
                 val latestPoint = routePoints.last()
-                
                 // Calculate bearing if there are at least 2 points
                 val bearing = if (routePoints.size > 1) {
                     val secondLastPoint = routePoints[routePoints.size - 2]
@@ -190,18 +190,43 @@ class RideTrackingMapView(
                 } else {
                     vehicleBearing // Keep current bearing if only one point
                 }
-                
-                // Update vehicle position
                 updateVehiclePosition(latestPoint, bearing)
             }
             
             result.success(null)
         } else {
-            result.error("INVALID_ARGS", "Missing or invalid route coordinates", null)
+            result.error("INVALID_ARGS", "Invalid arguments for updating route coordinates", null)
         }
-    } else {
-        result.error("INVALID_ARGS", "Invalid arguments for updating route coordinates", null)
     }
+}
+
+"clearRoute" -> {
+    // Clear all existing polylines but keep markers and other map elements
+    for (polyline in routePolylines) {
+        polyline.remove()
+    }
+    routePolylines.clear()
+    routePolyline?.remove()
+    routePolyline = null
+    completedRoutePolyline?.remove()
+    completedRoutePolyline = null
+    
+    Log.d("MapDebug", "Cleared all route polylines")
+    result.success(null)
+}
+
+"clearAllMapElements" -> {
+    // Clear all elements from the map including markers, polylines, etc.
+    googleMap?.clear()
+    
+    // Reset all references
+    routePolyline = null
+    completedRoutePolyline = null
+    routePolylines.clear()
+    vehicleMarker = null
+    
+    Log.d("MapDebug", "Cleared all map elements")
+    result.success(null)
 }
 
             else -> result.notImplemented()
@@ -326,23 +351,27 @@ class RideTrackingMapView(
         Log.d("MapDebug", "Added route point: ${point.latitude}, ${point.longitude}, total points: ${routePoints.size}")
     }
     
-    private fun updateRoutePolylines() {
-        handler.post {
-            // Clear existing polylines
-            routePolyline?.remove()
-            
-            if (routePoints.size > 1) {
-                // Draw updated route polyline
-                routePolyline = googleMap?.addPolyline(PolylineOptions()
-                    .addAll(routePoints)
-                    .width(12f)
-                    .color(0xFFEC8825.toInt()) // Orange color
-                    .geodesic(true))
-                
-                Log.d("MapDebug", "Updated route polyline with ${routePoints.size} points")
-            }
+private fun updateRoutePolylines() {
+    // Remove any existing polylines from the map
+    for (polyline in routePolylines) {
+        polyline.remove()
+    }
+    routePolylines.clear()
+    
+    // Add new polyline with the updated route points
+    if (routePoints.size > 1) {
+        val polylineOptions = PolylineOptions()
+        .addAll(routePoints)
+        .width(12f)
+        .color(0xFFEC8825.toInt()) // Orange color
+        .geodesic(true)
+        
+        val polyline = googleMap?.addPolyline(polylineOptions)
+        if (polyline != null) {
+            routePolylines.add(polyline)
         }
     }
+}
 
     private fun processMapData(mapData: Map<*, *>) {
     try {

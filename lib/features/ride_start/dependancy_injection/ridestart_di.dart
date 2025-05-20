@@ -11,6 +11,7 @@ import '../../authentication/data/data_source/token_data_source.dart';
 import '../../authentication/data/repository/token_repository_impl.dart';
 import '../../authentication/domain/usecases/get_token_usecase.dart';
 import '../data/repository/ridestart_repository_impl.dart';
+import '../domain/usecases/give_review.dart';
 import '../domain/usecases/start_ride.dart';
 
 class RideStartDependencyInjection {
@@ -24,6 +25,7 @@ class RideStartDependencyInjection {
     final startRideDataSource = StartRideRemoteDataSource(Client());
     final startRideRepository = StartRideRepositoryImpl(startRideDataSource);
     final startRideUsecase = StartRide(startRideRepository);
+    final giveReviewUsecase = GiveReview(startRideRepository);
 
     // Return the list of providers
     return [
@@ -34,6 +36,7 @@ class RideStartDependencyInjection {
           create: (_) => RideStartBloc(
                 repository: startRideUsecase,
                 getTokenUseCase: getTokenUseCase,
+                giveReviewUseCase: giveReviewUsecase,
               )),
     ];
   }
