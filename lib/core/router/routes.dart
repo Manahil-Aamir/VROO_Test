@@ -41,6 +41,7 @@ import '../../features/driver_requests/dependency_injection/approve_rides_di.dar
 import '../../features/driver_requests/dependency_injection/pending_rides_di.dart';
 import '../../features/driver_requests/presentation/pages/active_rides_screen.dart';
 import '../../features/driver_requests/presentation/pages/ride_request_status.dart';
+import '../../features/matching/dependency_injection/insights_di.dart';
 import '../../features/matching/dependency_injection/matching_di.dart';
 import '../../features/matching/presentation/pages/matching_page.dart';
 import '../../features/ride_start/data/models/ridestart_data_model.dart';
@@ -61,7 +62,9 @@ import '../../features/rider_requests/dependency_injection/rider_request_di.dart
 import '../../features/rider_requests/presentation/pages/rider_request_join.dart';
 import '../../features/rider_requests/presentation/pages/rider_requests_screen.dart';
 import '../../features/sos/presentation/pages/contact_page.dart';
+import '../../features/user_profile/dependency_injection/reviews_di.dart';
 import '../../features/user_profile/dependency_injection/user_profile_di.dart';
+import '../../features/user_profile/presentation/pages/review_screen.dart';
 import '../../splash.dart';
 
 class Routes {
@@ -99,6 +102,7 @@ class Routes {
   static const String ride_tracking = '/ride_tracking';
   static const String rider_view = '/rider_view';
   static const String rider_request_joins = '/rider_request_joins';
+  static const String reviews = '/review';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -696,7 +700,10 @@ class Routes {
         final arguments = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
           builder: (_) => MultiProvider(
-            providers: MatchingDependencyInjection.init(),
+            providers: [
+              ...MatchingDependencyInjection.init(),
+              ...DriverInsightsDependencyInjection.init(),
+            ],
             child: MatchingPage(
               schedule: arguments['schedule'] as ScheduleModel,
               minPickupTime: arguments['minPickupTime'] as TimeOfDay,
@@ -795,10 +802,16 @@ class Routes {
             providers: [
               ...RideRequestJoinDi.init(),
               ...MatchingDependencyInjection.init(),
+              ...DriverInsightsDependencyInjection.init(),
             ],
             child: RiderRequestJoinsPage(rideRequestId: requestId), 
           ),
         );
+      case reviews:
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: ReviewDependencyInjection.init(),
+                child: ReviewsPage()));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

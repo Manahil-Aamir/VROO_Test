@@ -8,6 +8,9 @@ import '../../../../shared/widgets/initials_circle_avatar.dart';
 import '../../../matching/data/models/matching_rides_model.dart';
 import '../bloc/bloc/matching_bloc.dart';
 import '../bloc/event/matching_event.dart';
+import '../bloc/bloc/insights_bloc.dart';
+import '../bloc/event/insights_event.dart';
+import '../bloc/state/insights_state.dart';
 
 class RideMatchCard extends StatelessWidget {
   final MatchingRideModel match;
@@ -20,10 +23,8 @@ class RideMatchCard extends StatelessWidget {
   }) : super(key: key);
 
   String getRiderId() {
-    final FirebaseAuth firebaseAuth =
-        FirebaseAuth.instance; // Initialize FirebaseAuth
-    final User user = firebaseAuth.currentUser!; // Get current user
-    return user.uid; // Return UID or null if user is not logged in
+    final user = FirebaseAuth.instance.currentUser!;
+    return user.uid;
   }
 
   String _getDriverInitials() {
@@ -33,6 +34,337 @@ class RideMatchCard extends StatelessWidget {
       return '${nameParts[0][0]}${nameParts[1][0]}';
     }
     return driverName.isNotEmpty ? driverName[0] : '';
+  }
+
+  // void _showInsightsModal(BuildContext context) {
+  //   final insightsBloc = context.read<DriverInsightsBloc>();
+  //   insightsBloc.add(LoadDriverInsights(match.driverId));
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => Theme(
+  //       data: Theme.of(context).copyWith(
+  //         dialogTheme: DialogTheme(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(16.r),
+  //           ),
+  //           backgroundColor: ThemeColors.primaryColorDark,
+  //         ),
+  //       ),
+  //       child: BlocProvider.value(
+  //         value: insightsBloc,
+  //         child: Dialog(
+  //           child: Container(
+  //             constraints: BoxConstraints(
+  //               maxWidth: MediaQuery.of(context).size.width * 0.85,
+  //               maxHeight: MediaQuery.of(context).size.height * 0.6,
+  //             ),
+  //             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     Text(
+  //                       'Driver Insights',
+  //                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
+  //                         color: ThemeColors.buttonTextColor,
+  //                         fontWeight: FontWeight.bold,
+  //                         fontSize: 18.sp,
+  //                       ),
+  //                     ),
+  //                     IconButton(
+  //                       icon: Icon(Icons.close, size: 22.r),
+  //                       color: ThemeColors.buttonTextColor.withOpacity(0.7),
+  //                       onPressed: () => Navigator.pop(context),
+  //                       padding: EdgeInsets.zero,
+  //                       constraints: BoxConstraints(),
+  //                     ),
+  //                   ],
+  //                 ),
+  //                 SizedBox(height: 12.h),
+  //                 Divider(
+  //                   color: ThemeColors.buttonTextColor.withOpacity(0.2),
+  //                   height: 1.h,
+  //                 ),
+  //                 SizedBox(height: 16.h),
+  //                 Expanded(
+  //                   child: SingleChildScrollView(
+  //                     child: BlocBuilder<DriverInsightsBloc, DriverInsightsState>(
+  //                       builder: (context, state) {
+  //                         if (state is DriverInsightsLoading) {
+  //                           return Center(
+  //                             child: Padding(
+  //                               padding: EdgeInsets.symmetric(vertical: 24.h),
+  //                               child: CircularProgressIndicator(
+  //                                 color: ThemeColors.primaryColor,
+  //                               ),
+  //                             ),
+  //                           );
+  //                         } else if (state is DriverInsightsError) {
+  //                           print(state.message);
+  //                           return Center(
+  //                             child: Column(
+  //                               mainAxisAlignment: MainAxisAlignment.center,
+  //                               children: [
+  //                                 Icon(
+  //                                   Icons.error_outline,
+  //                                   color: Colors.red,
+  //                                   size: 48.r,
+  //                                 ),
+  //                                 SizedBox(height: 16.h),
+  //                                 Text(
+  //                                   'Failed to load insights',
+  //                                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+  //                                     color: ThemeColors.buttonTextColor,
+  //                                   ),
+  //                                 ),
+  //                                 SizedBox(height: 8.h),
+  //                                 Text(
+  //                                   'Please try again later.',
+  //                                   // state.message,
+  //                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
+  //                                     color: Colors.red.withOpacity(0.8),
+  //                                   ),
+  //                                   textAlign: TextAlign.center,
+  //                                 ),
+  //                                 SizedBox(height: 16.h),
+  //                                 ElevatedButton(
+  //                                   onPressed: () {
+  //                                     context.read<DriverInsightsBloc>().add(
+  //                                       LoadDriverInsights(match.driverId),
+  //                                     );
+  //                                   },
+  //                                   style: ElevatedButton.styleFrom(
+  //                                     backgroundColor: ThemeColors.primaryColor,
+  //                                     foregroundColor: ThemeColors.buttonTextColor,
+  //                                     padding: EdgeInsets.symmetric(
+  //                                       horizontal: 24.w, 
+  //                                       vertical: 10.h,
+  //                                     ),
+  //                                     shape: RoundedRectangleBorder(
+  //                                       borderRadius: BorderRadius.circular(8.r),
+  //                                     ),
+  //                                   ),
+  //                                   child: Text('Retry'),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           );
+  //                         } else if (state is DriverInsightsLoaded) {
+  //                           if (state.insights.trim().isNotEmpty) {
+  //                             return Container(
+  //                               padding: EdgeInsets.symmetric(horizontal: 8.w),
+  //                               child: Text(
+  //                                 state.insights,
+  //                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+  //                                   color: ThemeColors.buttonTextColor.withOpacity(0.9),
+  //                                   height: 1.5,
+  //                                   fontSize: 14.sp,
+  //                                 ),
+  //                               ),
+  //                             );
+  //                           }
+  //                         }
+  //                         return Center(
+  //                           child: Column(
+  //                             mainAxisAlignment: MainAxisAlignment.center,
+  //                             children: [
+  //                               Icon(
+  //                                 Icons.insights,
+  //                                 size: 48.r,
+  //                                 color: ThemeColors.buttonTextColor.withOpacity(0.5),
+  //                               ),
+  //                               SizedBox(height: 16.h),
+  //                               Text(
+  //                                 'No insights available',
+  //                                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+  //                                   color: ThemeColors.buttonTextColor.withOpacity(0.8),
+  //                                 ),
+  //                               ),
+  //                               SizedBox(height: 8.h),
+  //                               Text(
+  //                                 'Check back later for driver insights',
+  //                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
+  //                                   color: ThemeColors.buttonTextColor.withOpacity(0.6),
+  //                                 ),
+  //                                 textAlign: TextAlign.center,
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         );
+  //                       },
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  void _showInsightsModal(BuildContext context) {
+    final insightsBloc = context.read<DriverInsightsBloc>();
+    insightsBloc.add(LoadDriverInsights(match.driverId));
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // makes it full-screen
+      backgroundColor: Colors.transparent, // to apply custom radius and background
+      builder: (context) {
+        return BlocProvider.value(
+          value: insightsBloc,
+          child: DraggableScrollableSheet(
+            initialChildSize: 0.40,
+            minChildSize: 0.2,
+            maxChildSize: 0.95,
+            expand: false,
+            builder: (context, scrollController) => Container(
+              decoration: BoxDecoration(
+                color: ThemeColors.primaryColorDark,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+              child: Column(
+                children: [
+                  // Header
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Driver Insights',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: ThemeColors.buttonTextColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.sp,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close, size: 22.r),
+                        color: ThemeColors.primaryColor.withOpacity(0.7),
+                        onPressed: () => Navigator.pop(context),
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12.h),
+                  Divider(
+                    color: ThemeColors.buttonTextColor.withOpacity(0.2),
+                    height: 1.h,
+                  ),
+                  SizedBox(height: 16.h),
+
+                  // Body
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: BlocBuilder<DriverInsightsBloc, DriverInsightsState>(
+                        builder: (context, state) {
+                          if (state is DriverInsightsLoading) {
+                            return Center(
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(0, 100.h, 0, 0),
+                                child: CircularProgressIndicator(
+                                  color: ThemeColors.primaryColor,
+                                ),
+                              ),
+                            );
+                          } else if (state is DriverInsightsError) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.error_outline, color: Colors.red, size: 48.r),
+                                  SizedBox(height: 16.h),
+                                  Text(
+                                    'Failed to load insights',
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: ThemeColors.buttonTextColor,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    'Please try again later.',
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Colors.red.withOpacity(0.8),
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 16.h),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      context.read<DriverInsightsBloc>().add(
+                                        LoadDriverInsights(match.driverId),
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: ThemeColors.primaryColor,
+                                      foregroundColor: ThemeColors.buttonTextColor,
+                                      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8.r),
+                                      ),
+                                    ),
+                                    child: Text('Retry'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else if (state is DriverInsightsLoaded) {
+                            if (state.insights.trim().isNotEmpty) {
+                              return Container(
+                                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                child: Text(
+                                  state.insights,
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: ThemeColors.buttonTextColor.withOpacity(0.9),
+                                    height: 1.5,
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(height: 36.h),
+                                Icon(Icons.insights, size: 48.r, color: ThemeColors.primaryColor.withOpacity(0.5)),
+                                SizedBox(height: 16.h),
+                                Text(
+                                  'No insights available',
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: ThemeColors.buttonTextColor.withOpacity(0.8),
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                Text(
+                                  'Check back later for driver insights',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: ThemeColors.buttonTextColor.withOpacity(0.6),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -72,14 +404,11 @@ class RideMatchCard extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Driver avatar
         InitialsCircleAvatar(
           initials: _getDriverInitials(),
           radius: 20,
         ),
         SizedBox(width: 12.w),
-        
-        // Driver name, ratings, date and departure time
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,22 +419,31 @@ class RideMatchCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          match.driverName,
-                          style: textTheme.bodyLarge?.copyWith(
-                            color: ThemeColors.buttonTextColor,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15.sp,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        Row(
+                          children: [
+                            Text(
+                              match.driverName,
+                              style: textTheme.bodyLarge?.copyWith(
+                                color: ThemeColors.buttonTextColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15.sp,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.insights, size: 20.r),
+                              color: ThemeColors.primaryColor,
+                              onPressed: () => _showInsightsModal(context),
+                            ),
+                          ],
                         ),
                         Row(
                           children: [
                             Icon(Icons.star, color: Colors.amber, size: 14.r),
                             SizedBox(width: 4.w),
                             Text(
-                              "4.5", // NOTE: Rating not available in MatchingRideModel
+                              "4.5",
                               style: textTheme.bodySmall?.copyWith(
                                 color: ThemeColors.buttonTextColor.withOpacity(0.8),
                                 fontSize: 12.sp,
@@ -119,15 +457,12 @@ class RideMatchCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      // Date
                       Row(
                         children: [
                           Icon(Icons.calendar_today, size: 12.r, color: ThemeColors.primaryColor),
                           SizedBox(width: 4.w),
                           Text(
-                            //format the date
                             DateFormat('dd-MM-yyyy').format(match.date),
-                            // match.date,
                             style: textTheme.bodySmall?.copyWith(
                               color: ThemeColors.buttonTextColor,
                               fontSize: 12.sp,
@@ -136,7 +471,6 @@ class RideMatchCard extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 4.h),
-                      // Departure time with time icon
                       Row(
                         children: [
                           Icon(Icons.access_time_rounded, size: 12.r, color: ThemeColors.primaryColor),
@@ -216,7 +550,6 @@ class RideMatchCard extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Car info
         Expanded(
           child: Row(
             children: [
@@ -271,22 +604,13 @@ class RideMatchCard extends StatelessWidget {
         
         SizedBox(width: 8.w),
 
-        // Seat icons
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             for (int i = 0; i < occupiedSeats; i++)
-              Icon(
-                Icons.event_seat,
-                color: ThemeColors.primaryColor,
-                size: 16.r,
-              ),
+              Icon(Icons.event_seat, color: ThemeColors.primaryColor, size: 16.r),
             for (int i = 0; i < availableSeats; i++)
-              Icon(
-                Icons.event_seat,
-                color: ThemeColors.backgroundColor,
-                size: 16.r,
-              ),
+              Icon(Icons.event_seat, color: ThemeColors.backgroundColor, size: 16.r),
           ],
         ),
       ],
@@ -296,7 +620,6 @@ class RideMatchCard extends StatelessWidget {
   Widget _buildFareAndJoinButton(BuildContext context, TextTheme textTheme) {
     return Row(
       children: [
-        // Fare
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
           decoration: BoxDecoration(
@@ -315,17 +638,14 @@ class RideMatchCard extends StatelessWidget {
 
         Spacer(), 
 
-        // Join Button
         ElevatedButton(
           onPressed: () {
-            print("Join button pressed");
             final joinData = {
               "rideId": match.id,
               "rideRequestId": rideRequestId,
               "driverId": match.driverId, 
               "riderId": getRiderId(),
             };
-            print("Join data: $joinData");
             context.read<MatchingBloc>().add(JoinRideRequestEvent(joinData: joinData));
           },
           style: ElevatedButton.styleFrom(
@@ -344,12 +664,7 @@ class RideMatchCard extends StatelessWidget {
             ),
           ),
         ),
-      
-      
       ],
     );
   }
-
-
-
 }

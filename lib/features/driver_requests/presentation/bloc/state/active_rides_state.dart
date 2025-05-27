@@ -1,4 +1,3 @@
-import 'package:vroo_test/features/ride_start/data/models/ride_start_model.dart';
 import 'package:vroo_test/features/ride_start/data/models/ridestart_data_model.dart';
 
 import '../../../domain/entity/active_ride.dart';

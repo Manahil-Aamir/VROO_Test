@@ -10,7 +10,6 @@ import '../../../HomeScreens/presentation/widgets/appbarmatching.dart';
 import '../bloc/bloc/matching_bloc.dart';
 import '../bloc/state/matching_state.dart';
 import '../widgets/match_card.dart';
-import '../widgets/matching_card.dart';
 
 class MatchingPage extends StatefulWidget {
   final String rideRequestId;
