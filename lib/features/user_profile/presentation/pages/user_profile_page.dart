@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/router/navigation.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../core/utils/exit_dialouge_util.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
+import '../../../../shared/widgets/gradient_button.dart';
 import '../bloc/bloc/user_profile_bloc.dart';
 import '../bloc/event/user_profile_event.dart';
 import '../bloc/state/user_profile_state.dart';
@@ -68,14 +70,25 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           SizedBox(height: 24.h),
                           SectionTitle(title: 'Environmental Impact'),
                           EnvironmentalImpact(user: state.userProfile),
-                          SizedBox(height: 24.h),
+                          // SizedBox(height: 24.h),
                         ],
+                      ),
+                    ),
+                    // Gradient button to see all reviews
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: GradientButton(
+                        text: 'See All Reviews',
+                        onTap: () {
+                          context.read<Navigation>().navigateTo('/review');
+                        },
                       ),
                     ),
                   ],
                 ),
               );
             } else if (state is UserProfileError) {
+              print('Error: ${state.message}');
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -86,18 +99,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       height: 300.h,
                       fit: BoxFit.contain,
                     ),
-                    // SizedBox(height: 16.h),
-                    // Padding(
-                    //   padding: EdgeInsets.symmetric(horizontal: 24.w),
-                    //   child: Text(
-                    //     'Failed to load profile information. Please try again later.',
-                    //     style: textTheme.bodyMedium?.copyWith(
-                    //       color: ThemeColors.accentColor,
-                    //       fontSize: 14.sp,
-                    //     ),
-                    //     textAlign: TextAlign.center,
-                    //   ),
-                    // ),
                   ],
                 ),
               );

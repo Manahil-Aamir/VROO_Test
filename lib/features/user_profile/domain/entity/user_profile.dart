@@ -22,4 +22,6 @@ class UserProfile {
     required this.totalRidesAsDriver,
     required this.totalRidesAsRider,
   });
+
+  toJson() {}
 }

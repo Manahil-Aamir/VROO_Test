@@ -7,6 +7,9 @@ class GetUserProfile {
   GetUserProfile(this.repository);
 
   Future<UserProfile> call() async {
-    return await repository.getUserProfile();
+    print('[GetUserProfile] Fetching user profile...');
+    final profile = await repository.getUserProfile();
+    print('[GetUserProfile] User profile fetched: $profile');
+    return profile;
   }
 }
