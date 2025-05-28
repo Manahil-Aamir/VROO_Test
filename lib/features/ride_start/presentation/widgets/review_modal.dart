@@ -35,6 +35,7 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
   int? selectedRating;
   TextEditingController reviewController = TextEditingController();
   bool isSubmitting = false;
+  bool showRatingError = false; // Add this flag
 
   @override
   void initState() {
@@ -72,7 +73,10 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
       bloc: widget.rideStartBloc,
       listener: (context, state) {
         if (state is ReviewSuccess) {
-          setState(() => isSubmitting = false);
+          setState(() {
+            isSubmitting = false;
+            showRatingError = false;
+          });
 
           if (isLastPassenger) {
             Navigator.of(context).pop();
@@ -172,12 +176,24 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                                 onPressed: () {
                                   setState(() {
                                     selectedRating = index + 1;
+                                    showRatingError =
+                                        false; // Hide error on select
                                   });
                                 },
                               ),
                             );
                           }),
                         ),
+                        if (showRatingError) // Show only if flag is true
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Text(
+                              'Rating is required',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                          ),
                         SizedBox(height: 8.h),
                         // Optional review text
                         TextField(
@@ -238,14 +254,14 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                     DialogButton(
                       onTap: () {
                         if (selectedRating == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Please select a rating'),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
+                          setState(() {
+                            showRatingError = true;
+                          });
                           return;
                         }
+                        setState(() {
+                          showRatingError = false;
+                        });
                         _submitReview(currentPassenger);
                       },
                       text: isLastPassenger ? 'Done' : 'Next',
@@ -261,6 +277,7 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
   void _resetForm() {
     selectedRating = null;
     reviewController.clear();
+    showRatingError = false;
   }
 
   void _submitReview(InridePassengerModel passenger) {
