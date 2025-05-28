@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vroo_test/features/safety/presentation/widgets/safetydetails.dart';
 import 'package:vroo_test/shared/widgets/Appbar.dart';
 
+import '../../../../core/router/navigation.dart';
 import '../widgets/safetycard.dart';
 
 class SafetyFeaturesScreen extends StatelessWidget {
@@ -39,36 +42,41 @@ class SafetyFeaturesScreen extends StatelessWidget {
                 childAspectRatio: 1,
                 children: [
                   SafetyFeatureCard(
-                    title: 'Before the Ride',
-                    imagePath: 'assets/images/safety/l1.png',
-                    onTap: () => _handleFeatureTap(context, 'Before the Ride'),
-                  ),
+                      title: 'Before the Ride',
+                      imagePath: 'assets/images/safety/l1.png',
+                      onTap: () {
+                        context.read<Navigation>().navigateTo('/before_ride');
+                      }),
                   SafetyFeatureCard(
-                    title: 'Driver Verification',
-                    imagePath: 'assets/images/safety/l2.png',
-                    onTap: () =>
-                        _handleFeatureTap(context, 'Driver Verification'),
-                  ),
+                      title: 'User Verification',
+                      imagePath: 'assets/images/safety/l2.png',
+                      onTap: () {
+                        context.read<Navigation>().navigateTo('/user_verify');
+                      }),
                   SafetyFeatureCard(
-                    title: 'Safety Features',
-                    imagePath: 'assets/images/safety/l3.png',
-                    onTap: () => _handleFeatureTap(context, 'Safety Features'),
-                  ),
+                      title: 'Location Tracking',
+                      imagePath: 'assets/images/safety/l3.png',
+                      onTap: () {
+                        context.read<Navigation>().navigateTo('/protect');
+                      }),
                   SafetyFeatureCard(
-                    title: 'Report a Problem',
-                    imagePath: 'assets/images/safety/l4.png',
-                    onTap: () => _handleFeatureTap(context, 'Report a Problem'),
-                  ),
+                      title: 'Report a Problem',
+                      imagePath: 'assets/images/safety/l4.png',
+                      onTap: () {
+                        context.read<Navigation>().navigateTo('/report');
+                      }),
                   SafetyFeatureCard(
-                    title: 'Car Verification',
-                    imagePath: 'assets/images/safety/l5.png',
-                    onTap: () => _handleFeatureTap(context, 'Car Verification'),
-                  ),
+                      title: 'Route Check',
+                      imagePath: 'assets/images/safety/l5.png',
+                      onTap: () {
+                        context.read<Navigation>().navigateTo('/route');
+                      }),
                   SafetyFeatureCard(
-                    title: 'Contact',
-                    imagePath: 'assets/images/safety/l6.png',
-                    onTap: () => _handleFeatureTap(context, 'Contact'),
-                  ),
+                      title: 'Safe Contact',
+                      imagePath: 'assets/images/safety/l6.png',
+                      onTap: () {
+                        context.read<Navigation>().navigateTo('/safecontact');
+                      }),
                 ],
               ),
             ),
@@ -76,16 +84,5 @@ class SafetyFeaturesScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _handleFeatureTap(BuildContext context, String feature) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$feature tapped'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-    // Add your navigation logic here
-    // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => FeatureDetailScreen(feature)));
   }
 }
