@@ -21,16 +21,13 @@ class AuthRepositoryImpl implements AuthRepository {
       remoteDataSource.sendEmailVerification();
 
   @override
-  Future<AuthUser> checkEmailVerification() async {
-    final user = await remoteDataSource.checkEmailVerification();
-    return AuthModel.fromFirebaseUser(user).toEntity();
+  Future<bool> checkEmailVerification() async {
+    final useremailverified = await remoteDataSource.checkEmailVerification();
+    return useremailverified;
   }
 
   @override
   Future<void> resendVerificationEmail() => sendEmailVerification();
-
-  @override
-  Future<void> reloadUser() => remoteDataSource.reloadUser();
 }
 
 extension AuthModelExtensions on AuthModel {

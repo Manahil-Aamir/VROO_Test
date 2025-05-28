@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,8 +12,46 @@ import '../bloc/bloc/email_verification_bloc.dart';
 import '../bloc/event/email_verification_event.dart';
 import '../bloc/state/email_verification_state.dart';
 
-class EmailVerificationScreen extends StatelessWidget {
+class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
+
+  @override
+/*************  ✨ Windsurf Command ⭐  *************/
+  /// Creates the mutable state for this widget, which handles the email verification process
+  /// and listens to verification states to navigate or show appropriate messages.
+
+  State<EmailVerificationScreen> createState() =>
+      _EmailVerificationScreenState();
+}
+
+class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+  Timer? _verificationTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startVerificationCheck();
+  }
+
+  void _startVerificationCheck() {
+    _verificationTimer = Timer.periodic(
+      const Duration(seconds: 5),
+      (timer) {
+        if (mounted) {
+          context
+              .read<EmailVerificationBloc>()
+              .add(EmailVerificationCheckRequested());
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _verificationTimer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -20,6 +60,7 @@ class EmailVerificationScreen extends StatelessWidget {
       body: BlocConsumer<EmailVerificationBloc, EmailVerificationState>(
         listener: (context, state) {
           if (state is EmailVerificationSuccess) {
+            _verificationTimer?.cancel(); // Stop checking when verified
             context.read<Navigation>().navigateTo('/create_user');
           } else if (state is EmailVerificationFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -69,7 +110,8 @@ class EmailVerificationScreen extends StatelessWidget {
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
                           child: Text(
                             "We've sent a verification link to your email address. "
-                            "Please check your inbox and follow the instructions.",
+                            "Please check your inbox and follow the instructions. "
+                            "We'll automatically check if you've verified your email.",
                             textAlign: TextAlign.center,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.primaryColorDark.withOpacity(0.8),
@@ -77,12 +119,25 @@ class EmailVerificationScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 32.h),
-                        GradientButton(
-                          onTap: () => context
-                              .read<EmailVerificationBloc>()
-                              .add(EmailVerificationCheckRequested()),
-                          text: 'Check Verification',
-                        ),
+                        // Show loading indicator when checking
+                        if (state is EmailVerificationLoading)
+                          Column(
+                            children: [
+                              CircularProgressIndicator(
+                                color: theme.primaryColor,
+                              ),
+                              SizedBox(height: 16.h),
+                              Text(
+                                'Checking verification...',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color:
+                                      theme.primaryColorDark.withOpacity(0.7),
+                                ),
+                              ),
+                              SizedBox(height: 16.h),
+                            ],
+                          ),
+
                         SizedBox(height: 18.h),
                         Text(
                           'Didn\'t receive the email?',

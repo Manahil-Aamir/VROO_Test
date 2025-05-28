@@ -21,18 +21,19 @@ class EmailVerificationBloc
     EmailVerificationCheckRequested event,
     Emitter<EmailVerificationState> emit,
   ) async {
-    emit(EmailVerificationLoading());
     try {
-      final user = await checkEmailVerification();
-      if (user.isEmailVerified) {
+      final isEmailVerified = await checkEmailVerification();
+      if (isEmailVerified) {
         print('verified');
         emit(EmailVerificationSuccess());
       } else {
         print('not verified');
-        emit(EmailVerificationFailure('Email not verified yet'));
+        // Don't emit failure for automatic checks - just silently continue
+        // Only the success state matters for navigation
       }
     } catch (e) {
-      print('failure');
+      print('failure: $e');
+      // Only emit failure for serious errors, not for "not verified" status
       emit(EmailVerificationFailure(e.toString()));
     }
   }

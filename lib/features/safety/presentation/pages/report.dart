@@ -17,7 +17,7 @@ class ReportScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'If you encounter any issues during and after the ride, then report to us. We will look into your issues.',
+              "If you encounter any issues during and after the ride, then report to us on 'vroo.iba@gmail.com'. We will look into your issues.",
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.primaryColorDark,
               ),

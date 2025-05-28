@@ -4,7 +4,8 @@ import '../repository/auth_repository.dart';
 class SignUpUseCase {
   final AuthRepository repository;
   SignUpUseCase(this.repository);
-  Future<AuthUser> call(String email, String password) => repository.signUpWithEmailAndPassword(email, password);
+  Future<AuthUser> call(String email, String password) =>
+      repository.signUpWithEmailAndPassword(email, password);
 }
 
 class SendEmailVerificationUseCase {
@@ -16,5 +17,5 @@ class SendEmailVerificationUseCase {
 class CheckEmailVerificationUseCase {
   final AuthRepository repository;
   CheckEmailVerificationUseCase(this.repository);
-  Future<AuthUser> call() => repository.checkEmailVerification();
+  Future<bool> call() => repository.checkEmailVerification();
 }
