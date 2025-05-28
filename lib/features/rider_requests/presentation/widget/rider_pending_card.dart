@@ -14,7 +14,7 @@ import 'cancel_button.dart';
 class PendingRequestCard extends StatelessWidget {
   final RiderPendingRequest request;
 
-  const PendingRequestCard({Key? key, required this.request}) : super(key: key);
+  const PendingRequestCard({super.key, required this.request});
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +22,11 @@ class PendingRequestCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        // call join card with argument 
+        // call join card with argument
         context.read<Navigation>().navigateTo(
-          '/rider_request_joins',
-          arguments: request.id,
-        );
+              '/rider_request_joins',
+              arguments: request.id,
+            );
       },
       child: Card(
         elevation: 2,
@@ -48,23 +48,25 @@ class PendingRequestCard extends StatelessWidget {
               ),
               _buildRouteInfo(textTheme),
               if (_hasPreferences) SizedBox(height: 12.h),
-              if (_hasPreferences) Row(
-                children: [
-                  Expanded(child: _buildPreferences(textTheme)),
-                  SizedBox(width: 12.h),
-                  CancelButton(
-                    onCancel: () => _showCancelConfirmation(context),
-                  ),
-                ],
-              ),
-              if (!_hasPreferences) Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CancelButton(
-                    onCancel: () => _showCancelConfirmation(context),
-                  ),
-                ],
-              ),
+              if (_hasPreferences)
+                Row(
+                  children: [
+                    Expanded(child: _buildPreferences(textTheme)),
+                    SizedBox(width: 12.h),
+                    CancelButton(
+                      onCancel: () => _showCancelConfirmation(context),
+                    ),
+                  ],
+                ),
+              if (!_hasPreferences)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CancelButton(
+                      onCancel: () => _showCancelConfirmation(context),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
@@ -73,7 +75,9 @@ class PendingRequestCard extends StatelessWidget {
   }
 
   bool get _hasPreferences {
-    return request.preferences.femaleOnly || request.preferences.maleOnly || request.preferences.canWalk;
+    return request.preferences.femaleOnly ||
+        request.preferences.maleOnly ||
+        request.preferences.canWalk;
   }
 
   Widget _buildDateTimeRow(BuildContext context, TextTheme textTheme) {
@@ -84,7 +88,8 @@ class PendingRequestCard extends StatelessWidget {
         Row(
           children: [
             SizedBox(width: 2.w),
-            Icon(Icons.calendar_today, size: 14.r, color: ThemeColors.primaryColor),
+            Icon(Icons.calendar_today,
+                size: 14.r, color: ThemeColors.primaryColor),
             SizedBox(width: 6.w),
             Text(
               DateFormat('dd MMM yyyy').format(request.date),
@@ -95,15 +100,12 @@ class PendingRequestCard extends StatelessWidget {
             ),
           ],
         ),
-        
+
         // Time info
         Row(
           children: [
-            Icon(
-              Icons.access_time_rounded, 
-              color: ThemeColors.primaryColor, 
-              size: 16.r
-            ),
+            Icon(Icons.access_time_rounded,
+                color: ThemeColors.primaryColor, size: 16.r),
             SizedBox(width: 4.w),
             Text(
               "${DateFormat('h:mm a').format(request.pickupTimeRange.min)} - "
@@ -160,7 +162,7 @@ class PendingRequestCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               SizedBox(height: 6.h),
-              
+
               // Destination in single line
               Text(
                 request.destination.address,
@@ -226,9 +228,9 @@ class PendingRequestCard extends StatelessWidget {
       ),
     );
   }
-  
+
   void _showCancelConfirmation(BuildContext context) {
-    final bloc = BlocProvider.of<RiderPendingRequestBloc>(context);  
+    final bloc = BlocProvider.of<RiderPendingRequestBloc>(context);
     showDialog(
       context: context,
       builder: (context) => CustomDialog(

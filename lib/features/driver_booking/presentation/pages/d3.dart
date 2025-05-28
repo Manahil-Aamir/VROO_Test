@@ -56,8 +56,7 @@ class D3 extends StatelessWidget {
   // init method to print all the variables
   void init() {
     printVariables();
-  }  
-
+  }
 
   void printVariables() {
     print('Selected Car Details:');
@@ -164,11 +163,12 @@ class D3 extends StatelessWidget {
                             DetailTile(
                               icon: Icons.payment,
                               label: 'Payment Option',
-                              value: paymentOption.map((option) => 
-                                option.isNotEmpty ? 
-                                  option[0].toUpperCase() + option.substring(1) : 
-                                  option)
-                                .join(', '),
+                              value: paymentOption
+                                  .map((option) => option.isNotEmpty
+                                      ? option[0].toUpperCase() +
+                                          option.substring(1)
+                                      : option)
+                                  .join(', '),
                             ),
                           ],
                         ),
@@ -217,20 +217,20 @@ class D3 extends StatelessWidget {
 
     final user = FirebaseAuth.instance.currentUser;
     final userState = context.read<UserBloc>().state;
-    String user_gender = '';
+    String userGender = '';
     bool maleOnly = false;
     bool femaleOnly = false;
 
     if (userState is UserLoaded) {
-      user_gender = userState.user.gender;
+      userGender = userState.user.gender;
     }
-    print('user gender: ${user_gender}');
+    print('user gender: $userGender');
     print('same gender: $sameGenderOnly');
 
-    if (user_gender.toLowerCase() == 'female' && sameGenderOnly == true) {
+    if (userGender.toLowerCase() == 'female' && sameGenderOnly == true) {
       femaleOnly = true;
-    } else if (user_gender.toLowerCase() == 'male' && sameGenderOnly == true) {
-      maleOnly=true;
+    } else if (userGender.toLowerCase() == 'male' && sameGenderOnly == true) {
+      maleOnly = true;
     }
 
     final rideRequest = RideRequest(

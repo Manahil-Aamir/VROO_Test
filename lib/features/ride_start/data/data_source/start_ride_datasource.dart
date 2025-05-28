@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:vroo_test/features/ride_start/data/models/ride_start_model.dart';
 
 import '../../../../core/utils/constant/api_constants.dart';
 import '../../../ride_start/data/models/ridestart_data_model.dart';

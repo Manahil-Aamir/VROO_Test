@@ -12,13 +12,12 @@ import '../bloc/events/ride_request_join_event.dart';
 import 'cancel_button.dart';
 
 class PendingJoinCard extends StatelessWidget {
-
   final RideRequestJoinEntity joinRequest;
 
   const PendingJoinCard({
-    Key? key, 
+    super.key,
     required this.joinRequest,
-  }) : super(key: key);
+  });
 
   String _getDriverInitials() {
     final driverName = joinRequest.ride.driverName;
@@ -62,7 +61,8 @@ class PendingJoinCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDriverInfoWithDateAndETA(BuildContext context, TextTheme textTheme) {
+  Widget _buildDriverInfoWithDateAndETA(
+      BuildContext context, TextTheme textTheme) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -72,7 +72,7 @@ class PendingJoinCard extends StatelessWidget {
           radius: 20,
         ),
         SizedBox(width: 12.w),
-        
+
         // Driver name, ratings, date and ETA (like in screenshot)
         Expanded(
           child: Column(
@@ -99,9 +99,11 @@ class PendingJoinCard extends StatelessWidget {
                             Icon(Icons.star, color: Colors.amber, size: 14.r),
                             SizedBox(width: 4.w),
                             Text(
-                              joinRequest.ride.ratings.asDriver.toStringAsFixed(1),
+                              joinRequest.ride.ratings.asDriver
+                                  .toStringAsFixed(1),
                               style: textTheme.bodySmall?.copyWith(
-                                color: ThemeColors.buttonTextColor.withOpacity(0.8),
+                                color: ThemeColors.buttonTextColor
+                                    .withOpacity(0.8),
                                 fontSize: 12.sp,
                               ),
                             ),
@@ -116,10 +118,12 @@ class PendingJoinCard extends StatelessWidget {
                       // Date
                       Row(
                         children: [
-                          Icon(Icons.calendar_today, size: 12.r, color: ThemeColors.primaryColor),
+                          Icon(Icons.calendar_today,
+                              size: 12.r, color: ThemeColors.primaryColor),
                           SizedBox(width: 4.w),
                           Text(
-                            DateFormat('dd/MMM/yyyy').format(joinRequest.ride.date),
+                            DateFormat('dd/MMM/yyyy')
+                                .format(joinRequest.ride.date),
                             style: textTheme.bodySmall?.copyWith(
                               color: ThemeColors.buttonTextColor,
                               fontSize: 12.sp,
@@ -131,10 +135,12 @@ class PendingJoinCard extends StatelessWidget {
                       // ETA with time icon
                       Row(
                         children: [
-                          Icon(Icons.access_time_rounded, size: 12.r, color: ThemeColors.primaryColor),
+                          Icon(Icons.access_time_rounded,
+                              size: 12.r, color: ThemeColors.primaryColor),
                           SizedBox(width: 4.w),
                           Text(
-                            DateFormat('h:mm a').format(joinRequest.riderDetails.eta),
+                            DateFormat('h:mm a')
+                                .format(joinRequest.riderDetails.eta),
                             style: textTheme.bodySmall?.copyWith(
                               color: ThemeColors.buttonTextColor,
                               fontSize: 12.sp,
@@ -159,13 +165,15 @@ class PendingJoinCard extends StatelessWidget {
       children: [
         Column(
           children: [
-            Icon(Icons.circle_outlined, color: ThemeColors.primaryColor, size: 16.r),
+            Icon(Icons.circle_outlined,
+                color: ThemeColors.primaryColor, size: 16.r),
             Container(
               height: 8.h,
               width: 1.w,
               color: ThemeColors.primaryColor.withOpacity(0.6),
             ),
-            Icon(Icons.location_on, color: ThemeColors.primaryColor, size: 16.r),
+            Icon(Icons.location_on,
+                color: ThemeColors.primaryColor, size: 16.r),
           ],
         ),
         SizedBox(width: 12.w),
@@ -257,7 +265,7 @@ class PendingJoinCard extends StatelessWidget {
             ],
           ),
         ),
-        
+
         SizedBox(width: 8.w),
 
         // Seat icons
@@ -270,7 +278,11 @@ class PendingJoinCard extends StatelessWidget {
                 color: ThemeColors.primaryColor,
                 size: 16.r,
               ),
-            for (int i = 0; i < (joinRequest.ride.noOfSeats - joinRequest.ride.noOfOccupiedSeats); i++)
+            for (int i = 0;
+                i <
+                    (joinRequest.ride.noOfSeats -
+                        joinRequest.ride.noOfOccupiedSeats);
+                i++)
               Icon(
                 Icons.event_seat,
                 color: ThemeColors.backgroundColor,
@@ -302,7 +314,7 @@ class PendingJoinCard extends StatelessWidget {
           ),
         ),
 
-        Spacer(), 
+        Spacer(),
 
         // Cancel Button
         CancelButton(
@@ -328,8 +340,8 @@ class PendingJoinCard extends StatelessWidget {
           Navigator.of(context).pop();
           print("Cancel button pressed");
           context.read<RideRequestJoinBloc>().add(
-            CancelJoinRequest(joinRequest.id),
-          );
+                CancelJoinRequest(joinRequest.id),
+              );
         },
         onCancel: () => Navigator.of(context).pop(),
       ),

@@ -8,16 +8,16 @@ class CancelButton extends StatelessWidget {
   final VoidCallback onCancel;
 
   const CancelButton({
-    Key? key,
+    super.key,
     required this.onCancel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Transform.scale(
-      scale: 0.8,  // Scales down the entire button by 15%
+      scale: 0.8, // Scales down the entire button by 15%
       child: SizedBox(
-        height: 33.h,  // Reduced from 33.h
+        height: 33.h, // Reduced from 33.h
         child: DialogButton(
           onTap: onCancel,
           text: 'Cancel',

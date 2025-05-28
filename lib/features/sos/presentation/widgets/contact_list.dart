@@ -19,7 +19,7 @@ class ContactList extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     print('Contact List: ${contacts.length} contacts found.');
-    if (contacts.length == 0) {
+    if (contacts.isEmpty) {
       print('No contacts available.');
       return Center(
         child: Text(
@@ -32,9 +32,10 @@ class ContactList extends StatelessWidget {
     } else {
       return ListView.builder(
         itemCount: contacts.length,
-        itemBuilder: (context, index) {  
+        itemBuilder: (context, index) {
           final contact = contacts[index];
-          print('Contact ID: ${contact.id}, Contact Name: ${contact.name}, Contact Number: ${contact.number}');
+          print(
+              'Contact ID: ${contact.id}, Contact Name: ${contact.name}, Contact Number: ${contact.number}');
           return Container(
             margin: EdgeInsets.only(bottom: 12.h),
             decoration: BoxDecoration(
@@ -42,10 +43,11 @@ class ContactList extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               leading: InitialsCircleAvatar(
                 initials: contact.name[0].toUpperCase(),
-                radius: 20.r, 
+                radius: 20.r,
                 showCameraIcon: false,
               ),
               title: Text(
@@ -65,7 +67,8 @@ class ContactList extends StatelessWidget {
                       context: context,
                       builder: (dialogContext) => CustomDialog(
                             title: 'Delete Contact',
-                            message: 'Are you sure you want to delete this contact?',
+                            message:
+                                'Are you sure you want to delete this contact?',
                             confirmText: 'Delete',
                             cancelText: 'Cancel',
                             confirmColor: theme.indicatorColor,
@@ -85,7 +88,7 @@ class ContactList extends StatelessWidget {
             ),
           );
         },
-      );  
+      );
     }
   }
 }

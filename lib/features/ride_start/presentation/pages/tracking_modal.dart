@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:vroo_test/features/ride_start/data/models/ridestart_data_model.dart';
-import 'package:vroo_test/features/ride_start/presentation/widgets/timeline_item.dart';
 import 'package:vroo_test/features/ride_start/presentation/widgets/trackride_timeline.dart';
 import 'package:vroo_test/features/ride_start/presentation/widgets/trackride_timeline_item.dart';
-import '../widgets/ride_timeline.dart';
 import '../widgets/stat_item.dart';
 
 class TrackingRideDetailsBottomSheet extends StatefulWidget {

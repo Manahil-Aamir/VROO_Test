@@ -10,7 +10,6 @@ import '../../../HomeScreens/presentation/widgets/appbarmatching.dart';
 import '../bloc/bloc/matching_bloc.dart';
 import '../bloc/state/matching_state.dart';
 import '../widgets/match_card.dart';
-import '../widgets/matching_card.dart';
 
 class MatchingPage extends StatefulWidget {
   final String rideRequestId;
@@ -133,13 +132,16 @@ class _MatchingPageState extends State<MatchingPage> {
                             //   carModel: ride.car.model,
                             //   totalSeats: ride.numOfSeats.toInt(),
                             //   filledSeats: ride.passengers.length,
-                            //   estimatedArrivalTime: 
+                            //   estimatedArrivalTime:
                             //   DateFormat('yyyy-MM-dd').format(ride.expectedArrivalTime),
                             //   id: widget.rideRequestId,
                             //   carCompany: ride.car.company,
                             //   rideId: ride.id,
                             // );
-                              return RideMatchCard(match: ride, rideRequestId: widget.rideRequestId, );
+                            return RideMatchCard(
+                              match: ride,
+                              rideRequestId: widget.rideRequestId,
+                            );
                           } catch (error) {
                             print(
                                 "Error building MatchCard from loaded ride: $error");
@@ -171,7 +173,7 @@ class _MatchingPageState extends State<MatchingPage> {
                             //   carModel: ride.car.model,
                             //   totalSeats: ride.numOfSeats.toInt(),
                             //   filledSeats: ride.passengers.length,
-                            //   estimatedArrivalTime: 
+                            //   estimatedArrivalTime:
                             //   DateFormat('yyyy-MM-dd').format(ride.expectedArrivalTime),
                             //   // DateFormat.jm().format(
                             //   //     DateTime.parse(ride.expectedArrivalTime)),
@@ -179,9 +181,11 @@ class _MatchingPageState extends State<MatchingPage> {
                             //   carCompany: ride.car.company,
                             //   rideId: ride.id,
                             // );
-                        
-                            return RideMatchCard(match: ride, rideRequestId: widget.rideRequestId, );
 
+                            return RideMatchCard(
+                              match: ride,
+                              rideRequestId: widget.rideRequestId,
+                            );
                           } catch (error) {
                             print(
                                 "Error building MatchCard from initial ride: $error");

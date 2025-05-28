@@ -16,6 +16,7 @@ class StartRideRepositoryImpl implements StartRideRepository {
     return rideData;
   }
 
+  @override
   Future<ReviewModel> giveReview(GiveReviewModel giveReview, String token) {
     final reviewData = dataSource.giveReview(giveReview, token);
     return reviewData;

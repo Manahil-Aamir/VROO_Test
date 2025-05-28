@@ -6,7 +6,6 @@ import 'package:vroo_test/features/ride_start/presentation/bloc/state/ridestart_
 import 'package:vroo_test/shared/widgets/dialog_button.dart';
 
 import '../../data/models/inride_passenger_model.dart';
-import '../../domain/entities/give_review_entity.dart';
 import '../bloc/bloc/ridestart_bloc.dart';
 import '../bloc/event/ridestart_event.dart';
 

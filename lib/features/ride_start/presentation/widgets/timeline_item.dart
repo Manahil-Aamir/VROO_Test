@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/features/ride_start/presentation/widgets/start_button.dart';
-import 'package:vroo_test/shared/widgets/dialog_button.dart';
 
 import '../../../../core/router/navigation.dart';
 import '../../../../shared/widgets/custom_dialog.dart';

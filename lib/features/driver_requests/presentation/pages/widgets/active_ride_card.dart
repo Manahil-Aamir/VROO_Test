@@ -2,8 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
-import 'package:vroo_test/features/ride_start/data/models/ride_start_model.dart';
 import '../../../../../core/router/navigation.dart';
 import '../../../../../core/theme/color/color_theme.dart';
 import '../../../../../shared/widgets/custom_dialog.dart';

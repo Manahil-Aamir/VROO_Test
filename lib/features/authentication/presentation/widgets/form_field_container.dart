@@ -7,16 +7,16 @@ class FormFieldContainer extends StatelessWidget {
   final String? errorText;
 
   const FormFieldContainer({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.child,
     this.errorText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

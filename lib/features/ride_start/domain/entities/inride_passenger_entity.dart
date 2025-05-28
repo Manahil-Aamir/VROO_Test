@@ -1,5 +1,4 @@
 import 'package:vroo_test/features/ride_start/data/models/rider_model.dart';
-import 'package:vroo_test/features/ride_start/domain/entities/rider_entity.dart';
 
 class InridePassengerEntity {
   final String riderId;

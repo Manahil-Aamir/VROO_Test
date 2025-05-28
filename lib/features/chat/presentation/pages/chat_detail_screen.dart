@@ -317,8 +317,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                           final messageIndex =
                               state.hasMore ? index - 1 : index;
                           if (messageIndex < 0 ||
-                              messageIndex >= messages.length)
+                              messageIndex >= messages.length) {
                             return SizedBox();
+                          }
 
                           final message = messages[messageIndex];
                           final isMe = message.senderId == currentUserId;
@@ -732,7 +733,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         //   overflow: TextOverflow.ellipsis,
                         //   maxLines: 1,
                         // ),
-                      
                       ],
                     ),
                   ),

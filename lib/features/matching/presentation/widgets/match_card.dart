@@ -14,10 +14,10 @@ class RideMatchCard extends StatelessWidget {
   final String rideRequestId;
 
   const RideMatchCard({
-    Key? key, 
+    super.key,
     required this.match,
     required this.rideRequestId,
-  }) : super(key: key);
+  });
 
   String getRiderId() {
     final FirebaseAuth firebaseAuth =
@@ -78,7 +78,7 @@ class RideMatchCard extends StatelessWidget {
           radius: 20,
         ),
         SizedBox(width: 12.w),
-        
+
         // Driver name, ratings, date and departure time
         Expanded(
           child: Column(
@@ -107,7 +107,8 @@ class RideMatchCard extends StatelessWidget {
                             Text(
                               "4.5", // NOTE: Rating not available in MatchingRideModel
                               style: textTheme.bodySmall?.copyWith(
-                                color: ThemeColors.buttonTextColor.withOpacity(0.8),
+                                color: ThemeColors.buttonTextColor
+                                    .withOpacity(0.8),
                                 fontSize: 12.sp,
                               ),
                             ),
@@ -122,7 +123,8 @@ class RideMatchCard extends StatelessWidget {
                       // Date
                       Row(
                         children: [
-                          Icon(Icons.calendar_today, size: 12.r, color: ThemeColors.primaryColor),
+                          Icon(Icons.calendar_today,
+                              size: 12.r, color: ThemeColors.primaryColor),
                           SizedBox(width: 4.w),
                           Text(
                             //format the date
@@ -139,7 +141,8 @@ class RideMatchCard extends StatelessWidget {
                       // Departure time with time icon
                       Row(
                         children: [
-                          Icon(Icons.access_time_rounded, size: 12.r, color: ThemeColors.primaryColor),
+                          Icon(Icons.access_time_rounded,
+                              size: 12.r, color: ThemeColors.primaryColor),
                           SizedBox(width: 4.w),
                           Text(
                             DateFormat('h:mm a').format(match.departureTime),
@@ -167,13 +170,15 @@ class RideMatchCard extends StatelessWidget {
       children: [
         Column(
           children: [
-            Icon(Icons.circle_outlined, color: ThemeColors.primaryColor, size: 16.r),
+            Icon(Icons.circle_outlined,
+                color: ThemeColors.primaryColor, size: 16.r),
             Container(
               height: 8.h,
               width: 1.w,
               color: ThemeColors.primaryColor.withOpacity(0.6),
             ),
-            Icon(Icons.location_on, color: ThemeColors.primaryColor, size: 16.r),
+            Icon(Icons.location_on,
+                color: ThemeColors.primaryColor, size: 16.r),
           ],
         ),
         SizedBox(width: 12.w),
@@ -212,7 +217,7 @@ class RideMatchCard extends StatelessWidget {
   Widget _buildCarDetailsAndSeats(TextTheme textTheme) {
     final occupiedSeats = match.passengers.length;
     final availableSeats = match.numOfSeats - occupiedSeats;
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -268,7 +273,7 @@ class RideMatchCard extends StatelessWidget {
             ],
           ),
         ),
-        
+
         SizedBox(width: 8.w),
 
         // Seat icons
@@ -313,7 +318,7 @@ class RideMatchCard extends StatelessWidget {
           ),
         ),
 
-        Spacer(), 
+        Spacer(),
 
         // Join Button
         ElevatedButton(
@@ -322,11 +327,13 @@ class RideMatchCard extends StatelessWidget {
             final joinData = {
               "rideId": match.id,
               "rideRequestId": rideRequestId,
-              "driverId": match.driverId, 
+              "driverId": match.driverId,
               "riderId": getRiderId(),
             };
             print("Join data: $joinData");
-            context.read<MatchingBloc>().add(JoinRideRequestEvent(joinData: joinData));
+            context
+                .read<MatchingBloc>()
+                .add(JoinRideRequestEvent(joinData: joinData));
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: ThemeColors.primaryColor,
@@ -344,12 +351,7 @@ class RideMatchCard extends StatelessWidget {
             ),
           ),
         ),
-      
-      
       ],
     );
   }
-
-
-
 }

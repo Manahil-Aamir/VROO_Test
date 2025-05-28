@@ -28,7 +28,7 @@ class InridePassengerModel extends InridePassengerEntity {
       'fare': fare,
       'rideRequestId': rideRequestId,
       'eta': eta?.toIso8601String(),
-      'rideRequest': (rideRequest as RiderModel).toMap(),
+      'rideRequest': (rideRequest).toMap(),
       'riderName': riderName,
       'review': review ?? '',
       'sameSource': sameSource ?? false,

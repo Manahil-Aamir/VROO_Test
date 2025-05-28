@@ -5,11 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:vroo_test/features/ride_start/data/models/ridestart_data_model.dart';
-import 'package:vroo_test/features/ride_start/presentation/pages/static_modal.dart';
 import 'package:vroo_test/features/ride_start/presentation/pages/tracking_modal.dart';
 import '../../../../core/router/navigation.dart';
 import '../../data/data_source/driver_tracker.dart';
-import '../../data/models/inride_passenger_model.dart';
 import '../bloc/bloc/ridestart_bloc.dart';
 import '../bloc/event/ridestart_event.dart';
 import '../bloc/state/ridestart_state.dart';
@@ -180,6 +178,110 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
     }
   }
 
+  Future<void> _handleLocationPermissions() async {
+    final servicesEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!servicesEnabled) {
+      // Show snackbar and open location services settings
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Opening location services settings...'),
+            backgroundColor: Colors.orange,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+
+      // Open location services settings
+      await Geolocator.openLocationSettings();
+      return;
+    }
+
+    final permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      final requestResult = await Geolocator.requestPermission();
+
+      if (requestResult == LocationPermission.denied) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Location permission denied'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        return;
+      }
+
+      if (requestResult == LocationPermission.deniedForever) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Opening app settings for location permission...'),
+              backgroundColor: Colors.orange,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+
+        // Open app settings for location permission
+        await Geolocator.openAppSettings();
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Opening app settings for location permission...'),
+            backgroundColor: Colors.orange,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+
+      // Open app settings for location permission
+      await Geolocator.openAppSettings();
+      return;
+    }
+
+    // If we reach here, location services are enabled and permission is granted
+    // Proceed with starting tracking
+    await _startTracking();
+  }
+
+  Future<void> _startTracking() async {
+    if (_rideData == null || !_isRideTrackerInitialized) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cannot start tracking: Ride tracker not initialized'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isTracking = true);
+    try {
+      await _rideTracker.startTracking();
+    } catch (e) {
+      setState(() => _isTracking = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Tracking error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> _toggleTracking() async {
     if (_rideData == null || !_isRideTrackerInitialized) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -192,39 +294,25 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
       return;
     }
 
-    final servicesEnabled = await Geolocator.isLocationServiceEnabled();
-    final permission = await Geolocator.checkPermission();
-
-    if (!servicesEnabled || permission == LocationPermission.denied) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enable location services and permissions'),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 3),
-          ),
-        );
-      }
-      return;
-    }
-
-    setState(() => _isTracking = !_isTracking);
-    try {
-      if (_isTracking) {
-        await _rideTracker.startTracking();
-      } else {
+    if (_isTracking) {
+      // Stop tracking
+      setState(() => _isTracking = false);
+      try {
         await _rideTracker.stopTracking();
+      } catch (e) {
+        setState(() => _isTracking = true);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error stopping tracking: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
-    } catch (e) {
-      setState(() => _isTracking = !_isTracking);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Tracking error: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+    } else {
+      // Start tracking - handle permissions first
+      await _handleLocationPermissions();
     }
   }
 
