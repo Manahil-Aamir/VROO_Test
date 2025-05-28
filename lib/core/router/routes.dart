@@ -13,6 +13,7 @@ import 'package:vroo_test/features/ride_start/presentation/pages/ride_tracking_p
 import 'package:vroo_test/features/ride_start/presentation/pages/ride_view_screen.dart';
 import 'package:vroo_test/features/matching/data/models/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
+import 'package:vroo_test/features/safety/presentation/pages/safety.dart';
 import 'package:vroo_test/features/user_profile/presentation/pages/user_profile_page.dart';
 import 'package:vroo_test/features/sos/dependancy_injection/sos_di.dart';
 import 'package:vroo_test/features/sos/presentation/pages/sos_page.dart';
@@ -99,6 +100,7 @@ class Routes {
   static const String ride_tracking = '/ride_tracking';
   static const String rider_view = '/rider_view';
   static const String rider_request_joins = '/rider_request_joins';
+  static const String safety = '/safety';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -751,8 +753,7 @@ class Routes {
       case user_profile:
         return MaterialPageRoute(
             builder: (_) => MultiBlocProvider(
-                providers: UserProfileDi.init(), 
-                child: UserProfilePage()));
+                providers: UserProfileDi.init(), child: UserProfilePage()));
       case car:
         return MaterialPageRoute(
             builder: (_) => MultiBlocProvider(
@@ -789,16 +790,19 @@ class Routes {
           ),
         );
       case rider_request_joins:
-        final requestId = settings.arguments as String; 
+        final requestId = settings.arguments as String;
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [
               ...RideRequestJoinDi.init(),
               ...MatchingDependencyInjection.init(),
             ],
-            child: RiderRequestJoinsPage(rideRequestId: requestId), 
+            child: RiderRequestJoinsPage(rideRequestId: requestId),
           ),
         );
+      case safety:
+        return MaterialPageRoute(builder: (context) => SafetyFeaturesScreen());
+
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

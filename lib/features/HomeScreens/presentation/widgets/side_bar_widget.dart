@@ -211,6 +211,19 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                                 color: theme.primaryColorLight),
                             _buildMenuItem(
                               context,
+                              icon: Icons.safety_check_sharp,
+                              title: 'Safety',
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pushNamed('/safety');
+                              },
+                            ),
+                            Divider(
+                                thickness: 1,
+                                height: 8.h,
+                                color: theme.primaryColorLight),
+                            _buildMenuItem(
+                              context,
                               icon: Icons.logout,
                               title: 'Logout',
                               onTap: () {
