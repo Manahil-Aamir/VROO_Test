@@ -17,6 +17,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<void> deleteUser() => remoteDataSource.deleteUser();
+
+  @override
   Future<void> sendEmailVerification() =>
       remoteDataSource.sendEmailVerification();
 

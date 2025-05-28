@@ -19,3 +19,13 @@ class CheckEmailVerificationUseCase {
   CheckEmailVerificationUseCase(this.repository);
   Future<bool> call() => repository.checkEmailVerification();
 }
+
+class DeleteUserUseCase {
+  final AuthRepository repository;
+
+  DeleteUserUseCase(this.repository);
+
+  Future<void> call() async {
+    await repository.deleteUser();
+  }
+}

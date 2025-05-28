@@ -8,13 +8,16 @@ class EmailVerificationBloc
     extends Bloc<EmailVerificationEvent, EmailVerificationState> {
   final CheckEmailVerificationUseCase checkEmailVerification;
   final SendEmailVerificationUseCase sendEmailVerification;
+  final DeleteUserUseCase deleteUserUseCase;
 
   EmailVerificationBloc({
     required this.checkEmailVerification,
     required this.sendEmailVerification,
+    required this.deleteUserUseCase,
   }) : super(EmailVerificationInitial()) {
     on<EmailVerificationCheckRequested>(_onVerificationCheck);
     on<EmailVerificationResendRequested>(_onResendRequest);
+    on<EmailVerificationDeleteUserRequested>(_onDeleteUser);
   }
 
   Future<void> _onVerificationCheck(
@@ -35,6 +38,19 @@ class EmailVerificationBloc
       print('failure: $e');
       // Only emit failure for serious errors, not for "not verified" status
       emit(EmailVerificationFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onDeleteUser(
+    EmailVerificationDeleteUserRequested event,
+    Emitter<EmailVerificationState> emit,
+  ) async {
+    try {
+      await deleteUserUseCase();
+      emit(EmailVerificationUserDeleted());
+    } catch (e) {
+      print('Error deleting user: $e');
+      // Optionally emit failure state
     }
   }
 

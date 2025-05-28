@@ -5,4 +5,5 @@ abstract class AuthRepository {
   Future<void> sendEmailVerification();
   Future<bool> checkEmailVerification();
   Future<void> resendVerificationEmail();
+  Future<void> deleteUser();
 }

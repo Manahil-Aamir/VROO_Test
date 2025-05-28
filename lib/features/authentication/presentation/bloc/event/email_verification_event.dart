@@ -9,6 +9,11 @@ class EmailVerificationCheckRequested extends EmailVerificationEvent {
   List<Object> get props => [];
 }
 
+class EmailVerificationDeleteUserRequested extends EmailVerificationEvent {
+  @override
+  List<Object> get props => [];
+}
+
 class EmailVerificationResendRequested extends EmailVerificationEvent {
   @override
   List<Object> get props => [];

@@ -4,6 +4,7 @@ abstract class AuthRemoteDataSource {
   Future<User> signUpWithEmailAndPassword(String email, String password);
   Future<void> sendEmailVerification();
   Future<bool> checkEmailVerification();
+  Future<void> deleteUser();
 }
 
 class FirebaseAuthDataSource implements AuthRemoteDataSource {
@@ -48,6 +49,28 @@ class FirebaseAuthDataSource implements AuthRemoteDataSource {
       throw Exception('Firebase Auth Error: ${e.message}');
     } catch (e) {
       throw Exception('Failed to check email verification: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<void> deleteUser() async {
+    try {
+      final user = _firebaseAuth.currentUser;
+
+      if (user == null) {
+        throw Exception('No user found to delete');
+      }
+
+      await user.delete();
+      print('User account deleted successfully');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        // User needs to re-authenticate before deletion
+        throw Exception('Please sign in again before deleting account');
+      }
+      throw Exception('Firebase Auth Error: ${e.message}');
+    } catch (e) {
+      throw Exception('Failed to delete user: ${e.toString()}');
     }
   }
 }
