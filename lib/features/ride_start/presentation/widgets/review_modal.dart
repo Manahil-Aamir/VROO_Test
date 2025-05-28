@@ -91,156 +91,169 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
           );
         }
       },
-      child: AlertDialog(
-        backgroundColor: theme.primaryColorDark,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Column(
-          children: [
-            Text(
-              'Rate Your Passenger',
-              style: theme.textTheme.displayMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.scaffoldBackgroundColor,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              currentPassenger.riderName,
-              style: theme.textTheme.displayMedium?.copyWith(
-                color: theme.primaryColor,
-              ),
-            ),
-          ],
-        ),
-        content: isSubmitting
-            ? SizedBox(
-                height: 150,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(theme.primaryColor),
-                      ),
-                      SizedBox(height: 16.h),
-                      Text(
-                        'Submitting review...',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    ],
+      // Prevent dismiss on tap outside
+      child: WillPopScope(
+        onWillPop: () async => false,
+        child: GestureDetector(
+          onTap: () {}, // disables tap outside to dismiss
+          child: AlertDialog(
+            backgroundColor: theme.primaryColorDark,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Column(
+              children: [
+                Text(
+                  'Rate Your Passenger',
+                  style: theme.textTheme.displayMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.scaffoldBackgroundColor,
                   ),
                 ),
-              )
-            : SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'How was your experience?',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.canvasColor,
-                      ),
-                    ),
-                    SizedBox(height: 12.h),
-                    // Star rating widget
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(5, (index) {
-                        return IconButton(
-                          icon: Icon(
-                            selectedRating != null && index < selectedRating!
-                                ? Icons.star_rounded
-                                : Icons.star_outline_rounded,
-                            color: selectedRating != null &&
-                                    index < selectedRating!
-                                ? Colors.yellow
-                                : theme.primaryColorLight,
-                            size: 36.sp,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              selectedRating = index + 1;
-                            });
-                          },
-                        );
-                      }),
-                    ),
-                    SizedBox(height: 16.h),
-                    // Optional review text
-                    TextField(
-                      cursorColor: theme.primaryColor,
-                      controller: reviewController,
-                      decoration: InputDecoration(
-                        labelText: 'Give a review',
-                        labelStyle: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.primaryColorLight.withOpacity(0.6),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide:
-                              BorderSide(color: theme.primaryColorLight),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: theme.canvasColor),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(
-                            color: theme.primaryColorLight,
-                            width: 2,
-                          ),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                      ),
-                      maxLines: 3,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.canvasColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-        actions: isSubmitting
-            ? null
-            : [
-                if (currentPassengerIndex > 0)
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        currentPassengerIndex--;
-                        _resetForm();
-                      });
-                    },
-                    child: Text(
-                      'Back',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: colorScheme.primary,
-                      ),
-                    ),
+                SizedBox(height: 8.h),
+                Text(
+                  currentPassenger.riderName,
+                  style: theme.textTheme.displayMedium?.copyWith(
+                    color: theme.primaryColor,
                   ),
-                DialogButton(
-                  onTap: () {
-                    if (selectedRating == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Please select a rating'),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                      return;
-                    }
-                    _submitReview(currentPassenger);
-                  },
-                  text: isLastPassenger ? 'Done' : 'Next',
-                  color: theme.primaryColor,
-                )
+                ),
               ],
+            ),
+            content: isSubmitting
+                ? SizedBox(
+                    height: 150.h,
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                theme.primaryColor),
+                          ),
+                          SizedBox(height: 16.h),
+                          Text(
+                            'Submitting review...',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.canvasColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : SizedBox(
+                    width: double.maxFinite,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'How was your experience?',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.canvasColor,
+                          ),
+                        ),
+                        SizedBox(height: 5.h),
+                        // Star rating widget
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(5, (index) {
+                            final isSelected = selectedRating != null &&
+                                index < selectedRating!;
+                            return Container(
+                              child: IconButton(
+                                icon: Icon(
+                                  isSelected
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: isSelected
+                                      ? Colors.yellow
+                                      : theme.primaryColorLight,
+                                  size: 36.sp,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    selectedRating = index + 1;
+                                  });
+                                },
+                              ),
+                            );
+                          }),
+                        ),
+                        SizedBox(height: 8.h),
+                        // Optional review text
+                        TextField(
+                          cursorColor: theme.primaryColor,
+                          controller: reviewController,
+                          decoration: InputDecoration(
+                            labelText: 'Give a review',
+                            labelStyle: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.primaryColorLight.withOpacity(0.6),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                                  BorderSide(color: theme.primaryColorLight),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: theme.canvasColor),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: BorderSide(
+                                color: theme.primaryColorLight,
+                                width: 2,
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                          ),
+                          maxLines: 3,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.canvasColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+            actions: isSubmitting
+                ? null
+                : [
+                    if (currentPassengerIndex > 0)
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            currentPassengerIndex--;
+                            _resetForm();
+                          });
+                        },
+                        child: Text(
+                          'Back',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                    DialogButton(
+                      onTap: () {
+                        if (selectedRating == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Please select a rating'),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                          return;
+                        }
+                        _submitReview(currentPassenger);
+                      },
+                      text: isLastPassenger ? 'Done' : 'Next',
+                      color: theme.primaryColor,
+                    )
+                  ],
+          ),
+        ),
       ),
     );
   }
