@@ -20,10 +20,10 @@ class RideViewScreen extends StatefulWidget {
   const RideViewScreen({super.key, required this.rideId, this.coords});
 
   @override
-  State<RideViewScreen> createState() => _RideTrackingScreenState();
+  State<RideViewScreen> createState() => _RideViewScreenState();
 }
 
-class _RideTrackingScreenState extends State<RideViewScreen>
+class _RideViewScreenState extends State<RideViewScreen>
     with WidgetsBindingObserver {
   final MethodChannel _mapChannel =
       const MethodChannel('com.example.vroo_test/ride_map');
@@ -33,8 +33,6 @@ class _RideTrackingScreenState extends State<RideViewScreen>
   String? _errorMessage;
   int? _mapViewId;
   RideViewModel? _rideData;
-  bool _initialMapSetup =
-      false; // Flag to track if map has been set up initially
 
   // For route updates
   late CoordsDataSource _coordsDataSource;
@@ -79,11 +77,9 @@ class _RideTrackingScreenState extends State<RideViewScreen>
               _currentRouteCoords = updatedCoords;
             });
 
-            // Print number of coordinates and polylines
-            print('Coords count: ${_currentRouteCoords.length}');
-            print('Polylines count: ${_getPolylineCount(_currentRouteCoords)}');
+            print('Updated coords count: ${_currentRouteCoords.length}');
 
-            // Update map with new coordinates - this will clear old routes first
+            // Update map with new coordinates
             _updateMapRoute();
           }
         }
@@ -117,16 +113,10 @@ class _RideTrackingScreenState extends State<RideViewScreen>
   Future<void> _updateMapRoute() async {
     if (_mapViewId != null && _isMapReady) {
       try {
-        // Always clear existing route first to prevent duplicates
-        await _mapChannel.invokeMethod('clearRoute', {
-          'viewId': _mapViewId,
-        });
+        print(
+            'Updating map route with ${_currentRouteCoords.length} coordinates');
 
-        // Print number of coordinates and polylines
-        print('Coords count: ${_currentRouteCoords.length}');
-        print('Polylines count: ${_getPolylineCount(_currentRouteCoords)}');
-
-        // Then add the new route coordinates
+        // Update route coordinates using the Kotlin method
         await _mapChannel.invokeMethod('updateRouteCoordinates', {
           'viewId': _mapViewId,
           'routeCoords': _currentRouteCoords,
@@ -135,13 +125,6 @@ class _RideTrackingScreenState extends State<RideViewScreen>
         print('Error updating map route: $e');
       }
     }
-  }
-
-  // Helper to count polylines (if each segment is a polyline, it's coords.length-1, else 1)
-  int _getPolylineCount(List<List<double>> coords) {
-    // If you have multiple separate polylines, adjust this logic.
-    // For a single continuous polyline, it's 1 if coords.length > 1, else 0.
-    return coords.length > 1 ? 1 : 0;
   }
 
   Future<void> _initializeMap(int viewId) async {
@@ -159,13 +142,8 @@ class _RideTrackingScreenState extends State<RideViewScreen>
       final sourceCoords = _rideData!.passengerData.source.coords;
       final destCoords = _rideData!.passengerData.destination.coords;
 
-      // Clear any existing map elements first
-      await _mapChannel.invokeMethod('clearAllMapElements', {
-        'viewId': viewId,
-      });
-
+      // Initialize map with ride view data (no passengers for rider view)
       await _mapChannel.invokeMethod('initializeMap', {
-        'viewId': viewId,
         'source': {
           'lat': sourceCoords[0],
           'lng': sourceCoords[1],
@@ -180,15 +158,11 @@ class _RideTrackingScreenState extends State<RideViewScreen>
 
       print('Source: lat=${sourceCoords[0]}, lng=${sourceCoords[1]}');
       print('Destination: lat=${destCoords[0]}, lng=${destCoords[1]}');
-
-      // Print number of coordinates and polylines
-      print('Coords count: ${_currentRouteCoords.length}');
-      print('Polylines count: ${_getPolylineCount(_currentRouteCoords)}');
+      print('Initial route coords count: ${_currentRouteCoords.length}');
 
       await _fitRouteToScreen();
       setState(() {
         _isMapReady = true;
-        _initialMapSetup = true; // Mark initial setup as complete
       });
 
       // Start regular route updates after map is ready
@@ -202,15 +176,13 @@ class _RideTrackingScreenState extends State<RideViewScreen>
 
   Future<void> _fitRouteToScreen() async {
     if (_mapViewId != null) {
-      await _mapChannel
-          .invokeMethod('fitRouteToScreen', {'viewId': _mapViewId});
+      await _mapChannel.invokeMethod('fitRouteToScreen');
     }
   }
 
   Future<void> _zoomMap(String direction) async {
     if (_mapViewId != null) {
-      await _mapChannel.invokeMethod(
-          direction == 'in' ? 'zoomIn' : 'zoomOut', {'viewId': _mapViewId});
+      await _mapChannel.invokeMethod(direction == 'in' ? 'zoomIn' : 'zoomOut');
     }
   }
 
@@ -230,8 +202,8 @@ class _RideTrackingScreenState extends State<RideViewScreen>
             }
           });
 
-          // Only update the map if it's already initialized but we haven't done the initial setup
-          if (_isMapReady && _mapViewId != null && !_initialMapSetup) {
+          // Initialize map if it's ready but not yet initialized with data
+          if (_isMapReady && _mapViewId != null) {
             _updateMapRoute();
           }
         } else if (state is RideViewFailure) {
@@ -345,10 +317,7 @@ class _RideTrackingScreenState extends State<RideViewScreen>
       },
       creationParamsCodec: const StandardMessageCodec(),
       onPlatformViewCreated: (int id) {
-        // Initialize map only if not already initialized
-        if (_mapViewId == null) {
-          _initializeMap(id);
-        }
+        _initializeMap(id);
       },
     );
   }
