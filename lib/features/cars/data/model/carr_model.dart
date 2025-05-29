@@ -25,7 +25,7 @@ class Car {
       company: json['company'] , 
       model: json['model'],     
       color: json['color'],     
-      numberPlate: json['numberPlate'], 
+      numberPlate: json['number_plate'] ?? json['numberPlate'] ?? '', // Handle both formats
       mileage: json['mileage']?.toDouble() ,
       isVerified: json['isVerified'],
     );

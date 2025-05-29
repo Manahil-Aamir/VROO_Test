@@ -28,9 +28,12 @@ class D2Page extends StatefulWidget {
   final DateTime date;
   final TimeOfDay time;
   final TimeOfDay maxArrivalTime;
-  final String recurrence;
+  final bool recurrence;
+  final String? frequency;
+  final List<String>? selectedDays; // Changed from Set to List for serialization
+  final DateTime? endDate;
 
-  const D2Page({
+   D2Page({
     super.key,
     required this.fromDescription,
     required this.toDescription,
@@ -43,6 +46,9 @@ class D2Page extends StatefulWidget {
     required this.maxArrivalTime,
     required this.selectedRouteCoords,
     required this.recurrence,
+    this.frequency,
+    this.selectedDays,
+    this.endDate
   });
 
   @override
@@ -272,6 +278,9 @@ class _D2PageState extends State<D2Page> {
         'time': widget.time,
         'maxArrivalTime': widget.maxArrivalTime,
         'recurrence': widget.recurrence, // Added missing parameter
+        'frequency': widget.frequency,
+        'selectedDays': widget.selectedDays,
+        'endDate': widget.endDate,
         'selectedCar': selectedCar,
         'availableSeats': _availableSeats,
         'sameGenderOnly': _sameGenderOnly, // Corrected key

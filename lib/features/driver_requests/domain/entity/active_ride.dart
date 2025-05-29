@@ -4,7 +4,7 @@ import '../../../../shared/domain/entity/location_entity.dart';
 
 class ActiveRideEntity {
   final String id;
-  final String rideId;
+  // final String rideId;
   final CarEntity car;
   final DateTime date;
   final TimeOfDay time;
@@ -18,7 +18,7 @@ class ActiveRideEntity {
 
   ActiveRideEntity({
     required this.id,
-    required this.rideId,
+    // required this.rideId,
     required this.car,
     required this.date,
     required this.time,

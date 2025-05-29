@@ -6,8 +6,15 @@ class SaveScheduleUseCase {
 
   SaveScheduleUseCase(this.repository);
 
-  Future<void> execute(ScheduleModel schedule) {
-    return repository.saveSchedule(schedule.toMap());
+  Future<void> execute(ScheduleModel schedule) async {
+    try {
+      final scheduleMap = schedule.toMap();
+      print('Saving schedule: $scheduleMap'); // Debug log
+      await repository.saveSchedule(scheduleMap);
+    } catch (e) {
+      print('Error in SaveScheduleUseCase: $e');
+      rethrow;
+    }
   }
 }
 
@@ -17,10 +24,19 @@ class LoadScheduleUseCase {
   LoadScheduleUseCase(this.repository);
 
   Future<ScheduleModel?> execute() async {
-    final scheduleData = await repository.loadSchedule();
-    if (scheduleData != null) {
-      return ScheduleModel.fromMap(scheduleData);
+    try {
+      final scheduleData = await repository.loadSchedule();
+      print('Loaded schedule data: $scheduleData'); // Debug log
+      
+      if (scheduleData != null) {
+        final scheduleModel = ScheduleModel.fromMap(scheduleData);
+        print('Created schedule model: ${scheduleModel.toMap()}'); // Debug log
+        return scheduleModel;
+      }
+      return null;
+    } catch (e) {
+      print('Error in LoadScheduleUseCase: $e');
+      rethrow;
     }
-    return null;
   }
 }

@@ -9,6 +9,7 @@ class ScheduleModel extends ScheduleEntity {
     required super.time,
     required super.maxArrivalTime,
     required super.recurrenceType,
+    super.frequency,
     super.selectedDays,
     super.endDate,
   });
@@ -27,8 +28,10 @@ class ScheduleModel extends ScheduleEntity {
         minute: int.parse(map['maxArrivalTime'].split(':')[1]),
       ),
       recurrenceType: map['recurrenceType'],
-      selectedDays: map['selectedDays'] != null
-          ? List<String>.from(map['selectedDays'])
+      frequency: map['frequency'],
+      // Fix: Convert List back to Set
+      selectedDays: map['selectedDays'] != null 
+          ? Set<String>.from(map['selectedDays']) 
           : null,
       endDate: map['endDate'] != null ? DateTime.parse(map['endDate']) : null,
     );
@@ -44,7 +47,8 @@ class ScheduleModel extends ScheduleEntity {
       'maxArrivalTime':
           '${maxArrivalTime.hour.toString().padLeft(2, '0')}:${maxArrivalTime.minute.toString().padLeft(2, '0')}',
       'recurrenceType': recurrenceType,
-      'selectedDays': selectedDays,
+      'selectedDays': selectedDays?.toList(), // Convert Set to List for serialization
+      'frequency': frequency,
       'endDate': endDate?.toIso8601String(),
     };
   }

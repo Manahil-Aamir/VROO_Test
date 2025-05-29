@@ -5,7 +5,7 @@ import '../../../../shared/data/models/location_modal.dart';
 
 class ActiveRideModel {
   final String id;
-  final String rideId;  
+  // final String rideId;  
   final Car car;
   final DateTime date;
   final TimeOfDay time;
@@ -19,7 +19,7 @@ class ActiveRideModel {
 
   ActiveRideModel({
     required this.id,
-    required this.rideId,
+    // required this.rideId,
     required this.car,
     required this.date,
     required this.time,
@@ -35,7 +35,7 @@ class ActiveRideModel {
   factory ActiveRideModel.fromJson(Map<String, dynamic> json) {
   return ActiveRideModel(
     id: json['_id'] ?? '', // Handle null ID
-    rideId: json['rideId'] ?? '', // Handle null rideId
+    // rideId: json['rideId'] ?? '', // Handle null rideId
     car: Car.fromJson(json['car'] ?? {}), // Handle null car
     date: DateTime.parse(json['date']),
     time: TimeOfDay.fromDateTime(DateTime.parse(json['departureTime'])),
@@ -53,7 +53,7 @@ class ActiveRideModel {
 
   ActiveRideEntity toEntity() => ActiveRideEntity(
         id: id,
-        rideId: rideId,
+        // rideId: rideId,
         car: car.toEntity(),
         date: date,
         time: time,

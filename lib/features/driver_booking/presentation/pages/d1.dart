@@ -7,8 +7,7 @@ import '../../../../core/utils/validators/input_ride_validator.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/date_picker.dart';
 import '../../../../shared/widgets/gradient_button.dart';
-import '../../../../shared/widgets/recurrence_dialog.dart';
-import '../../../../shared/widgets/recurring_row.dart';
+import '../../../../shared/widgets/recurring_widget.dart'; // Updated import
 import '../../../../shared/widgets/time_picker.dart';
 import '../../../../shared/widgets/to_and_fro.dart';
 import '../bloc/bloc/d1_bloc.dart';
@@ -40,19 +39,17 @@ class D1Page extends StatefulWidget {
 }
 
 class _D1PageState extends State<D1Page> {
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
-  TimeOfDay? maxArrivalTime;
+  // Recurring state variables
   bool isRecurring = false;
-  String recurrence = 'One Time';
-  ScheduleModel? schedule;
+  String? frequency;
+  Set<String>? selectedDays;
+  DateTime? endDate;
 
   void _validateFields() {
     final theme = Theme.of(context);
     final state = context.read<D1Bloc>().state;
     if (state is ScheduleInputState) {
       // Check for null values and add errors if necessary
-
       final dateErrorMsg = InputRideValidator.validateDate(state.selectedDate);
       final timeErrorMsg = InputRideValidator.validateTime(state.selectedTime);
       final maxArrivalTimeErrorMsg = InputRideValidator.validateMaxArrivalTime(
@@ -89,8 +86,16 @@ class _D1PageState extends State<D1Page> {
           date: state.selectedDate!,
           time: state.selectedTime!,
           maxArrivalTime: state.maxArrivalTime!,
-          recurrenceType: isRecurring ? recurrence : 'One Time',
+          recurrenceType: isRecurring,
+          frequency: isRecurring ? frequency : null,
+          selectedDays: isRecurring ? selectedDays : null,
+          endDate: isRecurring ? endDate : null,
         );
+
+        print('isRecurring: $isRecurring');
+        print('frequency: $frequency');
+        print('selectedDays: $selectedDays');
+        print('endDate: $endDate');
 
         context.read<D1Bloc>().add(SaveScheduleEvent(schedule));
         context.read<Navigation>().navigateTo(
@@ -106,26 +111,13 @@ class _D1PageState extends State<D1Page> {
             'selectedDate': state.selectedDate,
             'selectedTime': state.selectedTime,
             'maxArrivalTime': state.maxArrivalTime,
-            'recurrence': isRecurring ? recurrence : 'One Time',
+            'recurrence': isRecurring,
+            'frequency': frequency,
+            'selectedDays': selectedDays?.toList(),
+            'endDate': endDate,
           },
         );
-        // Navigator.pushNamed(
-        //   context,
-        //   Routes.d2,
-        //   arguments: {
-        //     'toPlaceID': widget.toPlaceId,
-        //     'fromPlaceID': widget.fromPlaceId,
-        //     'toDescription': widget.toDescription,
-        //     'fromDescription': widget.fromDescription,
-        //     'selectedRouteCoords': widget.selectedRouteCoords,
-        //     'distance': widget.distance,
-        //     'duration': widget.duration,
-        //     'selectedDate': state.selectedDate,
-        //     'selectedTime': state.selectedTime,
-        //     'maxArrivalTime': state.maxArrivalTime,
-        //     'recurrence': isRecurring ? recurrence : 'One Time',
-        //   },
-        // );
+      
       } else {
         // Show an error message if any field is null
         ScaffoldMessenger.of(context).showSnackBar(
@@ -138,8 +130,13 @@ class _D1PageState extends State<D1Page> {
     }
   }
 
-  void onRecurringTap(BuildContext context) {
-    showRecurrenceDialog(context);
+  void _onRecurrenceChanged(bool recurring, String? freq, Set<String>? days, DateTime? end) {
+    setState(() {
+      isRecurring = recurring;
+      frequency = freq;
+      selectedDays = days;
+      endDate = end;
+    });
   }
 
   @override
@@ -161,6 +158,17 @@ class _D1PageState extends State<D1Page> {
               } else if (state is ScheduleLoaded) {
                 // Transition to ScheduleInputState with the loaded schedule
                 final schedule = state.loadedSchedule;
+                
+                // Load recurring data from the loaded schedule
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  setState(() {
+                    isRecurring = schedule.recurrenceType;
+                    frequency = schedule.frequency;
+                    selectedDays = schedule.selectedDays;
+                    endDate = schedule.endDate;
+                  });
+                });
+
                 context.read<D1Bloc>().add(UpdateScheduleEvent(
                       selectedDate: schedule.date,
                       selectedTime: schedule.time,
@@ -219,10 +227,12 @@ class _D1PageState extends State<D1Page> {
                                 : null,
                           ),
                           SizedBox(height: 12.h),
-                          RecurringRow(
-                            onRecurringTap: () {
-                              showRecurrenceDialog(context);
-                            },
+                          RecurringWidget(
+                            initialIsRecurring: isRecurring,
+                            initialFrequency: frequency,
+                            initialSelectedDays: selectedDays,
+                            initialEndDate: endDate,
+                            onRecurrenceChanged: _onRecurrenceChanged,
                           ),
                           SizedBox(height: 15.h),
                           GradientButton(
@@ -244,7 +254,6 @@ class _D1PageState extends State<D1Page> {
                 return Center(
                   child: CircularProgressIndicator(
                       color: Theme.of(context).primaryColor),
-                  // child: Text('Unexpected state: ${state.runtimeType}')
                 );
               }
             },

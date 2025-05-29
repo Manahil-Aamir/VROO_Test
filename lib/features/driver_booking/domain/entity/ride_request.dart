@@ -16,6 +16,11 @@ class RideRequest {
   final String date;
   // final double fare;
   final List<String> paymentMethod;
+  final bool isRecurring;
+  final String? frequency;
+  final Set<String>? selectedDays;
+  final DateTime? endDate;
+
 
   RideRequest({
     required this.driverId,
@@ -33,6 +38,10 @@ class RideRequest {
     required this.date,
     // required this.fare,
     required this.paymentMethod,
+    required this.isRecurring,
+    this.frequency,
+    this.selectedDays,
+    this.endDate,
   });
 }
 

@@ -26,7 +26,10 @@ class D3 extends StatelessWidget {
   final DateTime date;
   final TimeOfDay time;
   final TimeOfDay maxArrivalTime;
-  final String recurrence;
+  final bool recurrence;
+  final String? frequency;
+  final List<String>? selectedDays; // Changed from Set to List for serialization
+  final DateTime? endDate;
   final CarEntity selectedCar;
   final int availableSeats;
   final bool sameGenderOnly;
@@ -45,6 +48,9 @@ class D3 extends StatelessWidget {
     required this.time,
     required this.maxArrivalTime,
     required this.recurrence,
+    this.frequency,
+    this.selectedDays,
+    this.endDate,
     required this.selectedCar,
     required this.availableSeats,
     required this.sameGenderOnly,
@@ -233,6 +239,10 @@ class D3 extends StatelessWidget {
       maleOnly=true;
     }
 
+    print('isRecurring: $recurrence');
+    print('frequency: $frequency');
+    print('endDate: $endDate');
+
     final rideRequest = RideRequest(
       driverId: user!.uid, //remove when token
       numOfSeats: availableSeats,
@@ -255,11 +265,15 @@ class D3 extends StatelessWidget {
       duration: _parseDuration(routeDuration),
       date: date.toIso8601String(),
       paymentMethod: paymentOption,
+      isRecurring: recurrence,
+      frequency: frequency?.toLowerCase(),
+      selectedDays: selectedDays?.toSet(),
+      endDate: endDate,
       coords: routeCoords,
     );
 
-    print('ride create: $rideRequest');
-
+    // print the ride data in json format
+    // print('Ride Request Data: ${rideRequest.toString()}');
     context.read<RideBloc>().add(SubmitRide(rideRequest));
   }
 

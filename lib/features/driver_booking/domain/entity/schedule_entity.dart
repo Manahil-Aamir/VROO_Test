@@ -6,8 +6,9 @@ class ScheduleEntity {
   final DateTime date;
   final TimeOfDay time;
   final TimeOfDay maxArrivalTime;
-  final String recurrenceType;
-  final List<String>? selectedDays;
+  final bool recurrenceType;
+  final String? frequency;
+  final Set<String>? selectedDays; // Changed to Set
   final DateTime? endDate;
 
   const ScheduleEntity({
@@ -17,6 +18,7 @@ class ScheduleEntity {
     required this.time,
     required this.maxArrivalTime,
     required this.recurrenceType,
+    this.frequency,
     this.selectedDays,
     this.endDate,
   });

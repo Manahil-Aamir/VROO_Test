@@ -541,7 +541,10 @@ class Routes {
             args['maxArrivalTime'] as TimeOfDay? ?? TimeOfDay.now();
         final distance = args['distance'] as String? ?? '12.9 km';
         final duration = args['duration'] as String? ?? '50 mins';
-        final recurrence = args['recurrence'] as String? ?? 'One Time';
+        final recurrence = args['recurrence'] as bool? ?? false;       
+        final frequency = args['frequency'] as String?;
+        final selectedDays = args['selectedDays'] as List<String>?;
+        final endDate = args['endDate'] as DateTime?;
         return MaterialPageRoute(
           builder: (_) => MultiProvider(
             providers: [
@@ -560,6 +563,9 @@ class Routes {
               routeDuration: duration,
               selectedRouteCoords: selectedRouteCoords,
               recurrence: recurrence,
+              frequency: frequency,
+              selectedDays: selectedDays,
+              endDate: endDate,
             ),
           ),
         );
@@ -578,7 +584,10 @@ class Routes {
         final time = args['time'] as TimeOfDay? ?? TimeOfDay.now();
         final maxArrivalTime =
             args['maxArrivalTime'] as TimeOfDay? ?? TimeOfDay.now();
-        final recurrence = args['recurrence'] as String? ?? 'none';
+        final recurrence = args['recurrence'] as bool? ?? false;
+        final frequency = args['frequency'] as String?;
+        final selectedDays = args['selectedDays'] as List<String>?;
+        final endDate = args['endDate'] as DateTime?;
         final selectedCar = args['selectedCar'] as CarEntity;
         // ? ??
         //     CarEntity(
@@ -609,6 +618,9 @@ class Routes {
               time: time,
               maxArrivalTime: maxArrivalTime,
               recurrence: recurrence,
+              frequency: frequency,
+              selectedDays: selectedDays,
+              endDate: endDate,
               selectedCar: selectedCar,
               availableSeats: availableSeats,
               sameGenderOnly: sameGenderOnly,

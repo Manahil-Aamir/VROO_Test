@@ -10,22 +10,41 @@ class RideRepositoryImpl implements RideRepository {
 
   @override
   Future<void> submitRideRequest(RideRequest request) async {
-    final rideRequestModel = RideRequestModel(
-      driverId: request.driverId,
-      numOfSeats: request.numOfSeats,
-      car: request.car,
-      coords: request.coords,
-      source: request.source,
-      destination: request.destination,
-      preference: request.preference,
-      // samegender: request.samegender,
-      departureTime: request.departureTime,
-      maxArrivalTime: request.maxArrivalTime,
-      distance: request.distance,
-      duration: request.duration,
-      date: request.date,
-      paymentMethod: request.paymentMethod,
-    );
-    return remoteDataSource.submitRideRequest(rideRequestModel);
+    print('🗃️ RideRepositoryImpl: Repository method called');
+    print('🗃️ RideRepositoryImpl: DataSource type: ${remoteDataSource.runtimeType}');
+    
+    try {
+      print('🗃️ RideRepositoryImpl: Creating RideRequestModel...');
+      final rideRequestModel = RideRequestModel(
+        driverId: request.driverId,
+        numOfSeats: request.numOfSeats,
+        car: request.car,
+        coords: request.coords,
+        source: request.source,
+        destination: request.destination,
+        preference: request.preference,
+        departureTime: request.departureTime,
+        maxArrivalTime: request.maxArrivalTime,
+        distance: request.distance,
+        duration: request.duration,
+        date: request.date,
+        paymentMethod: request.paymentMethod,
+        isRecurring: request.isRecurring,
+        frequency: request.frequency,
+        selectedDays: request.selectedDays,
+        endDate: request.endDate,
+      );
+      
+      print('🗃️ RideRepositoryImpl: Model created successfully');
+      print('🗃️ RideRepositoryImpl: About to call remoteDataSource.submitRideRequest');
+      
+      await remoteDataSource.submitRideRequest(rideRequestModel);
+      
+      print('✅ RideRepositoryImpl: DataSource call successful');
+    } catch (e, stackTrace) {
+      print('❌ RideRepositoryImpl: Error in repository: $e');
+      print('❌ RideRepositoryImpl: Stack trace: $stackTrace');
+      rethrow;
+    }
   }
 }

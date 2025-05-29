@@ -56,3 +56,4 @@ class UpdateScheduleEvent extends D1Event {
 class ResetStateEvent extends D1Event {
   List<Object?> get props => [];
 }
+

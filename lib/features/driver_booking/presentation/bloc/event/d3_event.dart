@@ -14,3 +14,5 @@ class SubmitRide extends RideEvent {
   @override
   List<Object> get props => [rideRequest];
 }
+
+
