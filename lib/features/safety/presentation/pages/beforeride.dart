@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vroo_test/features/safety/presentation/widgets/safetydetails.dart';
 import 'package:vroo_test/shared/widgets/Appbar.dart';
-
-import '../widgets/safetycard.dart';
 
 class BeforeRideScreen extends StatelessWidget {
   const BeforeRideScreen({super.key});

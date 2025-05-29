@@ -21,4 +21,18 @@ class StartRideRepositoryImpl implements StartRideRepository {
     final reviewData = dataSource.giveReview(giveReview, token);
     return reviewData;
   }
+
+  @override
+  Future<Map<String, dynamic>> pickPassenger(
+      String rideId, String passengerId, String action, String token) {
+    final pickPassengerData =
+        dataSource.pickPassenger(rideId, passengerId, action, token);
+    return pickPassengerData;
+  }
+
+  @override
+  Future<Map<String, dynamic>> endRide(String rideId, String token) {
+    final endRideData = dataSource.endRide(rideId, token);
+    return endRideData;
+  }
 }

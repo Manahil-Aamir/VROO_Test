@@ -11,8 +11,10 @@ import '../../authentication/data/data_source/token_data_source.dart';
 import '../../authentication/data/repository/token_repository_impl.dart';
 import '../../authentication/domain/usecases/get_token_usecase.dart';
 import '../data/repository/ridestart_repository_impl.dart';
+import '../domain/usecases/end_ride.dart';
 import '../domain/usecases/give_review.dart';
 import '../domain/usecases/start_ride.dart';
+import '../domain/usecases/updatepassenger.dart';
 
 class RideStartDependencyInjection {
   static List<SingleChildWidget> init() {
@@ -26,6 +28,8 @@ class RideStartDependencyInjection {
     final startRideRepository = StartRideRepositoryImpl(startRideDataSource);
     final startRideUsecase = StartRide(startRideRepository);
     final giveReviewUsecase = GiveReview(startRideRepository);
+    final endRideUsecase = EndRide(startRideRepository);
+    final updatePassengerUsecase = UpdatePassenger(startRideRepository);
 
     // Return the list of providers
     return [
@@ -37,6 +41,8 @@ class RideStartDependencyInjection {
                 repository: startRideUsecase,
                 getTokenUseCase: getTokenUseCase,
                 giveReviewUseCase: giveReviewUsecase,
+                updatePassengerUseCase: updatePassengerUsecase,
+                endRideUseCase: endRideUsecase,
               )),
     ];
   }

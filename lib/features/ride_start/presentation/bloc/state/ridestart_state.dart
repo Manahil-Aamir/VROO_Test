@@ -51,3 +51,45 @@ class ReviewFailure extends RideStartState {
   @override
   List<Object?> get props => [errorMessage];
 }
+
+// New states for UpdatePassenger
+class UpdatePassengerLoading extends RideStartState {}
+
+class UpdatePassengerSuccess extends RideStartState {
+  final Map<String, dynamic> passengerData;
+
+  const UpdatePassengerSuccess(this.passengerData);
+
+  @override
+  List<Object?> get props => [passengerData];
+}
+
+class UpdatePassengerFailure extends RideStartState {
+  final String errorMessage;
+
+  const UpdatePassengerFailure(this.errorMessage);
+
+  @override
+  List<Object?> get props => [errorMessage];
+}
+
+// New states for EndRide
+class EndRideLoading extends RideStartState {}
+
+class EndRideSuccess extends RideStartState {
+  final Map<String, dynamic> endRideData;
+
+  const EndRideSuccess(this.endRideData);
+
+  @override
+  List<Object?> get props => [endRideData];
+}
+
+class EndRideFailure extends RideStartState {
+  final String errorMessage;
+
+  const EndRideFailure(this.errorMessage);
+
+  @override
+  List<Object?> get props => [errorMessage];
+}

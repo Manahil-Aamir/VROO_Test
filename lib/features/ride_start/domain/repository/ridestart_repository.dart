@@ -6,4 +6,7 @@ import '../../data/models/review_model.dart';
 abstract class StartRideRepository {
   Future<RidestartDataModel> startRide(String rideId, String token);
   Future<ReviewModel> giveReview(GiveReviewModel giveReview, String token);
+  Future<Map<String, dynamic>> pickPassenger(
+      String rideId, String passengerId, String action, String token);
+  Future<Map<String, dynamic>> endRide(String rideId, String token);
 }

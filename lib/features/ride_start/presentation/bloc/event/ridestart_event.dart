@@ -1,6 +1,4 @@
-// Events
 import 'package:equatable/equatable.dart';
-
 import '../../../data/models/give_review_model.dart';
 
 abstract class RideStartEvent extends Equatable {
@@ -26,4 +24,19 @@ class SubmitReviewEvent extends RideStartEvent {
 
   @override
   List<Object?> get props => [reviewModel];
+}
+
+// New events
+class UpdatePassengerEvent extends RideStartEvent {
+  final String passengerId;
+  final String action;
+
+  const UpdatePassengerEvent(this.passengerId, this.action);
+
+  @override
+  List<Object?> get props => [passengerId, action];
+}
+
+class EndRideEvent extends RideStartEvent {
+  const EndRideEvent();
 }

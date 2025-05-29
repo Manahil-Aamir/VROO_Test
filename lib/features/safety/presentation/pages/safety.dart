@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vroo_test/features/safety/presentation/widgets/safetydetails.dart';
 import 'package:vroo_test/shared/widgets/Appbar.dart';
 
 import '../../../../core/router/navigation.dart';
