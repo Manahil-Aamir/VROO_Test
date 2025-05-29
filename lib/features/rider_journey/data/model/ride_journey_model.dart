@@ -7,6 +7,9 @@ class RiderJourneyModel {
   final String maxArrivalTime;
   final RidePreferencesModel preferences;
   final bool isRecurring;
+  final String? frequency;
+  final Set<String>? selectedDays;
+  final DateTime? endDate;
 
   const RiderJourneyModel({
     required this.riderId,
@@ -17,6 +20,9 @@ class RiderJourneyModel {
     required this.maxArrivalTime,
     required this.preferences,
     required this.isRecurring,
+    this.frequency,
+    this.selectedDays,
+    this.endDate,
   });
 
   factory RiderJourneyModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +35,9 @@ class RiderJourneyModel {
       maxArrivalTime: json['maxArrivalTime'],
       preferences: RidePreferencesModel.fromJson(json['preferences']),
       isRecurring: json['isRecurring'],
+      frequency: json['frequency'] ?? null,
+      selectedDays: json['customDays'] ?? null,
+      endDate: json['endsOn'] ?? null,
     );
   }
 
@@ -42,6 +51,10 @@ class RiderJourneyModel {
       'maxArrivalTime': maxArrivalTime,
       'preferences': preferences.toJson(),
       'isRecurring': isRecurring,
+      'frequency': frequency,
+      // FIX: Convert Set to List for JSON serialization
+      'customDays': (selectedDays?.isNotEmpty ?? false) ? selectedDays!.toList() : [],
+      'endsOn': endDate?.toIso8601String(),
     };
   }
 }

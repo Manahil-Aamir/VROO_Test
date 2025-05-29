@@ -120,7 +120,7 @@ class _R3PageState extends State<R3Page> {
                       'schedule': widget.schedule,
                       'maxPickupTime': widget.schedule.maxTime,
                       'minPickupTime': widget.schedule.minTime,
-                    });
+                    });                  
                   } else if (state is RideRequestFailure) {
                     // ScaffoldMessenger.of(context).showSnackBar(
                     //   SnackBar(content: Text('Error: ${runtimeType.toString()}')),
@@ -276,7 +276,10 @@ class _R3PageState extends State<R3Page> {
         femaleOnly: femaleOnly,
         canWalk: widget.preferences.walk,
       ),
-      isRecurring: false,
+      isRecurring: widget.schedule.recurrenceType,
+      frequency: widget.schedule.frequency?.toLowerCase(),
+      selectedDays: widget.schedule.selectedDays,
+      endDate: widget.schedule.endDate
     );
 
     print('Ride data: ${rideDetails.toJson()}');

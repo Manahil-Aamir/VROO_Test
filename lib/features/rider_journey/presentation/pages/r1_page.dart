@@ -3,14 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/features/rider_journey/data/model/schedule_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
-import 'package:vroo_test/shared/widgets/recurring_row.dart';
+import 'package:vroo_test/shared/widgets/recurring_widget.dart'; // Updated import
 import 'package:vroo_test/shared/widgets/to_and_fro.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/utils/validators/input_ride_validator.dart';
 import '../../../../shared/widgets/custom_app_bar.dart';
 import '../../../../shared/widgets/date_picker.dart';
 import '../../../../shared/widgets/gradient_button.dart';
-import '../../../../shared/widgets/recurrence_dialog.dart';
 import '../../../../shared/widgets/time_picker.dart';
 import '../bloc/bloc/r1_bloc.dart';
 import '../bloc/event/r1_event.dart';
@@ -29,13 +28,12 @@ class R1Page extends StatefulWidget {
 }
 
 class _R1PageState extends State<R1Page> {
-  DateTime? selectedDate;
-  TimeOfDay? selectedMinTime;
-  TimeOfDay? selectedMaxTime;
-  TimeOfDay? maxArrivalTime;
+  // Recurring state variables
   bool isRecurring = false;
-  String recurrence = 'One Time';
-  ScheduleModel? schedule;
+  String? frequency;
+  Set<String>? selectedDays;
+  DateTime? endDate;
+
   void _validateFields() {
     final state = context.read<R1Bloc>().state;
 
@@ -79,7 +77,10 @@ class _R1PageState extends State<R1Page> {
         minTime: state.minPickUpTime!,
         maxTime: state.maxPickUpTime!,
         arrivalTime: state.maxArrivalTime!,
-        recurrenceType: isRecurring ? recurrence : 'One Time',
+        recurrenceType: isRecurring,
+        frequency: isRecurring ? frequency : null,
+        selectedDays: isRecurring ? selectedDays : null,
+        endDate: isRecurring ? endDate : null,
       );
 
       context.read<R1Bloc>().add(SaveScheduleEvent(schedule));
@@ -88,6 +89,15 @@ class _R1PageState extends State<R1Page> {
         'location': widget.location,
       });
     }
+  }
+
+  void _onRecurrenceChanged(bool recurring, String? freq, Set<String>? days, DateTime? end) {
+    setState(() {
+      isRecurring = recurring;
+      frequency = freq;
+      selectedDays = days;
+      endDate = end;
+    });
   }
 
   @override
@@ -131,6 +141,17 @@ class _R1PageState extends State<R1Page> {
               } else if (state is ScheduleLoaded) {
                 // Transition to ScheduleInputState with the loaded schedule
                 final schedule = state.loadedSchedule;
+                
+                // Load recurring data from the loaded schedule
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  setState(() {
+                    isRecurring = schedule.recurrenceType;
+                    frequency = schedule.frequency;
+                    selectedDays = schedule.selectedDays;
+                    endDate = schedule.endDate;
+                  });
+                });
+
                 context.read<R1Bloc>().add(UpdateScheduleEvent(
                       selectedDate: schedule.date,
                       minPickUpTime: schedule.minTime,
@@ -212,10 +233,12 @@ class _R1PageState extends State<R1Page> {
                                 state.maxArrivalTimeErrorText,
                           ),
                           SizedBox(height: 12.h),
-                          RecurringRow(
-                            onRecurringTap: () {
-                              showRecurrenceDialog(context);
-                            },
+                          RecurringWidget(
+                            initialIsRecurring: isRecurring,
+                            initialFrequency: frequency,
+                            initialSelectedDays: selectedDays,
+                            initialEndDate: endDate,
+                            onRecurrenceChanged: _onRecurrenceChanged,
                           ),
                           SizedBox(height: 12.h),
                           GradientButton(

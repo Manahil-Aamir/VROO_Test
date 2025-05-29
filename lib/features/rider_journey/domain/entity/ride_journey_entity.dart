@@ -7,6 +7,9 @@ class RiderJourneyEntity {
   final String maxArrivalTime;
   final RidePreferences preferences;
   final bool isRecurring;
+  final String? frequency;
+  final Set<String>? selectedDays;
+  final DateTime? endDate;
 
   const RiderJourneyEntity({
     required this.riderId,
@@ -17,6 +20,9 @@ class RiderJourneyEntity {
     required this.maxArrivalTime,
     required this.preferences,
     required this.isRecurring,
+    this.frequency,
+    this.selectedDays,
+    this.endDate,
   });
 }
 
