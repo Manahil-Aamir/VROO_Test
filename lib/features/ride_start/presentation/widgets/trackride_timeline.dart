@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vroo_test/features/ride_start/presentation/bloc/event/ridestart_event.dart';
 
 import 'package:vroo_test/features/ride_start/presentation/widgets/trackride_timeline_item.dart';
 
+import '../bloc/bloc/ridestart_bloc.dart';
+
 class TrackingRideTimeline extends StatefulWidget {
-  final List<TrackRideTimelineItem> items;
+  final List<dynamic> items; // Assuming items have the required properties
 
   const TrackingRideTimeline({super.key, required this.items});
 
@@ -20,8 +24,23 @@ class _TrackingRideTimelineState extends State<TrackingRideTimeline> {
   void initState() {
     super.initState();
     // Initialize confirmation status for all items
-    confirmedStatus = List.generate(
-        widget.items.length, (index) => widget.items[index].isConfirmed);
+    confirmedStatus = List.generate(widget.items.length,
+        (index) => widget.items[index].isConfirmed ?? false);
+  }
+
+  void _handleConfirmation(String passengerId, String action, int index) {
+    // Dispatch BLoC event to update passenger
+    context.read<RideStartBloc>().add(UpdatePassengerEvent(
+          passengerId,
+          action,
+        ));
+
+    // Update local state for immediate UI feedback
+    setState(() {
+      confirmedStatus[index] = true;
+    });
+
+    print('Confirmed $action for passenger $passengerId');
   }
 
   @override
@@ -50,22 +69,22 @@ class _TrackingRideTimelineState extends State<TrackingRideTimeline> {
                 padding: EdgeInsets.only(bottom: 8.h),
                 child: Stack(
                   children: [
-                    // Timeline item with onConfirm callback if it's a passenger
+                    // Timeline item with onConfirm callback
                     TrackRideTimelineItem(
-                      time: item.time,
-                      title: item.title,
-                      address: item.address,
+                      time: item.time ?? '',
+                      title: item.title ?? '',
+                      address: item.address ?? '',
                       fare: item.fare,
-                      isSource: item.isSource,
-                      isDestination: item.isDestination,
+                      isSource: item.isSource ?? false,
+                      isDestination: item.isDestination ?? false,
+                      isPassenger: isPassenger,
                       isConfirmed: confirmedStatus[index],
+                      passengerId:
+                          item.passengerId ?? 'passenger_$index', // Fallback ID
                       rideData: item.rideData,
-                      onConfirm: isPassenger && !confirmedStatus[index]
-                          ? () {
-                              setState(() {
-                                confirmedStatus[index] = true;
-                              });
-                            }
+                      onConfirm: !confirmedStatus[index]
+                          ? (passengerId, action) =>
+                              _handleConfirmation(passengerId, action, index)
                           : null,
                     ),
 
@@ -81,13 +100,16 @@ class _TrackingRideTimelineState extends State<TrackingRideTimeline> {
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          item.isSource
-                              ? Icons.location_on
-                              : item.isDestination
-                                  ? Icons.flag
-                                  : confirmedStatus[index]
-                                      ? Icons.check_circle
-                                      : Icons.account_circle,
+                          isPassenger
+                              ? Icons.account_circle // Account for passenger
+                              : (item.isSource ?? false)
+                                  ? Icons.location_on // Check on source
+                                  : (item.isDestination ?? false)
+                                      ? Icons.flag // Check on destination
+                                      : confirmedStatus[index]
+                                          ? Icons
+                                              .check_circle // Check for others if confirmed
+                                          : Icons.account_circle, // Default
                           color: theme.primaryColor,
                           size: 18.r,
                         ),

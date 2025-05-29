@@ -14,8 +14,9 @@ class TrackRideTimelineItem extends StatelessWidget {
   final bool isDestination;
   final bool isPassenger;
   final bool isConfirmed;
+  final String passengerId;
   final RidestartDataModel rideData;
-  final Function()? onConfirm;
+  final Function(String passengerId, String action)? onConfirm;
 
   const TrackRideTimelineItem({
     super.key,
@@ -25,29 +26,58 @@ class TrackRideTimelineItem extends StatelessWidget {
     this.fare,
     this.isSource = false,
     this.isDestination = false,
-    this.isPassenger = false,
+    required this.isPassenger,
     this.isConfirmed = false,
+    required this.passengerId,
     required this.rideData,
     this.onConfirm,
   });
 
+  String _getActionType() {
+    if (isSource) {
+      return 'drop'; // At passenger's source location, action is to pick up
+    } else if (isDestination) {
+      return 'pick'; // At passenger's destination location, action is to drop off
+    }
+    return 'pick'; // Default to pick for other cases
+  }
+
+  String _getConfirmButtonText() {
+    print(
+        'isSource: $isSource, isDestination: $isDestination, isPassenger: $isPassenger, isConfirmed: $isConfirmed');
+    if (isSource && isPassenger) {
+      return 'Drop Off';
+    } else if (isDestination && isPassenger) {
+      return 'Pick Up';
+    } else if (isConfirmed) {
+      return 'Confirmed'; // Show as confirmed if already don
+    }
+
+    return 'Pick Up';
+  }
+
+  String _getDialogTitle() {
+    if (isSource) {
+      return 'Confirm Drop Off';
+    } else if (isDestination) {
+      return 'Confirm Pick Up';
+    }
+    return 'Confirm Pickup';
+  }
+
+  String _getDialogMessage() {
+    if (isSource) {
+      return 'Do you want to confirm drop off for this passenger?';
+    } else if (isDestination) {
+      return 'Do you want to confirm pick up for this passenger?';
+    }
+    return 'Do you want to confirm pickup for this passenger?';
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final primaryColor = theme.primaryColor;
-
-    // Determine icon and colors based on type and confirmation status
-    IconData iconData;
-
-    if (isSource) {
-      iconData = Icons.location_on;
-    } else if (isDestination) {
-      iconData = Icons.flag;
-    } else if (isConfirmed) {
-      iconData = Icons.check_circle; // Tick icon when confirmed
-    } else {
-      iconData = Icons.account_circle; // Different passenger icon
-    }
+    print('ispassneger: $isPassenger');
 
     return Stack(
       clipBehavior: Clip.none,
@@ -89,17 +119,18 @@ class TrackRideTimelineItem extends StatelessWidget {
                                   color: theme.canvasColor,
                                   fontWeight: FontWeight.w600),
                             ),
-                            if (!isSource && !isDestination && !isConfirmed)
+                            // Show pick/drop buttons ONLY for passengers (not source/destination locations)
+                            if (isPassenger && !isConfirmed)
                               Padding(
                                 padding: EdgeInsets.only(left: 8.w),
                                 child: StartButton(
                                   onTap: () {
+                                    final action = _getActionType();
                                     showDialog(
                                       context: context,
                                       builder: (context) => CustomDialog(
-                                        title: 'Confirm Pickup',
-                                        message:
-                                            'Do you want to confirm pickup for this passenger?',
+                                        title: _getDialogTitle(),
+                                        message: _getDialogMessage(),
                                         confirmText: 'Confirm',
                                         cancelText: 'Cancel',
                                         confirmColor: theme.primaryColor,
@@ -107,7 +138,8 @@ class TrackRideTimelineItem extends StatelessWidget {
                                         onConfirm: () {
                                           Navigator.of(context).pop();
                                           if (onConfirm != null) {
-                                            onConfirm!();
+                                            final action = _getActionType();
+                                            onConfirm!(passengerId, action);
                                           }
                                         },
                                         onCancel: () {
@@ -116,7 +148,7 @@ class TrackRideTimelineItem extends StatelessWidget {
                                       ),
                                     );
                                   },
-                                  text: 'Confirm',
+                                  text: _getConfirmButtonText(),
                                 ),
                               ),
                           ],
