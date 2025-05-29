@@ -98,7 +98,7 @@ class StartRideRemoteDataSource implements StartRideDataSource {
         'Picking passenger - RideId: $rideId, PassengerId: $passengerId, Action: $action');
 
     try {
-      final response = await client.get(url, headers: headers);
+      final response = await client.patch(url, headers: headers);
       final jsonData = json.decode(response.body);
 
       if (response.statusCode == 200) {
