@@ -49,7 +49,7 @@ class _ReviewModalState extends State<ReviewModal> {
     );
   }
 
-  void _submitReview() {
+  void _submitReview() async {
     if (_selectedStars == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -64,7 +64,24 @@ class _ReviewModalState extends State<ReviewModal> {
       _isSubmitting = true;
     });
 
-    widget.onSubmitReview(_selectedStars, _reviewController.text.trim());
+    try {
+      // Call the callback function passed from parent
+      await widget.onSubmitReview(
+          _selectedStars, _reviewController.text.trim());
+    } catch (e) {
+      // Handle error if submission fails
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to submit review: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
   @override

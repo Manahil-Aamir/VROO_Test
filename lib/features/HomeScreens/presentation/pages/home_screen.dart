@@ -167,6 +167,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   // Method to show review modal
   void _showReviewModal(BuildContext context, RideCheckModel rideData) {
+    final homeBloc = context.read<HomeBloc>();
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -182,8 +183,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               review: review,
             );
 
+            print('Submitting review: $reviewEntity');
+
             // Dispatch review event
-            context.read<HomeBloc>().add(GiveReviewEvent(reviewEntity));
+            homeBloc.add(GiveReviewEvent(reviewEntity));
 
             // Remove ride ID from SharedPreferences after submitting review
             _removeRideIdFromSharedPrefs();
