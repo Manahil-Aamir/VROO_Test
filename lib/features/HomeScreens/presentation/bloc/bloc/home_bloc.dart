@@ -113,8 +113,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       GiveReviewEvent event, Emitter<HomeState> emit) async {
     try {
       emit(ReviewLoading());
-
-      final success = await reviewUseCase.giveReview(event.reviewRequest);
+      final token = await getTokenUseCase();
+      final success =
+          await reviewUseCase.giveReview(event.reviewRequest, token!);
 
       if (success) {
         emit(ReviewSuccess('Review submitted successfully!'));
@@ -131,8 +132,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       CheckRideEvent event, Emitter<HomeState> emit) async {
     try {
       emit(RideCheckLoading());
-
-      final rideData = await reviewUseCase.rideCheck(event.rideId);
+      final token = await getTokenUseCase();
+      final rideData = await reviewUseCase.rideCheck(event.rideId, token!);
 
       if (rideData != null) {
         emit(RideCheckLoaded(rideData));

@@ -9,11 +9,11 @@ class ReviewUseCase {
 
   ReviewUseCase(this.repository);
 
-  Future<bool> giveReview(ReviewModel reviewRequest) async {
-    return await repository.giveReview(reviewRequest);
+  Future<bool> giveReview(ReviewModel reviewRequest, String token) async {
+    return await repository.giveReview(reviewRequest, token);
   }
 
-  Future<RideCheckModel?> rideCheck(String rideId) async {
-    return await repository.rideCheck(rideId);
+  Future<RideCheckModel?> rideCheck(String rideId, String token) async {
+    return await repository.rideCheck(rideId, token);
   }
 }

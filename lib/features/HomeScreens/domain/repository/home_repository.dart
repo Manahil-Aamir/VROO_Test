@@ -12,6 +12,6 @@ abstract class HomeRepository {
   Future<void> logout();
   Future<UserModel?> getUser();
   Future<OngoingModel> ongoing(String token);
-  Future<RideCheckModel?> rideCheck(String rideId);
-  Future<bool> giveReview(ReviewModel reviewRequest);
+  Future<RideCheckModel?> rideCheck(String rideId, String token);
+  Future<bool> giveReview(ReviewModel reviewRequest, String token);
 }

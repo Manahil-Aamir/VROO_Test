@@ -18,8 +18,8 @@ abstract class HomeDataSource {
   Future<void> logout();
   Future<UserModel?> getUser();
   Future<OngoingModel> ongoing(String token);
-  Future<RideCheckModel?> rideCheck(String rideId);
-  Future<bool> giveReview(ReviewModel reviewRequest);
+  Future<RideCheckModel?> rideCheck(String rideId, String token);
+  Future<bool> giveReview(ReviewModel reviewRequest, String token);
 }
 
 class HomeDataSourceImpl implements HomeDataSource {
@@ -125,14 +125,18 @@ class HomeDataSourceImpl implements HomeDataSource {
   }
 
   @override
-  Future<RideCheckModel?> rideCheck(String rideId) async {
+  Future<RideCheckModel?> rideCheck(String rideId, String token) async {
     final url = Uri.parse('http://10.0.2.2:8080/ride/ride-check/$rideId');
-
+    final headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
     try {
-      final response = await client.get(url);
+      final response = await client.get(url, headers: headers);
       final jsonData = json.decode(response.body);
-
-      if (response.statusCode == 200) {
+      print('checkinggggggg');
+      print(jsonData);
+      if (response.statusCode == 200 || response.statusCode == 201) {
         print('Ride check response: ${response.body}');
 
         if (jsonData['success'] == true && jsonData['data'] != null) {
@@ -153,9 +157,10 @@ class HomeDataSourceImpl implements HomeDataSource {
   }
 
   @override
-  Future<bool> giveReview(ReviewModel reviewRequest) async {
+  Future<bool> giveReview(ReviewModel reviewRequest, String token) async {
     final url = Uri.parse('http://10.0.2.2:8080/rider/give-reviews');
     final headers = {
+      'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
     };
 

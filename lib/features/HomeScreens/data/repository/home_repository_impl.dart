@@ -31,8 +31,8 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<RideCheckModel?> rideCheck(String rideId) async {
-    return await dataSource.rideCheck(rideId);
+  Future<RideCheckModel?> rideCheck(String rideId, String token) async {
+    return await dataSource.rideCheck(rideId, token);
   }
 
   @override
@@ -40,7 +40,7 @@ class HomeRepositoryImpl implements HomeRepository {
   /// [ReviewRequest] object as the request body.
   ///
   /// Returns a boolean indicating whether the submission was successful.
-  Future<bool> giveReview(ReviewModel reviewRequest) async {
-    return await dataSource.giveReview(reviewRequest);
+  Future<bool> giveReview(ReviewModel reviewRequest, String token) async {
+    return await dataSource.giveReview(reviewRequest, token);
   }
 }
