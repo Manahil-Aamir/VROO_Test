@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:vroo_test/features/HomeScreens/domain/usecase/review_usecase.dart';
 import '../../authentication/data/data_source/token_data_source.dart';
 import '../../authentication/data/repository/token_repository_impl.dart';
 import '../../authentication/domain/usecases/get_token_usecase.dart';
@@ -38,6 +39,7 @@ class HomeDependencyInjection {
           logout: LogoutUseCase(repository),
           checkOngoingTrip: OngoingUsecase(repository),
           getTokenUseCase: GetTokenUseCase(tokenRepository),
+          reviewUseCase: ReviewUseCase(repository),
         ),
       ),
       Provider<HomeRepository>(create: (_) => repository),

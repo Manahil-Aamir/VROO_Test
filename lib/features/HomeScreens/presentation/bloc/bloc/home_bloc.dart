@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../authentication/domain/usecases/get_token_usecase.dart';
 import '../../../domain/usecase/clear_preferences_usecase.dart';
 import '../../../domain/usecase/get_current_location.dart';
 import '../../../domain/usecase/get_user_usecase.dart';
 import '../../../domain/usecase/logout_usecase.dart';
 import '../../../domain/usecase/ongoing_usecase.dart';
+import '../../../domain/usecase/review_usecase.dart';
 import '../event/home_event.dart';
 import '../state/home_state.dart';
 
@@ -17,6 +19,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetUserUseCase getUser;
   final OngoingUsecase checkOngoingTrip;
   final GetTokenUseCase getTokenUseCase;
+  final ReviewUseCase reviewUseCase; // Added ReviewUseCase
 
   Timer? _ongoingTripTimer;
 
@@ -27,12 +30,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     required this.getUser,
     required this.checkOngoingTrip,
     required this.getTokenUseCase,
+    required this.reviewUseCase, // Added to constructor
   }) : super(HomeInitial()) {
     on<LoadCurrentLocationEvent>(_onLoadLocation);
     on<ClearPreferencesEvent>(_onClearPreferences);
     on<LogoutEvent>(_onLogout);
     on<LoadUserEvent>(_onLoadUser);
     on<CheckOngoingTripEvent>(_onCheckOngoingTrip);
+    on<GiveReviewEvent>(_onGiveReview); // Added review event handler
+    on<CheckRideEvent>(_onCheckRide); // Added ride check event handler
   }
 
   Future<void> _onLoadLocation(
@@ -77,7 +83,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final user = await getUser();
     if (user != null) {
       emit(UserLoadedState(user));
-
       // Start checking for ongoing trips when user is loaded
       _startOngoingTripCheck();
     } else {
@@ -89,21 +94,53 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       CheckOngoingTripEvent event, Emitter<HomeState> emit) async {
     try {
       emit(OngoingTripLoading());
-
       // Get token through the use case
       final token = await getTokenUseCase();
-
       if (token == null) {
         emit(OngoingTripError('Unable to get authentication token'));
         return;
       }
       print("helooooooooo");
-
       final trip = await checkOngoingTrip(token);
-
       emit(OngoingTripLoaded(trip));
     } catch (e) {
       emit(OngoingTripError('Failed to fetch ongoing trip: ${e.toString()}'));
+    }
+  }
+
+  // New method to handle giving reviews
+  Future<void> _onGiveReview(
+      GiveReviewEvent event, Emitter<HomeState> emit) async {
+    try {
+      emit(ReviewLoading());
+
+      final success = await reviewUseCase.giveReview(event.reviewRequest);
+
+      if (success) {
+        emit(ReviewSuccess('Review submitted successfully!'));
+      } else {
+        emit(ReviewError('Failed to submit review. Please try again.'));
+      }
+    } catch (e) {
+      emit(ReviewError('Error submitting review: ${e.toString()}'));
+    }
+  }
+
+  // New method to handle ride checking
+  Future<void> _onCheckRide(
+      CheckRideEvent event, Emitter<HomeState> emit) async {
+    try {
+      emit(RideCheckLoading());
+
+      final rideData = await reviewUseCase.rideCheck(event.rideId);
+
+      if (rideData != null) {
+        emit(RideCheckLoaded(rideData));
+      } else {
+        emit(RideCheckNotFound('No ride data found for the given ride ID.'));
+      }
+    } catch (e) {
+      emit(RideCheckError('Error checking ride: ${e.toString()}'));
     }
   }
 
@@ -111,10 +148,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   void _startOngoingTripCheck() {
     // Cancel any existing timer
     _cancelOngoingTripTimer();
-
     // Perform initial check
     add(CheckOngoingTripEvent());
-
     // Start periodic timer (every 15 minutes)
     _ongoingTripTimer = Timer.periodic(
         const Duration(minutes: 15), (_) => add(CheckOngoingTripEvent()));
