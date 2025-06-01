@@ -70,6 +70,8 @@ import '../../features/rider_requests/dependency_injection/rider_request_di.dart
 import '../../features/rider_requests/presentation/pages/rider_request_join.dart';
 import '../../features/rider_requests/presentation/pages/rider_requests_screen.dart';
 import '../../features/safety/presentation/pages/beforeride.dart';
+import '../../features/schedule/dependency_injection/schedule_di.dart';
+import '../../features/schedule/presentation/pages/schedule_page.dart';
 import '../../features/sos/presentation/pages/contact_page.dart';
 import '../../features/user_profile/dependency_injection/reviews_di.dart';
 import '../../features/user_profile/dependency_injection/user_profile_di.dart';
