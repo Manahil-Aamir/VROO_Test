@@ -110,7 +110,9 @@ class TopBarWidget extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               Text(
-                'Do you want to switch role?',
+                currentRole.toLowerCase() == 'driver'
+                    ? 'Do you want to switch to Rider?'
+                    : 'Do you want to switch to Driver?',
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color: theme.primaryColorDark,
                   fontWeight: FontWeight.w700,

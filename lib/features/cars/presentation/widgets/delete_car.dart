@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theme/color/color_theme.dart';
+import '../../../../shared/widgets/custom_dialog.dart';
 import '../../domain/entity/car.dart';
 import '../bloc/bloc/car_bloc.dart';
 import '../bloc/event/car_event.dart';
@@ -14,70 +15,31 @@ class DeleteCarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return IconButton(
-      icon: const Icon(
-        Icons.delete_forever,
-        color: ThemeColors.primaryColor,
-      ),
+      icon: Icon(Icons.delete, color: theme.indicatorColor),
       onPressed: () => _showDeleteConfirmation(context),
     );
   }
 
   void _showDeleteConfirmation(BuildContext context) {
+    final theme = Theme.of(context);
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: const Color(0xFF3C3C3C),
-        title: Text(
-          'Are you sure you want to delete this?',
-          style: TextStyle(
-            color: ThemeColors.buttonTextColor,
-            fontSize: 16.sp,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade700,
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(
-                    color: ThemeColors.buttonTextColor,
-                    fontSize: 14.sp,
-                  ),
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                _deleteCar(context);
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-                decoration: BoxDecoration(
-                  color: ThemeColors.primaryColor,
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Text(
-                  'Confirm',
-                  style: TextStyle(
-                    color: ThemeColors.buttonTextColor,
-                    fontSize: 14.sp,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+      builder: (dialogContext) => CustomDialog(
+        title: 'Delete Car',
+        message: 'Are you sure you want to delete this car?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        confirmColor: theme.indicatorColor,
+        cancelColor: theme.primaryColorDark,
+        onConfirm: () {
+          Navigator.pop(dialogContext);
+          _deleteCar(context);
+        },
+        onCancel: () {
+          Navigator.pop(dialogContext);
+        },
       ),
     );
   }
@@ -89,8 +51,8 @@ class DeleteCarWidget extends StatelessWidget {
     // Show a progress indicator while the car is being deleted
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Deleted ${car.company} ${car.model}...'),
-        backgroundColor: ThemeColors.secondaryColor,
+        content: Text('Deleted ${car.company} ${car.model}'),
+        backgroundColor: ThemeColors.accentColor,
       ),
     );
   }

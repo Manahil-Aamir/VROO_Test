@@ -243,6 +243,7 @@ class _AddCarModalState extends State<AddCarModal> {
     required void Function(String?) onChanged,
     bool isDisabled = false,
   }) {
+    final theme = Theme.of(context);
     // Check if "Other" is selected to show the text input field
     final bool isOtherSelected = selectedValue == 'Other';
 
@@ -279,7 +280,12 @@ class _AddCarModalState extends State<AddCarModal> {
                   itemBuilder: (context) => items.map((item) {
                     return PopupMenuItem<String>(
                       value: item,
-                      child: Text(item),
+                      child: Text(
+                        item,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: theme.primaryColorDark,
+                            ),
+                      ),
                     );
                   }).toList(),
                   offset: Offset(0, 40.h),
@@ -400,6 +406,7 @@ class _AddCarModalState extends State<AddCarModal> {
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 4.w),
                     child: TextFormField(
+                      cursorColor: ThemeColors.primaryColor,
                       controller: _plateControllers[index],
                       textAlign: TextAlign.center,
                       textCapitalization: TextCapitalization.characters,
@@ -537,6 +544,7 @@ class _AddCarModalState extends State<AddCarModal> {
           ),
           SizedBox(height: 8.h),
           TextFormField(
+            cursorColor: ThemeColors.primaryColor,
             controller: _mileageController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             inputFormatters: [
@@ -566,6 +574,13 @@ class _AddCarModalState extends State<AddCarModal> {
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter mileage';
+              }
+              final mileage = double.tryParse(value);
+              if (mileage == null) {
+                return 'Please enter a valid number';
+              }
+              if (mileage > 50) {
+                return 'Mileage cannot be above 50';
               }
               return null;
             },

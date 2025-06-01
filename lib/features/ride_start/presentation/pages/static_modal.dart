@@ -104,7 +104,7 @@ class _RideDetailsBottomSheetState extends State<RideDetailsBottomSheet> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Ride Details',
+                  'Ride Timeline',
                   style: theme.textTheme.displayMedium?.copyWith(
                     color: theme.canvasColor,
                   ),

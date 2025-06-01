@@ -87,7 +87,7 @@ class TimelineItem extends StatelessWidget {
                             ),
                             if (title.toLowerCase() == 'source')
                               Padding(
-                                padding: EdgeInsets.only(left: 8.w),
+                                padding: EdgeInsets.only(left: 40.w),
                                 child: StartButton(
                                   onTap: () {
                                     showDialog(

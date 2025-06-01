@@ -126,6 +126,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildMapContent() {
+    final theme = Theme.of(context);
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeLogoutSuccess) {
@@ -142,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: Colors.green,
+              backgroundColor: theme.secondaryHeaderColor,
             ),
           );
         } else if (state is ReviewError) {
@@ -150,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: Colors.red,
+              backgroundColor: theme.indicatorColor,
             ),
           );
         } else if (state is RideCheckError) {
@@ -158,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: Colors.red,
+              backgroundColor: theme.indicatorColor,
             ),
           );
         }
