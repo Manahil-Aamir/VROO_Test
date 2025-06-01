@@ -13,7 +13,7 @@ class PreferencesModel extends PreferenceEntity {
       'sameGender': sameGender,
       // 'maleOnly': maleOnly,
       // 'femaleOnly': femaleOnly,
-      'walk': walk,
+      'walk': false,
     };
   }
 
@@ -22,7 +22,7 @@ class PreferencesModel extends PreferenceEntity {
       sameGender: map['sameGender'],
       // maleOnly: map['maleOnly'] ?? false,
       // femaleOnly: map['femaleOnly'] ?? false,
-      walk: map['walk'] ?? false,
+      walk: false,
     );
   }
 }

@@ -274,7 +274,7 @@ class _R3PageState extends State<R3Page> {
       preferences: RidePreferencesModel(
         maleOnly: maleOnly,
         femaleOnly: femaleOnly,
-        canWalk: widget.preferences.walk,
+        canWalk: false,
       ),
       isRecurring: widget.schedule.recurrenceType,
       frequency: widget.schedule.frequency?.toLowerCase(),
