@@ -12,7 +12,7 @@ import '../bloc/event/reviews_event.dart';
 import '../bloc/state/reviews_state.dart';
 
 class ReviewsPage extends StatefulWidget {
-  const ReviewsPage({Key? key}) : super(key: key);
+  const ReviewsPage({super.key});
 
   @override
   State<ReviewsPage> createState() => _ReviewsPageState();
@@ -122,20 +122,20 @@ class _ReviewsPageState extends State<ReviewsPage> {
       child: Column(
         children: [
           SizedBox(height: 16.h),
-          
+
           // Two Rating Cards Side by Side
           _buildRatingCards(reviewResponse),
-          
+
           SizedBox(height: 24.h),
-          
+
           // Filter Dropdown and Rating Breakdown
           _buildFilterAndBreakdown(reviewResponse),
-          
+
           SizedBox(height: 16.h),
-          
+
           // Reviews List
           _buildFilteredReviewsList(reviewResponse),
-          
+
           SizedBox(height: 32.h),
         ],
       ),
@@ -173,7 +173,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
     );
   }
 
-  Widget _buildRatingCard(String title, double rating, int totalReviews, IconData icon, Color color) {
+  Widget _buildRatingCard(String title, double rating, int totalReviews,
+      IconData icon, Color color) {
     return Container(
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
@@ -203,7 +204,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
             ),
           ),
           SizedBox(height: 12.h),
-          
+
           // Title
           Text(
             title,
@@ -214,7 +215,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
             ),
           ),
           SizedBox(height: 8.h),
-          
+
           // Rating
           Text(
             rating.toStringAsFixed(1),
@@ -225,7 +226,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
             ),
           ),
           SizedBox(height: 4.h),
-          
+
           // Stars
           RatingBarIndicator(
             rating: rating,
@@ -238,7 +239,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
             direction: Axis.horizontal,
           ),
           SizedBox(height: 8.h),
-          
+
           // Review count
           Text(
             '$totalReviews Reviews',
@@ -305,13 +306,14 @@ class _ReviewsPageState extends State<ReviewsPage> {
                   ),
                 ],
               ),
-              
+
               // Compact dropdown
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                 decoration: BoxDecoration(
                   color: ThemeColors.scaffoldBackgroundColor.withOpacity(0.3),
-                  border: Border.all(color: ThemeColors.dividerColor.withOpacity(0.3)),
+                  border: Border.all(
+                      color: ThemeColors.dividerColor.withOpacity(0.3)),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: DropdownButtonHideUnderline(
@@ -335,15 +337,15 @@ class _ReviewsPageState extends State<ReviewsPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                value == 'Driver' 
-                                    ? Icons.drive_eta_rounded 
-                                    : value == 'Rider' 
-                                        ? Icons.person_rounded 
+                                value == 'Driver'
+                                    ? Icons.drive_eta_rounded
+                                    : value == 'Rider'
+                                        ? Icons.person_rounded
                                         : Icons.star_rounded,
                                 size: 16.w,
-                                color: value == 'Driver' 
+                                color: value == 'Driver'
                                     ? const Color(0xFF3B82F6)
-                                    : value == 'Rider' 
+                                    : value == 'Rider'
                                         ? const Color(0xFF10B981)
                                         : ThemeColors.primaryColor,
                               ),
@@ -371,9 +373,9 @@ class _ReviewsPageState extends State<ReviewsPage> {
               ),
             ],
           ),
-          
+
           SizedBox(height: 16.h),
-          
+
           // Rating Breakdown
           _buildRatingBreakdown(reviewResponse),
         ],
@@ -384,7 +386,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
   Widget _buildRatingBreakdown(ReviewResponseEntity reviewResponse) {
     Map<String, int> combinedRatings;
     int totalReviews;
-    
+
     if (selectedFilter == 'Driver') {
       final summary = reviewResponse.receivedAsDriver;
       combinedRatings = {
@@ -409,7 +411,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
       // For 'All' - combine both driver and rider counts
       final driverSummary = reviewResponse.receivedAsDriver;
       final riderSummary = reviewResponse.receivedAsRider;
-      
+
       combinedRatings = {
         '5': driverSummary.fiveStar + riderSummary.fiveStar,
         '4': driverSummary.fourStar + riderSummary.fourStar,
@@ -421,16 +423,37 @@ class _ReviewsPageState extends State<ReviewsPage> {
     }
 
     final ratings = [
-      {'stars': 5, 'count': combinedRatings['5']!, 'color': const Color(0xFF10B981)},
-      {'stars': 4, 'count': combinedRatings['4']!, 'color': const Color(0xFF84CC16)},
-      {'stars': 3, 'count': combinedRatings['3']!, 'color': const Color(0xFFF59E0B)},
-      {'stars': 2, 'count': combinedRatings['2']!, 'color': const Color(0xFFF97316)},
-      {'stars': 1, 'count': combinedRatings['1']!, 'color': const Color(0xFFEF4444)},
+      {
+        'stars': 5,
+        'count': combinedRatings['5']!,
+        'color': const Color(0xFF10B981)
+      },
+      {
+        'stars': 4,
+        'count': combinedRatings['4']!,
+        'color': const Color(0xFF84CC16)
+      },
+      {
+        'stars': 3,
+        'count': combinedRatings['3']!,
+        'color': const Color(0xFFF59E0B)
+      },
+      {
+        'stars': 2,
+        'count': combinedRatings['2']!,
+        'color': const Color(0xFFF97316)
+      },
+      {
+        'stars': 1,
+        'count': combinedRatings['1']!,
+        'color': const Color(0xFFEF4444)
+      },
     ];
 
     return Column(
       children: ratings.map((rating) {
-        final percentage = totalReviews > 0 ? (rating['count'] as int) / totalReviews : 0.0;
+        final percentage =
+            totalReviews > 0 ? (rating['count'] as int) / totalReviews : 0.0;
         return Container(
           margin: EdgeInsets.symmetric(vertical: 6.h),
           child: Row(
@@ -448,7 +471,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                 ),
               ),
               SizedBox(width: 8.w),
-              
+
               // Single star icon
               Icon(
                 Icons.star_rounded,
@@ -456,7 +479,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                 color: rating['color'] as Color,
               ),
               SizedBox(width: 12.w),
-              
+
               // Progress bar
               Expanded(
                 child: Container(
@@ -492,7 +515,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
 
   Widget _buildFilteredReviewsList(ReviewResponseEntity reviewResponse) {
     List<ReviewEntity> reviews;
-    
+
     if (selectedFilter == 'Driver') {
       reviews = reviewResponse.receivedAsDriver.allReviews;
     } else if (selectedFilter == 'Rider') {
@@ -560,7 +583,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                 ),
               ),
               SizedBox(width: 12.w), // Reduced from 16.w to 12.w
-              
+
               // Name and Rating
               Expanded(
                 child: Column(
@@ -603,7 +626,6 @@ class _ReviewsPageState extends State<ReviewsPage> {
               ),
             ],
           ),
-          
           if (review.comment.isNotEmpty) ...[
             SizedBox(height: 10.h), // Reduced from 16.h to 10.h
             Container(
@@ -630,7 +652,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
       ),
     );
   }
-  
+
   Widget _buildEmptyReviews() {
     return Container(
       margin: EdgeInsets.all(24.w),
@@ -671,7 +693,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
           ),
           SizedBox(height: 8.h),
           Text(
-            selectedFilter == 'All' 
+            selectedFilter == 'All'
                 ? 'Reviews will appear here'
                 : 'No reviews as ${selectedFilter.toLowerCase()} yet',
             style: AppFonts.bodyTextStyle.copyWith(

@@ -57,6 +57,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    print('Building map content check');
+    print('Building map content');
+    print('Building map content');
+    print('Building map content');
+    print('Building map content');
     return WillPopScope(
       onWillPop: () async {
         bool exitApp = await DialogUtil.showExitDialog(context);
