@@ -16,7 +16,7 @@ class AppBarNoIcon extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return PreferredSize(
-      preferredSize: Size.fromHeight(120.h),
+      preferredSize: Size.fromHeight(105.h),
       child: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -36,7 +36,13 @@ class AppBarNoIcon extends StatelessWidget implements PreferredSizeWidget {
             ),
             child: SafeArea(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                padding: EdgeInsets.only(
+                  left: 16.w,
+                  right: 16.w,
+                  top: 10
+                      .h, // Move content further upward by reducing top padding
+                  bottom: 0,
+                ),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -47,7 +53,10 @@ class AppBarNoIcon extends StatelessWidget implements PreferredSizeWidget {
                         child: leading!,
                       ),
                     // Title
-                    Center(
+                    Positioned(
+                      top: 8.h,
+                      left: 0,
+                      right: 0,
                       child: Text(
                         heading,
                         style: theme.textTheme.headlineLarge?.copyWith(
@@ -66,5 +75,5 @@ class AppBarNoIcon extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(120.h); // Responsive height
+  Size get preferredSize => Size.fromHeight(90.h); // Responsive height
 }
