@@ -86,6 +86,7 @@ class MatchingRideModel {
   final List<String> paymentMethod;
   final RidePreferencesModel preferences;
   // final List<dynamic> recurringRides;
+  // final List<dynamic> recurringRides;
   final List<String> routeCells;
   final List<List<double>> routeCoords;
   final LocationModel source;
@@ -153,7 +154,7 @@ class MatchingRideModel {
           .toList(),
       paymentMethod: List<String>.from(json['paymentMethod']),
       preferences: RidePreferencesModel.fromJson(json['preferences']),
-      //recurringRides: List<dynamic>.from(json['recurringRides']),
+      // recurringRides: List<dynamic>.from(json['recurringRides']),
       routeCells: List<String>.from(json['routeCells']),
       routeCoords: (json['routeCoords'] as List)
           .map((e) => List<double>.from(e.map((v) => (v as num).toDouble())))

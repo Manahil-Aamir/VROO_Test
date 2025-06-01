@@ -140,14 +140,14 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                                   fontSize: 20.sp,
                                 ),
                               ),
-                              Text(
-                                '(${roleState.role})',
-                                style: theme.textTheme.headlineSmall?.copyWith(
-                                  color: theme.scaffoldBackgroundColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15.sp,
-                                ),
-                              ),
+                              // Text(
+                              //   '(${roleState.role})',
+                              //   style: theme.textTheme.headlineSmall?.copyWith(
+                              //     color: theme.scaffoldBackgroundColor,
+                              //     fontWeight: FontWeight.bold,
+                              //     fontSize: 15.sp,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
@@ -156,16 +156,16 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                         child: ListView(
                           padding: EdgeInsets.symmetric(vertical: 10.h),
                           children: [
-                            _buildMenuItem(
-                              context,
-                              icon: Icons.home,
-                              title: 'Home',
-                              onTap: () => Navigator.of(context).pop(),
-                            ),
-                            Divider(
-                                thickness: 1,
-                                height: 8.h,
-                                color: theme.primaryColorLight),
+                            // _buildMenuItem(
+                            //   context,
+                            //   icon: Icons.home,
+                            //   title: 'Home',
+                            //   onTap: () => Navigator.of(context).pop(),
+                            // ),
+                            // Divider(
+                            //     thickness: 1,
+                            //     height: 8.h,
+                            //     color: theme.primaryColorLight),
                             _buildMenuItem(
                               context,
                               icon: Icons.directions_car,
@@ -188,6 +188,36 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                                 context
                                     .read<Navigation>()
                                     .navigateTo('/emergency_contacts');
+                              },
+                            ),
+                            Divider(
+                                thickness: 1,
+                                height: 8.h,
+                                color: theme.primaryColorLight),
+                            _buildMenuItem(
+                              context,
+                              icon: Icons.schedule,
+                              title: 'Scheduled Rides',
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                context
+                                    .read<Navigation>()
+                                    .navigateTo('/schedule');
+                              },
+                            ),
+                            Divider(
+                                thickness: 1,
+                                height: 8.h,
+                                color: theme.primaryColorLight),
+                            _buildMenuItem(
+                              context,
+                              icon: Icons.history,
+                              title: 'Ride History',
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                context
+                                    .read<Navigation>()
+                                    .navigateTo('/ride_history');
                               },
                             ),
                             // Divider(

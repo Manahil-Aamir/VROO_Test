@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/theme/color/color_theme.dart';
 import '../../../../shared/widgets/initials_circle_avatar.dart';
@@ -213,176 +214,86 @@ class RideMatchCard extends StatelessWidget {
 
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // makes it full-screen
-      backgroundColor:
-          Colors.transparent, // to apply custom radius and background
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return BlocProvider.value(
           value: insightsBloc,
           child: DraggableScrollableSheet(
-            initialChildSize: 0.40,
-            minChildSize: 0.2,
+            initialChildSize: 0.45,
+            minChildSize: 0.25,
             maxChildSize: 0.95,
             expand: false,
             builder: (context, scrollController) => Container(
               decoration: BoxDecoration(
                 color: ThemeColors.primaryColorDark,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 20,
+                    offset: Offset(0, -4),
+                  ),
+                ],
               ),
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
               child: Column(
                 children: [
-                  // Header
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Driver Insights',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: ThemeColors.buttonTextColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.sp,
-                            ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.close, size: 22.r),
-                        color: ThemeColors.primaryColor.withOpacity(0.7),
-                        onPressed: () => Navigator.pop(context),
-                        padding: EdgeInsets.zero,
-                        constraints: BoxConstraints(),
-                      ),
-                    ],
+                  // Drag Handle
+                  Container(
+                    margin: EdgeInsets.only(top: 8.h),
+                    width: 40.w,
+                    height: 4.h,
+                    decoration: BoxDecoration(
+                      color: ThemeColors.buttonTextColor.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(2.r),
+                    ),
                   ),
-                  SizedBox(height: 12.h),
-                  Divider(
-                    color: ThemeColors.buttonTextColor.withOpacity(0.2),
-                    height: 1.h,
-                  ),
-                  SizedBox(height: 16.h),
 
-                  // Body
+                  // Header
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20.w, 16.h, 16.w, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Driver Insights',
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    color: ThemeColors.buttonTextColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.sp,
+                                  ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.close, size: 22.r),
+                          color: ThemeColors.primaryColor.withOpacity(0.7),
+                          onPressed: () => Navigator.pop(context),
+                          padding: EdgeInsets.zero,
+                          constraints: BoxConstraints(),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 20.h),
+
+                  // Content
                   Expanded(
-                    child: SingleChildScrollView(
-                      controller: scrollController,
-                      child:
-                          BlocBuilder<DriverInsightsBloc, DriverInsightsState>(
-                        builder: (context, state) {
-                          if (state is DriverInsightsLoading) {
-                            return Center(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(0, 100.h, 0, 0),
-                                child: CircularProgressIndicator(
-                                  color: ThemeColors.primaryColor,
-                                ),
-                              ),
-                            );
-                          } else if (state is DriverInsightsError) {
-                            return Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.error_outline,
-                                      color: Colors.red, size: 48.r),
-                                  SizedBox(height: 16.h),
-                                  Text(
-                                    'Failed to load insights',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          color: ThemeColors.buttonTextColor,
-                                        ),
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  Text(
-                                    'Please try again later.',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                          color: Colors.red.withOpacity(0.8),
-                                        ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  SizedBox(height: 16.h),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      context.read<DriverInsightsBloc>().add(
-                                            LoadDriverInsights(match.driverId),
-                                          );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: ThemeColors.primaryColor,
-                                      foregroundColor:
-                                          ThemeColors.buttonTextColor,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 24.w, vertical: 10.h),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.r),
-                                      ),
-                                    ),
-                                    child: Text('Retry'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          } else if (state is DriverInsightsLoaded) {
-                            if (state.insights.trim().isNotEmpty) {
-                              return Container(
-                                padding: EdgeInsets.symmetric(horizontal: 8.w),
-                                child: Text(
-                                  state.insights,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                        color: ThemeColors.buttonTextColor
-                                            .withOpacity(0.9),
-                                        height: 1.5,
-                                        fontSize: 14.sp,
-                                      ),
-                                ),
-                              );
-                            }
+                    child: BlocBuilder<DriverInsightsBloc, DriverInsightsState>(
+                      builder: (context, state) {
+                        if (state is DriverInsightsLoading) {
+                          return _buildLoadingState();
+                        } else if (state is DriverInsightsError) {
+                          return _buildErrorState(context);
+                        } else if (state is DriverInsightsLoaded) {
+                          if (state.insights.insights.trim().isNotEmpty ||
+                              state.insights.topReviews.isNotEmpty) {
+                            return _buildLoadedState(
+                                context, state, scrollController);
                           }
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(height: 36.h),
-                                Icon(Icons.insights,
-                                    size: 48.r,
-                                    color: ThemeColors.primaryColor
-                                        .withOpacity(0.5)),
-                                SizedBox(height: 16.h),
-                                Text(
-                                  'No insights available',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge
-                                      ?.copyWith(
-                                        color: ThemeColors.buttonTextColor
-                                            .withOpacity(0.8),
-                                      ),
-                                ),
-                                SizedBox(height: 8.h),
-                                Text(
-                                  'Check back later for driver insights',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
-                                        color: ThemeColors.buttonTextColor
-                                            .withOpacity(0.6),
-                                      ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                        }
+                        return _buildEmptyState(context);
+                      },
                     ),
                   ),
                 ],
@@ -392,6 +303,260 @@ class RideMatchCard extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget _buildLoadingState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            color: ThemeColors.primaryColor,
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'Loading insights...',
+            style: TextStyle(
+              color: ThemeColors.buttonTextColor.withOpacity(0.8),
+              fontSize: 14.sp,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, color: Colors.red, size: 48.r),
+            SizedBox(height: 16.h),
+            Text(
+              'Failed to load insights',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: ThemeColors.buttonTextColor,
+                  ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              'Please try again later.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.red.withOpacity(0.8),
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 16.h),
+            ElevatedButton(
+              onPressed: () {
+                context.read<DriverInsightsBloc>().add(
+                      LoadDriverInsights(match.driverId),
+                    );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ThemeColors.primaryColor,
+                foregroundColor: ThemeColors.buttonTextColor,
+                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              ),
+              child: Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(height: 36.h),
+          Icon(Icons.insights,
+              size: 48.r, color: ThemeColors.primaryColor.withOpacity(0.5)),
+          SizedBox(height: 16.h),
+          Text(
+            'No insights available',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: ThemeColors.buttonTextColor.withOpacity(0.8),
+                ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            'Check back later for driver insights',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: ThemeColors.buttonTextColor.withOpacity(0.6),
+                ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadedState(BuildContext context, DriverInsightsLoaded state,
+      ScrollController scrollController) {
+    return SingleChildScrollView(
+      controller: scrollController,
+      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 24.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // AI Insights Section
+          if (state.insights.insights.trim().isNotEmpty) ...[
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(16.r),
+              decoration: BoxDecoration(
+                color: ThemeColors.primaryColor.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'AI Insights',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: ThemeColors.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16.sp,
+                        ),
+                  ),
+                  SizedBox(height: 12.h),
+                  // Text(
+                  //   state.insights.insights,
+                  //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  //     color: ThemeColors.buttonTextColor.withOpacity(0.9),
+                  //     height: 1.5,
+                  //     fontSize: 14.sp,
+                  //   ),
+                  // ),
+                  MarkdownBody(
+                    data: _cleanMarkdown(state.insights.insights),
+                    styleSheet: MarkdownStyleSheet(
+                      p: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: ThemeColors.buttonTextColor.withOpacity(0.9),
+                            height: 1.5,
+                            fontSize: 14.sp,
+                          ),
+                      strong: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: ThemeColors.buttonTextColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.sp,
+                          ),
+                      h1: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: ThemeColors.buttonTextColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.sp,
+                          ),
+                      h2: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: ThemeColors.buttonTextColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.sp,
+                          ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 24.h),
+          ],
+
+          // Recent Reviews Section
+          if (state.insights.topReviews.isNotEmpty) ...[
+            Text(
+              'Recent Reviews',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: ThemeColors.buttonTextColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16.sp,
+                  ),
+            ),
+            SizedBox(height: 12.h),
+
+            // Reviews List
+            ...state.insights.topReviews.take(5).map((review) => Container(
+                  margin: EdgeInsets.only(bottom: 12.h),
+                  padding: EdgeInsets.all(12.r),
+                  decoration: BoxDecoration(
+                    color: ThemeColors.primaryColorDark,
+                    borderRadius: BorderRadius.circular(8.r),
+                    border: Border.all(
+                      color: ThemeColors.buttonTextColor.withOpacity(0.1),
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.star, color: Colors.amber, size: 14.r),
+                              SizedBox(width: 4.w),
+                              Text(
+                                review.star.toStringAsFixed(1),
+                                style: TextStyle(
+                                  color: Colors.amber.shade700,
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            DateFormat('MMM dd, yyyy').format(review.createdAt),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: ThemeColors.buttonTextColor
+                                          .withOpacity(0.6),
+                                      fontSize: 11.sp,
+                                    ),
+                          ),
+                        ],
+                      ),
+                      if (review.review != null &&
+                          review.review!.trim().isNotEmpty) ...[
+                        SizedBox(height: 8.h),
+                        Text(
+                          review.review!,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: ThemeColors.buttonTextColor
+                                        .withOpacity(0.9),
+                                    fontSize: 13.sp,
+                                    height: 1.4,
+                                  ),
+                        ),
+                      ],
+                    ],
+                  ),
+                )),
+          ],
+        ],
+      ),
+    );
+  }
+
+// Helper function to clean markdown content
+  String _cleanMarkdown(String markdown) {
+    // Remove the ```markdown wrapper if present
+    String cleaned = markdown;
+    if (cleaned.startsWith('```markdown\n')) {
+      cleaned = cleaned.substring('```markdown\n'.length);
+    }
+    if (cleaned.endsWith('\n```')) {
+      cleaned = cleaned.substring(0, cleaned.length - '\n```'.length);
+    }
+    return cleaned.trim();
   }
 
   @override
@@ -429,97 +594,105 @@ class RideMatchCard extends StatelessWidget {
 
   Widget _buildDriverInfoWithDate(BuildContext context, TextTheme textTheme) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Avatar
         InitialsCircleAvatar(
           initials: _getDriverInitials(),
           radius: 20,
         ),
         SizedBox(width: 12.w),
+
+        // Column with Name (+ Insights) and Rating
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Name with Insights icon
               Row(
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              match.driverName,
-                              style: textTheme.bodyLarge?.copyWith(
-                                color: ThemeColors.buttonTextColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15.sp,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.insights, size: 20.r),
-                              color: ThemeColors.primaryColor,
-                              onPressed: () => _showInsightsModal(context),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Icon(Icons.star, color: Colors.amber, size: 14.r),
-                            SizedBox(width: 4.w),
-                            Text(
-                              "4.5",
-                              style: textTheme.bodySmall?.copyWith(
-                                color: ThemeColors.buttonTextColor
-                                    .withOpacity(0.8),
-                                fontSize: 12.sp,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                  Text(
+                    match.driverName,
+                    style: textTheme.bodyLarge?.copyWith(
+                      color: ThemeColors.buttonTextColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15.sp,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    width: 2.w,
+                  ),
+                  GestureDetector(
+                    onTap: () => _showInsightsModal(context),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 4.w),
+                      child: Icon(
+                        Icons.insights,
+                        size: 20.r,
+                        color: ThemeColors.primaryColor,
+                      ),
                     ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.calendar_today,
-                              size: 12.r, color: ThemeColors.primaryColor),
-                          SizedBox(width: 4.w),
-                          Text(
-                            DateFormat('dd-MM-yyyy').format(match.date),
-                            style: textTheme.bodySmall?.copyWith(
-                              color: ThemeColors.buttonTextColor,
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 4.h),
-                      Row(
-                        children: [
-                          Icon(Icons.access_time_rounded,
-                              size: 12.r, color: ThemeColors.primaryColor),
-                          SizedBox(width: 4.w),
-                          Text(
-                            DateFormat('h:mm a').format(match.departureTime),
-                            style: textTheme.bodySmall?.copyWith(
-                              color: ThemeColors.buttonTextColor,
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                ],
+              ),
+              SizedBox(height: 4.h),
+              // Rating
+              Row(
+                children: [
+                  Icon(Icons.star, color: Colors.amber, size: 14.r),
+                  SizedBox(width: 4.w),
+                  Text(
+                    "4.5",
+                    style: textTheme.bodySmall?.copyWith(
+                      color: ThemeColors.buttonTextColor.withOpacity(0.8),
+                      fontSize: 12.sp,
+                    ),
                   ),
                 ],
               ),
             ],
           ),
+        ),
+
+        // Column with Date and Time
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            // Date
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.calendar_today,
+                    size: 12.r, color: ThemeColors.primaryColor),
+                SizedBox(width: 4.w),
+                Text(
+                  DateFormat('dd-MM-yyyy').format(match.date),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: ThemeColors.buttonTextColor,
+                    fontSize: 12.sp,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 4.h),
+            // Time
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.access_time_rounded,
+                    size: 12.r, color: ThemeColors.primaryColor),
+                SizedBox(width: 4.w),
+                Text(
+                  DateFormat('h:mm a').format(match.departureTime),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: ThemeColors.buttonTextColor,
+                    fontSize: 12.sp,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ],
     );

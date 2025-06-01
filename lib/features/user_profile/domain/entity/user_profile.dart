@@ -3,10 +3,10 @@ class UserProfile {
   final String email;
   final String phoneNumber;
   final String gender;
-  final int ratingsAsDriver;
-  final int ratingsAsRider;
-  final int co2Saved;
-  final int fuelSaved;
+  final double ratingsAsDriver;
+  final double ratingsAsRider;
+  final double co2Saved;
+  final double fuelSaved;
   final int totalRidesAsDriver;
   final int totalRidesAsRider;
 

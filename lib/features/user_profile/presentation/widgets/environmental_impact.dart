@@ -4,127 +4,74 @@ import '../../../../core/theme/color/color_theme.dart';
 
 class EnvironmentalImpact extends StatelessWidget {
   final dynamic user;
-
   const EnvironmentalImpact({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: ThemeColors.backgroundColor,
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: ThemeColors.primaryColor.withOpacity(0.075),
-            spreadRadius: 2,
-            blurRadius: 10,
-            offset: Offset(0, 4.h),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          _buildImpactStats(theme),
-          // Only show eco message if CO2 saved is not zero
-          if (user.co2Saved != 0) ...[
-            SizedBox(height: 16.h),
-            _buildEcoMessage(theme),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildImpactStats(ThemeData theme) {
-    return Row(
+  final theme = Theme.of(context);
+  return Container(
+    padding: EdgeInsets.all(16.w),
+    decoration: BoxDecoration(
+      color: user.co2Saved == 0
+          ? ThemeColors.primaryColor.withOpacity(0.08)
+          : ThemeColors.secondaryColor.withOpacity(0.08),
+      borderRadius: BorderRadius.circular(16.r),
+    ),
+    child: Row(
       children: [
-        Expanded(
-          child: Column(
-            children: [
-              Icon(
-                Icons.eco,
-                color: ThemeColors.secondaryColor,
-                size: 36.w,
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                '${user.co2Saved} kg',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: ThemeColors.secondaryColor,
-                ),
-              ),
-              Text(
-                'CO₂ Saved',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: ThemeColors.appBarIconsColor,
-                ),
-              ),
-            ],
+        Container(
+          padding: EdgeInsets.all(10.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.eco,
+            color: user.co2Saved == 0
+                ? ThemeColors.primaryColor
+                : ThemeColors.secondaryColor,
+            size: 28.w,
           ),
         ),
-        Container(
-          height: 60.h,
-          width: 1.w,
-          color: ThemeColors.dividerColor,
+        SizedBox(width: 12.w),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${user.co2Saved} kg',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 25,
+                color: user.co2Saved == 0
+                    ? ThemeColors.primaryColor
+                    : ThemeColors.secondaryColor,
+              ),
+            ),
+            Text(
+              'CO₂ Saved',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: ThemeColors.appBarIconsColor,
+              ),
+            ),
+          ],
         ),
+        SizedBox(width: 16.w),
         Expanded(
-          child: Column(
-            children: [
-              Icon(
-                Icons.local_gas_station,
-                color: ThemeColors.primaryColor,
-                size: 36.w,
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                '${user.fuelSaved} L',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: ThemeColors.primaryColor,
-                ),
-              ),
-              Text(
-                'Fuel Saved',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: ThemeColors.appBarIconsColor,
-                ),
-              ),
-            ],
+          child: Text(
+            user.co2Saved == 0
+                ? 'Start carpooling to reduce your carbon footprint!'
+                : 'You\'ve reduced your carbon footprint by carpooling!',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: user.co2Saved == 0
+                  ? ThemeColors.primaryColor
+                  : ThemeColors.secondaryColor,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildEcoMessage(ThemeData theme) {
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: ThemeColors.secondaryColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.insights,
-            color: ThemeColors.secondaryColor,
-            size: 24.w,
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Text(
-              'You\'ve reduced your carbon footprint by carpooling!',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: ThemeColors.secondaryColor,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+    ),
+  );
 }
+}
+

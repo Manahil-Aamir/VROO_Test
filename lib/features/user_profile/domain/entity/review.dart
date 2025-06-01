@@ -44,10 +44,12 @@ class ReviewEntity {
   final String name;
   final String comment;
   final double rating;
+  final int daysAgo;
 
   ReviewEntity({
     required this.name,
     required this.comment,
     required this.rating,
+    required this.daysAgo,
   });
 }

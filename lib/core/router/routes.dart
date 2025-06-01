@@ -50,6 +50,8 @@ import '../../features/driver_requests/presentation/pages/ride_request_status.da
 import '../../features/matching/dependency_injection/insights_di.dart';
 import '../../features/matching/dependency_injection/matching_di.dart';
 import '../../features/matching/presentation/pages/matching_page.dart';
+import '../../features/ride_history/dependency_injection/ride_history_di.dart';
+import '../../features/ride_history/presentation/pages/ride_history_screen.dart';
 import '../../features/ride_start/data/models/ridestart_data_model.dart';
 import '../../features/rider_journey/dependancy_injection/r1_di.dart';
 import '../../features/rider_journey/dependancy_injection/r2_di.dart';
@@ -116,6 +118,8 @@ class Routes {
   static const String route = '/route';
   static const String report = '/report';
   static const String safecontact = '/safecontact';
+  static const String schedule = '/schedule';
+  static const String ride_history = '/ride_history';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -847,6 +851,16 @@ class Routes {
       case report:
         return MaterialPageRoute(builder: (context) => ReportScreen());
 
+      case schedule:
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: ScheduleDependencyInjection.init(),
+                child: SchedulePage()));
+      case ride_history:
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: RideHistoryDependencyInjection.init(),
+                child: RideHistoryScreen()));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

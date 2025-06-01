@@ -4,10 +4,14 @@ import 'bottom_shape_clipper.dart';
 
 class appBar extends StatelessWidget implements PreferredSizeWidget {
   final String heading;
+  final IconData? actionIcon;
+  final VoidCallback? onActionPressed;
 
   const appBar({
     super.key,
     required this.heading,
+    this.actionIcon,
+    this.onActionPressed,
   });
 
   @override
@@ -65,6 +69,16 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                     // Spacer to keep the heading centered
                     Spacer(),
+                    // Optional action icon
+                    if (actionIcon != null)
+                      IconButton(
+                        icon: Icon(
+                          actionIcon,
+                          color: theme.primaryColorDark,
+                        ),
+                        onPressed: onActionPressed,
+                        iconSize: 30.r,
+                      ),
                   ],
                 ),
               ),

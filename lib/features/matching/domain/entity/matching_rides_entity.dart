@@ -23,7 +23,7 @@ class MatchingRide {
   final List<Passenger> passengers;
   final List<dynamic> paymentMethod;
   final RidePreferences preferences;
-  //final List<dynamic> recurringRides;
+  // final List<dynamic> recurringRides;
   final List<dynamic> routeCells;
   final List<dynamic> routeCoords;
   final String status;

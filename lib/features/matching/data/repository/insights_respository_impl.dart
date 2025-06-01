@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import '../data_source/insights_data_sources.dart';
 import '../../domain/repository/insights_repository.dart';
+import '../models/insights_model.dart';
 
 class DriverInsightsRepositoryImpl implements DriverInsightsRepository {
   final DriverInsightsDataSource dataSource;
@@ -20,7 +21,7 @@ class DriverInsightsRepositoryImpl implements DriverInsightsRepository {
   }
 
   @override
-  Future<String> getDriverInsights(String driverId) async {
+  Future<InsightModel> getDriverInsights(String driverId) async {
     try {
       print('Repository: Getting driver insights for $driverId'); 
       final token = await getToken();

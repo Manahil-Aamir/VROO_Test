@@ -181,12 +181,12 @@ class _R3PageState extends State<R3Page> {
                                         ? 'Yes'
                                         : 'No',
                                   ),
-                                  DetailTile(
-                                    icon: Icons.directions_walk,
-                                    label: 'Prefer Walk',
-                                    value:
-                                        widget.preferences.walk ? 'Yes' : 'No',
-                                  ),
+                                  // DetailTile(
+                                  //   icon: Icons.directions_walk,
+                                  //   label: 'Prefer Walk',
+                                  //   value:
+                                  //       widget.preferences.walk ? 'Yes' : 'No',
+                                  // ),
                                 ],
                               ),
                               SizedBox(height: 60.h),
@@ -280,7 +280,7 @@ class _R3PageState extends State<R3Page> {
       preferences: RidePreferencesModel(
         maleOnly: maleOnly,
         femaleOnly: femaleOnly,
-        canWalk: widget.preferences.walk,
+        canWalk: false,
       ),
       isRecurring: widget.schedule.recurrenceType,
       frequency: widget.schedule.frequency?.toLowerCase(),
