@@ -72,7 +72,7 @@ class _RideTrackingPageState extends State<RideTrackingPage> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: AndroidView(
-              viewType: 'ride_tracking_map', // ✅ matches native view type
+              viewType: 'ride_tracking_map',
               creationParams: {
                 'showMarkersByDefault': true,
                 'showMarkers': true,

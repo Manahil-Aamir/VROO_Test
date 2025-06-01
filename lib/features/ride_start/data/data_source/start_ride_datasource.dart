@@ -61,7 +61,7 @@ class StartRideRemoteDataSource implements StartRideDataSource {
       GiveReviewModel giveReview, String token) async {
     print('giveReview jhnklllllllllll: ${giveReview.toMap()}');
 
-    final url = Uri.parse('http://10.0.2.2:8080/driver/give-review');
+    final url = Uri.parse('${ApiConstants.baseUrl}driver/give-review');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ class StartRideRemoteDataSource implements StartRideDataSource {
   Future<Map<String, dynamic>> pickPassenger(
       String rideId, String passengerId, String action, String token) async {
     final url = Uri.parse(
-        'http://10.0.2.2:8080/driver/ride/$rideId/passenger/$passengerId?action=$action');
+        '${ApiConstants.baseUrl}driver/ride/$rideId/passenger/$passengerId?action=$action');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ class StartRideRemoteDataSource implements StartRideDataSource {
 
   @override
   Future<Map<String, dynamic>> endRide(String rideId, String token) async {
-    final url = Uri.parse('http://10.0.2.2:8080/driver/end-ride/$rideId');
+    final url = Uri.parse('${ApiConstants.baseUrl}driver/end-ride/$rideId');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',

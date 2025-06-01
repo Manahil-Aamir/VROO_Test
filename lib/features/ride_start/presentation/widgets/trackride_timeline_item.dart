@@ -15,6 +15,7 @@ class TrackRideTimelineItem extends StatelessWidget {
   final bool isPassenger;
   final bool isConfirmed;
   final String passengerId;
+  final String? status;
   final RidestartDataModel rideData;
   final Function(String passengerId, String action)? onConfirm;
 
@@ -23,6 +24,7 @@ class TrackRideTimelineItem extends StatelessWidget {
     required this.time,
     required this.title,
     required this.address,
+    this.status,
     this.fare,
     this.isSource = false,
     this.isDestination = false,
@@ -43,16 +45,13 @@ class TrackRideTimelineItem extends StatelessWidget {
   }
 
   String _getConfirmButtonText() {
-    print(
-        'isSource: $isSource, isDestination: $isDestination, isPassenger: $isPassenger, isConfirmed: $isConfirmed');
     if (isSource && isPassenger) {
       return 'Drop Off';
     } else if (isDestination && isPassenger) {
       return 'Pick Up';
     } else if (isConfirmed) {
-      return 'Confirmed'; // Show as confirmed if already don
+      return 'Confirmed'; // Show as confirmed if already done
     }
-
     return 'Pick Up';
   }
 
@@ -74,10 +73,21 @@ class TrackRideTimelineItem extends StatelessWidget {
     return 'Do you want to confirm pickup for this passenger?';
   }
 
+  bool _shouldShowButton() {
+    print(
+        'Status: $status, isPassenger: $isPassenger, isConfirmed: $isConfirmed');
+    // Don't show button if status is 'Picked' or 'Dropped'
+    if (status != null &&
+        (status!.toLowerCase() == 'picked' ||
+            status!.toLowerCase() == 'dropped')) {
+      return false;
+    }
+    return isPassenger && !isConfirmed;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    print('ispassneger: $isPassenger');
 
     return Stack(
       clipBehavior: Clip.none,
@@ -120,7 +130,7 @@ class TrackRideTimelineItem extends StatelessWidget {
                                   fontWeight: FontWeight.w600),
                             ),
                             // Show pick/drop buttons ONLY for passengers (not source/destination locations)
-                            if (isPassenger && !isConfirmed)
+                            if (_shouldShowButton())
                               Padding(
                                 padding: EdgeInsets.only(left: 8.w),
                                 child: StartButton(
@@ -165,7 +175,7 @@ class TrackRideTimelineItem extends StatelessWidget {
                             address,
                             style: TextStyle(
                               fontSize: 14.sp,
-                              color: Colors.grey.shade400,
+                              color: theme.primaryColorLight,
                             ),
                           ),
                         ),

@@ -41,6 +41,11 @@ class _TrackingRideTimelineState extends State<TrackingRideTimeline> {
     });
 
     print('Confirmed $action for passenger $passengerId');
+
+    // Rebuild the widget after confirmation
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -71,6 +76,8 @@ class _TrackingRideTimelineState extends State<TrackingRideTimeline> {
                   children: [
                     // Timeline item with onConfirm callback
                     TrackRideTimelineItem(
+                      status: item.status ?? '',
+
                       time: item.time ?? '',
                       title: item.title ?? '',
                       address: item.address ?? '',
@@ -101,7 +108,12 @@ class _TrackingRideTimelineState extends State<TrackingRideTimeline> {
                         ),
                         child: Icon(
                           isPassenger
-                              ? Icons.account_circle // Account for passenger
+                              ? ((item.status == 'Dropped' ||
+                                      item.status == 'Picked')
+                                  ? Icons
+                                      .check_circle // Tick if Dropped or Picked
+                                  : Icons
+                                      .account_circle) // Account for passenger
                               : (item.isSource ?? false)
                                   ? Icons.location_on // Check on source
                                   : (item.isDestination ?? false)

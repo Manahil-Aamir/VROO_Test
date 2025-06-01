@@ -126,7 +126,7 @@ class HomeDataSourceImpl implements HomeDataSource {
 
   @override
   Future<RideCheckModel?> rideCheck(String rideId, String token) async {
-    final url = Uri.parse('http://10.0.2.2:8080/ride/ride-check/$rideId');
+    final url = Uri.parse('${ApiConstants.baseUrl}ride/ride-check/$rideId');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ class HomeDataSourceImpl implements HomeDataSource {
 
   @override
   Future<bool> giveReview(ReviewModel reviewRequest, String token) async {
-    final url = Uri.parse('http://10.0.2.2:8080/rider/give-reviews');
+    final url = Uri.parse('${ApiConstants.baseUrl}rider/give-reviews');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',

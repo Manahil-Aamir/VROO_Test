@@ -165,9 +165,11 @@ class _TrackingRideDetailsBottomSheetState
                   final isSameSource = p.sameSource;
                   print('${p.sameDestination} ${p.sameSource}');
                   print(isSameSource);
+                  print(p.status);
 
                   return TrackRideTimelineItem(
                     passengerId: p.riderId,
+                    status: p.status,
                     time: DateFormat('h:mm a')
                         .format(p.rideRequest.matches.first.eta),
                     title: (isSameSource ?? false)
