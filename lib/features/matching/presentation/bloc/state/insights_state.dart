@@ -1,3 +1,5 @@
+import '../../../data/models/insights_model.dart';
+
 abstract class DriverInsightsState {}
 
 class DriverInsightsInitial extends DriverInsightsState {}
@@ -5,7 +7,7 @@ class DriverInsightsInitial extends DriverInsightsState {}
 class DriverInsightsLoading extends DriverInsightsState {}
 
 class DriverInsightsLoaded extends DriverInsightsState {
-  final String insights;
+  final InsightModel insights;
 
   DriverInsightsLoaded(this.insights);
 }

@@ -1,3 +1,4 @@
+import '../../data/models/insights_model.dart';
 import '../repository/insights_repository.dart';
 
 class GetDriverInsightsUseCase {
@@ -5,7 +6,7 @@ class GetDriverInsightsUseCase {
 
   GetDriverInsightsUseCase(this.repository);
 
-  Future<String> call(String driverId) async {
+  Future<InsightModel> call(String driverId) async {
     try {
       print('UseCase: Getting driver insights for $driverId'); 
       return await repository.getDriverInsights(driverId);
