@@ -5,6 +5,7 @@ class ReviewModel extends ReviewEntity {
     required super.name,
     required super.comment,
     required super.rating,
+    required super.daysAgo,
   });
 
   factory ReviewModel.fromJson(Map<String, dynamic> json) {
@@ -12,6 +13,7 @@ class ReviewModel extends ReviewEntity {
       name: json['reviewerName'] ?? '',
       comment: json['review'] ?? '',
       rating: (json['star'] ?? 0).toDouble(),
+      daysAgo: (json['daysAgo'])
     );
   }
 
@@ -19,6 +21,7 @@ class ReviewModel extends ReviewEntity {
         'name': name,
         'comment': comment,
         'rating': rating,
+        'daysAgo': daysAgo,
       };
 }
 

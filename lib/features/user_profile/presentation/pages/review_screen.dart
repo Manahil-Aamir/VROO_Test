@@ -566,13 +566,27 @@ class _ReviewsPageState extends State<ReviewsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      review.name,
-                      style: AppFonts.headlineTextStyle.copyWith(
-                        fontSize: AppFonts.headline4TextSize,
-                        fontWeight: FontWeight.w600,
-                        color: ThemeColors.headlinesTextColor,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            review.name,
+                            style: AppFonts.headlineTextStyle.copyWith(
+                              fontSize: AppFonts.headline4TextSize,
+                              fontWeight: FontWeight.w600,
+                              color: ThemeColors.headlinesTextColor,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '${review.daysAgo.toString()} days ago',
+                          style: AppFonts.headlineTextStyle.copyWith(
+                            fontSize: AppFonts.captionTextSize,
+                            // fontWeight: FontWeight.w600,
+                            color: ThemeColors.headlinesTextColor,
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 2.h), // Reduced from 4.h to 2.h
                     Row(
