@@ -46,8 +46,9 @@ class RideRequestData {
     print('In RideRequestData fromJson');
     return RideRequestData(
       matchingRides: (json['matchingRides'] as List?)
-          ?.map((e) => MatchingRideModel.fromJson(e))
-          .toList() ?? [],
+              ?.map((e) => MatchingRideModel.fromJson(e))
+              .toList() ??
+          [],
       message: json['message'] ?? '',
       rideRequestId: json['rideRequestId'] ?? '',
     );
@@ -84,7 +85,7 @@ class MatchingRideModel {
   final List<PassengerModel> passengers;
   final List<String> paymentMethod;
   final RidePreferencesModel preferences;
-  final List<dynamic> recurringRides;
+  // final List<dynamic> recurringRides;
   final List<String> routeCells;
   final List<List<double>> routeCoords;
   final LocationModel source;
@@ -114,7 +115,7 @@ class MatchingRideModel {
     required this.passengers,
     required this.paymentMethod,
     required this.preferences,
-    required this.recurringRides,
+    //required this.recurringRides,
     required this.routeCells,
     required this.routeCoords,
     required this.source,
@@ -124,43 +125,46 @@ class MatchingRideModel {
   });
 
   factory MatchingRideModel.fromJson(Map<String, dynamic> json) {
-  print('In MatchingRideModel fromJson');
-  return MatchingRideModel(
-    id: json['_id'],
-    car: Car.fromJson(json['car']),
-    date: DateTime.parse(json['date']), 
-    departureTime: DateTime.parse(json['departureTime']), 
-    destination: LocationModel.fromJson(json['destination']),
-    distance: (json['distance'] as num).toDouble(),
-    driverGender: json['driverGender'],
-    driverId: json['driverId'],
-    driverName: json['driverName'],
-    duration: (json['duration'] as num).toDouble(),
-    environmentStats: EnvironmentStatsModel.fromJson(json['environmentStats']),
-    existingRequests: List<dynamic>.from(json['existing_requests']),
-    expectedArrivalTime: DateTime.parse(json['expectedArrivalTime']), // Parse time string to DateTime
-    fare: (json['fare'] as num).toDouble(),
-    isRecurring: json['isRecurring'],
-    maxArrivalTime: DateTime.parse(json['maxArrivalTime']), // Parse time string to DateTime
-    neighbourRouteCells: List<dynamic>.from(json['neighbourRouteCells']),
-    numOfSeats: (json['numOfSeats'] as num).toInt(),
-    passengers: (json['passengers'] as List)
-        .map((e) => PassengerModel.fromJson(e))
-        .toList(),
-    paymentMethod: List<String>.from(json['paymentMethod']),
-    preferences: RidePreferencesModel.fromJson(json['preferences']),
-    recurringRides: List<dynamic>.from(json['recurringRides']),
-    routeCells: List<String>.from(json['routeCells']),
-    routeCoords: (json['routeCoords'] as List)
-        .map((e) => List<double>.from(e.map((v) => (v as num).toDouble())))
-        .toList(),
-    source: LocationModel.fromJson(json['source']),
-    status: json['status'],
-    totalDetourDistance: (json['totalDetourDistance'] as num).toDouble(),
-    totalDetourDuration: (json['totalDetourDuration'] as num).toDouble(),
-  );
-}
-  
+    print('In MatchingRideModel fromJson');
+    return MatchingRideModel(
+      id: json['_id'],
+      car: Car.fromJson(json['car']),
+      date: DateTime.parse(json['date']),
+      departureTime: DateTime.parse(json['departureTime']),
+      destination: LocationModel.fromJson(json['destination']),
+      distance: (json['distance'] as num).toDouble(),
+      driverGender: json['driverGender'],
+      driverId: json['driverId'],
+      driverName: json['driverName'],
+      duration: (json['duration'] as num).toDouble(),
+      environmentStats:
+          EnvironmentStatsModel.fromJson(json['environmentStats']),
+      existingRequests: List<dynamic>.from(json['existing_requests']),
+      expectedArrivalTime: DateTime.parse(
+          json['expectedArrivalTime']), // Parse time string to DateTime
+      fare: (json['fare'] as num).toDouble(),
+      isRecurring: json['isRecurring'],
+      maxArrivalTime: DateTime.parse(
+          json['maxArrivalTime']), // Parse time string to DateTime
+      neighbourRouteCells: List<dynamic>.from(json['neighbourRouteCells']),
+      numOfSeats: (json['numOfSeats'] as num).toInt(),
+      passengers: (json['passengers'] as List)
+          .map((e) => PassengerModel.fromJson(e))
+          .toList(),
+      paymentMethod: List<String>.from(json['paymentMethod']),
+      preferences: RidePreferencesModel.fromJson(json['preferences']),
+      //recurringRides: List<dynamic>.from(json['recurringRides']),
+      routeCells: List<String>.from(json['routeCells']),
+      routeCoords: (json['routeCoords'] as List)
+          .map((e) => List<double>.from(e.map((v) => (v as num).toDouble())))
+          .toList(),
+      source: LocationModel.fromJson(json['source']),
+      status: json['status'],
+      totalDetourDistance: (json['totalDetourDistance'] as num).toDouble(),
+      totalDetourDuration: (json['totalDetourDuration'] as num).toDouble(),
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -184,7 +188,7 @@ class MatchingRideModel {
       'passengers': passengers.map((e) => e.toJson()).toList(),
       'paymentMethod': paymentMethod,
       'preferences': preferences.toJson(),
-      'recurringRides': recurringRides,
+      // 'recurringRides': recurringRides,
       'routeCells': routeCells,
       'routeCoords': routeCoords,
       'source': source.toJson(),

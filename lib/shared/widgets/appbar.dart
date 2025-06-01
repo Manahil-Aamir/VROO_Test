@@ -34,18 +34,12 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             child: SafeArea(
               child: Padding(
-                padding: EdgeInsets.only(
-                  left: 16.w,
-                  right: 16.w,
-                  top: 10.h, // Reduced top padding to move content upward
-                  bottom: 0,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Align to top
                   children: [
                     // Back button
                     Align(
-                      alignment: Alignment.topLeft,
+                      alignment: Alignment.centerLeft,
                       child: IconButton(
                         icon: Icon(
                           Icons.arrow_back,
@@ -57,18 +51,19 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                         iconSize: 30.r,
                       ),
                     ),
-                    SizedBox(width: 40.w),
+                    // Spacer to push the heading to the center
+                    SizedBox(width: 60.w),
                     // Heading
                     Align(
-                      alignment: Alignment.topCenter,
+                      alignment: Alignment.center,
                       child: Text(
                         heading,
                         style: theme.textTheme.headlineLarge?.copyWith(
                           color: theme.primaryColorDark,
                         ),
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    // Spacer to keep the heading centered
                     Spacer(),
                   ],
                 ),

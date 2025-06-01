@@ -55,7 +55,7 @@ class AppBarNoIcon extends StatelessWidget implements PreferredSizeWidget {
                     // Title
                     Positioned(
                       top: 8.h,
-                      left: 0,
+                      left: 60.w,
                       right: 0,
                       child: Text(
                         heading,

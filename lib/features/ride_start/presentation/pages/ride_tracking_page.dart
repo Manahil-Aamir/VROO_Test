@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:vroo_test/features/ride_start/data/models/ridestart_data_model.dart';
+import 'package:vroo_test/features/ride_start/presentation/pages/nopassenger.dart';
 import 'package:vroo_test/features/ride_start/presentation/pages/tracking_modal.dart';
 import '../../../../core/router/navigation.dart';
 import '../../data/data_source/driver_tracker.dart';
@@ -283,11 +284,12 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
   }
 
   Future<void> _toggleTracking() async {
+    final theme = Theme.of(context);
     if (_rideData == null || !_isRideTrackerInitialized) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Cannot toggle tracking: Ride tracker not initialized'),
-          backgroundColor: Colors.red,
+          backgroundColor: theme.indicatorColor,
           duration: Duration(seconds: 3),
         ),
       );
@@ -305,7 +307,7 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Error stopping tracking: ${e.toString()}'),
-              backgroundColor: Colors.red,
+              backgroundColor: theme.indicatorColor,
             ),
           );
         }
@@ -317,6 +319,7 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
   }
 
   Future<void> _endRide() async {
+    final theme = Theme.of(context);
     if (!_isRideTrackerInitialized) return;
 
     try {
@@ -337,77 +340,77 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
         ),
       );
 
-      // // Call end ride API
-      // rideStartBloc.add(EndRideEvent());
+      // Call end ride API
+      rideStartBloc.add(EndRideEvent());
 
-      // // Listen for the end ride response
-      // final subscription = rideStartBloc.stream.listen((state) {
-      //   if (state is EndRideSuccess) {
-      //     // Dismiss loading dialog
-      //     if (mounted) Navigator.of(context).pop();
+      // Listen for the end ride response
+      final subscription = rideStartBloc.stream.listen((state) {
+        if (state is EndRideSuccess) {
+          // Dismiss loading dialog
+          if (mounted) Navigator.of(context).pop();
 
-      //     // Extract CO₂ savings from response
-      //     final totalCo2Saved = state.endRideData['data']['totalCo2Saved'];
+          // Extract CO₂ savings from response
+          final totalCo2Saved = state.endRideData['data']['totalCo2Saved'];
 
-      //     // Show CO₂ savings snackbar
-      //     if (mounted) {
-      //       ScaffoldMessenger.of(context).showSnackBar(
-      //         SnackBar(
-      //           content: Text(
-      //             '🌱 Great job! You saved $totalCo2Saved kg of CO₂ emissions!',
-      //             style: const TextStyle(
-      //               fontWeight: FontWeight.bold,
-      //               color: Colors.white,
-      //             ),
-      //           ),
-      //           backgroundColor: Colors.green,
-      //           duration: const Duration(seconds: 4),
-      //           behavior: SnackBarBehavior.floating,
-      //           shape: RoundedRectangleBorder(
-      //             borderRadius: BorderRadius.circular(10),
-      //           ),
-      //           margin: const EdgeInsets.all(16),
-      //         ),
-      //       );
-      //     }
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (mounted) {
-          showDialog(
-            context: context,
-            builder: (dialogContext) => MultiPassengerReviewModal(
-              passengers: _rideData!.passengers,
-              rideId: _rideData!.id,
-              currentUserId: _rideData!.driverId,
-              rideStartBloc: rideStartBloc,
-            ),
-          );
+          // Show CO₂ savings snackbar
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  '🌱 Great job! You saved $totalCo2Saved kg of CO₂ emissions!',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                backgroundColor: theme.secondaryHeaderColor,
+                duration: const Duration(seconds: 4),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                margin: const EdgeInsets.all(16),
+              ),
+            );
+          }
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (mounted) {
+              showDialog(
+                context: context,
+                builder: (dialogContext) => MultiPassengerReviewModal(
+                  passengers: _rideData!.passengers,
+                  rideId: _rideData!.id,
+                  currentUserId: _rideData!.driverId,
+                  rideStartBloc: rideStartBloc,
+                ),
+              );
+            }
+          });
+          context.read<Navigation>().navigateTo('/home');
+
+          print('Ride ended successfully: ${_rideData!.id}');
+          print('CO₂ saved: $totalCo2Saved kg');
+        } else if (state is EndRideFailure) {
+          // Dismiss loading dialog
+          if (mounted) Navigator.of(context).pop();
+
+          // Show error message
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to end ride: ${state.errorMessage}'),
+                backgroundColor: Colors.red,
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
         }
       });
-      context.read<Navigation>().navigateTo('/home');
 
-      print('Ride ended successfully: ${_rideData!.id}');
-      // print('CO₂ saved: $totalCo2Saved kg');
-      //   } else if (state is EndRideFailure) {
-      //     // Dismiss loading dialog
-      //     if (mounted) Navigator.of(context).pop();
-
-      //     // Show error message
-      //     if (mounted) {
-      //       ScaffoldMessenger.of(context).showSnackBar(
-      //         SnackBar(
-      //           content: Text('Failed to end ride: ${state.errorMessage}'),
-      //           backgroundColor: Colors.red,
-      //           duration: const Duration(seconds: 3),
-      //         ),
-      //       );
-      //     }
-      //   }
-      // });
-
-      // Clean up subscription after 10 seconds to prevent memory leaks
-      // Timer(const Duration(seconds: 10), () {
-      //   subscription.cancel();
-      // });
+      //Clean up subscription after 10 seconds to prevent memory leaks
+      Timer(const Duration(seconds: 10), () {
+        subscription.cancel();
+      });
     } catch (e) {
       // Dismiss loading dialog if it's showing
       if (mounted && Navigator.of(context).canPop()) {
@@ -529,49 +532,53 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
     }
 
     if (state is RideStartFailure || _errorMessage != null) {
-      final errorMessage =
-          _errorMessage ?? (state as RideStartFailure).errorMessage;
+      final errorMessage = _errorMessage ??
+          (state is RideStartFailure ? state.errorMessage : '');
+
       if (errorMessage.contains('Ride cannot be started without a passenger')) {
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) Navigator.of(context).pop();
+        // Set loading to false to prevent circular progress indicator
+        if (_isLoading) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            setState(() {
+              _isLoading = false;
+            });
+          });
+        }
+
+        // Show modal
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showNoPassengerModal(context);
         });
-        return const Center(
-          child: Text(
-            'Ride cannot be started without a passenger',
-            style: TextStyle(color: Colors.red),
+      } else {
+        // Handle other errors normally
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                errorMessage,
+                style: const TextStyle(color: Colors.red),
+              ),
+              const SizedBox(height: 20),
+            ],
           ),
         );
       }
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              errorMessage,
-              style: const TextStyle(color: Colors.red),
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
-      );
     }
 
-    if (_rideData != null) {
-      return Column(
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-                _buildMapView(),
-                if (_isMapReady) _buildMapControls(),
-              ],
-            ),
+    // Always show the main screen if ride data is available or not
+    return Column(
+      children: [
+        Expanded(
+          child: Stack(
+            children: [
+              _buildMapView(),
+              if (_isMapReady) _buildMapControls(),
+            ],
           ),
-        ],
-      );
-    }
-
-    return const Center(child: Text('Waiting for ride data...'));
+        ),
+      ],
+    );
   }
 
   Widget _buildMapView() {
@@ -626,6 +633,17 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
         onPressed: onPressed,
         disabledColor: Colors.grey,
       ),
+    );
+  }
+
+  void showNoPassengerModal(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.7),
+      builder: (BuildContext context) {
+        return const NoPassengerModal();
+      },
     );
   }
 }

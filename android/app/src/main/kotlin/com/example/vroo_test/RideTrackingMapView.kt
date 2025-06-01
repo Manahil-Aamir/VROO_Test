@@ -422,7 +422,6 @@ class RideTrackingMapView(
                 val lng = point["lng"] as? Double
                 if (lat != null && lng != null) {
                     routePoints.add(LatLng(lat, lng))
-                    //Log.d("MapDebug", "Route point from map: $lat, $lng")
                 }
             } else if (point is List<*>) {
                 routePoints.add(LatLng(point[0] as Double, point[1] as Double))
@@ -430,18 +429,9 @@ class RideTrackingMapView(
             }
         }
         
-        // ADDED: Position vehicle at first route point if route is not empty
-        if (routePoints.isNotEmpty()) {
-            val initialPosition = routePoints.first()
-            vehiclePosition = initialPosition
-            // Calculate initial bearing if there are at least 2 points
-            vehicleBearing = if (routePoints.size > 1) {
-                calculateBearing(routePoints[0], routePoints[1])
-            } else {
-                0f // Default bearing if only one point
-            }
-            Log.d("MapDebug", "Positioned vehicle at first route point: ${initialPosition.latitude}, ${initialPosition.longitude}")
-        }
+        // REMOVED: Don't automatically position vehicle at first route point
+        // The vehicle will only appear when updateVehiclePosition is called from Flutter
+        Log.d("MapDebug", "Route loaded with ${routePoints.size} points, but vehicle not positioned yet")
         
         // Process passenger data
         pickupPoints.clear()
