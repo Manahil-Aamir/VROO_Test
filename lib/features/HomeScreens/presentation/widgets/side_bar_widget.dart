@@ -190,6 +190,21 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                                     .navigateTo('/emergency_contacts');
                               },
                             ),
+                            Divider(
+                                thickness: 1,
+                                height: 8.h,
+                                color: theme.primaryColorLight),
+                            _buildMenuItem(
+                              context,
+                              icon: Icons.schedule,
+                              title: 'Scheduled Rides',
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                context
+                                    .read<Navigation>()
+                                    .navigateTo('/schedule');
+                              },
+                            ),
                             // Divider(
                             //     thickness: 1,
                             //     height: 8.h,

@@ -1,3 +1,5 @@
+import '../../data/models/insights_model.dart';
+
 abstract class DriverInsightsRepository {
-  Future<String> getDriverInsights(String driverId);
+  Future<InsightModel> getDriverInsights(String driverId);
 }
