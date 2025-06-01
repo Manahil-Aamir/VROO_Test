@@ -67,6 +67,7 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
     final currentPassenger = passengersToReview[currentPassengerIndex];
     final isLastPassenger =
         currentPassengerIndex == passengersToReview.length - 1;
+    final reviewsLeft = passengersToReview.length - currentPassengerIndex;
 
     return BlocListener<RideStartBloc, RideStartState>(
       bloc: widget.rideStartBloc,
@@ -112,6 +113,28 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                     color: theme.scaffoldBackgroundColor,
                   ),
                 ),
+
+                SizedBox(height: 8.h),
+
+                // Progress bar for reviews left
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      LinearProgressIndicator(
+                        value: (currentPassengerIndex + 1) /
+                            passengersToReview.length,
+                        backgroundColor:
+                            theme.primaryColorLight.withOpacity(0.2),
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(theme.primaryColor),
+                        minHeight: 8.h,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(height: 8.h),
                 Text(
                   currentPassenger.riderName,
@@ -119,6 +142,7 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                     color: theme.primaryColor,
                   ),
                 ),
+                SizedBox(height: 8.h),
               ],
             ),
             content: isSubmitting
@@ -168,7 +192,7 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                                       ? Icons.star_rounded
                                       : Icons.star_outline_rounded,
                                   color: isSelected
-                                      ? Colors.yellow
+                                      ? Colors.amberAccent
                                       : theme.primaryColorLight,
                                   size: 36.sp,
                                 ),
@@ -189,7 +213,7 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                             child: Text(
                               'Rating is required',
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: Colors.redAccent,
+                                color: theme.indicatorColor,
                               ),
                             ),
                           ),
@@ -199,7 +223,7 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                           cursorColor: theme.primaryColor,
                           controller: reviewController,
                           decoration: InputDecoration(
-                            labelText: 'Give a review',
+                            labelText: 'Give a review (optional)',
                             labelStyle: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.primaryColorLight.withOpacity(0.6),
                             ),
@@ -220,8 +244,8 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                               ),
                             ),
                             contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
+                              horizontal: 16.w,
+                              vertical: 12.h,
                             ),
                           ),
                           maxLines: 3,
@@ -250,21 +274,26 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
                           ),
                         ),
                       ),
-                    DialogButton(
-                      onTap: () {
-                        if (selectedRating == null) {
-                          setState(() {
-                            showRatingError = true;
-                          });
-                          return;
-                        }
-                        setState(() {
-                          showRatingError = false;
-                        });
-                        _submitReview(currentPassenger);
-                      },
-                      text: isLastPassenger ? 'Done' : 'Next',
-                      color: theme.primaryColor,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DialogButton(
+                          onTap: () {
+                            if (selectedRating == null) {
+                              setState(() {
+                                showRatingError = true;
+                              });
+                              return;
+                            }
+                            setState(() {
+                              showRatingError = false;
+                            });
+                            _submitReview(currentPassenger);
+                          },
+                          text: isLastPassenger ? 'Done' : 'Next',
+                          color: theme.primaryColor,
+                        ),
+                      ],
                     )
                   ],
           ),

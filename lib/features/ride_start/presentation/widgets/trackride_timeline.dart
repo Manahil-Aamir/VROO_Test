@@ -42,10 +42,8 @@ class _TrackingRideTimelineState extends State<TrackingRideTimeline> {
 
     print('Confirmed $action for passenger $passengerId');
 
-    // Rebuild the widget after confirmation
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) setState(() {});
-    });
+    // Force rebuild after confirmation
+    setState(() {});
   }
 
   @override
