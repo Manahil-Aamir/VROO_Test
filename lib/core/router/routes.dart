@@ -13,6 +13,12 @@ import 'package:vroo_test/features/ride_start/presentation/pages/ride_tracking_p
 import 'package:vroo_test/features/ride_start/presentation/pages/ride_view_screen.dart';
 import 'package:vroo_test/features/matching/data/models/matching_rides_model.dart';
 import 'package:vroo_test/features/rider_journey/data/model/source_and_dest_model.dart';
+import 'package:vroo_test/features/safety/presentation/pages/protect.dart';
+import 'package:vroo_test/features/safety/presentation/pages/report.dart';
+import 'package:vroo_test/features/safety/presentation/pages/route.dart';
+import 'package:vroo_test/features/safety/presentation/pages/safecontact.dart';
+import 'package:vroo_test/features/safety/presentation/pages/safety.dart';
+import 'package:vroo_test/features/safety/presentation/pages/userverify.dart';
 import 'package:vroo_test/features/user_profile/presentation/pages/user_profile_page.dart';
 import 'package:vroo_test/features/sos/dependancy_injection/sos_di.dart';
 import 'package:vroo_test/features/sos/presentation/pages/sos_page.dart';
@@ -61,6 +67,7 @@ import '../../features/rider_requests/dependency_injection/ride_request_joins_di
 import '../../features/rider_requests/dependency_injection/rider_request_di.dart';
 import '../../features/rider_requests/presentation/pages/rider_request_join.dart';
 import '../../features/rider_requests/presentation/pages/rider_requests_screen.dart';
+import '../../features/safety/presentation/pages/beforeride.dart';
 import '../../features/sos/presentation/pages/contact_page.dart';
 import '../../features/user_profile/dependency_injection/reviews_di.dart';
 import '../../features/user_profile/dependency_injection/user_profile_di.dart';
@@ -102,7 +109,13 @@ class Routes {
   static const String ride_tracking = '/ride_tracking';
   static const String rider_view = '/rider_view';
   static const String rider_request_joins = '/rider_request_joins';
-  static const String reviews = '/review';
+  static const String safety = '/safety';
+  static const String before_ride = '/before_ride';
+  static const String protect = '/protect';
+  static const String user_verify = '/user_verify';
+  static const String route = '/route';
+  static const String report = '/report';
+  static const String safecontact = '/safecontact';
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -541,7 +554,7 @@ class Routes {
             args['maxArrivalTime'] as TimeOfDay? ?? TimeOfDay.now();
         final distance = args['distance'] as String? ?? '12.9 km';
         final duration = args['duration'] as String? ?? '50 mins';
-        final recurrence = args['recurrence'] as bool? ?? false;       
+        final recurrence = args['recurrence'] as bool? ?? false;
         final frequency = args['frequency'] as String?;
         final selectedDays = args['selectedDays'] as List<String>?;
         final endDate = args['endDate'] as DateTime?;
@@ -770,8 +783,7 @@ class Routes {
       case user_profile:
         return MaterialPageRoute(
             builder: (_) => MultiBlocProvider(
-                providers: UserProfileDi.init(), 
-                child: UserProfilePage()));
+                providers: UserProfileDi.init(), child: UserProfilePage()));
       case car:
         return MaterialPageRoute(
             builder: (_) => MultiBlocProvider(
@@ -808,7 +820,7 @@ class Routes {
           ),
         );
       case rider_request_joins:
-        final requestId = settings.arguments as String; 
+        final requestId = settings.arguments as String;
         return MaterialPageRoute(
           builder: (_) => MultiBlocProvider(
             providers: [
@@ -816,14 +828,25 @@ class Routes {
               ...MatchingDependencyInjection.init(),
               ...DriverInsightsDependencyInjection.init(),
             ],
-            child: RiderRequestJoinsPage(rideRequestId: requestId), 
+            child: RiderRequestJoinsPage(rideRequestId: requestId),
           ),
         );
-      case reviews:
-        return MaterialPageRoute(
-            builder: (_) => MultiProvider(
-                providers: ReviewDependencyInjection.init(),
-                child: ReviewsPage()));
+      case safety:
+        return MaterialPageRoute(builder: (context) => SafetyFeaturesScreen());
+      case before_ride:
+        return MaterialPageRoute(builder: (context) => BeforeRideScreen());
+      case protect:
+        return MaterialPageRoute(builder: (context) => ProtectScreen());
+      case user_verify:
+        return MaterialPageRoute(builder: (context) => UserVerifyScreen());
+      case route:
+        return MaterialPageRoute(builder: (context) => RouteScreen());
+      case safecontact:
+        return MaterialPageRoute(builder: (context) => SafeContactScreen());
+
+      case report:
+        return MaterialPageRoute(builder: (context) => ReportScreen());
+
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

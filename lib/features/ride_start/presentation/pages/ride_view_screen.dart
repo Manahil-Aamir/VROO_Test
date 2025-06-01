@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 
 import '../../../HomeScreens/data/data_source/coords_data_source.dart';
 import '../../data/models/rider_view_model.dart';
@@ -21,10 +20,10 @@ class RideViewScreen extends StatefulWidget {
   const RideViewScreen({super.key, required this.rideId, this.coords});
 
   @override
-  State<RideViewScreen> createState() => _RideTrackingScreenState();
+  State<RideViewScreen> createState() => _RideViewScreenState();
 }
 
-class _RideTrackingScreenState extends State<RideViewScreen>
+class _RideViewScreenState extends State<RideViewScreen>
     with WidgetsBindingObserver {
   final MethodChannel _mapChannel =
       const MethodChannel('com.example.vroo_test/ride_map');
@@ -72,16 +71,16 @@ class _RideTrackingScreenState extends State<RideViewScreen>
         final updatedCoords =
             await _coordsDataSource.fetchRouteCoordinates(widget.rideId);
         if (updatedCoords.isNotEmpty && mounted) {
-          setState(() {
-            _currentRouteCoords = updatedCoords;
-          });
-
-          // Update map with new coordinates
-          if (_mapViewId != null && _isMapReady) {
-            await _mapChannel.invokeMethod('updateRouteCoordinates', {
-              'viewId': _mapViewId,
-              'routeCoords': _currentRouteCoords,
+          // Only update if coordinates have actually changed
+          if (!_areCoordinatesEqual(_currentRouteCoords, updatedCoords)) {
+            setState(() {
+              _currentRouteCoords = updatedCoords;
             });
+
+            print('Updated coords count: ${_currentRouteCoords.length}');
+
+            // Update map with new coordinates
+            _updateMapRoute();
           }
         }
       } catch (e) {
@@ -90,9 +89,42 @@ class _RideTrackingScreenState extends State<RideViewScreen>
     });
   }
 
+  // Utility method to compare two coordinate lists
+  bool _areCoordinatesEqual(
+      List<List<double>> list1, List<List<double>> list2) {
+    if (list1.length != list2.length) return false;
+
+    for (int i = 0; i < list1.length; i++) {
+      if (list1[i].length != list2[i].length) return false;
+
+      for (int j = 0; j < list1[i].length; j++) {
+        if (list1[i][j] != list2[i][j]) return false;
+      }
+    }
+
+    return true;
+  }
+
   void _stopRouteUpdates() {
     _routeUpdateTimer?.cancel();
     _routeUpdateTimer = null;
+  }
+
+  Future<void> _updateMapRoute() async {
+    if (_mapViewId != null && _isMapReady) {
+      try {
+        print(
+            'Updating map route with ${_currentRouteCoords.length} coordinates');
+
+        // Update route coordinates using the Kotlin method
+        await _mapChannel.invokeMethod('updateRouteCoordinates', {
+          'viewId': _mapViewId,
+          'routeCoords': _currentRouteCoords,
+        });
+      } catch (e) {
+        print('Error updating map route: $e');
+      }
+    }
   }
 
   Future<void> _initializeMap(int viewId) async {
@@ -104,27 +136,34 @@ class _RideTrackingScreenState extends State<RideViewScreen>
     }
 
     try {
-      // For passenger view, we don't need to pass passenger array
+      _mapViewId = viewId;
+
+      // Get coordinates from passenger data
+      final sourceCoords = _rideData!.passengerData.source.coords;
+      final destCoords = _rideData!.passengerData.destination.coords;
+
+      // Initialize map with ride view data (no passengers for rider view)
       await _mapChannel.invokeMethod('initializeMap', {
-        'viewId': viewId,
         'source': {
-          'lat': _rideData!.passengerData.source.coords[0],
-          'lng': _rideData!.passengerData.source.coords[1],
+          'lat': sourceCoords[0],
+          'lng': sourceCoords[1],
         },
         'destination': {
-          'lat': _rideData!.passengerData.destination.coords[0],
-          'lng': _rideData!.passengerData.destination.coords[0],
+          'lat': destCoords[0],
+          'lng': destCoords[1],
         },
         'routeCoords': _currentRouteCoords,
         'passengers': [], // Empty as this is rider view
       });
-      print(
-          'Source: lat=${_rideData!.passengerData.source.coords[0]}, lng=${_rideData!.passengerData.source.coords[1]}');
-      print(
-          'Destination: lat=${_rideData!.passengerData.destination.coords[0]}, lng=${_rideData!.passengerData.destination.coords[1]}');
 
-      await _mapChannel.invokeMethod('fitRouteToScreen', {'viewId': viewId});
-      setState(() => _isMapReady = true);
+      print('Source: lat=${sourceCoords[0]}, lng=${sourceCoords[1]}');
+      print('Destination: lat=${destCoords[0]}, lng=${destCoords[1]}');
+      print('Initial route coords count: ${_currentRouteCoords.length}');
+
+      await _fitRouteToScreen();
+      setState(() {
+        _isMapReady = true;
+      });
 
       // Start regular route updates after map is ready
       _startRouteUpdates();
@@ -132,6 +171,18 @@ class _RideTrackingScreenState extends State<RideViewScreen>
       setState(() {
         _errorMessage = 'Map initialization failed: ${e.toString()}';
       });
+    }
+  }
+
+  Future<void> _fitRouteToScreen() async {
+    if (_mapViewId != null) {
+      await _mapChannel.invokeMethod('fitRouteToScreen');
+    }
+  }
+
+  Future<void> _zoomMap(String direction) async {
+    if (_mapViewId != null) {
+      await _mapChannel.invokeMethod(direction == 'in' ? 'zoomIn' : 'zoomOut');
     }
   }
 
@@ -145,11 +196,16 @@ class _RideTrackingScreenState extends State<RideViewScreen>
             _rideData = state.rideData;
             _isLoading = false;
 
-            // Initialize route coords from ride data if available
-            if (widget.coords != null) {
+            // Only set route coords if we don't have them yet
+            if (_currentRouteCoords.isEmpty && widget.coords != null) {
               _currentRouteCoords = widget.coords!;
             }
           });
+
+          // Initialize map if it's ready but not yet initialized with data
+          if (_isMapReady && _mapViewId != null) {
+            _updateMapRoute();
+          }
         } else if (state is RideViewFailure) {
           setState(() {
             _isLoading = false;
@@ -185,8 +241,7 @@ class _RideTrackingScreenState extends State<RideViewScreen>
                           IconButton(
                             icon: Icon(Icons.refresh,
                                 color: theme.primaryColorDark),
-                            onPressed: () => _mapChannel.invokeMethod(
-                                'fitRouteToScreen', {'viewId': _mapViewId}),
+                            onPressed: _fitRouteToScreen,
                           ),
                       ],
                     ),
@@ -251,17 +306,17 @@ class _RideTrackingScreenState extends State<RideViewScreen>
   Widget _buildMapView() {
     if (_rideData == null) return const SizedBox.shrink();
 
+    // Get source coordinates once
+    final sourceCoords = _rideData!.passengerData.source.coords;
+
     return AndroidView(
       viewType: 'ride_tracking_map',
       creationParams: <String, dynamic>{
-        'initialLat': _rideData!.passengerData.source.coords[0] ??
-            _rideData!.source.coords[0],
-        'initialLng': _rideData!.passengerData.source.coords[1] ??
-            _rideData!.source.coords[1],
+        'initialLat': sourceCoords[0],
+        'initialLng': sourceCoords[1],
       },
       creationParamsCodec: const StandardMessageCodec(),
       onPlatformViewCreated: (int id) {
-        _mapViewId = id;
         _initializeMap(id);
       },
     );
@@ -275,16 +330,12 @@ class _RideTrackingScreenState extends State<RideViewScreen>
         children: [
           _buildMapButton(
             Icons.add,
-            () => _mapViewId != null
-                ? _mapChannel.invokeMethod('zoomIn', {'viewId': _mapViewId})
-                : null,
+            () => _zoomMap('in'),
           ),
           const SizedBox(height: 8),
           _buildMapButton(
             Icons.remove,
-            () => _mapViewId != null
-                ? _mapChannel.invokeMethod('zoomOut', {'viewId': _mapViewId})
-                : null,
+            () => _zoomMap('out'),
           ),
         ],
       ),
@@ -305,5 +356,3 @@ class _RideTrackingScreenState extends State<RideViewScreen>
     );
   }
 }
-
-// Bottom sheet to display driver and ride details

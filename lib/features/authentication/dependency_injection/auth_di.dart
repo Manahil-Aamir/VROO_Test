@@ -14,21 +14,27 @@ class AuthDependencyInjection {
     final firebaseAuth = FirebaseAuth.instance;
     final authDataSource = FirebaseAuthDataSource(firebaseAuth);
     final authRepository = AuthRepositoryImpl(authDataSource);
-    
+
     return [
       Provider<AuthRemoteDataSource>(create: (_) => authDataSource),
       Provider<AuthRepository>(create: (_) => authRepository),
       Provider<SignUpUseCase>(create: (_) => SignUpUseCase(authRepository)),
-      Provider<SendEmailVerificationUseCase>(create: (_) => SendEmailVerificationUseCase(authRepository)),
-      Provider<CheckEmailVerificationUseCase>(create: (_) => CheckEmailVerificationUseCase(authRepository)),
-      BlocProvider<SignUpBloc>(create: (_) => SignUpBloc(
-        signUpUseCase: SignUpUseCase(authRepository),
-        sendEmailVerificationUseCase: SendEmailVerificationUseCase(authRepository)
-      )),
+      Provider<SendEmailVerificationUseCase>(
+          create: (_) => SendEmailVerificationUseCase(authRepository)),
+      Provider<CheckEmailVerificationUseCase>(
+          create: (_) => CheckEmailVerificationUseCase(authRepository)),
+      Provider<DeleteUserUseCase>(
+          create: (_) => DeleteUserUseCase(authRepository)),
+      BlocProvider<SignUpBloc>(
+          create: (_) => SignUpBloc(
+              signUpUseCase: SignUpUseCase(authRepository),
+              sendEmailVerificationUseCase:
+                  SendEmailVerificationUseCase(authRepository))),
       BlocProvider<EmailVerificationBloc>(
         create: (context) => EmailVerificationBloc(
           checkEmailVerification: context.read<CheckEmailVerificationUseCase>(),
           sendEmailVerification: context.read<SendEmailVerificationUseCase>(),
+          deleteUserUseCase: context.read<DeleteUserUseCase>(),
         ),
       ),
     ];

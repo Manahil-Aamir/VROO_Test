@@ -22,43 +22,131 @@ class AddCarModal extends StatefulWidget {
 
 class _AddCarModalState extends State<AddCarModal> {
   final _formKey = GlobalKey<FormState>();
-  
+
   // Define car companies for Pakistan
   final List<String> _carCompanies = [
-    'Honda', 'Toyota', 'Suzuki', 'Kia', 'Hyundai', 'Changan', 'Daihatsu', 'Nissan', 'MG', 'Proton', 'Peugeot', 'Chevrolet', 'Other'
+    'Honda',
+    'Toyota',
+    'Suzuki',
+    'Kia',
+    'Hyundai',
+    'Changan',
+    'Daihatsu',
+    'Nissan',
+    'MG',
+    'Proton',
+    'Peugeot',
+    'Chevrolet',
+    'Other'
   ];
-  
+
   // Maps for car models by company
   final Map<String, List<String>> _carModelsByCompany = {
-    'Honda': ['Civic', 'City', 'Accord', 'BR-V', 'HR-V', 'CR-V', 'Fit', 'Vezel', 'Insight', 'Grace', 'Other'],
-    'Toyota': ['Corolla', 'Yaris', 'Vitz', 'Prius', 'Prado', 'Fortuner', 'Land Cruiser', 'Aqua', 'Camry', 'Hiace', 'Hilux', 'Other'],
-    'Suzuki': ['Mehran', 'Alto', 'Cultus', 'Wagon R', 'Swift', 'Ciaz', 'Vitara', 'Bolan', 'Carry', 'Liana', 'Other'],
-    'Kia': ['Sportage', 'Picanto', 'Sorento', 'Stonic', 'Grand Carnival', 'Carens', 'Forte', 'Seltos', 'Other'],
-    'Hyundai': ['Tucson', 'Elantra', 'Sonata', 'Santa Fe', 'Porter', 'Starex', 'Creta', 'Other'],
-    'Changan': ['Alsvin', 'Karvaan', 'Oshan X7', 'Shepa Pickup','M8', 'M9', 'Carrier', 'Other'],
-    'Daihatsu': ['Mira','Cuore', 'Charade', 'Terios', 'Rocky', 'Other'],
-    'Nissan': ['Sunny', 'Patrol', 'X-Trail', 'Navara', 'Teana', 'Leaf', 'Qashqai', 'Other'],
+    'Honda': [
+      'Civic',
+      'City',
+      'Accord',
+      'BR-V',
+      'HR-V',
+      'CR-V',
+      'Fit',
+      'Vezel',
+      'Insight',
+      'Grace',
+      'Other'
+    ],
+    'Toyota': [
+      'Corolla',
+      'Yaris',
+      'Vitz',
+      'Prius',
+      'Prado',
+      'Fortuner',
+      'Land Cruiser',
+      'Aqua',
+      'Camry',
+      'Hiace',
+      'Hilux',
+      'Other'
+    ],
+    'Suzuki': [
+      'Mehran',
+      'Alto',
+      'Cultus',
+      'Wagon R',
+      'Swift',
+      'Ciaz',
+      'Vitara',
+      'Bolan',
+      'Carry',
+      'Liana',
+      'Other'
+    ],
+    'Kia': [
+      'Sportage',
+      'Picanto',
+      'Sorento',
+      'Stonic',
+      'Grand Carnival',
+      'Carens',
+      'Forte',
+      'Seltos',
+      'Other'
+    ],
+    'Hyundai': [
+      'Tucson',
+      'Elantra',
+      'Sonata',
+      'Santa Fe',
+      'Porter',
+      'Starex',
+      'Creta',
+      'Other'
+    ],
+    'Changan': [
+      'Alsvin',
+      'Karvaan',
+      'Oshan X7',
+      'Shepa Pickup',
+      'M8',
+      'M9',
+      'Carrier',
+      'Other'
+    ],
+    'Daihatsu': ['Mira', 'Cuore', 'Charade', 'Terios', 'Rocky', 'Other'],
+    'Nissan': [
+      'Sunny',
+      'Patrol',
+      'X-Trail',
+      'Navara',
+      'Teana',
+      'Leaf',
+      'Qashqai',
+      'Other'
+    ],
     'MG': ['ZS', 'HS', 'MG3', 'MG6', 'Other'],
     'Proton': ['Saga', 'X70', 'X50', 'Other'],
     'Peugeot': ['208', '3008', '5008', 'Other'],
     'Chevrolet': ['Sail', 'Tracker', 'Other'],
     'Other': ['Other'],
   };
-  
+
   // Define popular car colors
   final List<String> _carColors = [
     // popular colors in Pakistan
-    'White', 'Black', 'Grey', 'Silver', 'Red', 'Blue', 'Beige', 'Brown', 'Green', 'Cyan', 'Maroon', 
+    'White', 'Black', 'Grey', 'Silver', 'Red', 'Blue', 'Beige', 'Brown',
+    'Green', 'Cyan', 'Maroon',
     //'Turquoise', 'Teal', 'Lavender', 'Peach', 'Coral', 'Navy Blue', 'Olive', 'Mint Green', 'Mustard', 'Cream', 'Burgundy', 'Tan', 'Charcoal', 'Magenta', 'Indigo', 'Copper', 'Bronze', 'Yellow', 'Orange', 'Purple', 'Pink', 'Gold', 'Violet',    // other colors
     'Other',
   ];
-  
+
   String? _selectedCompany;
   String? _selectedModel;
   String? _selectedColor;
-  
+
   // Controllers for number plate - 3 characters, separator, 3 numbers
-  List<TextEditingController> _plateControllers = List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _plateControllers =
+      List.generate(6, (_) => TextEditingController());
   final TextEditingController _mileageController = TextEditingController();
 
   @override
@@ -91,7 +179,7 @@ class _AddCarModalState extends State<AddCarModal> {
                   ),
             ),
             SizedBox(height: 24.h),
-            
+
             // Company dropdown
             _buildDropdownField(
               label: 'Company',
@@ -105,12 +193,14 @@ class _AddCarModalState extends State<AddCarModal> {
                 });
               },
             ),
-            
+
             // Model dropdown (dependent on company)
             _buildDropdownField(
               label: 'Model',
               selectedValue: _selectedModel,
-              items: _selectedCompany != null ? _carModelsByCompany[_selectedCompany] ?? ['Other'] : [],
+              items: _selectedCompany != null
+                  ? _carModelsByCompany[_selectedCompany] ?? ['Other']
+                  : [],
               onChanged: (value) {
                 setState(() {
                   _selectedModel = value;
@@ -118,7 +208,7 @@ class _AddCarModalState extends State<AddCarModal> {
               },
               isDisabled: _selectedCompany == null,
             ),
-            
+
             // Color dropdown
             _buildDropdownField(
               label: 'Color',
@@ -130,13 +220,13 @@ class _AddCarModalState extends State<AddCarModal> {
                 });
               },
             ),
-            
+
             // Number plate
             _buildNumberPlateField(),
-            
+
             // Mileage field (float)
             _buildMileageField(),
-            
+
             SizedBox(height: 24.h),
             GradientButton(onTap: _handleSubmit, text: "Add New Car"),
             SizedBox(height: 16.h),
@@ -145,141 +235,149 @@ class _AddCarModalState extends State<AddCarModal> {
       ),
     );
   }
-  
-Widget _buildDropdownField({
-  required String label,
-  required String? selectedValue,
-  required List<String> items,
-  required void Function(String?) onChanged,
-  bool isDisabled = false,
-}) {
-  // Check if "Other" is selected to show the text input field
-  final bool isOtherSelected = selectedValue == 'Other';
-  
-  return Padding(
-    padding: EdgeInsets.symmetric(vertical: 8.h),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: ThemeColors.cardColor,
-              ),
-        ),
-        SizedBox(height: 8.h),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-            border: Border.all(color: isDisabled ? ThemeColors.dividerColor.withOpacity(0.5) : ThemeColors.dividerColor),
+
+  Widget _buildDropdownField({
+    required String label,
+    required String? selectedValue,
+    required List<String> items,
+    required void Function(String?) onChanged,
+    bool isDisabled = false,
+  }) {
+    // Check if "Other" is selected to show the text input field
+    final bool isOtherSelected = selectedValue == 'Other';
+
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: ThemeColors.cardColor,
+                ),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Material(
-              color: Colors.transparent,
-              child: PopupMenuButton<String>(
-                enabled: !isDisabled,
-                initialValue: selectedValue,
-                onSelected: (value) {
-                  onChanged(value);
-                },
-                itemBuilder: (context) => items.map((item) {
-                  return PopupMenuItem<String>(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList(),
-                offset: Offset(0, 40.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                color: ThemeColors.cardColor,
-                constraints: BoxConstraints(
-                  minWidth: MediaQuery.of(context).size.width - 32.w,
-                  maxWidth: MediaQuery.of(context).size.width - 32.w,
-                  maxHeight: 250.h,
-                ),
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        selectedValue ?? 'Select ${label}',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: selectedValue == null 
-                                  ? ThemeColors.backgroundColor.withOpacity(0.5) 
-                                  : ThemeColors.backgroundColor,
-                            ),
-                      ),
-                      Row(
-                        children: [
-                          if (items.length > 5)
+          SizedBox(height: 8.h),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(
+                  color: isDisabled
+                      ? ThemeColors.dividerColor.withOpacity(0.5)
+                      : ThemeColors.dividerColor),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Material(
+                color: Colors.transparent,
+                child: PopupMenuButton<String>(
+                  enabled: !isDisabled,
+                  initialValue: selectedValue,
+                  onSelected: (value) {
+                    onChanged(value);
+                  },
+                  itemBuilder: (context) => items.map((item) {
+                    return PopupMenuItem<String>(
+                      value: item,
+                      child: Text(item),
+                    );
+                  }).toList(),
+                  offset: Offset(0, 40.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  color: ThemeColors.cardColor,
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width - 32.w,
+                    maxWidth: MediaQuery.of(context).size.width - 32.w,
+                    maxHeight: 250.h,
+                  ),
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          selectedValue ?? 'Select $label',
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: selectedValue == null
+                                        ? ThemeColors.backgroundColor
+                                            .withOpacity(0.5)
+                                        : ThemeColors.backgroundColor,
+                                  ),
+                        ),
+                        Row(
+                          children: [
+                            if (items.length > 5)
+                              Icon(
+                                Icons.more_vert,
+                                color: ThemeColors.buttonTextColor
+                                    .withOpacity(0.5),
+                                size: 16,
+                              ),
+                            SizedBox(width: 4.w),
                             Icon(
-                              Icons.more_vert,
-                              color: ThemeColors.buttonTextColor.withOpacity(0.5),
-                              size: 16,
+                              Icons.arrow_drop_down,
+                              color: isDisabled
+                                  ? ThemeColors.buttonTextColor.withOpacity(0.5)
+                                  : ThemeColors.buttonTextColor,
                             ),
-                          SizedBox(width: 4.w),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            color: isDisabled 
-                                ? ThemeColors.buttonTextColor.withOpacity(0.5)
-                                : ThemeColors.buttonTextColor,
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-        
-        // Show text field only when "Other" is selected
-        if (isOtherSelected)
-          Padding(
-            padding: EdgeInsets.only(top: 8.h),
-            child: TextFormField(
-              onChanged: (value) {
-                // Pass the custom value back up
-                if (value.isNotEmpty) {
-                  onChanged(value);
-                } else {
-                  onChanged('Other');
-                }
-              },
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: ThemeColors.buttonTextColor,
+
+          // Show text field only when "Other" is selected
+          if (isOtherSelected)
+            Padding(
+              padding: EdgeInsets.only(top: 8.h),
+              child: TextFormField(
+                onChanged: (value) {
+                  // Pass the custom value back up
+                  if (value.isNotEmpty) {
+                    onChanged(value);
+                  } else {
+                    onChanged('Other');
+                  }
+                },
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: ThemeColors.buttonTextColor,
+                    ),
+                decoration: InputDecoration(
+                  hintText: 'Enter custom ${label.toLowerCase()}',
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: BorderSide(color: ThemeColors.dividerColor),
                   ),
-              decoration: InputDecoration(
-                hintText: 'Enter custom ${label.toLowerCase()}',
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide(color: ThemeColors.dividerColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: const BorderSide(
-                    color: ThemeColors.primaryColor,
-                    width: 2.0,
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(
+                      color: ThemeColors.primaryColor,
+                      width: 2.0,
+                    ),
                   ),
                 ),
+                validator: (value) {
+                  if (isOtherSelected && (value == null || value.isEmpty)) {
+                    return 'Please enter a custom ${label.toLowerCase()}';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (isOtherSelected && (value == null || value.isEmpty)) {
-                  return 'Please enter a custom ${label.toLowerCase()}';
-                }
-                return null;
-              },
             ),
-          ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   Widget _buildNumberPlateField() {
     return Padding(
@@ -316,18 +414,21 @@ Widget _buildDropdownField({
                         }
                       },
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[A-Za-z0-9]')),
                         UpperCaseTextFormatter(),
                       ],
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            color: ThemeColors.buttonTextColor,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: ThemeColors.buttonTextColor,
+                              ),
                       decoration: InputDecoration(
                         counterText: '',
                         contentPadding: EdgeInsets.symmetric(vertical: 12.h),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(color: ThemeColors.dividerColor),
+                          borderSide:
+                              BorderSide(color: ThemeColors.dividerColor),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -347,7 +448,7 @@ Widget _buildDropdownField({
                   ),
                 );
               }),
-              
+
               // Separator
               Container(
                 width: 24.w,
@@ -362,7 +463,7 @@ Widget _buildDropdownField({
                   ),
                 ),
               ),
-              
+
               // Last 3 characters
               ...List.generate(3, (index) {
                 final actualIndex = index + 3;
@@ -381,18 +482,21 @@ Widget _buildDropdownField({
                         }
                       },
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[A-Za-z0-9]')),
                         UpperCaseTextFormatter(),
                       ],
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            color: ThemeColors.buttonTextColor,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: ThemeColors.buttonTextColor,
+                              ),
                       decoration: InputDecoration(
                         counterText: '',
                         contentPadding: EdgeInsets.symmetric(vertical: 12.h),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(color: ThemeColors.dividerColor),
+                          borderSide:
+                              BorderSide(color: ThemeColors.dividerColor),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -443,8 +547,10 @@ Widget _buildDropdownField({
                 ),
             decoration: InputDecoration(
               hintText: '0.00',
-              hintStyle: TextStyle(color: ThemeColors.buttonTextColor.withOpacity(0.5)),
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              hintStyle: TextStyle(
+                  color: ThemeColors.buttonTextColor.withOpacity(0.5)),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 borderSide: BorderSide(color: ThemeColors.dividerColor),
@@ -478,26 +584,32 @@ Widget _buildDropdownField({
         );
         return;
       }
-      
+
       if (_selectedModel == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Please select a model')),
         );
         return;
       }
-      
+
       if (_selectedColor == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Please select a color')),
         );
         return;
       }
-      
+
       // Combine plate controllers into a single string with hyphen
-      final firstPart = _plateControllers.sublist(0, 3).map((controller) => controller.text).join('');
-      final secondPart = _plateControllers.sublist(3, 6).map((controller) => controller.text).join('');
+      final firstPart = _plateControllers
+          .sublist(0, 3)
+          .map((controller) => controller.text)
+          .join('');
+      final secondPart = _plateControllers
+          .sublist(3, 6)
+          .map((controller) => controller.text)
+          .join('');
       final numberPlate = "$firstPart-$secondPart";
-      
+
       final newCar = CarEntity(
         carId: '', // Assuming carId is generated by the backend or database
         company: _selectedCompany!,

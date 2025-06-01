@@ -2,7 +2,6 @@ import 'package:vroo_test/features/ride_start/data/models/inride_passenger_model
 import 'package:vroo_test/features/ride_start/domain/entities/ridestart_data_entity.dart';
 
 import '../../../cars/data/model/carr_model.dart';
-import '../../../driver_requests/data/model/active_ride_model.dart';
 import '../../../matching/data/models/matching_rides_model.dart';
 import '../../../rider_journey/data/model/ride_journey_model.dart';
 import 'address_model.dart';

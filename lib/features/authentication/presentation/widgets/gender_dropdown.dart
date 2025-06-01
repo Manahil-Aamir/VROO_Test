@@ -28,8 +28,9 @@ class GenderDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final bool isOtherSelected = selectedValue == 'Other' && showCustomInputWhenOther;
-    
+    final bool isOtherSelected =
+        selectedValue == 'Other' && showCustomInputWhenOther;
+
     return FormFieldContainer(
       labelText: labelText,
       errorText: errorText,
@@ -40,10 +41,10 @@ class GenderDropdown extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
               border: Border.all(
-                color: isDisabled 
-                    ? ThemeColors.dividerColor.withOpacity(0.5) 
-                    : (errorText != null 
-                        ? ThemeColors.accentColor 
+                color: isDisabled
+                    ? ThemeColors.dividerColor.withOpacity(0.5)
+                    : (errorText != null
+                        ? ThemeColors.accentColor
                         : ThemeColors.primaryColorLight),
               ),
             ),
@@ -74,30 +75,32 @@ class GenderDropdown extends StatelessWidget {
                     maxHeight: 250.h,
                   ),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          selectedValue ?? (hintText ?? 'Select ${labelText}'),
+                          selectedValue ?? (hintText ?? 'Select $labelText'),
                           style: theme.textTheme.bodyMedium?.copyWith(
-                                color: selectedValue == null 
-                                    ? ThemeColors.primaryColorLight
-                                    : ThemeColors.primaryColorDark,
-                              ),
+                            color: selectedValue == null
+                                ? ThemeColors.primaryColorLight
+                                : ThemeColors.primaryColorDark,
+                          ),
                         ),
                         Row(
                           children: [
                             if (items.length > 5)
                               Icon(
                                 Icons.more_vert,
-                                color: ThemeColors.buttonTextColor.withOpacity(0.5),
+                                color: ThemeColors.buttonTextColor
+                                    .withOpacity(0.5),
                                 size: 16,
                               ),
                             SizedBox(width: 4.w),
                             Icon(
                               Icons.arrow_drop_down,
-                              color: isDisabled 
+                              color: isDisabled
                                   ? ThemeColors.buttonTextColor.withOpacity(0.5)
                                   : ThemeColors.primaryColorDark,
                             ),
@@ -110,7 +113,7 @@ class GenderDropdown extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Show text field only when "Other" is selected and showCustomInputWhenOther is true
           if (isOtherSelected)
             Padding(
@@ -125,11 +128,12 @@ class GenderDropdown extends StatelessWidget {
                   }
                 },
                 style: theme.textTheme.bodyMedium?.copyWith(
-                      color: ThemeColors.buttonTextColor,
-                    ),
+                  color: ThemeColors.buttonTextColor,
+                ),
                 decoration: InputDecoration(
                   hintText: 'Enter custom ${labelText.toLowerCase()}',
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                     borderSide: BorderSide(color: ThemeColors.dividerColor),

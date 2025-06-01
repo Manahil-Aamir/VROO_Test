@@ -1,4 +1,3 @@
-import 'package:vroo_test/features/ride_start/domain/entities/address_entity.dart';
 import 'package:vroo_test/features/ride_start/domain/entities/others_entity.dart';
 
 class OthersModel extends OthersEntity {

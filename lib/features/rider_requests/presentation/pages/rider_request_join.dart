@@ -15,7 +15,7 @@ import '../widget/pending_request_join_card.dart';
 class RiderRequestJoinsPage extends StatefulWidget {
   final String rideRequestId;
 
-  const RiderRequestJoinsPage({Key? key, required this.rideRequestId}) : super(key: key);
+  const RiderRequestJoinsPage({super.key, required this.rideRequestId});
 
   @override
   State<RiderRequestJoinsPage> createState() => _RiderRequestJoinsPageState();
@@ -30,8 +30,8 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
 
   void _loadPendingJoins() {
     context.read<RideRequestJoinBloc>().add(
-      FetchPendingRideRequestJoins(widget.rideRequestId),
-    );
+          FetchPendingRideRequestJoins(widget.rideRequestId),
+        );
   }
 
   void _fetchMatches(BuildContext context) {
@@ -77,7 +77,8 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
     );
   }
 
-  Widget _buildMainContent(RideRequestJoinState joinState, MatchingState matchState, BuildContext context) {
+  Widget _buildMainContent(RideRequestJoinState joinState,
+      MatchingState matchState, BuildContext context) {
     if (joinState is RideRequestJoinLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -108,14 +109,13 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
       return ListView(
         children: [
           if (joinState.joins.isNotEmpty)
-            ...joinState.joins.map((join) => PendingJoinCard(joinRequest: join)).toList(),
-
+            ...joinState.joins
+                .map((join) => PendingJoinCard(joinRequest: join)),
           if (joinState.joins.isEmpty)
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: Center(child: Text('No join requests')),
             ),
-
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -137,29 +137,26 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
               ],
             ),
           ),
-
           if (matchState is MatchesLoading)
             const Center(child: CircularProgressIndicator()),
-
           if (matchState is MatchesVisibilityToggled && matchState.showMatches)
             _buildMatchesSection(context, matchState),
-
           if (matchState is RideRequestMatchesLoaded)
             _buildMatchesSection(context, matchState),
-
-          if ((matchState is RideRequestMatchesLoaded && matchState.matches.isEmpty) ||
-              (matchState is MatchesVisibilityToggled && matchState.matches.isEmpty))
+          if ((matchState is RideRequestMatchesLoaded &&
+                  matchState.matches.isEmpty) ||
+              (matchState is MatchesVisibilityToggled &&
+                  matchState.matches.isEmpty))
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: Center(
                 child: Text(
-                  'No matches available right now,\n' 
+                  'No matches available right now,\n'
                   'please try again later',
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
-
           if (matchState is RiderRequestError)
             Center(
               child: Column(
@@ -188,16 +185,16 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
   }
 
   Widget _buildMatchesSection(BuildContext context, dynamic state) {
-    final matches = state is MatchesVisibilityToggled 
-        ? state.matches 
+    final matches = state is MatchesVisibilityToggled
+        ? state.matches
         : (state as RideRequestMatchesLoaded).matches;
 
     return Column(
       children: [
         ...matches.map((match) => RideMatchCard(
-          match: match, 
-          rideRequestId: widget.rideRequestId,
-        )).toList(),
+              match: match,
+              rideRequestId: widget.rideRequestId,
+            )),
       ],
     );
   }

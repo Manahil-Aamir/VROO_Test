@@ -2,7 +2,10 @@ import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../authentication/data/model/user_model.dart';
+import '../../../data/data_source/home_data_source.dart';
 import '../../../data/models/ongoing_model.dart';
+import '../../../data/models/review_check_model.dart';
+import '../../../data/models/ride_check_model.dart';
 
 abstract class HomeState extends Equatable {
   const HomeState();
@@ -54,6 +57,46 @@ class NoOngoingTripState extends HomeState {}
 class OngoingTripError extends HomeState {
   final String message;
   const OngoingTripError(this.message);
+  @override
+  List<Object> get props => [message];
+}
+
+// New states for review functionality
+class ReviewLoading extends HomeState {}
+
+class ReviewSuccess extends HomeState {
+  final String message;
+  const ReviewSuccess(this.message);
+  @override
+  List<Object> get props => [message];
+}
+
+class ReviewError extends HomeState {
+  final String message;
+  const ReviewError(this.message);
+  @override
+  List<Object> get props => [message];
+}
+
+class RideCheckLoading extends HomeState {}
+
+class RideCheckLoaded extends HomeState {
+  final RideCheckModel rideData;
+  const RideCheckLoaded(this.rideData);
+  @override
+  List<Object> get props => [rideData];
+}
+
+class RideCheckNotFound extends HomeState {
+  final String message;
+  const RideCheckNotFound(this.message);
+  @override
+  List<Object> get props => [message];
+}
+
+class RideCheckError extends HomeState {
+  final String message;
+  const RideCheckError(this.message);
   @override
   List<Object> get props => [message];
 }

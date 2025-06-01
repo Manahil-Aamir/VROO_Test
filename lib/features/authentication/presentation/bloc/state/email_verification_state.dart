@@ -14,6 +14,11 @@ class EmailVerificationLoading extends EmailVerificationState {
   List<Object> get props => [];
 }
 
+class EmailVerificationUserDeleted extends EmailVerificationState {
+  @override
+  List<Object> get props => [];
+}
+
 class EmailVerificationSuccess extends EmailVerificationState {
   @override
   List<Object> get props => [];

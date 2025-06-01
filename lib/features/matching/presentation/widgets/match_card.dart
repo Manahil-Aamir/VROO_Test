@@ -17,10 +17,10 @@ class RideMatchCard extends StatelessWidget {
   final String rideRequestId;
 
   const RideMatchCard({
-    Key? key, 
+    super.key,
     required this.match,
     required this.rideRequestId,
-  }) : super(key: key);
+  });
 
   String getRiderId() {
     final user = FirebaseAuth.instance.currentUser!;
@@ -140,7 +140,7 @@ class RideMatchCard extends StatelessWidget {
   //                                     backgroundColor: ThemeColors.primaryColor,
   //                                     foregroundColor: ThemeColors.buttonTextColor,
   //                                     padding: EdgeInsets.symmetric(
-  //                                       horizontal: 24.w, 
+  //                                       horizontal: 24.w,
   //                                       vertical: 10.h,
   //                                     ),
   //                                     shape: RoundedRectangleBorder(
@@ -214,7 +214,8 @@ class RideMatchCard extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // makes it full-screen
-      backgroundColor: Colors.transparent, // to apply custom radius and background
+      backgroundColor:
+          Colors.transparent, // to apply custom radius and background
       builder: (context) {
         return BlocProvider.value(
           value: insightsBloc,
@@ -238,10 +239,10 @@ class RideMatchCard extends StatelessWidget {
                       Text(
                         'Driver Insights',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: ThemeColors.buttonTextColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
-                        ),
+                              color: ThemeColors.buttonTextColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.sp,
+                            ),
                       ),
                       IconButton(
                         icon: Icon(Icons.close, size: 22.r),
@@ -263,7 +264,8 @@ class RideMatchCard extends StatelessWidget {
                   Expanded(
                     child: SingleChildScrollView(
                       controller: scrollController,
-                      child: BlocBuilder<DriverInsightsBloc, DriverInsightsState>(
+                      child:
+                          BlocBuilder<DriverInsightsBloc, DriverInsightsState>(
                         builder: (context, state) {
                           if (state is DriverInsightsLoading) {
                             return Center(
@@ -279,35 +281,45 @@ class RideMatchCard extends StatelessWidget {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.error_outline, color: Colors.red, size: 48.r),
+                                  Icon(Icons.error_outline,
+                                      color: Colors.red, size: 48.r),
                                   SizedBox(height: 16.h),
                                   Text(
                                     'Failed to load insights',
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: ThemeColors.buttonTextColor,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: ThemeColors.buttonTextColor,
+                                        ),
                                   ),
                                   SizedBox(height: 8.h),
                                   Text(
                                     'Please try again later.',
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Colors.red.withOpacity(0.8),
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: Colors.red.withOpacity(0.8),
+                                        ),
                                     textAlign: TextAlign.center,
                                   ),
                                   SizedBox(height: 16.h),
                                   ElevatedButton(
                                     onPressed: () {
                                       context.read<DriverInsightsBloc>().add(
-                                        LoadDriverInsights(match.driverId),
-                                      );
+                                            LoadDriverInsights(match.driverId),
+                                          );
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: ThemeColors.primaryColor,
-                                      foregroundColor: ThemeColors.buttonTextColor,
-                                      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+                                      foregroundColor:
+                                          ThemeColors.buttonTextColor,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 24.w, vertical: 10.h),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8.r),
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
                                       ),
                                     ),
                                     child: Text('Retry'),
@@ -321,11 +333,15 @@ class RideMatchCard extends StatelessWidget {
                                 padding: EdgeInsets.symmetric(horizontal: 8.w),
                                 child: Text(
                                   state.insights,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: ThemeColors.buttonTextColor.withOpacity(0.9),
-                                    height: 1.5,
-                                    fontSize: 14.sp,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: ThemeColors.buttonTextColor
+                                            .withOpacity(0.9),
+                                        height: 1.5,
+                                        fontSize: 14.sp,
+                                      ),
                                 ),
                               );
                             }
@@ -335,20 +351,31 @@ class RideMatchCard extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SizedBox(height: 36.h),
-                                Icon(Icons.insights, size: 48.r, color: ThemeColors.primaryColor.withOpacity(0.5)),
+                                Icon(Icons.insights,
+                                    size: 48.r,
+                                    color: ThemeColors.primaryColor
+                                        .withOpacity(0.5)),
                                 SizedBox(height: 16.h),
                                 Text(
                                   'No insights available',
-                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                    color: ThemeColors.buttonTextColor.withOpacity(0.8),
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(
+                                        color: ThemeColors.buttonTextColor
+                                            .withOpacity(0.8),
+                                      ),
                                 ),
                                 SizedBox(height: 8.h),
                                 Text(
                                   'Check back later for driver insights',
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: ThemeColors.buttonTextColor.withOpacity(0.6),
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: ThemeColors.buttonTextColor
+                                            .withOpacity(0.6),
+                                      ),
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -445,7 +472,8 @@ class RideMatchCard extends StatelessWidget {
                             Text(
                               "4.5",
                               style: textTheme.bodySmall?.copyWith(
-                                color: ThemeColors.buttonTextColor.withOpacity(0.8),
+                                color: ThemeColors.buttonTextColor
+                                    .withOpacity(0.8),
                                 fontSize: 12.sp,
                               ),
                             ),
@@ -459,7 +487,8 @@ class RideMatchCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.calendar_today, size: 12.r, color: ThemeColors.primaryColor),
+                          Icon(Icons.calendar_today,
+                              size: 12.r, color: ThemeColors.primaryColor),
                           SizedBox(width: 4.w),
                           Text(
                             DateFormat('dd-MM-yyyy').format(match.date),
@@ -473,7 +502,8 @@ class RideMatchCard extends StatelessWidget {
                       SizedBox(height: 4.h),
                       Row(
                         children: [
-                          Icon(Icons.access_time_rounded, size: 12.r, color: ThemeColors.primaryColor),
+                          Icon(Icons.access_time_rounded,
+                              size: 12.r, color: ThemeColors.primaryColor),
                           SizedBox(width: 4.w),
                           Text(
                             DateFormat('h:mm a').format(match.departureTime),
@@ -501,13 +531,15 @@ class RideMatchCard extends StatelessWidget {
       children: [
         Column(
           children: [
-            Icon(Icons.circle_outlined, color: ThemeColors.primaryColor, size: 16.r),
+            Icon(Icons.circle_outlined,
+                color: ThemeColors.primaryColor, size: 16.r),
             Container(
               height: 8.h,
               width: 1.w,
               color: ThemeColors.primaryColor.withOpacity(0.6),
             ),
-            Icon(Icons.location_on, color: ThemeColors.primaryColor, size: 16.r),
+            Icon(Icons.location_on,
+                color: ThemeColors.primaryColor, size: 16.r),
           ],
         ),
         SizedBox(width: 12.w),
@@ -546,7 +578,7 @@ class RideMatchCard extends StatelessWidget {
   Widget _buildCarDetailsAndSeats(TextTheme textTheme) {
     final occupiedSeats = match.passengers.length;
     final availableSeats = match.numOfSeats - occupiedSeats;
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -601,16 +633,16 @@ class RideMatchCard extends StatelessWidget {
             ],
           ),
         ),
-        
         SizedBox(width: 8.w),
-
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             for (int i = 0; i < occupiedSeats; i++)
-              Icon(Icons.event_seat, color: ThemeColors.primaryColor, size: 16.r),
+              Icon(Icons.event_seat,
+                  color: ThemeColors.primaryColor, size: 16.r),
             for (int i = 0; i < availableSeats; i++)
-              Icon(Icons.event_seat, color: ThemeColors.backgroundColor, size: 16.r),
+              Icon(Icons.event_seat,
+                  color: ThemeColors.backgroundColor, size: 16.r),
           ],
         ),
       ],
@@ -635,18 +667,18 @@ class RideMatchCard extends StatelessWidget {
             ),
           ),
         ),
-
-        Spacer(), 
-
+        Spacer(),
         ElevatedButton(
           onPressed: () {
             final joinData = {
               "rideId": match.id,
               "rideRequestId": rideRequestId,
-              "driverId": match.driverId, 
+              "driverId": match.driverId,
               "riderId": getRiderId(),
             };
-            context.read<MatchingBloc>().add(JoinRideRequestEvent(joinData: joinData));
+            context
+                .read<MatchingBloc>()
+                .add(JoinRideRequestEvent(joinData: joinData));
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: ThemeColors.primaryColor,

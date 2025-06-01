@@ -4,7 +4,8 @@ import '../../domain/entity/rider_pending_request_entity.dart';
 import '../../domain/repository/rider_pending_request_repository.dart';
 import '../data_source/rider_pending_request_remote_data_source.dart';
 
-class RiderPendingRequestRepositoryImpl implements RiderPendingRequestRepository {
+class RiderPendingRequestRepositoryImpl
+    implements RiderPendingRequestRepository {
   final RiderPendingRequestDataSource dataSource;
   final FirebaseAuth firebaseAuth;
 
@@ -22,6 +23,7 @@ class RiderPendingRequestRepositoryImpl implements RiderPendingRequestRepository
     return modelList.map((model) => model.toEntity()).toList();
   }
 
+  @override
   Future<void> deleteRequest(String requestId) async {
     await dataSource.deleteRequest(requestId, await getUserToken());
   }

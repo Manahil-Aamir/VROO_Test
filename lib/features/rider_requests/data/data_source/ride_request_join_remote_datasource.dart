@@ -4,20 +4,24 @@ import '../../../../core/utils/constant/api_constants.dart';
 import '../models/ride_request_join_model.dart';
 
 abstract class RideRequestJoinRemoteDatasource {
-  Future<List<RideRequestJoinModel>> getPendingRideRequestJoins(String token, String rideRequestId);
+  Future<List<RideRequestJoinModel>> getPendingRideRequestJoins(
+      String token, String rideRequestId);
   Future<void> cancelJoinRequest(String token, String joinRequestId);
 }
 
-class RideRequestJoinRemoteDatasourceImpl implements RideRequestJoinRemoteDatasource {
+class RideRequestJoinRemoteDatasourceImpl
+    implements RideRequestJoinRemoteDatasource {
   final http.Client client;
 
-  RideRequestJoinRemoteDatasourceImpl(this.client); 
+  RideRequestJoinRemoteDatasourceImpl(this.client);
 
   @override
-  Future<List<RideRequestJoinModel>> getPendingRideRequestJoins(String token, String rideRequestId) async {
+  Future<List<RideRequestJoinModel>> getPendingRideRequestJoins(
+      String token, String rideRequestId) async {
     print('token: $token');
     final response = await client.get(
-      Uri.parse('${ApiConstants.baseUrl}rider/ride-request/pending/$rideRequestId'),
+      Uri.parse(
+          '${ApiConstants.baseUrl}rider/ride-request/pending/$rideRequestId'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -33,10 +37,12 @@ class RideRequestJoinRemoteDatasourceImpl implements RideRequestJoinRemoteDataso
 
       return data.map((json) => RideRequestJoinModel.fromJson(json)).toList();
     } else {
-      throw Exception('Failed to fetch pending ride requests: ${response.statusCode}');
+      throw Exception(
+          'Failed to fetch pending ride requests: ${response.statusCode}');
     }
   }
 
+  @override
   Future<void> cancelJoinRequest(String token, String joinRequestId) async {
     print('here in cancelJoinRequest');
     final response = await client.post(

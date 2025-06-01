@@ -1,7 +1,6 @@
 import '../../domain/entities/inride_passenger_entity.dart';
 
 import 'package:vroo_test/features/ride_start/data/models/rider_model.dart';
-import 'package:vroo_test/features/ride_start/domain/entities/rider_entity.dart';
 
 class InridePassengerModel extends InridePassengerEntity {
   InridePassengerModel({
@@ -28,7 +27,7 @@ class InridePassengerModel extends InridePassengerEntity {
       'fare': fare,
       'rideRequestId': rideRequestId,
       'eta': eta?.toIso8601String(),
-      'rideRequest': (rideRequest as RiderModel).toMap(),
+      'rideRequest': (rideRequest).toMap(),
       'riderName': riderName,
       'review': review ?? '',
       'sameSource': sameSource ?? false,

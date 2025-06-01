@@ -150,6 +150,40 @@ class RideTrackingMapView(
                 result.success(null)
             }
 
+            // Add this method inside the onMethodCall function in your RideTrackingMapView.kt file
+// Inside the when (call.method) block, add this case after the "updateRouteCoordinates" case:
+
+"clearRoute" -> {
+    handler.post {
+        // Clear existing route polylines
+        routePolyline?.remove()
+        routePolyline = null
+        
+        // Clear route points
+        routePoints.clear()
+        
+        Log.d("MapDebug", "Route cleared")
+    }
+    result.success(null)
+}
+
+"clearAllMapElements" -> {
+    handler.post {
+        // Clear everything from the map
+        googleMap?.clear()
+        
+        // Reset all data
+        routePoints.clear()
+        routePolyline = null
+        completedRoutePolyline = null
+        vehicleMarker = null
+        vehiclePosition = null
+        
+        Log.d("MapDebug", "All map elements cleared")
+    }
+    result.success(null)
+}
+
             // Add this method within the onMethodCall function in your RideTrackingMapView.kt file
 // Inside the when (call.method) block, add this case:
 

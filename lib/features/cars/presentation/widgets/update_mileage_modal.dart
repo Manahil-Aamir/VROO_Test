@@ -12,10 +12,10 @@ class UpdateMileageModal extends StatefulWidget {
   final CarBloc carBloc;
 
   const UpdateMileageModal({
-    Key? key,
+    super.key,
     required this.car,
     required this.carBloc,
-  }) : super(key: key);
+  });
 
   @override
   _UpdateMileageModalState createState() => _UpdateMileageModalState();
@@ -29,7 +29,8 @@ class _UpdateMileageModalState extends State<UpdateMileageModal> {
   void initState() {
     super.initState();
     // Initialize with current mileage value
-    _mileageController = TextEditingController(text: widget.car.mileage.toString());
+    _mileageController =
+        TextEditingController(text: widget.car.mileage.toString());
   }
 
   @override
@@ -59,7 +60,7 @@ class _UpdateMileageModalState extends State<UpdateMileageModal> {
                   ),
             ),
             SizedBox(height: 16.h),
-            
+
             // Car info section
             Container(
               padding: EdgeInsets.all(12.w),
@@ -101,12 +102,12 @@ class _UpdateMileageModalState extends State<UpdateMileageModal> {
                 ],
               ),
             ),
-            
+
             SizedBox(height: 24.h),
-            
+
             // Mileage field
             _buildMileageField(),
-            
+
             SizedBox(height: 24.h),
             GradientButton(
               onTap: _handleSubmit,
@@ -141,8 +142,10 @@ class _UpdateMileageModalState extends State<UpdateMileageModal> {
               ),
           decoration: InputDecoration(
             hintText: '0.00',
-            hintStyle: TextStyle(color: ThemeColors.buttonTextColor.withOpacity(0.5)),
-            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            hintStyle:
+                TextStyle(color: ThemeColors.buttonTextColor.withOpacity(0.5)),
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
               borderSide: BorderSide(color: ThemeColors.dividerColor),
@@ -184,7 +187,8 @@ class _UpdateMileageModalState extends State<UpdateMileageModal> {
 
       // Add update event to bloc
       widget.carBloc.add(UpdateCar(
-        updatedCar.carId, updatedCar.mileage,
+        updatedCar.carId,
+        updatedCar.mileage,
       ));
       Navigator.pop(context);
     }

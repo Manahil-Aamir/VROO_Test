@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:vroo_test/features/ride_start/data/models/ridestart_data_model.dart';
-import 'package:vroo_test/features/ride_start/presentation/widgets/timeline_item.dart';
 import 'package:vroo_test/features/ride_start/presentation/widgets/trackride_timeline.dart';
 import 'package:vroo_test/features/ride_start/presentation/widgets/trackride_timeline_item.dart';
-import '../widgets/ride_timeline.dart';
 import '../widgets/stat_item.dart';
 
 class TrackingRideDetailsBottomSheet extends StatefulWidget {
@@ -152,41 +150,48 @@ class _TrackingRideDetailsBottomSheetState
             child: TrackingRideTimeline(
               items: [
                 TrackRideTimelineItem(
+                  passengerId: widget.rideData.driverId,
                   time: DateFormat('h:mm a')
                       .format(widget.rideData.departureTime),
                   title: 'Source',
                   address: widget.rideData.source.address,
                   isSource: true,
+                  isPassenger: false,
                   isDestination: false,
                   rideData: widget.rideData,
                 ),
                 ...widget.rideData.passengers.map((passenger) {
                   final p = passenger;
-                  final isSameSource =
-                      p.rideRequest.matches.any((match) => match.sameSource);
+                  final isSameSource = p.sameSource;
+                  print('${p.sameDestination} ${p.sameSource}');
+                  print(isSameSource);
 
                   return TrackRideTimelineItem(
+                    passengerId: p.riderId,
                     time: DateFormat('h:mm a')
                         .format(p.rideRequest.matches.first.eta),
-                    title: isSameSource
+                    title: (isSameSource ?? false)
                         ? 'Drop Off ${p.riderName}'
                         : 'Pickup ${p.riderName}',
-                    address: isSameSource
+                    address: (isSameSource ?? false)
                         ? p.rideRequest.destination.address
                         : p.rideRequest.source.address,
                     fare: p.fare,
-                    isSource: false,
-                    isDestination: false,
+                    isSource: isSameSource ?? false,
+                    isDestination: !(isSameSource ?? false),
+                    isPassenger: true,
                     rideData: widget.rideData,
                   );
                 }),
                 TrackRideTimelineItem(
+                  passengerId: widget.rideData.driverId,
                   time: DateFormat('h:mm a')
                       .format(widget.rideData.expectedArrivalTime),
                   title: 'Final Destination',
                   address: widget.rideData.destination.address,
                   isSource: false,
                   isDestination: true,
+                  isPassenger: false,
                   rideData: widget.rideData,
                 ),
               ],

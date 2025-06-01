@@ -103,6 +103,33 @@ class NativeMapView(
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         isMapReady = true
+
+        map.setOnMarkerDragListener(object : GoogleMap.OnMarkerDragListener {
+        override fun onMarkerDragStart(marker: Marker) {
+            Log.d("NativeMapView", "Marker drag started")
+        }
+        
+        override fun onMarkerDrag(marker: Marker) {
+            Log.d("NativeMapView", "Marker dragging")
+        }
+        
+        override fun onMarkerDragEnd(marker: Marker) {
+            Log.d("NativeMapView", "Marker drag ended")
+            when {
+                marker == startMarker -> {
+                    updateMarkerPosition("start", marker.position)
+                    drawRoutes()
+                }
+                marker == destMarker -> {
+                    updateMarkerPosition("dest", marker.position)
+                    drawRoutes()
+                }
+                else -> movingMarkers.entries.find { it.value == marker }?.let { (id, _) ->
+                    markerUpdateCallback?.invoke(id, marker.position)
+                }
+            }
+        }
+    })
         
         map.apply {
             uiSettings.apply {

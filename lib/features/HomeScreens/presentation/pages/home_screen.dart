@@ -1,18 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vroo_test/features/HomeScreens/data/data_source/coords_data_source.dart';
+import 'package:vroo_test/features/HomeScreens/data/models/ride_check_model.dart';
 import '../../../../core/router/navigation.dart';
 import '../../../../core/utils/exit_dialouge_util.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
+import '../../data/models/review_check_model.dart';
 import '../bloc/bloc/home_bloc.dart';
 import '../bloc/event/home_event.dart';
 import '../bloc/state/home_state.dart';
 import '../widgets/location_selection_button_widget.dart';
+import '../widgets/review_modal.dart';
 import '../widgets/side_bar_widget.dart';
 import '../widgets/top_bar_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,8 +44,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     print('api called: $state');
-    // When app comes to foreground, check for ongoing trips
+    // When app comes to foreground, check for completed rides first, then ongoing trips
     if (state == AppLifecycleState.resumed) {
+      _checkForRideReview();
       context.read<HomeBloc>().add(CheckOngoingTripEvent());
     }
   }
@@ -51,8 +55,41 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     // Load user data first
     context.read<HomeBloc>().add(LoadUserEvent());
 
-    // Check for ongoing trips
+    // Check for rides that need review BEFORE checking ongoing trips
+    await _checkForRideReview();
+
+    // Then check for ongoing trips
     context.read<HomeBloc>().add(CheckOngoingTripEvent());
+  }
+
+  // Method to check for rides that need review
+  Future<void> _checkForRideReview() async {
+    String? rideId = await _getRideIdFromSharedPrefs();
+    if (rideId != null && rideId.isNotEmpty) {
+      context.read<HomeBloc>().add(CheckRideEvent(rideId));
+    }
+  }
+
+  // Get ride ID from SharedPreferences
+  Future<String?> _getRideIdFromSharedPrefs() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString('current_ride_id');
+    } catch (e) {
+      print('Error getting ride ID from SharedPreferences: $e');
+      return null;
+    }
+  }
+
+  // Remove ride ID from SharedPreferences after review is submitted
+  Future<void> _removeRideIdFromSharedPrefs() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('current_ride_id');
+      print('Ride ID removed from SharedPreferences');
+    } catch (e) {
+      print('Error removing ride ID from SharedPreferences: $e');
+    }
   }
 
   @override
@@ -97,11 +134,72 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
           );
+        } else if (state is RideCheckLoaded) {
+          // Show review modal when ride data is loaded
+          _showReviewModal(context, state.rideData);
+        } else if (state is ReviewSuccess) {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else if (state is ReviewError) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (state is RideCheckError) {
+          // Handle ride check error
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
       },
       builder: (context, state) {
         print('HomeState: $state');
         return const NativeGoogleMap();
+      },
+    );
+  }
+
+  // Method to show review modal
+  void _showReviewModal(BuildContext context, RideCheckModel rideData) {
+    final homeBloc = context.read<HomeBloc>();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return ReviewModal(
+          rideData: rideData,
+          onSubmitReview: (int stars, String review) {
+            // Create review entity and submit
+            final reviewEntity = ReviewModel(
+              receiverUid: rideData.driverId,
+              rideId: rideData.id,
+              star: stars,
+              review: review,
+            );
+
+            print('Submitting review: $reviewEntity');
+
+            // Dispatch review event
+            homeBloc.add(GiveReviewEvent(reviewEntity));
+
+            // Remove ride ID from SharedPreferences after submitting review
+            _removeRideIdFromSharedPrefs();
+
+            // Close the modal
+            Navigator.of(context).pop();
+          },
+        );
       },
     );
   }

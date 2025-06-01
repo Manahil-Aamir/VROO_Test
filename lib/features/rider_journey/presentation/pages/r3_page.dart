@@ -102,7 +102,7 @@ class _R3PageState extends State<R3Page> {
                   } else if (state is RideRequestSuccess) {
                     RideResponseModel response = state.response;
                     final rideRequestId = response.data.rideRequestId;
-                    print('success');                    
+                    print('success');
                     print('Ride request ID: $rideRequestId');
                     final List<MatchingRideModel> matchingRides =
                         response.data.matchingRides;
@@ -217,28 +217,31 @@ class _R3PageState extends State<R3Page> {
     if (widget.location.sourceCoordinates == null ||
         widget.location.destCoordinates == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please wait while coordinates are loading.')),
+        const SnackBar(
+            content: Text('Please wait while coordinates are loading.')),
       );
       return;
     }
 
     final userState = context.read<UserBloc>().state;
-    String user_gender = '';
+    String userGender = '';
     bool maleOnly = false;
     bool femaleOnly = false;
 
     if (userState is UserLoaded) {
       print('here');
       print(userState.user);
-      user_gender = userState.user.gender;
+      userGender = userState.user.gender;
     }
-    print('user gender: ${user_gender}');
+    print('user gender: $userGender');
     print('same gender: ${widget.preferences.sameGender}');
 
-    if (user_gender.toLowerCase() == 'female' && widget.preferences.sameGender == true) {
+    if (userGender.toLowerCase() == 'female' &&
+        widget.preferences.sameGender == true) {
       femaleOnly = true;
-    } else if (user_gender.toLowerCase() == 'male' && widget.preferences.sameGender == true) {
-      maleOnly=true;
+    } else if (userGender.toLowerCase() == 'male' &&
+        widget.preferences.sameGender == true) {
+      maleOnly = true;
     }
 
     rideDetails = RiderJourneyModel(
@@ -267,10 +270,13 @@ class _R3PageState extends State<R3Page> {
         ),
       ),
       pickupTimeRange: PickupTimeRangeModel(
-        min: formatISO8601DateTime(widget.schedule.date, widget.schedule.minTime),
-        max: formatISO8601DateTime(widget.schedule.date, widget.schedule.maxTime),
+        min: formatISO8601DateTime(
+            widget.schedule.date, widget.schedule.minTime),
+        max: formatISO8601DateTime(
+            widget.schedule.date, widget.schedule.maxTime),
       ),
-      maxArrivalTime: formatISO8601DateTime(widget.schedule.date, widget.schedule.arrivalTime),
+      maxArrivalTime: formatISO8601DateTime(
+          widget.schedule.date, widget.schedule.arrivalTime),
       preferences: RidePreferencesModel(
         maleOnly: maleOnly,
         femaleOnly: femaleOnly,
@@ -286,5 +292,4 @@ class _R3PageState extends State<R3Page> {
 
     context.read<R3Bloc>().add(SendRideRequestEvent(rideDetails));
   }
-
 }

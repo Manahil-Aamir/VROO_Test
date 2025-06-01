@@ -13,7 +13,7 @@ import '../../domain/entity/rider_approved_request_entity.dart';
 class ApprovedRequestCard extends StatelessWidget {
   final RiderApprovedRequest request;
 
-  const ApprovedRequestCard({Key? key, required this.request}) : super(key: key);
+  const ApprovedRequestCard({super.key, required this.request});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,9 @@ class ApprovedRequestCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildDateTimeRow(textTheme),
-              Divider(color: ThemeColors.buttonTextColor.withOpacity(0.2), height: 18.h),
+              Divider(
+                  color: ThemeColors.buttonTextColor.withOpacity(0.2),
+                  height: 18.h),
               _buildDriverAndCarInfo(context, textTheme),
               SizedBox(height: 12.h),
               _buildRouteInfo(textTheme),
@@ -61,7 +63,8 @@ class ApprovedRequestCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.calendar_today_rounded, size: 14.r, color: ThemeColors.primaryColor),
+            Icon(Icons.calendar_today_rounded,
+                size: 14.r, color: ThemeColors.primaryColor),
             SizedBox(width: 6.w),
             Text(
               DateFormat('dd MMM yyyy').format(request.date),
@@ -74,7 +77,8 @@ class ApprovedRequestCard extends StatelessWidget {
         ),
         Row(
           children: [
-            Icon(Icons.access_time_rounded, size: 16.r, color: ThemeColors.primaryColor),
+            Icon(Icons.access_time_rounded,
+                size: 16.r, color: ThemeColors.primaryColor),
             SizedBox(width: 4.w),
             Text(
               DateFormat('h:mm a').format(request.departureTime),
@@ -129,7 +133,6 @@ class ApprovedRequestCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               SizedBox(height: 6.h),
-              
               Text(
                 request.destination.address,
                 style: textTheme.bodyMedium?.copyWith(
@@ -214,7 +217,7 @@ class ApprovedRequestCard extends StatelessWidget {
               SizedBox(height: 4.h),
               Row(
                 children: [
-                  Icon(Icons.directions_car_filled_rounded, 
+                  Icon(Icons.directions_car_filled_rounded,
                       color: ThemeColors.primaryColor, size: 18.r),
                   SizedBox(width: 4.w),
                   Text(
@@ -257,7 +260,7 @@ class ApprovedRequestCard extends StatelessWidget {
       ),
     );
   }
-    
+
   Widget _buildPassengerInfo(TextTheme textTheme) {
     if (request.passengers.isEmpty) return SizedBox.shrink();
 
@@ -358,7 +361,6 @@ class ApprovedRequestCard extends StatelessWidget {
 
     context.read<Navigation>().navigateTo('/chat_detail', arguments: chatUser);
   }
-
 
   void _showCallConfirmation(BuildContext context) {
     showDialog(
