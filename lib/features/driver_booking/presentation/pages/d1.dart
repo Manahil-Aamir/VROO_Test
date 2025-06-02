@@ -45,90 +45,98 @@ class _D1PageState extends State<D1Page> {
   Set<String>? selectedDays;
   DateTime? endDate;
 
-  void _validateFields() {
-    final theme = Theme.of(context);
-    final state = context.read<D1Bloc>().state;
-    if (state is ScheduleInputState) {
-      // Check for null values and add errors if necessary
-      final dateErrorMsg = InputRideValidator.validateDate(state.selectedDate);
-      final timeErrorMsg = InputRideValidator.validateTime(state.selectedTime);
-      final maxArrivalTimeErrorMsg = InputRideValidator.validateMaxArrivalTime(
-          state.selectedTime, state.maxArrivalTime);
+void _validateFields() {
+  final theme = Theme.of(context);
+  final state = context.read<D1Bloc>().state;
+  if (state is ScheduleInputState) {
+    // Check for null values and add errors if necessary
+    final dateErrorMsg = InputRideValidator.validateDate(state.selectedDate);
+    final timeErrorMsg = InputRideValidator.validateTime(state.selectedTime);
+    final maxArrivalTimeErrorMsg = InputRideValidator.validateMaxArrivalTime(
+        state.selectedTime, state.maxArrivalTime);
+    
+    // Additional validation for past times when date is today
+    final departureTimeInPastMsg = InputRideValidator.validateTimeNotInPast(
+        state.selectedTime, state.selectedDate);
+    final maxArrivalTimeInPastMsg = InputRideValidator.validateMaxArrivalTimeNotInPast(
+        state.maxArrivalTime, state.selectedDate, state.selectedTime);
 
-      context.read<D1Bloc>().add(ShowErrorEvent(
-            dateError: dateErrorMsg != null,
-            timeError: timeErrorMsg != null,
-            maxArrivalTimeError: maxArrivalTimeErrorMsg != null,
-          ));
+    context.read<D1Bloc>().add(ShowErrorEvent(
+          dateError: dateErrorMsg != null,
+          timeError: timeErrorMsg != null || departureTimeInPastMsg != null,
+          maxArrivalTimeError: maxArrivalTimeErrorMsg != null || maxArrivalTimeInPastMsg != null,
+        ));
 
-      if (dateErrorMsg != null ||
-          timeErrorMsg != null ||
-          maxArrivalTimeErrorMsg != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(dateErrorMsg ??
-                timeErrorMsg ??
-                maxArrivalTimeErrorMsg ??
-                'Please fill in all fields.'),
-            backgroundColor: theme.indicatorColor,
-          ),
-        );
-        return; // Stop further execution if validation fails
-      }
+    // Combine all error messages
+    final firstError = dateErrorMsg ?? 
+                      timeErrorMsg ?? 
+                      departureTimeInPastMsg ?? 
+                      maxArrivalTimeErrorMsg ?? 
+                      maxArrivalTimeInPastMsg;
 
-      // Proceed only if all fields are valid
-      if (state.selectedDate != null &&
-          state.selectedTime != null &&
-          state.maxArrivalTime != null) {
-        final schedule = ScheduleModel(
-          fromDescription: widget.fromDescription,
-          toDescription: widget.toDescription,
-          date: state.selectedDate!,
-          time: state.selectedTime!,
-          maxArrivalTime: state.maxArrivalTime!,
-          recurrenceType: isRecurring,
-          frequency: isRecurring ? frequency : null,
-          selectedDays: isRecurring ? selectedDays : null,
-          endDate: isRecurring ? endDate : null,
-        );
+    if (firstError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(firstError),
+          backgroundColor: theme.indicatorColor,
+        ),
+      );
+      return; // Stop further execution if validation fails
+    }
 
-        print('isRecurring: $isRecurring');
-        print('frequency: $frequency');
-        print('selectedDays: $selectedDays');
-        print('endDate: $endDate');
+    // Proceed only if all fields are valid
+    if (state.selectedDate != null &&
+        state.selectedTime != null &&
+        state.maxArrivalTime != null) {
+      final schedule = ScheduleModel(
+        fromDescription: widget.fromDescription,
+        toDescription: widget.toDescription,
+        date: state.selectedDate!,
+        time: state.selectedTime!,
+        maxArrivalTime: state.maxArrivalTime!,
+        recurrenceType: isRecurring,
+        frequency: isRecurring ? frequency : null,
+        selectedDays: isRecurring ? selectedDays : null,
+        endDate: isRecurring ? endDate : null,
+      );
 
-        context.read<D1Bloc>().add(SaveScheduleEvent(schedule));
-        context.read<Navigation>().navigateTo(
-          '/d2',
-          arguments: {
-            'toPlaceID': widget.toPlaceId,
-            'fromPlaceID': widget.fromPlaceId,
-            'toDescription': widget.toDescription,
-            'fromDescription': widget.fromDescription,
-            'selectedRouteCoords': widget.selectedRouteCoords,
-            'distance': widget.distance,
-            'duration': widget.duration,
-            'selectedDate': state.selectedDate,
-            'selectedTime': state.selectedTime,
-            'maxArrivalTime': state.maxArrivalTime,
-            'recurrence': isRecurring,
-            'frequency': frequency,
-            'selectedDays': selectedDays?.toList(),
-            'endDate': endDate,
-          },
-        );
-      
-      } else {
-        // Show an error message if any field is null
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Please fill in all fields.'),
-            backgroundColor: theme.indicatorColor,
-          ),
-        );
-      }
+      print('isRecurring: $isRecurring');
+      print('frequency: $frequency');
+      print('selectedDays: $selectedDays');
+      print('endDate: $endDate');
+
+      context.read<D1Bloc>().add(SaveScheduleEvent(schedule));
+      context.read<Navigation>().navigateTo(
+        '/d2',
+        arguments: {
+          'toPlaceID': widget.toPlaceId,
+          'fromPlaceID': widget.fromPlaceId,
+          'toDescription': widget.toDescription,
+          'fromDescription': widget.fromDescription,
+          'selectedRouteCoords': widget.selectedRouteCoords,
+          'distance': widget.distance,
+          'duration': widget.duration,
+          'selectedDate': state.selectedDate,
+          'selectedTime': state.selectedTime,
+          'maxArrivalTime': state.maxArrivalTime,
+          'recurrence': isRecurring,
+          'frequency': frequency,
+          'selectedDays': selectedDays?.toList(),
+          'endDate': endDate,
+        },
+      );
+    
+    } else {
+      // Show an error message if any field is null
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fill in all fields.'),
+          backgroundColor: theme.indicatorColor,
+        ),
+      );
     }
   }
+}
 
   void _onRecurrenceChanged(bool recurring, String? freq, Set<String>? days, DateTime? end) {
     setState(() {
@@ -204,28 +212,33 @@ class _D1PageState extends State<D1Page> {
                                 state.dateError ? 'Please select a date' : null,
                           ),
                           SizedBox(height: 12.h),
-                          CustomTimePicker(
-                            labelText: 'Departure Time',
-                            selectedTime: state.selectedTime,
-                            onTimeSelected: (departureTime) {
-                              bloc.add(SelectTimeEvent(departureTime, "time"));
-                            },
-                            errorText: state.timeError
-                                ? 'Please select departure time'
-                                : null,
-                          ),
-                          SizedBox(height: 12.h),
-                          CustomTimePicker(
-                            labelText: 'Max Arrival Time',
-                            selectedTime: state.maxArrivalTime,
-                            onTimeSelected: (departureTime) {
-                              bloc.add(SelectTimeEvent(
-                                  departureTime, "maxArrivalTime"));
-                            },
-                            errorText: state.arrivalTimeError
-                                ? 'Please select a time'
-                                : null,
-                          ),
+                          // In your D1Page build method, update the CustomTimePicker widgets:
+
+CustomTimePicker(
+  labelText: 'Departure Time',
+  selectedTime: state.selectedTime,
+  selectedDate: state.selectedDate, // Pass the selected date
+  onTimeSelected: (departureTime) {
+    bloc.add(SelectTimeEvent(departureTime, "time"));
+  },
+  errorText: state.timeError
+      ? 'Please select departure time'
+      : null,
+),
+SizedBox(height: 12.h),
+CustomTimePicker(
+  labelText: 'Max Arrival Time',
+  selectedTime: state.maxArrivalTime,
+  selectedDate: state.selectedDate, // Pass the selected date
+  isMaxArrivalTime: true, // Identify this as max arrival time picker
+  departureTime: state.selectedTime, // Pass departure time for comparison
+  onTimeSelected: (arrivalTime) {
+    bloc.add(SelectTimeEvent(arrivalTime, "maxArrivalTime"));
+  },
+  errorText: state.arrivalTimeError
+      ? 'Please select a time'
+      : null,
+),
                           SizedBox(height: 12.h),
                           RecurringWidget(
                             initialIsRecurring: isRecurring,

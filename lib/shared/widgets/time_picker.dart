@@ -6,6 +6,9 @@ class CustomTimePicker extends StatelessWidget {
   final TimeOfDay? selectedTime;
   final Function(TimeOfDay) onTimeSelected;
   final String? errorText;
+  final DateTime? selectedDate; // Add this parameter to know the selected date
+  final bool isMaxArrivalTime; // Add this to identify if it's max arrival time picker
+  final TimeOfDay? departureTime; // Add this to compare with departure time for max arrival
 
   const CustomTimePicker({
     super.key,
@@ -13,6 +16,9 @@ class CustomTimePicker extends StatelessWidget {
     required this.selectedTime,
     required this.onTimeSelected,
     this.errorText,
+    this.selectedDate, // Add this parameter
+    this.isMaxArrivalTime = false, // Add this parameter
+    this.departureTime, // Add this parameter
   });
 
   String _formatTimeOfDay(TimeOfDay tod) {
@@ -20,6 +26,49 @@ class CustomTimePicker extends StatelessWidget {
     final minute = tod.minute.toString().padLeft(2, '0');
     final period = tod.period == DayPeriod.am ? 'AM' : 'PM';
     return '$hour:$minute $period';
+  }
+
+  bool _isTimeInPast(TimeOfDay time, DateTime? date, {bool isMaxArrivalTime = false, TimeOfDay? departureTime}) {
+    if (date == null) return false;
+    
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final selectedDay = DateTime(date.year, date.month, date.day);
+    
+    // Only check if the selected date is today
+    if (selectedDay.isAtSameMomentAs(today)) {
+      DateTime selectedDateTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        time.hour,
+        time.minute,
+      );
+      
+      // For max arrival time, check if it's next day (after midnight)
+      if (isMaxArrivalTime && departureTime != null) {
+        final departureDateTime = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          departureTime.hour,
+          departureTime.minute,
+        );
+        
+        // If max arrival time is earlier in the day than departure time,
+        // it means it's next day (e.g., departure 11:45 PM, arrival 12:05 AM)
+        if (selectedDateTime.isBefore(departureDateTime)) {
+          selectedDateTime = selectedDateTime.add(Duration(days: 1));
+          // For next day scenarios, we don't check against current time
+          // because it's a future time (next day)
+          return false;
+        }
+      }
+      
+      return selectedDateTime.isBefore(now);
+    }
+    
+    return false;
   }
 
   @override
@@ -91,6 +140,22 @@ class CustomTimePicker extends StatelessWidget {
         );
 
         if (pickedTime != null) {
+          // Check if the selected time is in the past when date is today
+          if (_isTimeInPast(pickedTime, selectedDate, 
+              isMaxArrivalTime: isMaxArrivalTime, 
+              departureTime: departureTime)) {
+            // Show error message for past time
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(isMaxArrivalTime 
+                    ? 'Max arrival time cannot be in the past'
+                    : 'Cannot select a time in the past for today'),
+                backgroundColor: theme.indicatorColor,
+              ),
+            );
+            return; // Don't call onTimeSelected if time is in the past
+          }
+          
           onTimeSelected(pickedTime);
         }
       },
