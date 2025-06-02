@@ -99,6 +99,7 @@ flutter:
     - assets/images/safety/s4.png
     - assets/images/safety/s5.png
     - assets/images/safety/s6.png
+    - assets/images/safety/rc.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

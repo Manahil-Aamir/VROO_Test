@@ -327,33 +327,6 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
   }
 
   @override
-  @override
-/*************  ✨ Windsurf Command ⭐  *************/
-  /// Builds the UI for selecting a location on a map.
-  ///
-  /// It creates a [Scaffold] with an [AppBar] and a [BlocProvider] that
-  /// provides the [LocationSelectionBloc] to its descendants.
-  ///
-  /// The body of the [Scaffold] is a [BlocListener] that listens to the
-  /// [LocationSelectionBloc] and updates the UI when the state changes.
-  ///
-  /// The [BlocListener] has a child which is a [BlocBuilder] that builds the
-  /// UI depending on the role of the user.
-  ///
-  /// The [BlocBuilder] builds a [Stack] with two children. The first child
-  /// is the map background which is an [AndroidView] that displays the
-  /// native Google Map. The second child is the bottom modal sheet which
-  /// displays the location details and the buttons to select the location.
-  ///
-  /// The [BlocBuilder] also sets up the method channel to handle the
-  /// platform view's method calls and updates the map markers when the
-  /// platform view is created.
-  ///
-  /// The [BlocListener] also sets up the method channel to handle the
-  /// platform view's method calls and updates the map markers when the
-  /// location is selected.
-  /// *****  a3807f31-7023-40bb-811d-307f19100356  ******
-  
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
@@ -597,7 +570,6 @@ class _LocationSelectionScreenState extends State<LocationSelectionScreen> {
 
     Navigator.of(context).pushNamed(route, arguments: arguments);
   }
-
 }
 
 extension LatLngExtension on LatLng {

@@ -28,7 +28,8 @@ class DeleteCarWidget extends StatelessWidget {
       context: context,
       builder: (dialogContext) => CustomDialog(
         title: 'Delete Car',
-        message: 'Are you sure you want to delete this car?',
+        message:
+            'Are you sure you want to delete ${car.company} ${car.model} car?',
         confirmText: 'Delete',
         cancelText: 'Cancel',
         confirmColor: theme.indicatorColor,

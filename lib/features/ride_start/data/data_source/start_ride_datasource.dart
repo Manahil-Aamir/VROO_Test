@@ -84,7 +84,6 @@ class StartRideRemoteDataSource implements StartRideDataSource {
   }
 
   @override
-  @override
   Future<Map<String, dynamic>> pickPassenger(
       String rideId, String passengerId, String action, String token) async {
     final url = Uri.parse(

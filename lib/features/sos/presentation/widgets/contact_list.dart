@@ -68,7 +68,7 @@ class ContactList extends StatelessWidget {
                       builder: (dialogContext) => CustomDialog(
                             title: 'Delete Contact',
                             message:
-                                'Are you sure you want to delete this contact?',
+                                "Are you sure you want to delete ${contact.name}'s contact?",
                             confirmText: 'Delete',
                             cancelText: 'Cancel',
                             confirmColor: theme.indicatorColor,

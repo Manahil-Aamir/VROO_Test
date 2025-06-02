@@ -86,14 +86,15 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
   }
 
   Future<void> _resumeTrackingAutomatically() async {
+    final theme = Theme.of(context);
     if (!_isTracking &&
         mounted &&
         _rideData != null &&
         _isRideTrackerInitialized) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Location enabled - resuming tracking'),
-          backgroundColor: Colors.green,
+          backgroundColor: theme.secondaryHeaderColor,
           duration: Duration(seconds: 2),
         ),
       );
@@ -180,15 +181,16 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
   }
 
   Future<void> _handleLocationPermissions() async {
+    final theme = Theme.of(context);
     final servicesEnabled = await Geolocator.isLocationServiceEnabled();
 
     if (!servicesEnabled) {
       // Show snackbar and open location services settings
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Opening location services settings...'),
-            backgroundColor: Colors.orange,
+            backgroundColor: theme.primaryColor,
             duration: Duration(seconds: 2),
           ),
         );
@@ -207,9 +209,9 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
       if (requestResult == LocationPermission.denied) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text('Location permission denied'),
-              backgroundColor: Colors.red,
+              backgroundColor: theme.indicatorColor,
               duration: Duration(seconds: 2),
             ),
           );
@@ -220,9 +222,9 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
       if (requestResult == LocationPermission.deniedForever) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text('Opening app settings for location permission...'),
-              backgroundColor: Colors.orange,
+              backgroundColor: theme.primaryColor,
               duration: Duration(seconds: 2),
             ),
           );
@@ -256,11 +258,12 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
   }
 
   Future<void> _startTracking() async {
+    final theme = Theme.of(context);
     if (_rideData == null || !_isRideTrackerInitialized) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Cannot start tracking: Ride tracker not initialized'),
-          backgroundColor: Colors.red,
+          backgroundColor: theme.indicatorColor,
           duration: Duration(seconds: 3),
         ),
       );
@@ -276,7 +279,7 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Tracking error: ${e.toString()}'),
-            backgroundColor: Colors.red,
+            backgroundColor: theme.indicatorColor,
           ),
         );
       }
@@ -421,7 +424,7 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to end ride: ${e.toString()}'),
-          backgroundColor: Colors.red,
+          backgroundColor: theme.indicatorColor,
           duration: const Duration(seconds: 3),
         ),
       );
