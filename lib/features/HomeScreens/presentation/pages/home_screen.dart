@@ -133,15 +133,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         if (state is HomeLogoutSuccess) {
           context.read<Navigation>().navigateTo('/sign_in');
         } else if (state is OngoingTripError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          if (!state.message.toLowerCase().contains('authentication token')) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
         } else if (state is RideCheckLoaded) {
           // Show review modal only if current user is not the driver (using Firebase UID)
           final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
           if (currentUserUid != null &&
               currentUserUid != state.rideData.driverId) {
             _showReviewModal(context, state.rideData);
+          } else {
+            _removeRideIdFromSharedPrefs();
           }
         } else if (state is ReviewSuccess) {
           // Show success message

@@ -259,21 +259,6 @@ class _MultiPassengerReviewModalState extends State<MultiPassengerReviewModal> {
             actions: isSubmitting
                 ? null
                 : [
-                    if (currentPassengerIndex > 0)
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            currentPassengerIndex--;
-                            _resetForm();
-                          });
-                        },
-                        child: Text(
-                          'Back',
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: colorScheme.primary,
-                          ),
-                        ),
-                      ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
