@@ -105,7 +105,7 @@ class _TrackingRideDetailsBottomSheetState
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Ride Details',
+                  'Ride Timeline',
                   style: theme.textTheme.displayMedium?.copyWith(
                     color: theme.canvasColor,
                   ),
@@ -173,7 +173,7 @@ class _TrackingRideDetailsBottomSheetState
                     time: DateFormat('h:mm a')
                         .format(p.rideRequest.matches.first.eta),
                     title: (isSameSource ?? false)
-                        ? 'Drop Off ${p.riderName}'
+                        ? 'Drop-Off ${p.riderName}'
                         : 'Pickup ${p.riderName}',
                     address: (isSameSource ?? false)
                         ? p.rideRequest.destination.address

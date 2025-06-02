@@ -339,6 +339,7 @@ class RideTrackingMapView(
     handler.post {
         // Clear existing polyline before creating new one
         routePolyline?.remove()
+        routePolyline = null
         
         if (routePoints.size > 1) {
             routePolyline = googleMap?.addPolyline(PolylineOptions()

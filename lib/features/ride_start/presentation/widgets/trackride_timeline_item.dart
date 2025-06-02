@@ -46,7 +46,7 @@ class TrackRideTimelineItem extends StatelessWidget {
 
   String _getConfirmButtonText() {
     if (isSource && isPassenger) {
-      return 'Drop Off';
+      return 'Drop-Off';
     } else if (isDestination && isPassenger) {
       return 'Pick Up';
     } else if (isConfirmed) {

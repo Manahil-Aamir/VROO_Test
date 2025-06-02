@@ -1,5 +1,6 @@
 // Main RideTrackingScreen
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -74,15 +75,12 @@ class _RideViewScreenState extends State<RideViewScreen>
           // Only update if coordinates have actually changed
           if (!_areCoordinatesEqual(_currentRouteCoords, updatedCoords)) {
             setState(() {
-              _currentRouteCoords = [];
-            });
-            setState(() {
               _currentRouteCoords = updatedCoords;
             });
 
             print('Updated coords count: ${_currentRouteCoords.length}');
 
-            // Update map with new coordinates
+            // Update map with new coordinates AND position vehicle
             _updateMapRoute();
           }
         }
@@ -104,6 +102,7 @@ class _RideViewScreenState extends State<RideViewScreen>
         if (list1[i][j] != list2[i][j]) return false;
       }
     }
+    print('Coordinates are equal');
 
     return true;
   }
@@ -114,20 +113,64 @@ class _RideViewScreenState extends State<RideViewScreen>
   }
 
   Future<void> _updateMapRoute() async {
-    if (_mapViewId != null && _isMapReady) {
+    if (_mapViewId != null && _isMapReady && _currentRouteCoords.isNotEmpty) {
       try {
         print(
             'Updating map route with ${_currentRouteCoords.length} coordinates');
 
-        // Update route coordinates using the Kotlin method
+        // Update route coordinates
         await _mapChannel.invokeMethod('updateRouteCoordinates', {
           'viewId': _mapViewId,
           'routeCoords': _currentRouteCoords,
         });
+
+        // Position vehicle at the last coordinate (most recent position)
+        final lastCoord = _currentRouteCoords[_currentRouteCoords.length - 1];
+
+        // Calculate bearing if we have at least 2 points
+        double bearing = 0.0;
+        if (_currentRouteCoords.length > 1) {
+          final secondLastCoord =
+              _currentRouteCoords[_currentRouteCoords.length - 2];
+          bearing = _calculateBearing(secondLastCoord[0], secondLastCoord[1],
+              lastCoord[0], lastCoord[1]);
+        }
+
+        // Update vehicle position
+        await _mapChannel.invokeMethod('updateVehiclePosition', {
+          'lat': lastCoord[0],
+          'lng': lastCoord[1],
+          'heading': bearing,
+        });
+
+        print(
+            'Vehicle positioned at: ${lastCoord[0]}, ${lastCoord[1]} with bearing: $bearing');
       } catch (e) {
         print('Error updating map route: $e');
       }
     }
+  }
+
+  // Helper method to calculate bearing between two points
+  double _calculateBearing(
+      double startLat, double startLng, double endLat, double endLng) {
+    final startLatRad = startLat * (pi / 180);
+    final startLngRad = startLng * (pi / 180);
+    final endLatRad = endLat * (pi / 180);
+    final endLngRad = endLng * (pi / 180);
+
+    final dLng = endLngRad - startLngRad;
+
+    final y = sin(dLng) * cos(endLatRad);
+    final x = cos(startLatRad) * sin(endLatRad) -
+        sin(startLatRad) * cos(endLatRad) * cos(dLng);
+
+    double bearing = atan2(y, x) * (180 / pi);
+
+    // Normalize to 0-360
+    bearing = (bearing + 360) % 360;
+
+    return bearing;
   }
 
   Future<void> _initializeMap(int viewId) async {
@@ -163,10 +206,16 @@ class _RideViewScreenState extends State<RideViewScreen>
       print('Destination: lat=${destCoords[0]}, lng=${destCoords[1]}');
       print('Initial route coords count: ${_currentRouteCoords.length}');
 
-      await _fitRouteToScreen();
       setState(() {
         _isMapReady = true;
       });
+
+      // Position vehicle at the last coordinate if we have route data
+      if (_currentRouteCoords.isNotEmpty) {
+        await _updateMapRoute();
+      }
+
+      await _fitRouteToScreen();
 
       // Start regular route updates after map is ready
       _startRouteUpdates();
@@ -206,7 +255,9 @@ class _RideViewScreenState extends State<RideViewScreen>
           });
 
           // Initialize map if it's ready but not yet initialized with data
-          if (_isMapReady && _mapViewId != null) {
+          if (_isMapReady &&
+              _mapViewId != null &&
+              _currentRouteCoords.isNotEmpty) {
             _updateMapRoute();
           }
         } else if (state is RideViewFailure) {
