@@ -83,6 +83,7 @@ class MatchingDataSourceImpl {
       },
     );
 
+    print('url: $url');
     print('Response status for ride request matches: ${response.statusCode}');
     print('Response body for ride request matches: ${response.body}');
 

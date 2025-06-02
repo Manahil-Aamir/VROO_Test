@@ -643,7 +643,7 @@ class RideMatchCard extends StatelessWidget {
                   Icon(Icons.star, color: Colors.amber, size: 14.r),
                   SizedBox(width: 4.w),
                   Text(
-                    "4.5",
+                    '4.5',
                     style: textTheme.bodySmall?.copyWith(
                       color: ThemeColors.buttonTextColor.withOpacity(0.8),
                       fontSize: 12.sp,
@@ -704,10 +704,11 @@ class RideMatchCard extends StatelessWidget {
       children: [
         Column(
           children: [
+            SizedBox(height: 5.h),
             Icon(Icons.circle_outlined,
                 color: ThemeColors.primaryColor, size: 16.r),
             Container(
-              height: 8.h,
+              height: 15.h,
               width: 1.w,
               color: ThemeColors.primaryColor.withOpacity(0.6),
             ),
@@ -715,7 +716,7 @@ class RideMatchCard extends StatelessWidget {
                 color: ThemeColors.primaryColor, size: 16.r),
           ],
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: 8.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

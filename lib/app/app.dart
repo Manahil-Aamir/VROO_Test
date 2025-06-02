@@ -43,7 +43,7 @@ class App extends StatelessWidget {
                   );
                 },
                 initialRoute: _getInitialRoute(state),
-                // initialRoute: Routes.sign_in,
+                // initialRoute: Routes.bookingConfirm,
                 onGenerateRoute: Routes().generateRoute,
               );
             },

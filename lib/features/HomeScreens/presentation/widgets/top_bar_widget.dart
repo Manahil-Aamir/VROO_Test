@@ -24,8 +24,7 @@ class TopBarWidget extends StatelessWidget {
             children: [
               _buildMenuButton(context),
               _buildRoleSwitchButton(context, state.role),
-              SizedBox(width: 48.w)
-              // _buildNotificationButton(),
+              _buildSettingButton(),
             ],
           ),
         );
@@ -71,18 +70,18 @@ class TopBarWidget extends StatelessWidget {
     );
   }
 
-  // Widget _buildNotificationButton() {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       color: ThemeColors.primaryColorDark,
-  //       borderRadius: BorderRadius.circular(12.r),
-  //     ),
-  //     child: IconButton(
-  //       icon: const Icon(Icons.notifications, color: Colors.white),
-  //       onPressed: () {},
-  //     ),
-  //   );
-  // }
+  Widget _buildSettingButton() {
+    return Container(
+      decoration: BoxDecoration(
+        color: ThemeColors.primaryColorDark,
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: IconButton(
+        icon: const Icon(Icons.help, color: Colors.white),
+        onPressed: () {},
+      ),
+    );
+  }
 
   void _showRoleSwitchDialog(BuildContext context, String currentRole) {
     final roleBloc = BlocProvider.of<RoleBloc>(context);

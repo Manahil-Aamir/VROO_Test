@@ -15,6 +15,13 @@ class CustomTimePicker extends StatelessWidget {
     this.errorText,
   });
 
+  String _formatTimeOfDay(TimeOfDay tod) {
+    final hour = tod.hourOfPeriod;
+    final minute = tod.minute.toString().padLeft(2, '0');
+    final period = tod.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hour:$minute $period';
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -24,9 +31,7 @@ class CustomTimePicker extends StatelessWidget {
       readOnly: true,
       suffixIcon: const Icon(Icons.access_time),
       controller: TextEditingController(
-        text: selectedTime == null
-            ? ''
-            : '${selectedTime!.hour}:${selectedTime!.minute.toString().padLeft(2, '0')}', // Ensure two digits for minutes
+        text: selectedTime == null ? '' : _formatTimeOfDay(selectedTime!),
       ),
       onTap: () async {
         TimeOfDay? pickedTime = await showTimePicker(
@@ -44,7 +49,7 @@ class CustomTimePicker extends StatelessWidget {
                 textButtonTheme: TextButtonThemeData(
                   style: TextButton.styleFrom(
                     foregroundColor: theme.primaryColor,
-                    textStyle: theme.textTheme.bodyLarge, // Apply text style
+                    textStyle: theme.textTheme.bodyLarge,
                   ),
                 ),
                 textSelectionTheme: TextSelectionThemeData(
@@ -67,15 +72,13 @@ class CustomTimePicker extends StatelessWidget {
                     decoration: TextDecoration.underline,
                   ),
                   confirmButtonStyle: TextButton.styleFrom(
-                    foregroundColor:
-                        theme.primaryColorDark, // Confirm button text color
+                    foregroundColor: theme.primaryColorDark,
                     textStyle: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   cancelButtonStyle: TextButton.styleFrom(
-                    foregroundColor:
-                        theme.indicatorColor, // Cancel button text color
+                    foregroundColor: theme.indicatorColor,
                     textStyle: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

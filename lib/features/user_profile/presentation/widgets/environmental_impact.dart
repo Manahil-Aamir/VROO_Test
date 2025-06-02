@@ -38,7 +38,7 @@ class EnvironmentalImpact extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${user.co2Saved} kg',
+              '${user.co2Saved.toStringAsFixed(2)} kg',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 25,

@@ -70,6 +70,8 @@ import '../../features/rider_requests/dependency_injection/rider_request_di.dart
 import '../../features/rider_requests/presentation/pages/rider_request_join.dart';
 import '../../features/rider_requests/presentation/pages/rider_requests_screen.dart';
 import '../../features/safety/presentation/pages/beforeride.dart';
+import '../../features/schedule/dependency_injection/schedule_di.dart';
+import '../../features/schedule/presentation/pages/schedule_page.dart';
 import '../../features/sos/presentation/pages/contact_page.dart';
 import '../../features/user_profile/dependency_injection/reviews_di.dart';
 import '../../features/user_profile/dependency_injection/user_profile_di.dart';
@@ -118,6 +120,7 @@ class Routes {
   static const String route = '/route';
   static const String report = '/report';
   static const String safecontact = '/safecontact';
+  static const String reviews = '/review';
   static const String schedule = '/schedule';
   static const String ride_history = '/ride_history';
 
@@ -850,7 +853,11 @@ class Routes {
 
       case report:
         return MaterialPageRoute(builder: (context) => ReportScreen());
-
+      case reviews:
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: ReviewDependencyInjection.init(),
+                child: ReviewsPage()));
       case schedule:
         return MaterialPageRoute(
             builder: (_) => MultiProvider(

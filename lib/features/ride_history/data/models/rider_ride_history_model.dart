@@ -18,7 +18,7 @@ class RiderModel {
   final String riderName;
   final LocationModel source;
   final LocationModel destination;
-  final Map<String, String> pickupTimeRange;
+  final PickupTimeRangeModel pickupTimeRange; // Updated from Map to structured class
 
   RiderModel({
     required this.riderId,
@@ -54,7 +54,7 @@ class RiderModel {
       riderName: json['riderName'] ?? '',
       source: LocationModel.fromJson(json['source'] ?? {}),
       destination: LocationModel.fromJson(json['destination'] ?? {}),
-      pickupTimeRange: Map<String, String>.from(json['pickupTimeRange'] ?? {}),
+      pickupTimeRange: PickupTimeRangeModel.fromJson(json['pickupTimeRange'] ?? {}),
     );
   }
 
@@ -93,7 +93,7 @@ class RiderModel {
         riderName: riderName,
         source: source.toEntity(),
         destination: destination.toEntity(),
-        pickupTimeRange: pickupTimeRange,
+        pickupTimeRange: pickupTimeRange.toEntity(),
       );
 }
 
@@ -215,5 +215,34 @@ class RiderHistoryModel {
   RiderHistoryEntity toEntity() => RiderHistoryEntity(
         completedRides: completedRides.map((e) => e.toEntity()).toList(),
         cancelledRides: cancelledRides.map((e) => e.toEntity()).toList(),
+      );
+}
+
+class PickupTimeRangeModel {
+  final DateTime min; // Earliest pickup time
+  final DateTime max; // Latest pickup time
+
+  PickupTimeRangeModel({
+    required this.min,
+    required this.max,
+  });
+
+  factory PickupTimeRangeModel.fromJson(Map<String, dynamic> json) {
+    return PickupTimeRangeModel(
+      min: DateTime.parse(json['min'] ?? ''), // Parse ISO string to DateTime
+      max: DateTime.parse(json['max'] ?? ''),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'min': min.toIso8601String(), // Convert DateTime back to ISO string
+      'max': max.toIso8601String(),
+    };
+  }
+
+  PickupTimeRangeEntity toEntity() => PickupTimeRangeEntity(
+        min: min,
+        max: max,
       );
 }

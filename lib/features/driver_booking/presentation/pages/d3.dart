@@ -28,7 +28,7 @@ class D3 extends StatelessWidget {
   final TimeOfDay maxArrivalTime;
   final bool recurrence;
   final String? frequency;
-  final List<String>? selectedDays; // Changed from Set to List for serialization
+  final List<String>? selectedDays;
   final DateTime? endDate;
   final CarEntity selectedCar;
   final int availableSeats;
@@ -59,7 +59,14 @@ class D3 extends StatelessWidget {
     required this.routeDuration,
   });
 
-  // init method to print all the variables
+  // Helper method to format time in 12-hour format
+  String _formatTimeOfDay(TimeOfDay tod) {
+    final hour = tod.hourOfPeriod;
+    final minute = tod.minute.toString().padLeft(2, '0');
+    final period = tod.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hour:$minute $period';
+  }
+
   void init() {
     printVariables();
   }
@@ -70,7 +77,6 @@ class D3 extends StatelessWidget {
     print('Model: ${selectedCar.model}');
     print('Color: ${selectedCar.color}');
     print('License Plate: ${selectedCar.numberPlate}');
-    // Add any other properties of CarEntity that you want to print
   }
 
   @override
@@ -78,7 +84,6 @@ class D3 extends StatelessWidget {
     return BlocListener<RideBloc, RideState>(
       listener: (context, state) {
         if (state is RideSubmitted) {
-          print('here');
           context.read<Navigation>().navigateTo(
                 '/booking_confirm_driver',
               );
@@ -109,13 +114,11 @@ class D3 extends StatelessWidget {
                               icon: Icons.location_on,
                               label: 'From',
                               value: fromDescription,
-                              // onTap: () => _showDetailBottomSheet(context, 'From', fromDescription),
                             ),
                             ExpandableDetailTile(
                               icon: Icons.flag,
                               label: 'To',
                               value: toDescription,
-                              // onTap: () => _showDetailBottomSheet(context, 'To', toDescription),
                             ),
                             DetailTile(
                               icon: Icons.calendar_today,
@@ -125,14 +128,12 @@ class D3 extends StatelessWidget {
                             DetailTile(
                               icon: Icons.access_time,
                               label: 'Departure Time',
-                              value:
-                                  '${time.hour}:${time.minute.toString().padLeft(2, '0')}',
+                              value: _formatTimeOfDay(time),
                             ),
                             DetailTile(
                               icon: Icons.access_time,
                               label: 'Max Arrival Time',
-                              value:
-                                  '${maxArrivalTime.hour}:${maxArrivalTime.minute.toString().padLeft(2, '0')}',
+                              value: _formatTimeOfDay(maxArrivalTime),
                             ),
                           ],
                         ),
@@ -230,8 +231,6 @@ class D3 extends StatelessWidget {
     if (userState is UserLoaded) {
       userGender = userState.user.gender;
     }
-    print('user gender: $userGender');
-    print('same gender: $sameGenderOnly');
 
     if (userGender.toLowerCase() == 'female' && sameGenderOnly == true) {
       femaleOnly = true;
@@ -239,12 +238,8 @@ class D3 extends StatelessWidget {
       maleOnly = true;
     }
 
-    print('isRecurring: $recurrence');
-    print('frequency: $frequency');
-    print('endDate: $endDate');
-
     final rideRequest = RideRequest(
-      driverId: user!.uid, //remove when token
+      driverId: user!.uid,
       numOfSeats: availableSeats,
       car: selectedCar,
       source: {
@@ -258,7 +253,6 @@ class D3 extends StatelessWidget {
         'coords': LatLng(routeCoords.last[0], routeCoords.last[1]),
       },
       preference: preference_driver(maleOnly: maleOnly, femaleOnly: femaleOnly),
-      // samegender: sameGenderOnly,
       departureTime: departureDateTime.toIso8601String(),
       maxArrivalTime: maxArrivalDateTime.toIso8601String(),
       distance: _parseDistance(routeDistance),
@@ -272,8 +266,6 @@ class D3 extends StatelessWidget {
       coords: routeCoords,
     );
 
-    // print the ride data in json format
-    // print('Ride Request Data: ${rideRequest.toString()}');
     context.read<RideBloc>().add(SubmitRide(rideRequest));
   }
 
