@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NoPassengerModal extends StatefulWidget {
-  const NoPassengerModal({super.key});
+  final String message;
+  const NoPassengerModal({super.key, required this.message});
 
   @override
   State<NoPassengerModal> createState() => _NoPassengerModalState();
@@ -136,7 +137,7 @@ class _NoPassengerModalState extends State<NoPassengerModal>
 
               // Message
               Text(
-                'Cannot start ride without a passenger',
+                widget.message,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color: theme.colorScheme.error,

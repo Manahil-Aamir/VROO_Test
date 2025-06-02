@@ -51,6 +51,8 @@ class RideStartBloc extends Bloc<RideStartEvent, RideStartState> {
       final rideData = await repository.call(_rideId!, token);
       emit(RideStartSuccess(rideData));
     } catch (e) {
+      print('Error starting ride: $e');
+      print(e);
       emit(RideStartFailure(e.toString()));
     }
   }

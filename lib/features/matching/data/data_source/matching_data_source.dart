@@ -62,18 +62,23 @@ class MatchingDataSourceImpl {
       final data = responseBody['data'];
       print('matching update');
       print(data);
+      print(requestData);
 
       return data is List ? data : [];
     } else {
+      print('Failed to send ride request: ${response.statusCode}');
+      print('Response body: ${response.body}');
       throw Exception("Failed to send ride request");
     }
   }
 
   // In matching_data_source.dart
-  Future<List<MatchingRideModel>> getRideRequestMatches(String rideRequestId, String token) async {
+  Future<List<MatchingRideModel>> getRideRequestMatches(
+      String rideRequestId, String token) async {
     print('Fetching ride request matches for ID: $rideRequestId');
     print('token: $token');
-    final url = Uri.parse('${ApiConstants.baseUrl}rider/ride-request/$rideRequestId/matches');
+    final url = Uri.parse(
+        '${ApiConstants.baseUrl}rider/ride-request/$rideRequestId/matches');
     print(url);
     final response = await client.get(
       url,
@@ -89,16 +94,19 @@ class MatchingDataSourceImpl {
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
       final data = responseBody['data']['matches'];
-      
+
       if (data is List) {
-        List<MatchingRideModel> dataList = data.map((rideJson) => MatchingRideModel.fromJson(rideJson)).toList();
+        List<MatchingRideModel> dataList = data
+            .map((rideJson) => MatchingRideModel.fromJson(rideJson))
+            .toList();
         print('successful map');
         print(dataList);
         return dataList;
       }
       throw Exception("Invalid data format - expected list of rides");
     } else {
-      throw Exception("Failed to fetch ride request matches: ${response.statusCode}");
+      throw Exception(
+          "Failed to fetch ride request matches: ${response.statusCode}");
     }
   }
 }

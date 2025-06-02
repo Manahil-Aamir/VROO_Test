@@ -535,10 +535,23 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
     }
 
     if (state is RideStartFailure || _errorMessage != null) {
+      print('errrrorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+
       final errorMessage = _errorMessage ??
           (state is RideStartFailure ? state.errorMessage : '');
-
-      if (errorMessage.contains('Ride cannot be started without a passenger')) {
+      if (state is RideStartFailure) {
+        debugPrint(state.errorMessage);
+      }
+      String error = '';
+      if (errorMessage.contains('Ride cannot be started without a passenger') ||
+          errorMessage.contains('Sorry,')) {
+        if (errorMessage
+            .contains('Ride cannot be started without a passenger')) {
+          error = 'Ride cannot be started without a passenger';
+        }
+        if (errorMessage.contains('Sorry,')) {
+          error = 'Sorry, you can only start todays ride.';
+        }
         // Set loading to false to prevent circular progress indicator
         if (_isLoading) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -550,7 +563,7 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
 
         // Show modal
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          showNoPassengerModal(context);
+          showNoPassengerModal(context, errorMessage);
         });
       } else {
         // Handle other errors normally
@@ -639,13 +652,13 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
     );
   }
 
-  void showNoPassengerModal(BuildContext context) {
+  void showNoPassengerModal(BuildContext context, String message) {
     showDialog(
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.black.withOpacity(0.7),
       builder: (BuildContext context) {
-        return const NoPassengerModal();
+        return NoPassengerModal(message: message);
       },
     );
   }

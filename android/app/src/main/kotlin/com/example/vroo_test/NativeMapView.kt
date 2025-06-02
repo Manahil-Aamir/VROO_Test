@@ -38,9 +38,9 @@ class NativeMapView(
     Color.parseColor("#8B008B"), // Dark magenta
     Color.parseColor("#008B8B"), // Dark cyan
     Color.parseColor("#8B0000"), // Dark red
+    Color.parseColor("#B8860B"), // Dark goldenrod
     Color.parseColor("#00008B"), // Dark blue
     Color.parseColor("#006400")  // Dark green
-    Color.parseColor("#B8860B"), // Dark goldenrod
 )
     private val START_MARKER_COLOR = BitmapDescriptorFactory.HUE_GREEN
     private val DEST_MARKER_COLOR = BitmapDescriptorFactory.HUE_RED

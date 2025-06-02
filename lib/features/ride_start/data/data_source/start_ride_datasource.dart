@@ -49,7 +49,9 @@ class StartRideRemoteDataSource implements StartRideDataSource {
         }
       } else {
         print('Error: ${response.statusCode} - ${response.body}');
-        throw Exception('Failed to load ride data: ${response.statusCode}');
+        final errorMessage =
+            json.decode(response.body)['message'] ?? 'Unknown error';
+        throw Exception(errorMessage);
       }
     } catch (e) {
       throw Exception('Failed to load ride data: $e');
