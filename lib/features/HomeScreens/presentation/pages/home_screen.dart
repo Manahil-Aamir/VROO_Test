@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -136,8 +137,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             SnackBar(content: Text(state.message)),
           );
         } else if (state is RideCheckLoaded) {
-          // Show review modal when ride data is loaded
-          _showReviewModal(context, state.rideData);
+          // Show review modal only if current user is not the driver (using Firebase UID)
+          final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+          if (currentUserUid != null &&
+              currentUserUid != state.rideData.driverId) {
+            _showReviewModal(context, state.rideData);
+          }
         } else if (state is ReviewSuccess) {
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
