@@ -37,9 +37,8 @@ class SeatsControlWidget extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                     gradient: LinearGradient(colors: [
-                      ThemeColors.primaryColorDark.withOpacity(0.75),
                       ThemeColors.primaryColor.withOpacity(0.8),
-                      ThemeColors.primaryColorDark.withOpacity(0.75)
+                      ThemeColors.primaryColor.withOpacity(0.8)
                     ]),
                     borderRadius: BorderRadius.circular(12.w)),
                 child: Row(

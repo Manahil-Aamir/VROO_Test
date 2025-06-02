@@ -39,8 +39,7 @@ class CustomBottomNavBar extends StatelessWidget {
     return BlocBuilder<RoleBloc, RoleState>(
       builder: (context, state) {
         return Container(
-          margin: const EdgeInsets.all(8),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+          padding: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
@@ -92,7 +91,7 @@ class CustomBottomNavBar extends StatelessWidget {
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeOutBack,
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: isSelected

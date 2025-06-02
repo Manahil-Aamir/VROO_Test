@@ -173,7 +173,7 @@ class HomeDataSourceImpl implements HomeDataSource {
 
       final jsonData = json.decode(response.body);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         print('Review response: ${response.body}');
 
         if (jsonData['success'] == true) {

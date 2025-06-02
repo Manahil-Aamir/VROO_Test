@@ -190,8 +190,6 @@ class PendingRequestCard extends StatelessWidget {
           _buildPreferenceChip('Female Only', Icons.female, textTheme),
         if (request.preferences.maleOnly)
           _buildPreferenceChip('Male Only', Icons.male, textTheme),
-        if (request.preferences.canWalk)
-          _buildPreferenceChip('Walk', Icons.directions_walk, textTheme),
       ],
     );
   }

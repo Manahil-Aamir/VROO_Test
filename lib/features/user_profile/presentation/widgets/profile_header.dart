@@ -39,7 +39,7 @@ class ProfileHeader extends StatelessWidget {
         children: [
           InitialsCircleAvatar(
             initials: initials,
-            textScaleFactor: 0.7,      
+            textScaleFactor: 0.7,
             radius: 45,
             showCameraIcon: true,
           ),
@@ -55,14 +55,6 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              InkWell(
-                onTap: () => _showEditNameDialog(context, user.name),
-                child: Icon(
-                  Icons.edit,
-                  size: 18,
-                  color: ThemeColors.primaryColor,
-                ),
-              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -98,7 +90,8 @@ class ProfileHeader extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.phone, size: 16, color: ThemeColors.headlinesTextColor),
+                  Icon(Icons.phone,
+                      size: 16, color: ThemeColors.headlinesTextColor),
                   const SizedBox(width: 6),
                   Text(
                     user.phoneNumber,
@@ -280,7 +273,8 @@ class ProfileHeader extends StatelessWidget {
             onPressed: () {
               final newPhone = controller.text.trim();
               if (newPhone.isNotEmpty && newPhone != currentPhone) {
-                userProfileBloc.add(UpdateUserProfileEvent(phoneNumber: newPhone));
+                userProfileBloc
+                    .add(UpdateUserProfileEvent(phoneNumber: newPhone));
               }
               Navigator.pop(dialogContext);
             },

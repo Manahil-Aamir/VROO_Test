@@ -45,8 +45,22 @@ class InputRideValidator {
     final maxPickupTimeInMinutes =
         maxPickupTime.hour * 60 + maxPickupTime.minute;
     final arrivalTimeInMinutes = arrivalTime.hour * 60 + arrivalTime.minute;
-    if (arrivalTimeInMinutes < maxPickupTimeInMinutes) {
-      return 'Arrival time must be equal to or later than Max pickup time.';
+    if (arrivalTimeInMinutes <= maxPickupTimeInMinutes) {
+      return 'Arrival time must be greater than Max pickup time.';
+    }
+    return null;
+  }
+
+  static String? validateMaxArrTime(
+      TimeOfDay? maxArrivalTime, TimeOfDay? departureTime) {
+    if (maxArrivalTime == null || departureTime == null) {
+      return 'Both maximum pickup time and departure time must be selected.';
+    }
+    final maxPickupTimeInMinutes =
+        maxArrivalTime.hour * 60 + maxArrivalTime.minute;
+    final arrivalTimeInMinutes = departureTime.hour * 60 + departureTime.minute;
+    if (arrivalTimeInMinutes <= maxPickupTimeInMinutes) {
+      return 'Arrival time must be greater than Departure time.';
     }
     return null;
   }

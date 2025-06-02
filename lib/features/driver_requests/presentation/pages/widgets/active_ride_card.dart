@@ -75,9 +75,7 @@ class ActiveRideCard extends StatelessWidget {
   }
 
   Widget _buildDateTimeRow(BuildContext context, TextTheme textTheme) {
-    final maxArrival = TimeOfDay(
-        hour: (ride.time.hour + ((ride.time.minute + 30) ~/ 60)) % 24,
-        minute: (ride.time.minute + 30) % 60);
+    final maxArrival = ride.maxArrivalTime;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

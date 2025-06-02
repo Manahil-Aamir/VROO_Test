@@ -52,7 +52,7 @@ class _D1PageState extends State<D1Page> {
       // Check for null values and add errors if necessary
       final dateErrorMsg = InputRideValidator.validateDate(state.selectedDate);
       final timeErrorMsg = InputRideValidator.validateTime(state.selectedTime);
-      final maxArrivalTimeErrorMsg = InputRideValidator.validateMaxArrivalTime(
+      final maxArrivalTimeErrorMsg = InputRideValidator.validateMaxArrTime(
           state.selectedTime, state.maxArrivalTime);
 
       context.read<D1Bloc>().add(ShowErrorEvent(
@@ -117,7 +117,6 @@ class _D1PageState extends State<D1Page> {
             'endDate': endDate,
           },
         );
-      
       } else {
         // Show an error message if any field is null
         ScaffoldMessenger.of(context).showSnackBar(
@@ -130,7 +129,8 @@ class _D1PageState extends State<D1Page> {
     }
   }
 
-  void _onRecurrenceChanged(bool recurring, String? freq, Set<String>? days, DateTime? end) {
+  void _onRecurrenceChanged(
+      bool recurring, String? freq, Set<String>? days, DateTime? end) {
     setState(() {
       isRecurring = recurring;
       frequency = freq;
@@ -158,7 +158,7 @@ class _D1PageState extends State<D1Page> {
               } else if (state is ScheduleLoaded) {
                 // Transition to ScheduleInputState with the loaded schedule
                 final schedule = state.loadedSchedule;
-                
+
                 // Load recurring data from the loaded schedule
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   setState(() {
