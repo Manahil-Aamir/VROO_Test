@@ -174,18 +174,26 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
     return const SizedBox();
   }
 
-  Widget _buildMatchesSection(BuildContext context, dynamic state) {
-    final matches = state is MatchesVisibilityToggled
-        ? state.matches
-        : (state as RideRequestMatchesLoaded).matches;
+Widget _buildMatchesSection(BuildContext context, dynamic state) {
+  final matches = state is MatchesVisibilityToggled
+      ? state.matches
+      : (state as RideRequestMatchesLoaded).matches;
 
-    return Column(
-      children: [
-        ...matches.map((match) => RideMatchCard(
-              match: match,
-              rideRequestId: widget.rideRequestId,
-            )),
-      ],
-    );
-  }
+  return Column(
+    children: [
+      ...matches.asMap().entries.map((entry) {
+        final index = entry.key;
+        final match = entry.value;
+        final isRecommended = index < match.totalRecommended.toInt();
+        
+        return RideMatchCard(
+          match: match,
+          rideRequestId: widget.rideRequestId,
+          isRecommended: isRecommended,
+          currentIndex: index,
+        );
+      }),
+    ],
+  );
+}
 }

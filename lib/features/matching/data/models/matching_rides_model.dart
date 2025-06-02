@@ -168,7 +168,7 @@ class MatchingRideModel {
       status: json['status'],
       totalDetourDistance: (json['totalDetourDistance'] as num).toDouble(),
       totalDetourDuration: (json['totalDetourDuration'] as num).toDouble(),
-      totalRecommended: json['totalRecommended']?? 0
+      totalRecommended: json['totalRecommended']?? 2
     );
   }
 

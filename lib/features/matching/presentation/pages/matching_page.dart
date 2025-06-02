@@ -123,36 +123,23 @@ class _MatchingPageState extends State<MatchingPage> {
                       itemBuilder: (context, index) {
                         try {
                           final ride = state.matchingRides[index];
-                          // return MatchCard(
-                          //   driverName: ride.driverName,
-                          //   rating: 4.3,
-                          //   trips: 5,
-                          //   source: ride.source.address,
-                          //   destination: ride.destination.address,
-                          //   fare: ride.fare,
-                          //   carModel: ride.car.model,
-                          //   totalSeats: ride.numOfSeats.toInt(),
-                          //   filledSeats: ride.passengers.length,
-                          //   estimatedArrivalTime:
-                          //   DateFormat('yyyy-MM-dd').format(ride.expectedArrivalTime),
-                          //   id: widget.rideRequestId,
-                          //   carCompany: ride.car.company,
-                          //   rideId: ride.id,
-                          // );
+                          final isRecommended = index < ride.totalRecommended.toInt();
+                          
                           return RideMatchCard(
                             match: ride,
                             rideRequestId: widget.rideRequestId,
+                            isRecommended: isRecommended,
+                            currentIndex: index,
                           );
                         } catch (error) {
-                          print(
-                              "Error building MatchCard from loaded ride: $error");
+                          print("Error building MatchCard from loaded ride: $error");
                           return ListTile(
                             title: Text("Error loading ride"),
                             subtitle: Text("$error"),
                           );
                         }
                       },
-                    );
+                    );                 
                   } else if (state is RiderRequestError) {
                     return Center(child: Text('Error: ${state.error}'));
                   } else if (state is RiderRequestInitial) {
@@ -164,32 +151,16 @@ class _MatchingPageState extends State<MatchingPage> {
                       itemBuilder: (context, index) {
                         try {
                           final ride = widget.initialMatchingRides[index];
-                          // return MatchCard(
-                          //   driverName: ride.driverId,
-                          //   rating: 4.3,
-                          //   trips: 5,
-                          //   source: ride.source.address,
-                          //   destination: ride.destination.address,
-                          //   fare: ride.fare,
-                          //   carModel: ride.car.model,
-                          //   totalSeats: ride.numOfSeats.toInt(),
-                          //   filledSeats: ride.passengers.length,
-                          //   estimatedArrivalTime:
-                          //   DateFormat('yyyy-MM-dd').format(ride.expectedArrivalTime),
-                          //   // DateFormat.jm().format(
-                          //   //     DateTime.parse(ride.expectedArrivalTime)),
-                          //   id: widget.rideRequestId,
-                          //   carCompany: ride.car.company,
-                          //   rideId: ride.id,
-                          // );
-      
+                          final isRecommended = index < ride.totalRecommended.toInt();
+                          
                           return RideMatchCard(
                             match: ride,
                             rideRequestId: widget.rideRequestId,
+                            isRecommended: isRecommended,
+                            currentIndex: index,
                           );
                         } catch (error) {
-                          print(
-                              "Error building MatchCard from initial ride: $error");
+                          print("Error building MatchCard from initial ride: $error");
                           return ListTile(
                             title: Text("Error loading ride"),
                             subtitle: Text("$error"),
