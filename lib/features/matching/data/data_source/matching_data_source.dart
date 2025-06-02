@@ -43,31 +43,37 @@ class MatchingDataSourceImpl {
     }
   }
 
-  Future<List<dynamic>> sendRideRequest(
-      String rideRequestId, Map<String, dynamic> requestData) async {
-    final url =
-        // Uri.parse('http://10.0.2.2:8080/rider/ride-request/$rideRequestId');
-        Uri.parse('${ApiConstants.baseUrl}rider/ride-request/$rideRequestId');
+Future<List<dynamic>> sendRideRequest(
+    String rideRequestId, Map<String, dynamic> requestData) async {
+  final url =
+      Uri.parse('${ApiConstants.baseUrl}rider/ride-request/$rideRequestId');
 
-    final response = await client.patch(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(requestData),
-    );
+  final response = await client.patch(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode(requestData),
+  );
 
-    if (response.statusCode == 200) {
-      final responseBody = jsonDecode(response.body);
+  if (response.statusCode == 200) {
+    final responseBody = jsonDecode(response.body);
 
-      // Extract only the 'data' field and ensure it's a List
-      final data = responseBody['data'];
-      print('matching update');
-      print(data);
+    // Extract the 'data' field first
+    final data = responseBody['data'];
+    print('matching update');
+    print(data);
 
-      return data is List ? data : [];
-    } else {
-      throw Exception("Failed to send ride request");
+    // Then extract 'matchingRides' from within 'data'
+    if (data != null && data['matchingRides'] != null) {
+      final matchingRides = data['matchingRides'];
+      return matchingRides is List ? matchingRides : [];
     }
+    
+    // Fallback: if the structure is different, return empty list
+    return [];
+  } else {
+    throw Exception("Failed to send ride request");
   }
+}
 
   // In matching_data_source.dart
   Future<List<MatchingRideModel>> getRideRequestMatches(String rideRequestId, String token) async {
