@@ -74,6 +74,9 @@ class _RideViewScreenState extends State<RideViewScreen>
           // Only update if coordinates have actually changed
           if (!_areCoordinatesEqual(_currentRouteCoords, updatedCoords)) {
             setState(() {
+              _currentRouteCoords = [];
+            });
+            setState(() {
               _currentRouteCoords = updatedCoords;
             });
 

@@ -190,52 +190,38 @@ class RideTrackingMapView(
 "updateRouteCoordinates" -> {
     val data = call.arguments as? Map<*, *>
     if (data != null) {
-        val viewId = data["viewId"] as? Int
         val routeCoords = data["routeCoords"] as? List<*>
         
         if (routeCoords != null) {
-            Log.d("MapDebug", "Updating route coordinates with ${routeCoords.size} points")
-            
-            // Clear existing route points and add new ones
-            routePoints.clear()
-            
-            for (point in routeCoords) {
-                if (point is List<*> && point.size >= 2) {
-                    val lat = point[0] as? Double
-                    val lng = point[1] as? Double
-                    
-                    if (lat != null && lng != null) {
-                        routePoints.add(LatLng(lat, lng))
+            handler.post {
+                // Clear existing points
+                routePoints.clear()
+                
+                // Add new points
+                for (point in routeCoords) {
+                    if (point is List<*> && point.size >= 2) {
+                        val lat = point[0] as? Double
+                        val lng = point[1] as? Double
+                        if (lat != null && lng != null) {
+                            routePoints.add(LatLng(lat, lng))
+                        }
+                    }
+                }
+                
+                // Update polyline
+                updateRoutePolylines()
+                
+                // If we have points, ensure vehicle is at the last point
+                if (routePoints.isNotEmpty() && vehiclePosition != null) {
+                    val lastPoint = routePoints.last()
+                    if (vehiclePosition != lastPoint) {
+                        updateVehiclePosition(lastPoint, vehicleBearing)
                     }
                 }
             }
-            
-            // Update the route polylines with new points
-            updateRoutePolylines()
-            
-            // If vehicle position is set, make sure it's at the latest point
-            if (routePoints.isNotEmpty() && vehiclePosition != null) {
-                val latestPoint = routePoints.last()
-                
-                // Calculate bearing if there are at least 2 points
-                val bearing = if (routePoints.size > 1) {
-                    val secondLastPoint = routePoints[routePoints.size - 2]
-                    calculateBearing(secondLastPoint, latestPoint)
-                } else {
-                    vehicleBearing // Keep current bearing if only one point
-                }
-                
-                // Update vehicle position
-                updateVehiclePosition(latestPoint, bearing)
-            }
-            
-            result.success(null)
-        } else {
-            result.error("INVALID_ARGS", "Missing or invalid route coordinates", null)
         }
-    } else {
-        result.error("INVALID_ARGS", "Invalid arguments for updating route coordinates", null)
     }
+    result.success(null)
 }
 
             else -> result.notImplemented()
@@ -295,11 +281,12 @@ class RideTrackingMapView(
     }
     
     private fun updateVehiclePosition(position: LatLng, heading: Float) {
-        vehiclePosition = position
-        vehicleBearing = heading
-        
+    vehiclePosition = position
+    vehicleBearing = heading
+    
+    handler.post {
         if (vehicleMarker == null) {
-            // Create the marker if it doesn't exist
+            // Create marker if it doesn't exist
             val markerOptions = MarkerOptions()
                 .position(position)
                 .flat(true)
@@ -307,41 +294,26 @@ class RideTrackingMapView(
                 .rotation(heading)
                 .icon(carBitmap ?: BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                 
-            handler.post {
-                vehicleMarker = googleMap?.addMarker(markerOptions)
-                Log.d("MapDebug", "Vehicle marker created at ${position.latitude}, ${position.longitude}")
-                
-                // IMPORTANT: We need to focus on the vehicle when it first appears
-                // Changed logic to ensure we focus on the vehicle
-                if (isFirstVehicleUpdate) {
-                    isFirstVehicleUpdate = false
-                    // Instead of calling zoomToShowAllPoints, force focus on vehicle
-                    shouldFocusOnVehicle = true
-                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 16f))
-                    Log.d("MapDebug", "First vehicle update - focusing camera on vehicle")
-                } else if (shouldFocusOnVehicle) {
-                    // Continue focusing on vehicle in subsequent updates
-                    googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 16f))
-                    Log.d("MapDebug", "Focusing camera on vehicle")
-                }
-            }
+            vehicleMarker = googleMap?.addMarker(markerOptions)
+            Log.d("MapDebug", "Vehicle marker created")
         } else {
-            // Animate the marker movement
-            handler.post {
-                animateMarkerToPosition(position, heading)
-                
-                // Always focus on vehicle if shouldFocusOnVehicle is true
-                if (shouldFocusOnVehicle) {
-                    // Ensure we maintain focus on the vehicle
-                    googleMap?.animateCamera(CameraUpdateFactory.newLatLng(position))
-                    Log.d("MapDebug", "Keeping camera focused on moving vehicle")
-                }
-            }
+            // Update existing marker
+            vehicleMarker?.position = position
+            vehicleMarker?.rotation = heading
         }
         
-        // Add point to route and update polylines
-        addRoutePoint(position)
+        // Focus logic remains the same
+        if (isFirstVehicleUpdate) {
+            isFirstVehicleUpdate = false
+            shouldFocusOnVehicle = true
+            googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 16f))
+        } else if (shouldFocusOnVehicle) {
+            googleMap?.animateCamera(CameraUpdateFactory.newLatLng(position))
+        }
     }
+    
+    addRoutePoint(position)
+}
     
     private fun animateMarkerToPosition(targetPosition: LatLng, bearing: Float) {
         val marker = vehicleMarker ?: return
@@ -364,22 +336,20 @@ class RideTrackingMapView(
     }
     
     private fun updateRoutePolylines() {
-        handler.post {
-            // Clear existing polylines
-            routePolyline?.remove()
-            
-            if (routePoints.size > 1) {
-                // Draw updated route polyline
-                routePolyline = googleMap?.addPolyline(PolylineOptions()
-                    .addAll(routePoints)
-                    .width(12f)
-                    .color(0xFFEC8825.toInt()) // Orange color
-                    .geodesic(true))
-                
-                Log.d("MapDebug", "Updated route polyline with ${routePoints.size} points")
-            }
+    handler.post {
+        // Clear existing polyline before creating new one
+        routePolyline?.remove()
+        
+        if (routePoints.size > 1) {
+            routePolyline = googleMap?.addPolyline(PolylineOptions()
+                .addAll(routePoints)
+                .width(12f)
+                .color(0xFFEC8825.toInt())
+                .geodesic(true)
+                .zIndex(1.0f))  // Ensure consistent z-index
         }
     }
+}
 
     private fun processMapData(mapData: Map<*, *>) {
     try {
