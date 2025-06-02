@@ -84,23 +84,13 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
     }
 
     if (joinState is RideRequestJoinError) {
+      print(joinState.message);
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/error.png',
-              width: 300,
-              height: 300,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              joinState.message,
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
-          ],
+        child: Image.asset(
+          'assets/images/error.png',
+          width: 300,
+          height: 300,
+          fit: BoxFit.contain,
         ),
       );
     }
@@ -168,12 +158,12 @@ class _RiderRequestJoinsPageState extends State<RiderRequestJoinsPage> {
                     height: 300,
                     fit: BoxFit.contain,
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    matchState.error,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    textAlign: TextAlign.center,
-                  ),
+                  // const SizedBox(height: 16),
+                  // Text(
+                  //   matchState.error,
+                  //   style: Theme.of(context).textTheme.bodyLarge,
+                  //   textAlign: TextAlign.center,
+                  // ),
                 ],
               ),
             ),

@@ -127,21 +127,18 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
             // Show error snackbar if there's an error message
             if (state.errorMessage != null) {
               _showSnackBar(context, state.errorMessage!, isError: true);
-              // Clear the error message to prevent showing it multiple times
               context.read<ActiveRidesDriverBloc>().add(ClearErrorEvent());
             }
 
             // Show success snackbar if there's a success message
             if (state.successMessage != null) {
               _showSnackBar(context, state.successMessage!, isError: false);
-              // Clear the success message to prevent showing it multiple times
               context.read<ActiveRidesDriverBloc>().add(ClearErrorEvent());
             }
           }
+
           if (state is ActiveRideDataLoaded) {
             debugPrint('Ride data loaded: ${state.rideData}');
-
-            // Navigate to ride details page
             context.read<Navigation>().navigateTo(
               '/static_page',
               arguments: {
@@ -154,17 +151,31 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
           appBar: AppBarNoIcon(heading: 'Your Rides'),
           body: Column(
             children: [
-              // Date filter section
               _buildDateFilter(),
-              // Rides list
               Expanded(
-                child:
-                    BlocBuilder<ActiveRidesDriverBloc, ActiveRidesDriverState>(
+                child: BlocBuilder<ActiveRidesDriverBloc, ActiveRidesDriverState>(
                   builder: (context, state) {
                     if (state is ActiveRidesDriverLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: ThemeColors.primaryColor,
+                        ),
+                      );
                     } else if (state is ActiveRidesDriverError) {
-                      return Center(child: Text(state.message));
+                      print('state: ${state.message}');
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/error.png',
+                              width: 300.w,
+                              height: 300.h,
+                              fit: BoxFit.contain,
+                            ),                            
+                          ],
+                        ),
+                      );
                     } else if (state is ActiveRidesDriverLoaded) {
                       if (state.filteredRides.isEmpty) {
                         return Center(
@@ -176,7 +187,9 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
                                     ? 'No rides found for this date'
                                     : 'Please create a ride',
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                               if (state.selectedDate != null)
                                 TextButton(
@@ -205,7 +218,7 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
                       );
                     }
 
-                    // Always attempt to fetch when in unknown state
+                    // Unknown or initial state - trigger fetch
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (mounted && !_isDataFetched) {
                         _fetchRides();
@@ -216,7 +229,7 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const CircularProgressIndicator(),
+                          CircularProgressIndicator(color: ThemeColors.primaryColor),
                           SizedBox(height: 16.h),
                           const Text('Fetching rides...'),
                         ],
@@ -227,12 +240,10 @@ class _ActiveRidesDriverScreenState extends State<ActiveRidesDriverScreen>
               ),
             ],
           ),
-          bottomNavigationBar: CustomBottomNavBar(
-            selectedIndex: 1,
-          ),
+          bottomNavigationBar: CustomBottomNavBar(selectedIndex: 1),
         ),
       ),
-    );
+      );
   }
 
   // Add this method to show snackbars

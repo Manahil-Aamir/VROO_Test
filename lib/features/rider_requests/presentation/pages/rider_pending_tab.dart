@@ -100,7 +100,7 @@ class RiderPendingTab extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset('assets/images/error.png'),
-                      Text(state.message),
+                      // Text(state.message),
                     ],
                   ),
                 );

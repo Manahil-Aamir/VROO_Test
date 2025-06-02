@@ -643,7 +643,7 @@ class RideMatchCard extends StatelessWidget {
                   Icon(Icons.star, color: Colors.amber, size: 14.r),
                   SizedBox(width: 4.w),
                   Text(
-                    '4.5',
+                    match.driverRating.toString(),
                     style: textTheme.bodySmall?.copyWith(
                       color: ThemeColors.buttonTextColor.withOpacity(0.8),
                       fontSize: 12.sp,

@@ -11,6 +11,7 @@ class MatchingRide {
   final double distance;
   final String driverId;
   final String driverName;
+  final double driverRating;
   final String driverGender;
   final double duration;
   final EnvironmentStats environmentStats;
@@ -29,6 +30,7 @@ class MatchingRide {
   final String status;
   final double totalDetourDistance;
   final double totalDetourDuration;
+  final int totalRecommended;
 
   const MatchingRide({
     required this.id,
@@ -40,6 +42,7 @@ class MatchingRide {
     required this.distance,
     required this.driverId,
     required this.driverName,
+    required this.driverRating,
     required this.driverGender,
     required this.duration,
     required this.environmentStats,
@@ -58,6 +61,7 @@ class MatchingRide {
     required this.status,
     required this.totalDetourDistance,
     required this.totalDetourDuration,
+    required this.totalRecommended,
   });
 }
 

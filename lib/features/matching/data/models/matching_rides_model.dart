@@ -72,6 +72,7 @@ class MatchingRideModel {
   final double distance;
   final String driverGender;
   final String driverId;
+  final double driverRating;
   final String driverName;
   final double duration;
   final EnvironmentStatsModel environmentStats;
@@ -93,6 +94,7 @@ class MatchingRideModel {
   final String status;
   final double totalDetourDistance;
   final double totalDetourDuration;
+  final double totalRecommended;
 
   const MatchingRideModel({
     required this.id,
@@ -104,6 +106,7 @@ class MatchingRideModel {
     required this.driverGender,
     required this.driverId,
     required this.driverName,
+    required this.driverRating,
     required this.duration,
     required this.environmentStats,
     required this.existingRequests,
@@ -123,6 +126,7 @@ class MatchingRideModel {
     required this.status,
     required this.totalDetourDistance,
     required this.totalDetourDuration,
+    required this.totalRecommended
   });
 
   factory MatchingRideModel.fromJson(Map<String, dynamic> json) {
@@ -137,6 +141,7 @@ class MatchingRideModel {
       driverGender: json['driverGender'],
       driverId: json['driverId'],
       driverName: json['driverName'],
+      driverRating: json['driverRating'],
       duration: (json['duration'] as num).toDouble(),
       environmentStats:
           EnvironmentStatsModel.fromJson(json['environmentStats']),
@@ -163,6 +168,7 @@ class MatchingRideModel {
       status: json['status'],
       totalDetourDistance: (json['totalDetourDistance'] as num).toDouble(),
       totalDetourDuration: (json['totalDetourDuration'] as num).toDouble(),
+      totalRecommended: json['totalRecommended']?? 0
     );
   }
 
@@ -177,6 +183,7 @@ class MatchingRideModel {
       'driverGender': driverGender,
       'driverId': driverId,
       'driverName': driverName,
+      'driverRating': driverRating,
       'duration': duration,
       'environmentStats': environmentStats.toJson(),
       'existing_requests': existingRequests,
@@ -196,6 +203,7 @@ class MatchingRideModel {
       'status': status,
       'totalDetourDistance': totalDetourDistance,
       'totalDetourDuration': totalDetourDuration,
+      'totalRecommended': totalRecommended,
     };
   }
 }
