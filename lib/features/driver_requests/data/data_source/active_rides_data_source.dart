@@ -88,8 +88,8 @@ class ActiveRidesDriverRemoteDataSource implements ActiveRidesDriverDataSource {
 
         return RidestartDataModel.fromMap(jsonData['data']);
       } else {
-        print('Error: ${response.statusCode} - ${response.body}');
-        throw Exception('Failed to load ride data: ${response.statusCode}');
+        print('Response status code: ${response.statusCode}');
+        throw Exception('${json.decode(response.body)['message']}');
       }
     } catch (e) {
       throw Exception('Failed to load ride data: $e');

@@ -43,6 +43,7 @@ class ActiveRidesDriverBloc
       final rides = await getActiveRidesDriver.execute();
       emit(ActiveRidesDriverLoaded(rides: rides, filteredRides: rides));
     } catch (e) {
+      print('Error fetching active rides: $e');
       emit(ActiveRidesDriverError(e.toString()));
     }
   }
@@ -143,13 +144,12 @@ class ActiveRidesDriverBloc
         emit(ActiveRideDataLoaded(rideData));
       } on Exception catch (e) {
         print('data issue$e');
-        emit(ActiveRidesDriverError(
-            'Failed to fetch ride data: ${e.toString()}'));
+        emit(ActiveRidesDriverError(e.toString()));
       }
       print('loaded ride data'); // Emit a new state for ride data
     } catch (e) {
-      emit(
-          ActiveRidesDriverError('Failed to fetch ride data: ${e.toString()}'));
+      print('Error fetching ride data: $e');
+      emit(ActiveRidesDriverError(e.toString()));
     }
   }
 }

@@ -131,44 +131,43 @@ class MatchingRideModel {
   factory MatchingRideModel.fromJson(Map<String, dynamic> json) {
     print('In MatchingRideModel fromJson');
     return MatchingRideModel(
-      id: json['_id'],
-      car: Car.fromJson(json['car']),
-      date: DateTime.parse(json['date']),
-      departureTime: DateTime.parse(json['departureTime']),
-      destination: LocationModel.fromJson(json['destination']),
-      distance: (json['distance'] as num).toDouble(),
-      driverGender: json['driverGender'],
-      driverId: json['driverId'],
-      driverName: json['driverName'],
-      driverRating: (json['driverRating'] as num).toDouble(), // Fix this line
-      duration: (json['duration'] as num).toDouble(),
-      environmentStats:
-          EnvironmentStatsModel.fromJson(json['environmentStats']),
-      existingRequests: List<dynamic>.from(json['existing_requests']),
-      expectedArrivalTime: DateTime.parse(
-          json['expectedArrivalTime']), // Parse time string to DateTime
-      fare: (json['fare'] as num).toDouble(),
-      isRecurring: json['isRecurring'],
-      maxArrivalTime: DateTime.parse(
-          json['maxArrivalTime']), // Parse time string to DateTime
-      neighbourRouteCells: List<dynamic>.from(json['neighbourRouteCells']),
-      numOfSeats: (json['numOfSeats'] as num).toInt(),
-      passengers: (json['passengers'] as List)
-          .map((e) => PassengerModel.fromJson(e))
-          .toList(),
-      paymentMethod: List<String>.from(json['paymentMethod']),
-      preferences: RidePreferencesModel.fromJson(json['preferences']),
-      // recurringRides: List<dynamic>.from(json['recurringRides']),
-      routeCells: List<String>.from(json['routeCells']),
-      routeCoords: (json['routeCoords'] as List)
-          .map((e) => List<double>.from(e.map((v) => (v as num).toDouble())))
-          .toList(),
-      source: LocationModel.fromJson(json['source']),
-      status: json['status'],
-      totalDetourDistance: (json['totalDetourDistance'] as num).toDouble(),
-      totalDetourDuration: (json['totalDetourDuration'] as num).toDouble(),
-      totalRecommended: 1,
-    );
+        id: json['_id'],
+        car: Car.fromJson(json['car']),
+        date: DateTime.parse(json['date']),
+        departureTime: DateTime.parse(json['departureTime']),
+        destination: LocationModel.fromJson(json['destination']),
+        distance: (json['distance'] as num).toDouble(),
+        driverGender: json['driverGender'],
+        driverId: json['driverId'],
+        driverName: json['driverName'],
+        driverRating: (json['driverRating'] as num).toDouble(), // Fix this line
+        duration: (json['duration'] as num).toDouble(),
+        environmentStats:
+            EnvironmentStatsModel.fromJson(json['environmentStats']),
+        existingRequests: List<dynamic>.from(json['existing_requests']),
+        expectedArrivalTime: DateTime.parse(
+            json['expectedArrivalTime']), // Parse time string to DateTime
+        fare: (json['fare'] as num).toDouble(),
+        isRecurring: json['isRecurring'],
+        maxArrivalTime: DateTime.parse(
+            json['maxArrivalTime']), // Parse time string to DateTime
+        neighbourRouteCells: List<dynamic>.from(json['neighbourRouteCells']),
+        numOfSeats: (json['numOfSeats'] as num).toInt(),
+        passengers: (json['passengers'] as List)
+            .map((e) => PassengerModel.fromJson(e))
+            .toList(),
+        paymentMethod: List<String>.from(json['paymentMethod']),
+        preferences: RidePreferencesModel.fromJson(json['preferences']),
+        // recurringRides: List<dynamic>.from(json['recurringRides']),
+        routeCells: List<String>.from(json['routeCells']),
+        routeCoords: (json['routeCoords'] as List)
+            .map((e) => List<double>.from(e.map((v) => (v as num).toDouble())))
+            .toList(),
+        source: LocationModel.fromJson(json['source']),
+        status: json['status'],
+        totalDetourDistance: (json['totalDetourDistance'] as num).toDouble(),
+        totalDetourDuration: (json['totalDetourDuration'] as num).toDouble(),
+        totalRecommended: (json['totalRecommended'] as num?)?.toDouble() ?? 0);
   }
 
   Map<String, dynamic> toJson() {
