@@ -96,38 +96,37 @@ class MatchingRideModel {
   final double totalDetourDuration;
   final double totalRecommended;
 
-  const MatchingRideModel({
-    required this.id,
-    required this.car,
-    required this.date,
-    required this.departureTime,
-    required this.destination,
-    required this.distance,
-    required this.driverGender,
-    required this.driverId,
-    required this.driverName,
-    required this.driverRating,
-    required this.duration,
-    required this.environmentStats,
-    required this.existingRequests,
-    required this.expectedArrivalTime,
-    required this.fare,
-    required this.isRecurring,
-    required this.maxArrivalTime,
-    required this.neighbourRouteCells,
-    required this.numOfSeats,
-    required this.passengers,
-    required this.paymentMethod,
-    required this.preferences,
-    //required this.recurringRides,
-    required this.routeCells,
-    required this.routeCoords,
-    required this.source,
-    required this.status,
-    required this.totalDetourDistance,
-    required this.totalDetourDuration,
-    required this.totalRecommended
-  });
+  const MatchingRideModel(
+      {required this.id,
+      required this.car,
+      required this.date,
+      required this.departureTime,
+      required this.destination,
+      required this.distance,
+      required this.driverGender,
+      required this.driverId,
+      required this.driverName,
+      required this.driverRating,
+      required this.duration,
+      required this.environmentStats,
+      required this.existingRequests,
+      required this.expectedArrivalTime,
+      required this.fare,
+      required this.isRecurring,
+      required this.maxArrivalTime,
+      required this.neighbourRouteCells,
+      required this.numOfSeats,
+      required this.passengers,
+      required this.paymentMethod,
+      required this.preferences,
+      //required this.recurringRides,
+      required this.routeCells,
+      required this.routeCoords,
+      required this.source,
+      required this.status,
+      required this.totalDetourDistance,
+      required this.totalDetourDuration,
+      required this.totalRecommended});
 
   factory MatchingRideModel.fromJson(Map<String, dynamic> json) {
     print('In MatchingRideModel fromJson');
@@ -168,7 +167,7 @@ class MatchingRideModel {
       status: json['status'],
       totalDetourDistance: (json['totalDetourDistance'] as num).toDouble(),
       totalDetourDuration: (json['totalDetourDuration'] as num).toDouble(),
-      totalRecommended: (json['totalRecommended'] as num?)?.toDouble() ?? 0,
+      totalRecommended: 1,
     );
   }
 

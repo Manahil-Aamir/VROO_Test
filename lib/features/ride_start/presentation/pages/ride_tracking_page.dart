@@ -240,9 +240,9 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
     if (permission == LocationPermission.deniedForever) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Opening app settings for location permission...'),
-            backgroundColor: Colors.orange,
+            backgroundColor: theme.primaryColor,
             duration: Duration(seconds: 2),
           ),
         );
@@ -431,8 +431,6 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
       );
     }
   }
-
-  /// *****  4d25bc47-eb4e-4d01-854c-02aa2b11506a  ******
 
   @override
   Widget build(BuildContext context) {

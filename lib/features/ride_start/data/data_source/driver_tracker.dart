@@ -207,7 +207,7 @@ class RealTimeRideTracker {
     });
 
     _isInitialized = true;
-    print("✅ Ride tracker initialized for ride: $rideId");
+    print("Ride tracker initialized for ride: $rideId");
   }
 
   // Update map with location from database

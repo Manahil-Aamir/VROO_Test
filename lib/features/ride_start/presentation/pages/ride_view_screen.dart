@@ -1,4 +1,3 @@
-// Main RideTrackingScreen
 import 'dart:async';
 import 'dart:math';
 
@@ -123,6 +122,8 @@ class _RideViewScreenState extends State<RideViewScreen>
           'viewId': _mapViewId,
           'routeCoords': _currentRouteCoords,
         });
+
+        // _initializeMap(_mapViewId!);
 
         // Position vehicle at the last coordinate (most recent position)
         final lastCoord = _currentRouteCoords[_currentRouteCoords.length - 1];
