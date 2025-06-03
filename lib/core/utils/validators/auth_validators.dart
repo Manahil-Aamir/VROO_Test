@@ -1,7 +1,7 @@
 class AuthValidators {
   static final RegExp _emailRegExp = RegExp(
-    // r'^[a-zA-Z0-9._%+-]+@(khi\.iba\.edu\.pk|iba\.edu\.pk)$',
-    r'^[a-zA-Z0-9._%+-]+@(khi\.iba\.edu\.pk|iba\.edu\.pk|gmail\.com)$',
+    r'^[a-zA-Z0-9._%+-]+@(khi\.iba\.edu\.pk|iba\.edu\.pk)$',
+    //r'^[a-zA-Z0-9._%+-]+@(khi\.iba\.edu\.pk|iba\.edu\.pk|gmail\.com)$',
   );
 
   static final RegExp _passwordRegExp = RegExp(
