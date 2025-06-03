@@ -694,7 +694,7 @@ void _showUserInfoBottomSheet(BuildContext context) {
                       SizedBox(height: 4.h),
                       // Added date and time of ride
                       Text(
-                        'Ride on ${DateFormat('MMM d, yyyy').format(widget.user.date)} at ${DateFormat('h:mm a').format(widget.user.date)}',
+                        'Ride on ${DateFormat('MMM d, yyyy').format(widget.user.date)}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               fontSize: 12.sp,
                               color: ThemeColors.buttonTextColor.withOpacity(0.8),

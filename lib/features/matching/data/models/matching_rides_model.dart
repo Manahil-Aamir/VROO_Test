@@ -141,7 +141,7 @@ class MatchingRideModel {
       driverGender: json['driverGender'],
       driverId: json['driverId'],
       driverName: json['driverName'],
-      driverRating: json['driverRating'],
+      driverRating: (json['driverRating'] as num).toDouble(), // Fix this line
       duration: (json['duration'] as num).toDouble(),
       environmentStats:
           EnvironmentStatsModel.fromJson(json['environmentStats']),
@@ -168,7 +168,7 @@ class MatchingRideModel {
       status: json['status'],
       totalDetourDistance: (json['totalDetourDistance'] as num).toDouble(),
       totalDetourDuration: (json['totalDetourDuration'] as num).toDouble(),
-      totalRecommended: json['totalRecommended']?? 2
+      totalRecommended: (json['totalRecommended'] as num?)?.toDouble() ?? 0,
     );
   }
 
