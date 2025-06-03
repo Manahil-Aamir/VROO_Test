@@ -16,11 +16,15 @@ import '../bloc/state/insights_state.dart';
 class RideMatchCard extends StatelessWidget {
   final MatchingRideModel match;
   final String rideRequestId;
+  final bool isRecommended;
+  final int currentIndex;
 
   const RideMatchCard({
     super.key,
     required this.match,
     required this.rideRequestId,
+    this.isRecommended = false,
+    this.currentIndex = 0,
   });
 
   String getRiderId() {
@@ -36,177 +40,6 @@ class RideMatchCard extends StatelessWidget {
     }
     return driverName.isNotEmpty ? driverName[0] : '';
   }
-
-  // void _showInsightsModal(BuildContext context) {
-  //   final insightsBloc = context.read<DriverInsightsBloc>();
-  //   insightsBloc.add(LoadDriverInsights(match.driverId));
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => Theme(
-  //       data: Theme.of(context).copyWith(
-  //         dialogTheme: DialogTheme(
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(16.r),
-  //           ),
-  //           backgroundColor: ThemeColors.primaryColorDark,
-  //         ),
-  //       ),
-  //       child: BlocProvider.value(
-  //         value: insightsBloc,
-  //         child: Dialog(
-  //           child: Container(
-  //             constraints: BoxConstraints(
-  //               maxWidth: MediaQuery.of(context).size.width * 0.85,
-  //               maxHeight: MediaQuery.of(context).size.height * 0.6,
-  //             ),
-  //             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-  //             child: Column(
-  //               mainAxisSize: MainAxisSize.min,
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     Text(
-  //                       'Driver Insights',
-  //                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-  //                         color: ThemeColors.buttonTextColor,
-  //                         fontWeight: FontWeight.bold,
-  //                         fontSize: 18.sp,
-  //                       ),
-  //                     ),
-  //                     IconButton(
-  //                       icon: Icon(Icons.close, size: 22.r),
-  //                       color: ThemeColors.buttonTextColor.withOpacity(0.7),
-  //                       onPressed: () => Navigator.pop(context),
-  //                       padding: EdgeInsets.zero,
-  //                       constraints: BoxConstraints(),
-  //                     ),
-  //                   ],
-  //                 ),
-  //                 SizedBox(height: 12.h),
-  //                 Divider(
-  //                   color: ThemeColors.buttonTextColor.withOpacity(0.2),
-  //                   height: 1.h,
-  //                 ),
-  //                 SizedBox(height: 16.h),
-  //                 Expanded(
-  //                   child: SingleChildScrollView(
-  //                     child: BlocBuilder<DriverInsightsBloc, DriverInsightsState>(
-  //                       builder: (context, state) {
-  //                         if (state is DriverInsightsLoading) {
-  //                           return Center(
-  //                             child: Padding(
-  //                               padding: EdgeInsets.symmetric(vertical: 24.h),
-  //                               child: CircularProgressIndicator(
-  //                                 color: ThemeColors.primaryColor,
-  //                               ),
-  //                             ),
-  //                           );
-  //                         } else if (state is DriverInsightsError) {
-  //                           print(state.message);
-  //                           return Center(
-  //                             child: Column(
-  //                               mainAxisAlignment: MainAxisAlignment.center,
-  //                               children: [
-  //                                 Icon(
-  //                                   Icons.error_outline,
-  //                                   color: Colors.red,
-  //                                   size: 48.r,
-  //                                 ),
-  //                                 SizedBox(height: 16.h),
-  //                                 Text(
-  //                                   'Failed to load insights',
-  //                                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-  //                                     color: ThemeColors.buttonTextColor,
-  //                                   ),
-  //                                 ),
-  //                                 SizedBox(height: 8.h),
-  //                                 Text(
-  //                                   'Please try again later.',
-  //                                   // state.message,
-  //                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-  //                                     color: Colors.red.withOpacity(0.8),
-  //                                   ),
-  //                                   textAlign: TextAlign.center,
-  //                                 ),
-  //                                 SizedBox(height: 16.h),
-  //                                 ElevatedButton(
-  //                                   onPressed: () {
-  //                                     context.read<DriverInsightsBloc>().add(
-  //                                       LoadDriverInsights(match.driverId),
-  //                                     );
-  //                                   },
-  //                                   style: ElevatedButton.styleFrom(
-  //                                     backgroundColor: ThemeColors.primaryColor,
-  //                                     foregroundColor: ThemeColors.buttonTextColor,
-  //                                     padding: EdgeInsets.symmetric(
-  //                                       horizontal: 24.w,
-  //                                       vertical: 10.h,
-  //                                     ),
-  //                                     shape: RoundedRectangleBorder(
-  //                                       borderRadius: BorderRadius.circular(8.r),
-  //                                     ),
-  //                                   ),
-  //                                   child: Text('Retry'),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                           );
-  //                         } else if (state is DriverInsightsLoaded) {
-  //                           if (state.insights.trim().isNotEmpty) {
-  //                             return Container(
-  //                               padding: EdgeInsets.symmetric(horizontal: 8.w),
-  //                               child: Text(
-  //                                 state.insights,
-  //                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-  //                                   color: ThemeColors.buttonTextColor.withOpacity(0.9),
-  //                                   height: 1.5,
-  //                                   fontSize: 14.sp,
-  //                                 ),
-  //                               ),
-  //                             );
-  //                           }
-  //                         }
-  //                         return Center(
-  //                           child: Column(
-  //                             mainAxisAlignment: MainAxisAlignment.center,
-  //                             children: [
-  //                               Icon(
-  //                                 Icons.insights,
-  //                                 size: 48.r,
-  //                                 color: ThemeColors.buttonTextColor.withOpacity(0.5),
-  //                               ),
-  //                               SizedBox(height: 16.h),
-  //                               Text(
-  //                                 'No insights available',
-  //                                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-  //                                   color: ThemeColors.buttonTextColor.withOpacity(0.8),
-  //                                 ),
-  //                               ),
-  //                               SizedBox(height: 8.h),
-  //                               Text(
-  //                                 'Check back later for driver insights',
-  //                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-  //                                   color: ThemeColors.buttonTextColor.withOpacity(0.6),
-  //                                 ),
-  //                                 textAlign: TextAlign.center,
-  //                               ),
-  //                             ],
-  //                           ),
-  //                         );
-  //                       },
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   void _showInsightsModal(BuildContext context) {
     final insightsBloc = context.read<DriverInsightsBloc>();
@@ -429,14 +262,6 @@ class RideMatchCard extends StatelessWidget {
                         ),
                   ),
                   SizedBox(height: 12.h),
-                  // Text(
-                  //   state.insights.insights,
-                  //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  //     color: ThemeColors.buttonTextColor.withOpacity(0.9),
-                  //     height: 1.5,
-                  //     fontSize: 14.sp,
-                  //   ),
-                  // ),
                   MarkdownBody(
                     data: _cleanMarkdown(state.insights.insights),
                     styleSheet: MarkdownStyleSheet(
@@ -546,7 +371,7 @@ class RideMatchCard extends StatelessWidget {
     );
   }
 
-// Helper function to clean markdown content
+  // Helper function to clean markdown content
   String _cleanMarkdown(String markdown) {
     // Remove the ```markdown wrapper if present
     String cleaned = markdown;
@@ -563,6 +388,112 @@ class RideMatchCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
+    if (isRecommended) {
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.r),
+          gradient: LinearGradient(
+            colors: [
+              Colors.amber.shade50.withOpacity(0.3),
+              Colors.orange.shade50.withOpacity(0.2),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          border: Border.all(
+            color: Colors.amber.shade400,
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.amber.withOpacity(0.2),
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            // Recommended Header
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.amber.shade600,
+                    Colors.orange.shade500,
+                  ],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(14.r),
+                  topRight: Radius.circular(14.r),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.star,
+                    color: Colors.white,
+                    size: 20.r,
+                  ),
+                  SizedBox(width: 8.w),
+                  Text(
+                    'RECOMMENDED RIDE',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  Icon(
+                    Icons.star,
+                    color: Colors.white,
+                    size: 20.r,
+                  ),
+                ],
+              ),
+            ),
+            
+            // Card Content
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+              decoration: BoxDecoration(
+                color: ThemeColors.primaryColorDark,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(14.r),
+                  bottomRight: Radius.circular(14.r),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDriverInfoWithDate(context, textTheme),
+                  Divider(
+                    color: ThemeColors.buttonTextColor.withOpacity(0.15),
+                    height: 16.h,
+                    thickness: 0.5,
+                  ),
+                  _buildRouteInfo(textTheme),
+                  SizedBox(height: 10.h),
+                  _buildCarDetailsAndSeats(textTheme),
+                  SizedBox(height: 14.h),
+                  _buildFareAndJoinButton(context, textTheme),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Regular card (non-recommended)
     return Card(
       elevation: 2,
       margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
@@ -643,7 +574,7 @@ class RideMatchCard extends StatelessWidget {
                   Icon(Icons.star, color: Colors.amber, size: 14.r),
                   SizedBox(width: 4.w),
                   Text(
-                    "4.5",
+                    match.driverRating.toString(),
                     style: textTheme.bodySmall?.copyWith(
                       color: ThemeColors.buttonTextColor.withOpacity(0.8),
                       fontSize: 12.sp,
@@ -704,10 +635,11 @@ class RideMatchCard extends StatelessWidget {
       children: [
         Column(
           children: [
+            SizedBox(height: 5.h),
             Icon(Icons.circle_outlined,
                 color: ThemeColors.primaryColor, size: 16.r),
             Container(
-              height: 8.h,
+              height: 15.h,
               width: 1.w,
               color: ThemeColors.primaryColor.withOpacity(0.6),
             ),
@@ -715,7 +647,7 @@ class RideMatchCard extends StatelessWidget {
                 color: ThemeColors.primaryColor, size: 16.r),
           ],
         ),
-        SizedBox(width: 12.w),
+        SizedBox(width: 8.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -854,7 +786,9 @@ class RideMatchCard extends StatelessWidget {
                 .add(JoinRideRequestEvent(joinData: joinData));
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: ThemeColors.primaryColor,
+            backgroundColor: isRecommended 
+                ? Colors.amber.shade600 
+                : ThemeColors.primaryColor,
             foregroundColor: ThemeColors.buttonTextColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.r),

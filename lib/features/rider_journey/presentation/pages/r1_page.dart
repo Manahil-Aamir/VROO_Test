@@ -46,26 +46,42 @@ class _R1PageState extends State<R1Page> {
           InputRideValidator.validateTime(state.maxPickUpTime);
       final arrivalTimeErrorMsg =
           InputRideValidator.validateTime(state.maxArrivalTime);
+      
+      // Validate time not in past for regular times
+      final minTimeNotInPastErrorMsg = InputRideValidator.validateTimeNotInPast(
+          state.minPickUpTime, state.selectedDate);
+      final maxTimeNotInPastErrorMsg = InputRideValidator.validateTimeNotInPast(
+          state.maxPickUpTime, state.selectedDate);
+      
+      // Validate max arrival time not in past (handles cross-midnight scenarios)
+      final arrivalTimeNotInPastErrorMsg = InputRideValidator.validateMaxArrivalTimeNotInPast(
+          state.maxArrivalTime, state.selectedDate, state.maxPickUpTime);
+      
       final minMaxTimeErrorMsg = InputRideValidator.validateMinMaxTime(
           state.minPickUpTime, state.maxPickUpTime);
       final maxArrivalTimeErrorMsg = InputRideValidator.validateMaxArrivalTime(
           state.maxPickUpTime, state.maxArrivalTime);
 
+      // Combine error messages (prioritize past time errors)
+      String? combinedMinTimeError = minTimeNotInPastErrorMsg ?? minTimeErrorMsg;
+      String? combinedMaxTimeError = maxTimeNotInPastErrorMsg ?? maxTimeErrorMsg ?? minMaxTimeErrorMsg;
+      String? combinedArrivalTimeError = arrivalTimeNotInPastErrorMsg ?? arrivalTimeErrorMsg ?? maxArrivalTimeErrorMsg;
+
       // Show errors in UI via the bloc
       context.read<R1Bloc>().add(ShowErrorEvent(
             dateErrorText: dateErrorMsg,
-            minTimeErrorText: minTimeErrorMsg,
-            maxTimeErrorText: maxTimeErrorMsg,
-            arrivalTimeErrorText: arrivalTimeErrorMsg,
+            minTimeErrorText: combinedMinTimeError,
+            maxTimeErrorText: combinedMaxTimeError,
+            arrivalTimeErrorText: combinedArrivalTimeError,
             minMaxTimeErrorText: minMaxTimeErrorMsg,
             maxArrivalTimeErrorText: maxArrivalTimeErrorMsg,
           ));
 
       // If any error exists, stop processing
       if (dateErrorMsg != null ||
-          minTimeErrorMsg != null ||
-          maxTimeErrorMsg != null ||
-          arrivalTimeErrorMsg != null ||
+          combinedMinTimeError != null ||
+          combinedMaxTimeError != null ||
+          combinedArrivalTimeError != null ||
           minMaxTimeErrorMsg != null ||
           maxArrivalTimeErrorMsg != null) {
         return; // Stop further execution if validation fails
@@ -195,6 +211,7 @@ class _R1PageState extends State<R1Page> {
                           CustomTimePicker(
                             labelText: 'Min Pick up Time',
                             selectedTime: state.minPickUpTime,
+                            selectedDate: state.selectedDate, // Pass selected date
                             onTimeSelected: (pickedTime) {
                               bloc.add(
                                   SelectTimeEvent(pickedTime, "minPickUpTime"));
@@ -214,6 +231,7 @@ class _R1PageState extends State<R1Page> {
                           CustomTimePicker(
                             labelText: 'Max Pick up Time',
                             selectedTime: state.maxPickUpTime,
+                            selectedDate: state.selectedDate, // Pass selected date
                             onTimeSelected: (pickedTime) {
                               bloc.add(
                                   SelectTimeEvent(pickedTime, "maxPickUpTime"));
@@ -225,6 +243,9 @@ class _R1PageState extends State<R1Page> {
                           CustomTimePicker(
                             labelText: 'Max Arrival Time',
                             selectedTime: state.maxArrivalTime,
+                            selectedDate: state.selectedDate, // Pass selected date
+                            isMaxArrivalTime: true, // Mark as max arrival time picker
+                            departureTime: state.maxPickUpTime, // Pass departure time for cross-midnight validation
                             onTimeSelected: (pickedTime) {
                               bloc.add(SelectTimeEvent(
                                   pickedTime, "maxArrivalTime"));

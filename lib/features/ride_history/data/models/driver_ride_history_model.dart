@@ -6,6 +6,7 @@ import '../../domain/entity/driver_history_entity.dart';
 class PassengerModel {
   final String riderId;
   final String status;
+  final String name;
   final double fare;
   final String rideRequestId;
   final String? review;
@@ -20,6 +21,7 @@ class PassengerModel {
     required this.riderId,
     required this.status,
     required this.fare,
+    required this.name,
     required this.rideRequestId,
     this.review,
     required this.eta,
@@ -34,6 +36,7 @@ class PassengerModel {
     return PassengerModel(
       riderId: json['riderId'] ?? '',
       status: json['status'] ?? '',
+      name: json['name']?? 'Unknown',
       fare: json['fare']?.toDouble() ?? 0.0,
       rideRequestId: json['rideRequestId'] ?? '',
       review: json['review'],
@@ -65,6 +68,7 @@ class PassengerModel {
   PassengerEntity toEntity() => PassengerEntity(
         riderId: riderId,
         status: status,
+        name: name,
         fare: fare,
         rideRequestId: rideRequestId,
         review: review,

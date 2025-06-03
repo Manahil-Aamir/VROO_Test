@@ -41,9 +41,9 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                 child: Row(
                   children: [
-                    // Back button
-                    Align(
-                      alignment: Alignment.centerLeft,
+                    // Back button (fixed width container)
+                    SizedBox(
+                      width: 46.w, // Fixed width to match IconButton size
                       child: IconButton(
                         icon: Icon(
                           Icons.arrow_back,
@@ -55,30 +55,35 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
                         iconSize: 30.r,
                       ),
                     ),
-                    // Spacer to push the heading to the center
-                    SizedBox(width: 60.w),
-                    // Heading
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        heading,
-                        style: theme.textTheme.headlineLarge?.copyWith(
-                          color: theme.primaryColorDark,
+                    // Centered heading with flexible space
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          heading,
+                          style: theme.textTheme.headlineLarge?.copyWith(
+                            color: theme.primaryColorDark,
+                            letterSpacing: 0.2,
+                          ),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2, // Allow up to 2 lines for long headings
                         ),
                       ),
                     ),
-                    // Spacer to keep the heading centered
-                    Spacer(),
-                    // Optional action icon
-                    if (actionIcon != null)
-                      IconButton(
-                        icon: Icon(
-                          actionIcon,
-                          color: theme.primaryColorDark,
-                        ),
-                        onPressed: onActionPressed,
-                        iconSize: 30.r,
-                      ),
+                    // Action icon or spacer (fixed width container)
+                    SizedBox(
+                      width: 46.w, // Fixed width to match IconButton size
+                      child: actionIcon != null
+                          ? IconButton(
+                              icon: Icon(
+                                actionIcon,
+                                color: theme.primaryColorDark,
+                              ),
+                              onPressed: onActionPressed,
+                              iconSize: 30.r,
+                            )
+                          : null, // Empty space if no action icon
+                    ),
                   ],
                 ),
               ),
@@ -86,9 +91,9 @@ class appBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-    );
+    );  
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(90.h); // Responsive height
+  Size get preferredSize => Size.fromHeight(105.h); // Match the PreferredSize height
 }

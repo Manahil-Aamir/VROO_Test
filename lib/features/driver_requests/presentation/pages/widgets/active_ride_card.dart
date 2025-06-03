@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:vroo_test/features/ride_start/data/models/ride_start_model.dart';
 import '../../../../../core/router/navigation.dart';
 import '../../../../../core/theme/color/color_theme.dart';
 import '../../../../../shared/widgets/custom_dialog.dart';
@@ -19,58 +18,86 @@ class ActiveRideCard extends StatelessWidget {
   const ActiveRideCard({super.key, required this.ride});
 
   @override
-  @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return BlocListener<ActiveRidesDriverBloc, ActiveRidesDriverState>(
-      listener: (context, state) {
+    return BlocBuilder<ActiveRidesDriverBloc, ActiveRidesDriverState>(
+      builder: (context, state) {
         print('state: $state');
-        if (state is ActiveRideDataLoaded) {
-          print('Ride data loaded: ${state.rideData}');
-          // Navigate to ride details page
-          Navigator.pushNamed(
-            context,
-            '/static_page', // Change to your actual route name
-            //arguments: state.rideData, // Send the loaded ride data as argument
+        if (state is ActiveRidesDriverLoading) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: ThemeColors.primaryColor, 
+            ),
           );
-        }
-      },
-      child: GestureDetector(
-        onTap: () {
-          context.read<Navigation>().navigateTo(
-                '/ride_request_status',
-                arguments: ride.id.toString(),
-              );
-        },
-        child: Card(
-          elevation: 2,
-          margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14.r),
-          ),
-          color: ThemeColors.primaryColorDark,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+        } else if (state is ActiveRidesDriverError) {
+          print('Error: ${state.message}');
+          return Center(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildDateTimeRow(context, textTheme),
-                Divider(
-                  color: ThemeColors.buttonTextColor.withOpacity(0.15),
-                  height: 16.h,
-                  thickness: 0.5,
+                Image.asset(
+                  'assets/images/error.png',
+                  width: 300.w,
+                  height: 300.h,
+                  fit: BoxFit.contain,
                 ),
-                _buildRouteInfo(textTheme),
-                SizedBox(height: 6.h),
-                _buildCarDetails(textTheme),
                 SizedBox(height: 12.h),
-                _buildActionButtons(context),
+                // Text(
+                //   state.message,
+                //   style: textTheme.bodyMedium?.copyWith(color: Colors.red),
+                // ),
+              
               ],
             ),
+          );
+        } else if (state is ActiveRideDataLoaded) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushNamed(
+              context,
+              '/static_page',
+              // arguments: state.rideData,
+            );
+          });
+        }
+
+        // Default ride card
+        return GestureDetector(
+          onTap: () {
+            context.read<Navigation>().navigateTo(
+                  '/ride_request_status',
+                  arguments: ride.id.toString(),
+                );
+          },
+          child: Card(
+            elevation: 2,
+            margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14.r),
+            ),
+            color: ThemeColors.primaryColorDark,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDateTimeRow(context, textTheme),
+                  Divider(
+                    color: ThemeColors.buttonTextColor.withOpacity(0.15),
+                    height: 16.h,
+                    thickness: 0.5,
+                  ),
+                  _buildRouteInfo(textTheme),
+                  SizedBox(height: 6.h),
+                  _buildCarDetails(textTheme),
+                  SizedBox(height: 12.h),
+                  _buildActionButtons(context),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

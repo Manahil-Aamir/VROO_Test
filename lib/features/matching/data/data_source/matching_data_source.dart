@@ -46,7 +46,6 @@ class MatchingDataSourceImpl {
   Future<List<dynamic>> sendRideRequest(
       String rideRequestId, Map<String, dynamic> requestData) async {
     final url =
-        // Uri.parse('http://10.0.2.2:8080/rider/ride-request/$rideRequestId');
         Uri.parse('${ApiConstants.baseUrl}rider/ride-request/$rideRequestId');
 
     final response = await client.patch(
@@ -64,10 +63,15 @@ class MatchingDataSourceImpl {
       print(data);
       print(requestData);
 
-      return data is List ? data : [];
+      // Then extract 'matchingRides' from within 'data'
+      if (data != null && data['matchingRides'] != null) {
+        final matchingRides = data['matchingRides'];
+        return matchingRides is List ? matchingRides : [];
+      }
+
+      // Fallback: if the structure is different, return empty list
+      return [];
     } else {
-      print('Failed to send ride request: ${response.statusCode}');
-      print('Response body: ${response.body}');
       throw Exception("Failed to send ride request");
     }
   }
@@ -88,6 +92,7 @@ class MatchingDataSourceImpl {
       },
     );
 
+    print('url: $url');
     print('Response status for ride request matches: ${response.statusCode}');
     print('Response body for ride request matches: ${response.body}');
 

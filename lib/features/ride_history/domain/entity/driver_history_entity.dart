@@ -4,6 +4,7 @@ import '../../../cars/domain/entity/car.dart';
 
 class PassengerEntity {
   final String riderId;
+  final String name;
   final String status;
   final double fare;
   final String rideRequestId;
@@ -18,6 +19,7 @@ class PassengerEntity {
   PassengerEntity({
     required this.riderId,
     required this.status,
+    required this.name,
     required this.fare,
     required this.rideRequestId,
     this.review,

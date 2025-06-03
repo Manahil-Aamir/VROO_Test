@@ -120,6 +120,7 @@ class Routes {
   static const String route = '/route';
   static const String report = '/report';
   static const String safecontact = '/safecontact';
+  static const String reviews = '/review';
   static const String schedule = '/schedule';
   static const String ride_history = '/ride_history';
 
@@ -852,7 +853,11 @@ class Routes {
 
       case report:
         return MaterialPageRoute(builder: (context) => ReportScreen());
-
+      case reviews:
+        return MaterialPageRoute(
+            builder: (_) => MultiProvider(
+                providers: ReviewDependencyInjection.init(),
+                child: ReviewsPage()));
       case schedule:
         return MaterialPageRoute(
             builder: (_) => MultiProvider(

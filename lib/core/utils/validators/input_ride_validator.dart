@@ -64,4 +64,134 @@ class InputRideValidator {
     }
     return null;
   }
+
+  // static String? validateTimeNotInPast(TimeOfDay? time, DateTime? date, {bool isMaxArrivalTime = false, TimeOfDay? departureTime}) {
+  //   if (time == null || date == null) return null;
+    
+  //   final now = DateTime.now();
+  //   final today = DateTime(now.year, now.month, now.day);
+  //   final selectedDay = DateTime(date.year, date.month, date.day);
+    
+  //   // Only check if the selected date is today
+  //   if (selectedDay.isAtSameMomentAs(today)) {
+  //     DateTime selectedDateTime;
+      
+  //     if (isMaxArrivalTime && departureTime != null) {
+  //       // For max arrival time, check if it's next day scenario
+  //       bool isNextDay = _isTimeNextDay(departureTime, time);
+        
+  //       if (isNextDay) {
+  //         // If max arrival time is next day, add 1 day
+  //         selectedDateTime = DateTime(
+  //           date.year,
+  //           date.month,
+  //           date.day + 1,
+  //           time.hour,
+  //           time.minute,
+  //         );
+  //       } else {
+  //         selectedDateTime = DateTime(
+  //           date.year,
+  //           date.month,
+  //           date.day,
+  //           time.hour,
+  //           time.minute,
+  //         );
+  //       }
+  //     } else {
+  //       selectedDateTime = DateTime(
+  //         date.year,
+  //         date.month,
+  //         date.day,
+  //         time.hour,
+  //         time.minute,
+  //       );
+  //     }
+      
+  //     if (selectedDateTime.isBefore(now)) {
+  //       return 'Cannot select a time in the past for today';
+  //     }
+  //   }
+    
+  //   return null;
+  // }
+
+  static bool _isTimeNextDay(TimeOfDay startTime, TimeOfDay endTime) {
+    // Convert times to minutes for easy comparison
+    int startMinutes = startTime.hour * 60 + startTime.minute;
+    int endMinutes = endTime.hour * 60 + endTime.minute;
+    
+    // If end time is smaller than start time, it means it's next day
+    return endMinutes < startMinutes;
+  }
+
+// Add these methods to your InputRideValidator class:
+
+static String? validateTimeNotInPast(TimeOfDay? time, DateTime? date) {
+  if (time == null || date == null) return null;
+  
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final selectedDay = DateTime(date.year, date.month, date.day);
+  
+  // Only check if the selected date is today
+  if (selectedDay.isAtSameMomentAs(today)) {
+    final selectedDateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
+    
+    if (selectedDateTime.isBefore(now)) {
+      return 'Cannot select a time in the past for today';
+    }
+  }
+  
+  return null;
+}
+
+static String? validateMaxArrivalTimeNotInPast(TimeOfDay? maxArrivalTime, DateTime? date, TimeOfDay? departureTime) {
+  if (maxArrivalTime == null || date == null) return null;
+  
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final selectedDay = DateTime(date.year, date.month, date.day);
+  
+  // Only check if the selected date is today
+  if (selectedDay.isAtSameMomentAs(today)) {
+    DateTime maxArrivalDateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      maxArrivalTime.hour,
+      maxArrivalTime.minute,
+    );
+    
+    // If departure time is provided, check for cross-midnight scenario
+    if (departureTime != null) {
+      final departureDateTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        departureTime.hour,
+        departureTime.minute,
+      );
+      
+      // If max arrival time is earlier than departure time, it's next day
+      if (maxArrivalDateTime.isBefore(departureDateTime)) {
+        // For next day scenarios, we don't validate against current time
+        // because it's a future time (next day)
+        return null;
+      }
+    }
+    
+    if (maxArrivalDateTime.isBefore(now)) {
+      return 'Max arrival time cannot be in the past';
+    }
+  }
+  
+  return null;
+}
 }

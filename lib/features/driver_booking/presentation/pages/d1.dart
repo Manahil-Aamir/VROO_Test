@@ -52,24 +52,34 @@ class _D1PageState extends State<D1Page> {
       // Check for null values and add errors if necessary
       final dateErrorMsg = InputRideValidator.validateDate(state.selectedDate);
       final timeErrorMsg = InputRideValidator.validateTime(state.selectedTime);
-      final maxArrivalTimeErrorMsg = InputRideValidator.validateMaxArrTime(
+      final maxArrivalTimeErrorMsg = InputRideValidator.validateMaxArrivalTime(
           state.selectedTime, state.maxArrivalTime);
+
+      // Additional validation for past times when date is today
+      final departureTimeInPastMsg = InputRideValidator.validateTimeNotInPast(
+          state.selectedTime, state.selectedDate);
+      final maxArrivalTimeInPastMsg =
+          InputRideValidator.validateMaxArrivalTimeNotInPast(
+              state.maxArrivalTime, state.selectedDate, state.selectedTime);
 
       context.read<D1Bloc>().add(ShowErrorEvent(
             dateError: dateErrorMsg != null,
-            timeError: timeErrorMsg != null,
-            maxArrivalTimeError: maxArrivalTimeErrorMsg != null,
+            timeError: timeErrorMsg != null || departureTimeInPastMsg != null,
+            maxArrivalTimeError: maxArrivalTimeErrorMsg != null ||
+                maxArrivalTimeInPastMsg != null,
           ));
 
-      if (dateErrorMsg != null ||
-          timeErrorMsg != null ||
-          maxArrivalTimeErrorMsg != null) {
+      // Combine all error messages
+      final firstError = dateErrorMsg ??
+          timeErrorMsg ??
+          departureTimeInPastMsg ??
+          maxArrivalTimeErrorMsg ??
+          maxArrivalTimeInPastMsg;
+
+      if (firstError != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(dateErrorMsg ??
-                timeErrorMsg ??
-                maxArrivalTimeErrorMsg ??
-                'Please fill in all fields.'),
+            content: Text(firstError),
             backgroundColor: theme.indicatorColor,
           ),
         );
@@ -204,9 +214,13 @@ class _D1PageState extends State<D1Page> {
                                 state.dateError ? 'Please select a date' : null,
                           ),
                           SizedBox(height: 12.h),
+                          // In your D1Page build method, update the CustomTimePicker widgets:
+
                           CustomTimePicker(
                             labelText: 'Departure Time',
                             selectedTime: state.selectedTime,
+                            selectedDate:
+                                state.selectedDate, // Pass the selected date
                             onTimeSelected: (departureTime) {
                               bloc.add(SelectTimeEvent(departureTime, "time"));
                             },
@@ -218,9 +232,15 @@ class _D1PageState extends State<D1Page> {
                           CustomTimePicker(
                             labelText: 'Max Arrival Time',
                             selectedTime: state.maxArrivalTime,
-                            onTimeSelected: (departureTime) {
+                            selectedDate:
+                                state.selectedDate, // Pass the selected date
+                            isMaxArrivalTime:
+                                true, // Identify this as max arrival time picker
+                            departureTime: state
+                                .selectedTime, // Pass departure time for comparison
+                            onTimeSelected: (arrivalTime) {
                               bloc.add(SelectTimeEvent(
-                                  departureTime, "maxArrivalTime"));
+                                  arrivalTime, "maxArrivalTime"));
                             },
                             errorText: state.arrivalTimeError
                                 ? 'Please select a time'

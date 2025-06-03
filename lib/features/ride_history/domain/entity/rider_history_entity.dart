@@ -17,7 +17,7 @@ class RiderEntity {
   final String riderName;
   final LocationEntity source;
   final LocationEntity destination;
-  final Map<String, String> pickupTimeRange;
+  final PickupTimeRangeEntity pickupTimeRange; // Updated from Map to structured class
 
   RiderEntity({
     required this.riderId,
@@ -79,5 +79,15 @@ class RiderHistoryEntity {
   RiderHistoryEntity({
     required this.completedRides,
     required this.cancelledRides,
+  });
+}
+
+class PickupTimeRangeEntity {
+  final DateTime min; // Earliest pickup time (ISO format)
+  final DateTime max; // Latest pickup time (ISO format)
+
+  PickupTimeRangeEntity({
+    required this.min,
+    required this.max,
   });
 }

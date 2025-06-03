@@ -69,10 +69,17 @@ class _R3PageState extends State<R3Page> {
   }
 
   String getRiderId() {
-    final FirebaseAuth firebaseAuth =
-        FirebaseAuth.instance; // Initialize FirebaseAuth
-    final User user = firebaseAuth.currentUser!; // Get current user
-    return user.uid; // Return UID or null if user is not logged in
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final User user = firebaseAuth.currentUser!;
+    return user.uid;
+  }
+
+  // Helper method to format time in 12-hour format
+  String _formatTimeOfDay(TimeOfDay tod) {
+    final hour = tod.hourOfPeriod;
+    final minute = tod.minute.toString().padLeft(2, '0');
+    final period = tod.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hour:$minute $period';
   }
 
   @override
@@ -122,9 +129,6 @@ class _R3PageState extends State<R3Page> {
                       'minPickupTime': widget.schedule.minTime,
                     });                  
                   } else if (state is RideRequestFailure) {
-                    // ScaffoldMessenger.of(context).showSnackBar(
-                    //   SnackBar(content: Text('Error: ${runtimeType.toString()}')),
-                    // );
                     print('Error: ${state.error}');
                   }
                 },
@@ -160,13 +164,12 @@ class _R3PageState extends State<R3Page> {
                                     icon: Icons.access_time,
                                     label: 'Pick Up Time',
                                     value:
-                                        '${widget.schedule.minTime.hour}:${widget.schedule.minTime.minute.toString().padLeft(2, '0')} - ${widget.schedule.maxTime.hour}:${widget.schedule.maxTime.minute.toString().padLeft(2, '0')}',
+                                        '${_formatTimeOfDay(widget.schedule.minTime)} - ${_formatTimeOfDay(widget.schedule.maxTime)}',
                                   ),
                                   DetailTile(
                                     icon: Icons.access_time,
                                     label: 'Max Arrival Time',
-                                    value:
-                                        '${widget.schedule.arrivalTime.hour}:${widget.schedule.arrivalTime.minute == 0 ? '00' : widget.schedule.arrivalTime.minute}',
+                                    value: _formatTimeOfDay(widget.schedule.arrivalTime),
                                   ),
                                 ],
                               ),
@@ -181,12 +184,6 @@ class _R3PageState extends State<R3Page> {
                                         ? 'Yes'
                                         : 'No',
                                   ),
-                                  // DetailTile(
-                                  //   icon: Icons.directions_walk,
-                                  //   label: 'Prefer Walk',
-                                  //   value:
-                                  //       widget.preferences.walk ? 'Yes' : 'No',
-                                  // ),
                                 ],
                               ),
                               SizedBox(height: 60.h),
@@ -204,7 +201,6 @@ class _R3PageState extends State<R3Page> {
                   ],
                 ),
               ),
-              // Show loading overlay when state is RideRequestLoading
               if (state is RideRequestLoading) const CustomOverlay(),
             ],
           );
@@ -229,12 +225,8 @@ class _R3PageState extends State<R3Page> {
     bool femaleOnly = false;
 
     if (userState is UserLoaded) {
-      print('here');
-      print(userState.user);
       userGender = userState.user.gender;
     }
-    print('user gender: $userGender');
-    print('same gender: ${widget.preferences.sameGender}');
 
     if (userGender.toLowerCase() == 'female' &&
         widget.preferences.sameGender == true) {

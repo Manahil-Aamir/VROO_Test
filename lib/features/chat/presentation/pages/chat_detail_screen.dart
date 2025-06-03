@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/styles/app_styles.dart';
 import '../../../../core/theme/color/color_theme.dart';
+import '../../../../shared/widgets/initials_circle_avatar.dart';
 import '../../domain/entity/chat_message.dart';
 import '../../domain/entity/chat_user.dart';
 import '../bloc/bloc/chat_bloc.dart';
@@ -634,222 +635,163 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     }
   }
 
-  void _showUserInfoBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-      ),
-      builder: (context) {
-        return Container(
-          padding: EdgeInsets.all(20.w),
-          decoration: BoxDecoration(
-            color: ThemeColors.backgroundColor,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Drag Handle
-              Center(
-                child: Container(
-                  height: 5.h,
-                  width: 40.w,
-                  margin: EdgeInsets.only(bottom: 20.h),
-                  decoration: BoxDecoration(
-                    color: ThemeColors.dividerColor,
-                    borderRadius: BorderRadius.circular(5.r),
-                  ),
-                ),
-              ),
-
-              /// Title
-              Text(
-                'Contact Information',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                      color: ThemeColors.headlinesTextColor,
-                    ),
-              ),
-              SizedBox(height: 20.h),
-
-              /// User Profile Section
-              Row(
-                children: [
-                  /// Profile Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 5,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: CircleAvatar(
-                      backgroundColor: ThemeColors.primaryColorLight,
-                      radius: 30.r,
-                      child: Icon(Icons.person,
-                          color: ThemeColors.headlinesTextColor, size: 32.sp),
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-
-                  /// Name & ID
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// Name (Handles overflow)
-                        Text(
-                          widget.user.name,
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.sp,
-                                    color: ThemeColors.headlinesTextColor,
-                                  ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                        SizedBox(height: 4.h),
-
-                        /// User ID (Handles overflow)
-                        // Text(
-                        //   'ID: ${widget.user.}',
-                        //   style: Theme.of(context)
-                        //       .textTheme
-                        //       .bodyMedium
-                        //       ?.copyWith(
-                        //         fontWeight: FontWeight.bold,
-                        //         fontSize: 12.sp,
-                        //         color:
-                        //             ThemeColors.bodyTextColor.withOpacity(0.7),
-                        //       ),
-                        //   overflow: TextOverflow.ellipsis,
-                        //   maxLines: 1,
-                        // ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 24.h),
-
-              /// Location Information
-              _infoItem(Icons.place_outlined, 'From', widget.user.source),
-              SizedBox(height: 12.h),
-              _infoItem(
-                  Icons.location_on_outlined, 'To', widget.user.destination),
-              SizedBox(height: 24.h),
-
-              /// Divider
-              Divider(
-                  thickness: 1,
-                  color: ThemeColors.dividerColor.withOpacity(0.6)),
-              SizedBox(height: 8.h),
-
-              /// Close Button
-              Center(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: ThemeColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                    ),
-                    child: Text(
-                      'Close',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
-                          color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  /// Helper method to handle location display
-  Widget _infoItem(IconData icon, String title, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, color: ThemeColors.primaryColor, size: 20.sp),
-        SizedBox(width: 12.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14.sp,
-                      color: ThemeColors.bodyTextColor.withOpacity(0.8),
-                    ),
-              ),
-              SizedBox(height: 2.h),
-              Text(
-                value,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 13.sp,
-                      color: ThemeColors.headlinesTextColor,
-                    ),
-                maxLines: 2, // Allows up to 2 lines
-                overflow: TextOverflow.ellipsis, // Truncates text if needed
-              ),
-            ],
-          ),
+void _showUserInfoBottomSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+    ),
+    builder: (context) {
+      return Container(
+        padding: EdgeInsets.all(20.w),
+        decoration: BoxDecoration(
+          color: ThemeColors.primaryColorDark, // Changed to primary color dark
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
         ),
-      ],
-    );
-  }
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Drag Handle
+            Center(
+              child: Container(
+                height: 5.h,
+                width: 40.w,
+                margin: EdgeInsets.only(bottom: 20.h),
+                decoration: BoxDecoration(
+                  color: ThemeColors.dividerColor,
+                  borderRadius: BorderRadius.circular(5.r),
+                ),
+              ),
+            ),
 
-  // Widget _infoItem(IconData icon, String label, String value) {
+            /// User Profile Section
+            Row(
+              children: [
+                /// Profile Icon - Using your InitialsCircleAvatar
+                InitialsCircleAvatar(
+                  initials: widget.user.name[0].toUpperCase(),
+                  radius: 30,
+                ),
+                SizedBox(width: 16.w),
+
+                /// Name & ID
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// Name (Handles overflow)
+                      Text(
+                        widget.user.name,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.sp,
+                              color: ThemeColors.buttonTextColor, // Changed to button text color
+                            ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      SizedBox(height: 4.h),
+                      // Added date and time of ride
+                      Text(
+                        'Ride on ${DateFormat('MMM d, yyyy').format(widget.user.date)} at ${DateFormat('h:mm a').format(widget.user.date)}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: 12.sp,
+                              color: ThemeColors.buttonTextColor.withOpacity(0.8),
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.h),
+            Divider(
+              thickness: 1,
+              color: ThemeColors.dividerColor.withOpacity(0.6)),
+            SizedBox(height: 8.h),
+
+            /// Location Information
+            _infoItem(Icons.place_outlined, 'From', widget.user.source),
+            SizedBox(height: 12.h),
+            _infoItem(Icons.location_on_outlined, 'To', widget.user.destination),
+            SizedBox(height: 24.h),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+/// Updated helper method to handle location display with color changes
+Widget _infoItem(IconData icon, String title, String value) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Icon(icon, color: ThemeColors.primaryColor, size: 20.sp), // Kept primary color for icon
+      SizedBox(width: 8.w),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.sp,
+                    color: ThemeColors.primaryColor, // Kept primary color for "From/To" text
+                  ),
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              value,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontSize: 13.sp,
+                    color: ThemeColors.buttonTextColor, // Changed to button text color
+                  ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+  /// Helper method to handle location display
+  // Widget _infoItem(IconData icon, String title, String value) {
   //   return Row(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
   //     children: [
-  //       Icon(
-  //         icon,
-  //         size: 20.sp,
-  //         color: ThemeColors.primaryColor,
-  //       ),
+  //       Icon(icon, color: ThemeColors.primaryColor, size: 20.sp),
   //       SizedBox(width: 12.w),
-  //       Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Text(
-  //             label,
-  //             style: TextStyle(
-  //               fontSize: 12.sp,
-  //               color: ThemeColors.bodyTextColor.withOpacity(0.7),
+  //       Expanded(
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             Text(
+  //               title,
+  //               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+  //                     fontWeight: FontWeight.bold,
+  //                     fontSize: 14.sp,
+  //                     color: ThemeColors.bodyTextColor.withOpacity(0.8),
+  //                   ),
   //             ),
-  //           ),
-  //           SizedBox(height: 2.h),
-  //           Text(
-  //             value,
-  //             style: TextStyle(
-  //               fontSize: 14.sp,
-  //               color: ThemeColors.bodyTextColor,
+  //             SizedBox(height: 2.h),
+  //             Text(
+  //               value,
+  //               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+  //                     fontSize: 13.sp,
+  //                     color: ThemeColors.headlinesTextColor,
+  //                   ),
+  //               maxLines: 2, // Allows up to 2 lines
+  //               overflow: TextOverflow.ellipsis, // Truncates text if needed
   //             ),
-  //           ),
-  //         ],
+  //           ],
+  //         ),
   //       ),
   //     ],
   //   );
   // }
+
 }

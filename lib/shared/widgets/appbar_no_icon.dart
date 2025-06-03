@@ -39,30 +39,41 @@ class AppBarNoIcon extends StatelessWidget implements PreferredSizeWidget {
                 padding: EdgeInsets.only(
                   left: 16.w,
                   right: 16.w,
-                  top: 10
-                      .h, // Move content further upward by reducing top padding
+                  top: 10.h, // Move content further upward by reducing top padding
                   bottom: 0,
                 ),
-                child: Stack(
-                  alignment: Alignment.center,
+                child: Row(
                   children: [
-                    // Leading widget (if provided)
-                    if (leading != null)
-                      Positioned(
-                        left: 0,
-                        child: leading!,
-                      ),
-                    // Title
-                    Positioned(
-                      top: 8.h,
-                      left: 60.w,
-                      right: 0,
-                      child: Text(
-                        heading,
-                        style: theme.textTheme.headlineLarge?.copyWith(
-                          color: theme.primaryColorDark,
+                    // Leading widget (fixed width container)
+                    SizedBox(
+                      width: leading != null ? 46.w : 0, // Fixed width when leading exists
+                      child: leading != null 
+                          ? Align(
+                              alignment: Alignment.centerLeft,
+                              child: leading!,
+                            )
+                          : null,
+                    ),
+                    // Centered heading with flexible space
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 8.h),
+                        child: Center(
+                          child: Text(
+                            heading,
+                            style: theme.textTheme.headlineLarge?.copyWith(
+                              color: theme.primaryColorDark,
+                            ),
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2, // Allow up to 2 lines for long headings
+                          ),
                         ),
                       ),
+                    ),
+                    // Right spacer to balance the layout
+                    SizedBox(
+                      width: leading != null ? 46.w : 0, // Match left side width
                     ),
                   ],
                 ),
@@ -75,5 +86,5 @@ class AppBarNoIcon extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(90.h); // Responsive height
+  Size get preferredSize => Size.fromHeight(105.h); // Match the PreferredSize height
 }
