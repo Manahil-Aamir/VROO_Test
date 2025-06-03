@@ -8,6 +8,7 @@ import 'package:vroo_test/features/ride_start/data/models/ridestart_data_model.d
 import 'package:vroo_test/features/ride_start/presentation/pages/nopassenger.dart';
 import 'package:vroo_test/features/ride_start/presentation/pages/tracking_modal.dart';
 import '../../../../core/router/navigation.dart';
+import '../../../../shared/widgets/custom_dialog.dart';
 import '../../data/data_source/driver_tracker.dart';
 import '../bloc/bloc/ridestart_bloc.dart';
 import '../bloc/event/ridestart_event.dart';
@@ -325,111 +326,133 @@ class _RideTrackingScreenState extends State<RideTrackingScreen>
     final theme = Theme.of(context);
     if (!_isRideTrackerInitialized) return;
 
-    try {
-      // Stop tracking first
-      await _rideTracker.stopTracking();
-      if (!mounted) return;
-      print('Tracking stopped successfully');
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => CustomDialog(
+        title: 'End Ride',
+        message: 'Are you sure you want to end this ride?',
+        confirmText: 'Yes',
+        cancelText: 'No',
+        confirmColor: theme.secondaryHeaderColor,
+        cancelColor: theme.indicatorColor,
+        onConfirm: () async {
+          Navigator.of(context).pop(); // Close the dialog
+          try {
+            // Stop tracking first
+            await _rideTracker.stopTracking();
+            if (!mounted) return;
+            print('Tracking stopped successfully');
 
-      // Get the RideStartBloc before making API calls
-      final rideStartBloc = BlocProvider.of<RideStartBloc>(context);
+            // Get the RideStartBloc before making API calls
+            final rideStartBloc = BlocProvider.of<RideStartBloc>(context);
 
-      // Show loading indicator
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-
-      // Call end ride API
-      rideStartBloc.add(EndRideEvent());
-
-      // Listen for the end ride response
-      final subscription = rideStartBloc.stream.listen((state) {
-        if (state is EndRideSuccess) {
-          // Dismiss loading dialog
-          if (mounted) Navigator.of(context).pop();
-
-          // Extract CO₂ savings from response
-          final totalCo2Saved = state.endRideData['data']['totalCo2Saved'];
-
-          // Show CO₂ savings snackbar
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  '🌱 Great job! You saved $totalCo2Saved kg of CO₂ emissions!',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                backgroundColor: theme.secondaryHeaderColor,
-                duration: const Duration(seconds: 4),
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                margin: const EdgeInsets.all(16),
+            // Show loading indicator
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => const Center(
+                child: CircularProgressIndicator(),
               ),
             );
-          }
-          Future.delayed(const Duration(milliseconds: 500), () {
-            if (mounted) {
-              showDialog(
-                context: context,
-                builder: (dialogContext) => MultiPassengerReviewModal(
-                  passengers: _rideData!.passengers,
-                  rideId: _rideData!.id,
-                  currentUserId: _rideData!.driverId,
-                  rideStartBloc: rideStartBloc,
-                ),
-              );
+
+            // Call end ride API
+            rideStartBloc.add(EndRideEvent());
+
+            // Listen for the end ride response
+            final subscription = rideStartBloc.stream.listen((state) {
+              if (state is EndRideSuccess) {
+                // Dismiss loading dialog
+                if (mounted) Navigator.of(context).pop();
+
+                // Extract CO₂ savings from response
+                final totalCo2Saved =
+                    state.endRideData['data']['totalCo2Saved'];
+
+                // Show CO₂ savings snackbar
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '🌱 Great job! You saved $totalCo2Saved kg of CO₂ emissions!',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      backgroundColor: theme.secondaryHeaderColor,
+                      duration: const Duration(seconds: 4),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      margin: const EdgeInsets.all(16),
+                    ),
+                  );
+                }
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  if (mounted) {
+                    showDialog(
+                      context: context,
+                      builder: (dialogContext) => MultiPassengerReviewModal(
+                        passengers: _rideData!.passengers,
+                        rideId: _rideData!.id,
+                        currentUserId: _rideData!.driverId,
+                        rideStartBloc: rideStartBloc,
+                      ),
+                    );
+                  }
+                });
+                context.read<Navigation>().navigateTo('/home');
+
+                print('Ride ended successfully: ${_rideData!.id}');
+                print('CO₂ saved: $totalCo2Saved kg');
+              } else if (state is EndRideFailure) {
+                // Dismiss loading dialog
+                if (mounted) Navigator.of(context).pop();
+
+                // Show error message
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content:
+                          Text('Failed to end ride: ${state.errorMessage}'),
+                      backgroundColor: Colors.red,
+                      duration: const Duration(seconds: 3),
+                    ),
+                  );
+                }
+              }
+            });
+
+            // Clean up subscription after 10 seconds to prevent memory leaks
+            Timer(const Duration(seconds: 10), () {
+              subscription.cancel();
+            });
+          } catch (e) {
+            // Dismiss loading dialog if it's showing
+            if (mounted && Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
             }
-          });
-          context.read<Navigation>().navigateTo('/home');
 
-          print('Ride ended successfully: ${_rideData!.id}');
-          print('CO₂ saved: $totalCo2Saved kg');
-        } else if (state is EndRideFailure) {
-          // Dismiss loading dialog
-          if (mounted) Navigator.of(context).pop();
-
-          // Show error message
-          if (mounted) {
+            if (!mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Failed to end ride: ${state.errorMessage}'),
-                backgroundColor: Colors.red,
+                content: Text('Failed to end ride: ${e.toString()}'),
+                backgroundColor: theme.indicatorColor,
                 duration: const Duration(seconds: 3),
               ),
             );
           }
-        }
-      });
-
-      //Clean up subscription after 10 seconds to prevent memory leaks
-      Timer(const Duration(seconds: 10), () {
-        subscription.cancel();
-      });
-    } catch (e) {
-      // Dismiss loading dialog if it's showing
-      if (mounted && Navigator.of(context).canPop()) {
-        Navigator.of(context).pop();
-      }
-
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to end ride: ${e.toString()}'),
-          backgroundColor: theme.indicatorColor,
-          duration: const Duration(seconds: 3),
-        ),
-      );
-    }
+        },
+        onCancel: () {
+          Navigator.of(context).pop(); // Just close the dialog
+        },
+      ),
+    );
   }
+
+  /// *****  4d25bc47-eb4e-4d01-854c-02aa2b11506a  ******
 
   @override
   Widget build(BuildContext context) {
